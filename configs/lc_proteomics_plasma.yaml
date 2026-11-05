@@ -1,0 +1,29 @@
+# CHORUS secondary benchmark: Long COVID versus COVID recovered from plasma or serum proteomics.
+# Two platform families are harmonised separately (Olink PEA; MS discovery) and combined at UniProt level only
+# through rank based operators. Olink cohorts without bridge samples are pooled as within study ranks or z scores
+# on assays shared across panel generations (see chorus.harmonise.proteomics). Compare against the nine cohort
+# Olink meta-analysis of Maestri and Kwon 2025 (summary AUROC 0.78 discovery, 0.76 validation).
+layer: olink
+cohorts:
+  - {study_id: Zoodsma2022,  matrix: data/prot/Zoodsma2022_npx_uniprot.tsv,  meta: data/meta/Zoodsma2022_meta.csv,  feature_space: uniprot, accession: GitHub}            # 186 LC / 350 recovered / 61 never infected, ~5 weeks (early)
+  - {study_id: Buggert2025,  matrix: data/prot/Buggert2025_npx_uniprot.tsv,  meta: data/meta/Buggert2025_meta.csv,  feature_space: uniprot, accession: Zenodo}            # 70 LC / 70 recovered, Explore 3072, ~14 months
+  - {study_id: Su2022,       matrix: data/prot/Su2022_npx_uniprot.tsv,       meta: data/meta/Su2022_meta.csv,       feature_space: uniprot, accession: Mendeley}          # INCOV, 309 LC / 209 recovered / 457 never infected
+  - {study_id: EatonFitch2024, matrix: data/prot/GSE275334_olink_uniprot.tsv, meta: data/meta/GSE275334_meta.csv,   feature_space: uniprot, accession: GSE275334}         # paired with the RNA cohort: bilayer bridge for mosaic integration
+  - {study_id: Vijayakumar2022, matrix: data/prot/Vijayakumar2022_npx_uniprot.tsv, meta: data/meta/Vijayakumar2022_meta.csv, feature_space: uniprot, accession: Mendeley}  # 41 LC / 38 recovered / 29 never infected
+  - {study_id: Liew2024,     matrix: data/prot/Liew2024_npx_uniprot.tsv,     meta: data/meta/Liew2024_meta.csv,     feature_space: uniprot, accession: EGAD00001009745}   # PHOSP-COVID, 424 LC / 233 recovered, controlled access (apply early)
+preprocessing:
+  matrices: [plasma, serum]
+  deduplicate: true
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [center_scale, rank, fsqn, gene_pair]      # NPX must not be pooled on one scale; identity is reported only as a negative control
+  selectors:
+    - {name: differential, k: 60}
+    - {name: invariant, k: 60}
+    - {name: prior, genes: priors/review_complement_9.txt, mode: prior_only}   # C4A, C4BPB, C5, CFHR1, CFHR5, MBL2, FCN2, MASP2, C1Q from the 101 study review
+  classifiers: [logreg_en, rf, taco, cross_study]
+  covariates: [age, sex]
+  nested_select_harmoniser: true
+  n_boot: 1000
+out: results/lc_proteomics_plasma

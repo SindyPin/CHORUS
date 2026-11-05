@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use CHORUS, please cite the paper and this repository."
+title: "CHORUS: Cross cohort Harmonisation of Omics for Robust and Unified early detection Signatures"
+authors:
+  - family-names: Pinero
+    given-names: Sindy
+    orcid: https://orcid.org/0000-0002-6296-6412
+    affiliation: Adelaide University
+version: 0.1.0
+date-released: 2026-11-04
+license: MIT
+repository-code: https://github.com/SindyPin/CHORUS

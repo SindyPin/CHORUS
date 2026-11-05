@@ -1,0 +1,7 @@
+# TACO six gene nested CV signature (Pinero et al. 2026). HGNC symbols; map to Ensembl with priors/README.
+TYMP
+MAPK8
+PLA2G4B
+PIM2
+TK1
+STAT3

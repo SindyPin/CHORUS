@@ -1,0 +1,23 @@
+# Nine complement proteins with reproducible changes across cohorts (Pinero et al. 2025, Crit Rev Clin Lab Sci). UniProt accessions.
+# C4A
+P0C0L4
+# C4BPB
+P20851
+# C5
+P01031
+# CFHR1
+Q03591
+# CFHR5
+Q9BXR6
+# MBL2
+P11226
+# FCN2
+Q15485
+# MASP2
+O00187
+# C1QA
+P02745
+# C1QB
+P02746
+# C1QC
+P02747
