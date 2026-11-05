@@ -1,0 +1,39 @@
+# CHORUS primary benchmark: Long COVID versus COVID recovered from blood bulk RNA-seq, pooled across public cohorts.
+# Counts come from uniform re-quantification (scripts/hpc/02_nfcore_rnaseq.slurm); when raw reads are controlled
+# access the author matrix is used and flagged in provenance. Metadata follow chorus.schema.ClinicalSchema.
+# Cohort list from the lab catalogue (LongCOVID_Omics_Harmonisation_Catalogue.xlsx) plus GSE226260 (Aid 2025).
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE215865, matrix: data/quant/GSE215865/salmon.merged.gene_counts.tsv, meta: data/meta/GSE215865_meta.csv, is_counts: true, accession: GSE215865}   # Thompson 2023, whole blood, acute samples with later LC label (n 413); also used alone for the TACO replication
+  - {study_id: GSE275334, matrix: data/quant/GSE275334/salmon.merged.gene_counts.tsv, meta: data/meta/GSE275334_meta.csv, is_counts: true, accession: GSE275334}   # Eaton-Fitch 2024, whole blood, 165 LC / 495 recovered / 72 never infected, paired Olink
+  - {study_id: GSE267625, matrix: data/quant/GSE267625/salmon.merged.gene_counts.tsv, meta: data/meta/GSE267625_meta.csv, is_counts: true, accession: GSE267625}   # Blankestijn 2024, whole blood, 77 LC / 18 recovered, two windows
+  - {study_id: GSE169687, matrix: data/quant/GSE169687/salmon.merged.gene_counts.tsv, meta: data/meta/GSE169687_meta.csv, is_counts: true, accession: GSE169687}   # Ryan 2022, whole blood, 69 LC / 14 never infected (no recovered controls: enters only the LC vs never infected sensitivity analysis)
+  - {study_id: GSE270045, matrix: data/quant/GSE270045/salmon.merged.gene_counts.tsv, meta: data/meta/GSE270045_meta.csv, is_counts: true, accession: GSE270045}   # Shahbaz 2025, whole blood, 19 LC / 17 recovered
+  - {study_id: GSE226260, matrix: data/quant/GSE226260/salmon.merged.gene_counts.tsv, meta: data/meta/GSE226260_meta.csv, is_counts: true, accession: GSE226260}   # Aid 2025 (Nat Immunol), PBMC, 124 PASC / 63 recovered; verify matrix before pooling with whole blood
+  - {study_id: GSE251849, matrix: data/quant/GSE251849/salmon.merged.gene_counts.tsv, meta: data/meta/GSE251849_meta.csv, is_counts: true, accession: GSE251849}   # Greene 2024, PBMC, 11 LC / 5 recovered / 7 never infected (small; PBMC sensitivity set)
+  - {study_id: PRJNA1184005, matrix: data/quant/PRJNA1184005/salmon.merged.gene_counts.tsv, meta: data/meta/PRJNA1184005_meta.csv, is_counts: true, accession: PRJNA1184005}  # Missailidis 2024, PBMC, 7 LC / 7 recovered (small)
+  - {study_id: GSE224615, matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv, meta: data/meta/GSE224615_meta.csv, is_counts: true, accession: GSE224615}   # Yin 2024 bulk component, 27 LC / 16 recovered
+preprocessing:
+  matrices: [whole_blood]        # primary analysis; rerun with [whole_blood, PBMC] plus covariate sample_matrix as a sensitivity analysis
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  deduplicate: true
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
+  selectors:
+    - {name: variance, k: 500}                      # TACO baseline (most variable genes)
+    - {name: differential, k: 200}
+    - {name: invariant, k: 200}
+    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: prior_only}     # TACO causal genes as prior
+    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: union, k: 200}  # prior plus invariant
+    - {name: prior, genes: priors/mrcontrol_32_genes.txt, mode: union, k: 200}
+  classifiers: [logreg_en, rf, taco, cross_study]
+  covariates: [age, sex]
+  protect: [age, sex]
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/lc_transcriptomics_blood

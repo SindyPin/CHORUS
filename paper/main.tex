@@ -1,0 +1,166 @@
+%% CHORUS manuscript for ISMB/ECCB 2027 Proceedings (Bioinformatics, OUP).
+%% Open the official Overleaf template "OUP General Template" (https://www.overleaf.com/latex/templates/oup-general-template/ybpypwncdxyb),
+%% Live copy: Overleaf project "CHORUS ISMB-ECCB 2027" (https://www.overleaf.com/project/6aeabaeb450f0a6653077b47).
+%% replace its main .tex with this file and put the entries of references.bib into the template reference.bib. Nine pages maximum including references. Do not change font size or spacing.
+\documentclass[unnumsec,webpdf,contemporary,large]{oup-authoring-template}
+\journaltitle{Bioinformatics}
+\DOI{DOI HERE}
+\copyrightyear{2027}
+\pubyear{2027}
+\access{Advance Access Publication Date: Day Month Year}
+\appnotes{Paper}
+\firstpage{1}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\providecommand{\societylogo}{}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\begin{document}
+
+\title[CHORUS]{CHORUS: cross cohort harmonisation of Long COVID omics improves and externally validates machine learning detection}
+
+\author[1,$\ast$]{Sindy Pinero\ORCID{0000-0002-6296-6412}}
+\author[1]{Lin Liu\ORCID{0000-0003-2843-5738}}
+\author[1]{Jiuyong Li\ORCID{0000-0002-9023-1878}}
+\author[2,3,4]{Sang Hong Lee\ORCID{0000-0001-9701-2718}}
+\author[1,$\ast$]{Thuc Duy Le\ORCID{0000-0002-9732-4313}}
+
+\address[1]{\orgdiv{School of Computer Science and Information Technology}, \orgname{Adelaide University}, \orgaddress{\street{Mawson Lakes Blvd}, \postcode{5095}, \state{SA}, \country{Australia}}}
+\address[2]{\orgdiv{Australian Centre for Precision Health}, \orgname{Adelaide University}, \orgaddress{\postcode{5000}, \state{SA}, \country{Australia}}}
+\address[3]{\orgdiv{School of Allied Health and Human Performance}, \orgname{Adelaide University}, \orgaddress{\postcode{5005}, \state{SA}, \country{Australia}}}
+\address[4]{\orgname{South Australian Health and Medical Research Institute}, \orgaddress{\postcode{5000}, \state{SA}, \country{Australia}}}
+
+\corresp[$\ast$]{Corresponding authors. \href{email:sindy.pinero@adelaide.edu.au}{sindy.pinero@adelaide.edu.au}; \href{email:thuc.le@adelaide.edu.au}{thuc.le@adelaide.edu.au}}
+
+\received{Date}{0}{Year}
+\revised{Date}{0}{Year}
+\accepted{Date}{0}{Year}
+
+\abstract{
+\textbf{Motivation:} Omics studies of Long COVID report high classification performance within single cohorts, yet signatures rarely replicate across cohorts and external validation is almost absent. Public Long COVID cohorts differ in case definition, control group, time since infection, sample matrix and platform, so pooling them requires harmonisation, and the choice of harmonisation strategy has itself never been validated out of study for this disease.\\
+\textbf{Results:} We present CHORUS, a framework and open source package that pools independent Long COVID omics cohorts under a harmonised clinical schema, applies per layer harmonisation operators fitted only on training cohorts, selects features whose association with Long COVID is invariant across cohorts, and evaluates detection models by leave one study out validation with the harmoniser chosen by inner cross study validation. Applied to \todo{N} public blood transcriptomic cohorts (\todo{n} participants) and \todo{M} plasma proteomic cohorts, CHORUS \todo{raised mean held out AUROC from X without harmonisation to Y, with invariant feature selection outperforming variance based selection by Z}, and quantified the optimism of within cohort cross validation at \todo{W} AUROC. \todo{One sentence on the biological signature and on transfer to acute phase early detection.}\\
+\textbf{Availability and implementation:} CHORUS is available at \href{https://github.com/SindyPin/CHORUS}{https://github.com/SindyPin/CHORUS} under the MIT licence, with harmonised metadata, configuration files and the scripts that reproduce every result.\\
+\textbf{Contact:} \href{sindy.pinero@adelaide.edu.au}{sindy.pinero@adelaide.edu.au}\\
+\textbf{Supplementary information:} Supplementary data are available at \textit{Bioinformatics} online.}
+
+\keywords{Long COVID; multi-omics; harmonisation; batch effects; external validation; invariant prediction}
+
+\maketitle
+
+\section{Introduction}
+
+Long COVID, or post-acute sequelae of SARS-CoV-2 infection, affects an estimated 400 million people worldwide and has no approved disease modifying treatment \citep{pinero2025review}. Over one hundred omics studies have profiled genomic, epigenomic, transcriptomic, proteomic and metabolomic layers in people with Long COVID, and many of them report machine learning classifiers with high discrimination. In our critical review of 101 such studies we found that external validation and cross validation across cohorts were essentially absent, that most cohorts were small relative to the dimensionality of the data, and that case definitions, control groups and platforms were heterogeneous enough to prevent meaningful synthesis \citep{pinero2025review}. The replication record that does exist is discouraging. A complement signature derived in one proteomic cohort did not survive reanalysis against two independent cohorts once age, sex and body mass index were balanced \citep{farztdinov2024}, and in a two country affinity proteomics study no single protein remained significant in the validation cohort \citep{gao2025}. Internal cross validation is known to overstate the performance of genomic classifiers and to change their ranking relative to cross study validation \citep{bernau2014}, so the reported performance of Long COVID classifiers is likely to be optimistic to a degree that is currently unknown.
+
+Pooling public cohorts is the natural remedy, and several groups have begun to do so. A re-analysis of 21 GEO transcriptomic series regressed out study identity, but all of its Long COVID samples came from a single study, so condition and study were confounded and cross study generalisation could not be measured \citep{maison2025}. A multi dataset lineage combined three to five transcriptomic series with ensemble feature selection and cross dataset testing, but deliberately applied no batch harmonisation \citep{varga2026}. In proteomics, a nine cohort meta-analysis of public Olink data derived a 60 protein Long COVID signature with a summary AUROC of 0.78 in discovery and 0.76 in validation cohorts, while noting that a locked classifier remained to be developed \citep{maestri2025}. Consortium scale harmonisation has been achieved for Long COVID genetics \citep{lammi2025}, but no harmonised, sample level, multi cohort omics resource with a cross study benchmark exists.
+
+Harmonising cohorts for prediction raises methodological questions that the batch correction literature has only partly answered. Correction parameters must be estimated on training studies and applied to a new study in an addon mode, otherwise the held out study leaks into the model that is scored on it \citep{hornung2017,parker2014}. When study is confounded with the case to control ratio, ComBat with the outcome as a covariate can remove or fabricate biological signal \citep{nygaard2016,zindler2020}, and a systematic comparison of preprocessing pipelines for cross cohort classifiers found no pipeline that generalised to every external set \citep{van2024}. Ensembles of study specific learners can outperform merged models once between study heterogeneity is substantial \citep{patil2018}. These results argue that the harmonisation strategy should be selected by cross study validation rather than fixed a priori, and that the selection should itself be nested so that the held out cohort plays no part in it.
+
+A complementary idea comes from causal inference. If each cohort is treated as an environment, features whose conditional association with the outcome is invariant across environments are candidates for causal predictors and are expected to transfer to new environments \citep{peters2016,pfister2021,rothenhausler2021}. This idea has been applied to omics only with experimental perturbation regimes as environments \citep{meinshausen2016}, and the single direct test of whether causal feature subsets generalise better on tabular benchmarks was negative \citep{nastl2024}. Whether invariance across observational cohorts improves transfer in multi cohort omics is therefore an open question, and one that our previous work on causal gene discovery in Long COVID \citep{pinero2025mrcontrol}, causal feature selection for early detection \citep{pinero2026taco} and safety first drug repurposing \citep{pinero2026split} makes natural to ask, since all three rest on a single transcriptomic cohort and list external validation as the outstanding step.
+
+Here we present CHORUS (Cross cohort Harmonisation of Omics for Robust and Unified early detection Signatures), a framework and Python package that (i) places public Long COVID cohorts under one harmonised clinical schema, (ii) applies per layer harmonisation operators that are fitted only on training cohorts and applied to a held out cohort without its labels, (iii) selects features with cohort as environment, optionally combined with causal priors, (iv) integrates cohorts that measured different omics layers, and (v) evaluates everything by leave one study out validation with nested selection of the harmoniser. We apply CHORUS to \todo{N} blood transcriptomic and \todo{M} plasma proteomic Long COVID cohorts, quantify the optimism of within cohort cross validation, test whether invariant and causally supported features transfer better than variance selected features, and report the first externally validated Long COVID detection models built from pooled public data.
+
+\section{Methods}
+
+\subsection{Overview}
+
+Figure~\ref{fig:overview} summarises the framework. Cohorts enter as a feature matrix and a metadata table in the harmonised schema (Section~\ref{sec:schema}). For each omics layer, cohorts are preprocessed uniformly (Section~\ref{sec:preproc}) and then enter the leave one study out loop (Section~\ref{sec:loso}), in which a harmoniser, a feature selector and a classifier are fitted on the training cohorts and scored on the held out cohort. Mosaic integration across layers (Section~\ref{sec:mosaic}) combines the per layer models for participants with more than one layer.
+
+\begin{figure}[!t]
+\centering
+\fbox{\parbox[c][0.45\columnwidth][c]{0.95\columnwidth}{\centering Figure 1 placeholder (fig1\_overview.pdf, BioRender)}}
+\caption{The CHORUS framework. (A) Public cohorts are curated into a harmonised clinical schema. (B) Per layer harmonisation operators are fitted on training cohorts only and applied to the held out cohort in addon mode. (C) Features are selected with cohort as environment, with optional causal priors from MRCONTROL, TACO and SPLIT. (D) Mosaic integration across layers. (E) Leave one study out validation with nested selection of the harmoniser, reported next to within study cross validation. \todo{draw in BioRender in the style of the MRCONTROL figure}}
+\label{fig:overview}
+\end{figure}
+
+\subsection{Cohorts and harmonised clinical schema}\label{sec:schema}
+
+We selected cohorts from our catalogue of 101 Long COVID omics studies \citep{pinero2025review} using three criteria: individual level data in a public or controlled access repository, a blood derived sample matrix, and at least ten Long COVID cases with at least five COVID recovered controls. \todo{Table 1: cohort, accession, matrix, platform, LC / recovered / never infected, sampling window, case definition, provenance (re-quantified or author matrix).} The primary contrast was Long COVID versus COVID recovered, because never infected controls mix the Long COVID signal with the signal of prior infection. Participants that appear in more than one series were identified from shared identifiers and consortium membership and retained in one cohort only.
+
+Clinical metadata were curated into a minimal schema with controlled vocabularies: Long COVID status, the case definition applied by the study (WHO 2021, NICE NG188, CDC four week, NASEM 2024, RECOVER index, self report or study specific), control type, days since infection and its anchor (symptom onset, positive test, admission or discharge), acute severity in four bands of the WHO clinical progression scale, hospitalisation, age, sex, body mass index, vaccination before infection, variant era, sample matrix and platform. Curation drafts were produced from GEO and PRIDE sample characteristics with a language model and every field was verified by a human curator against the source text; the model, date and supporting quote are recorded per field. A sensitivity analysis restricted cases to those compatible with the WHO definition (labelled under WHO 2021 or sampled at least 90 days after infection).
+
+\subsection{Uniform preprocessing per layer}\label{sec:preproc}
+
+Bulk RNA sequencing cohorts with public raw reads were re-quantified from FASTQ with nf-core/rnaseq (Salmon pseudo alignment, GRCh38, GENCODE v47) so that pipeline differences do not enter as study effects \citep{wang2018,arora2020}. Cohorts whose raw reads are controlled access were analysed from the author supplied count matrices and flagged in provenance. Genes were kept when they reached one count per million in at least half of the samples of every cohort, and counts were converted to log counts per million. Analyses were run within sample matrix (whole blood; PBMC as a secondary set), with a pooled sensitivity analysis including matrix as a covariate, because whole blood and PBMC profiles separate cleanly and composition dominates whole blood variance \citep{gautam2019,oconnell2023}.
+
+Olink cohorts were restricted to assays shared across panel generations by UniProt identifier, and assays with near zero within study variance after limit of detection substitution were removed. Because NPX values from different projects are not on one scale in the absence of bridge samples, affinity proteomics was analysed only with within study standardisation or rank based operators and pooled models were interpreted as rank level signatures. Mass spectrometry cohorts were re-searched from raw files with DIA-NN against one UniProt release, median centred at protein level, and restricted to proteins quantified in at least 70 percent of samples within each cohort; missingness indicators were retained as features \citep{voss2022,cuklina2021}.
+
+\subsection{Harmonisation operators with addon semantics}\label{sec:loso}
+
+Every harmonisation operator implements fit and transform with one rule: fit sees only training cohorts, and transform on a cohort unseen at fit time uses that cohort's own label free statistics, following the addon batch adjustment of \citet{hornung2017}. We compared no adjustment; per cohort centring and scaling; sample wise quantile normalisation to a training reference; feature specific quantile normalisation \citep{franks2018}; within sample rank transformation; top scoring pair indicators selected on training labels \citep{geman2004}; and a location and scale ComBat style adjustment with protected covariates (age, sex) and addon estimation for the held out cohort. ComBat fitted transductively on all cohorts without labels \citep{johnson2007} was included as a comparator and flagged, because it is what most published pooled analyses do.
+
+\subsection{Feature selection with cohort as environment}
+
+For each feature we estimated Hedges g between Long COVID and recovered participants within every training cohort and combined the estimates with a random effects meta-analysis (DerSimonian and Laird). A feature was called invariant when its pooled effect differed from zero (p below 0.05), between cohort heterogeneity was low (I squared at most 50 percent and Cochran Q p at least 0.05), and the sign of the effect agreed in every cohort. Invariant features were ranked by the pooled z statistic. This single feature screen follows the stability idea of \citet{pfister2021} rather than full invariant causal prediction, which is intractable for thousands of genes. We compared it with the most variable genes after per cohort centring (the baseline of TACO), with meta-analytic differential expression that ignores heterogeneity, and with causal priors: the 411 differential causal effect genes and the six gene nested cross validation signature of TACO \citep{pinero2026taco}, the 32 putative causal genes of MRCONTROL \citep{pinero2025mrcontrol}, and the consensus drivers of SPLIT \citep{pinero2026split}, used alone or combined with the invariant screen.
+
+\subsection{Classifiers}
+
+We used elastic net logistic regression, random forests, the TACO soft voting ensemble of TabPFN with random forest, extremely randomised trees, support vector and multilayer perceptron classifiers \citep{pinero2026taco,hollmann2025}, and a cross study ensemble of cohort specific learners weighted by their AUROC on the other training cohorts \citep{patil2018}, which represents ensembling as the alternative to merging. Age and sex were appended as covariates. Hyperparameters were fixed a priori and identical across cohorts.
+
+\subsection{Leave one study out evaluation}
+
+For every held out cohort with at least five cases and five controls, the harmoniser, selector and classifier were fitted on the remaining cohorts and the held out cohort was scored once. We report AUROC with stratified bootstrap confidence intervals, area under the precision recall curve, balanced accuracy, Brier score and expected calibration error. In the nested setting, the harmoniser was chosen for each held out cohort by an inner leave one study out loop over the training cohorts. Within cohort five fold cross validation with the same selectors and classifiers was run for every cohort to quantify the optimism gap \citep{bernau2014}. \todo{State the preregistered primary comparison: nested harmonisation with invariant selection versus no harmonisation with variance selection, elastic net, mean held out AUROC, paired across held out cohorts.}
+
+\subsection{Mosaic integration across layers}\label{sec:mosaic}
+
+Cohorts that measured transcriptomics and proteomics on the same participants \todo{(Eaton-Fitch 2024; Su 2022; Li 2024)} served as bridges. We used late fusion: per layer models from the leave one study out loop produce out of fold probabilities, and a logistic meta learner on the layer probabilities and layer presence indicators combines them for each participant. As comparators we projected transcriptomic and proteomic cohorts to shared gene products through an Ensembl to UniProt mapping with rank transformation, and we fitted MOFA+ with cohorts as groups and layers as views \citep{argelaguet2020}, scoring held out participants by projection onto the training loadings. \todo{Decide whether this subsection stays in the main text or moves to supplementary depending on space and results.}
+
+\subsection{Transfer to early detection}
+
+To connect the pooled detection models with early detection, we scored acute phase blood samples from the Mount Sinai COVID-19 biobank \citep{thompson2023}, which carry later Long COVID labels and were the basis of TACO, with models trained on the post acute cohorts, and we compared against TACO trained and validated within that cohort alone.
+
+\subsection{Implementation}
+
+CHORUS is implemented in Python 3.10 or later with numpy, pandas, scipy and scikit-learn, with optional dependencies for ComBat (inmoose), TabPFN, MOFA+ (mofapy2) and gradient boosting. Re-quantification and re-search were run on \todo{HPC name} with Slurm scripts provided in the repository. All results, configurations and curated metadata are available at \href{https://github.com/SindyPin/CHORUS}{github.com/SindyPin/CHORUS}.
+
+\section{Results}
+
+\subsection{Simulation: harmonisation and invariant features recover cross study performance}
+
+\todo{One paragraph and Figure 2 from scripts/simulation\_benchmark.py: six simulated cohorts with location and scale study effects, 30 invariant causal genes and 60 cohort specific shortcut genes. Report mean held out AUROC for identity versus harmonised, variance versus invariant selection, the fraction of shortcut genes selected by each selector (invariant selected none), and the within study optimism.}
+
+\subsection{Harmonised Long COVID cohorts}
+
+\todo{Table 1 and a paragraph: how many cohorts, participants, cases and controls per layer; distribution of case definitions, time windows, matrices; how many participants de-duplicated; how many cohorts re-quantified versus author matrices; genes shared after filtering; Olink assays shared across panels; MS proteins shared.}
+
+\subsection{Pooling without harmonisation does not transfer}
+
+\todo{Figure 3A: held out AUROC per cohort for identity harmoniser. Expect values near 0.5 to 0.6 and strong dependence on the case to control ratio of the held out cohort. Report the within study CV AUROC next to it (optimism gap).}
+
+\subsection{Harmonisation fitted inside the fold restores performance and the choice matters}
+
+\todo{Figure 3B: harmoniser by selector heatmap of mean held out AUROC; nested selection results and which harmoniser was chosen per held out cohort; transductive ComBat comparator and how much it inflates relative to addon ComBat.}
+
+\subsection{Invariant and causally supported features transfer better than variance selected features}
+
+\todo{Paired comparison across held out cohorts; number of strictly invariant genes per fold; overlap with TACO, MRCONTROL and SPLIT gene lists; stability of the selected set across folds (Jaccard); pathway enrichment of the invariant set; whether the complement proteins replicate in the proteomic arm.}
+
+\subsection{Mosaic integration and transfer to early detection}
+
+\todo{Late fusion gain for bilayer participants; MOFA+ and knowledge linked comparators; acute phase transfer AUROC versus TACO within cohort.}
+
+\section{Discussion}
+
+\todo{Four paragraphs in the MRCONTROL register: (1) what CHORUS adds relative to Maestri 2025, Varga 2026 and Maison 2025, stressing that the harmonisation choice and the feature selection were validated out of study and that the held out cohort never leaked; (2) interpretation of the invariant signature against the convergent biology of the review (complement, interferon, mitochondrial), with hedging; (3) what the result says about the Nastl and Hardt question, including the cases where invariant selection did not help; (4) limitations: author matrices for controlled access cohorts, label heterogeneity across definitions, residual confounding of study with severity and era, small cohorts, affinity proteomics comparable only at rank level, and that invariance across observational cohorts is necessary rather than sufficient for causality. Close with the data access requests in progress (EGA, dbGaP, GSA) and with SPLIT and MRCONTROL as downstream users of the harmonised resource.}
+
+\section{Conclusion}
+
+\todo{Three sentences.}
+
+\section{Competing interests}
+No competing interest is declared.
+
+\section{Author contributions statement}
+\todo{CRediT roles.}
+
+\section{Acknowledgments}
+This work was partly supported by the Australian Research Council Discovery Project DP230101122 (to L.L., J.L. and T.D.L.). \todo{HPC acknowledgement; data owners.}
+
+\section{Data availability}
+All cohorts are public or controlled access repositories listed in Table 1. Curated metadata, configuration files, code and results are available at \href{https://github.com/SindyPin/CHORUS}{github.com/SindyPin/CHORUS}.
+
+\bibliographystyle{oup-abbrvnat}
+\bibliography{reference}
+
+\end{document}

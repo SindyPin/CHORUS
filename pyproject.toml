@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "choruslc"
+version = "0.1.0"
+description = "CHORUS: Cross cohort Harmonisation of Omics for Robust and Unified early detection Signatures (Long COVID)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Sindy Pinero", email = "sindy.pinero@adelaide.edu.au"}]
+keywords = ["Long COVID", "multi-omics", "harmonisation", "batch effects", "leave-one-study-out", "invariant features", "causal"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "scipy>=1.10",
+  "scikit-learn>=1.3",
+  "pyyaml>=6.0",
+  "statsmodels>=0.14",
+]
+
+[project.optional-dependencies]
+combat = ["inmoose>=0.7"]
+tabpfn = ["tabpfn>=2.0", "torch"]
+mofa = ["mofapy2>=0.7"]
+boost = ["xgboost>=2.0"]
+plots = ["matplotlib>=3.7", "seaborn>=0.13"]
+all = ["inmoose>=0.7", "tabpfn>=2.0", "torch", "mofapy2>=0.7", "xgboost>=2.0", "matplotlib>=3.7", "seaborn>=0.13"]
+dev = ["pytest>=7", "ruff", "build", "twine"]
+
+[project.scripts]
+chorus = "chorus.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/SindyPin/CHORUS"
+Issues = "https://github.com/SindyPin/CHORUS/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
