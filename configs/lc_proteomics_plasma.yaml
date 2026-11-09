@@ -5,12 +5,23 @@
 # Olink meta-analysis of Maestri and Kwon 2025 (summary AUROC 0.78 discovery, 0.76 validation).
 layer: olink
 cohorts:
-  - {study_id: Zoodsma2022,  matrix: data/prot/Zoodsma2022_npx_uniprot.tsv,  meta: data/meta/Zoodsma2022_meta.csv,  feature_space: uniprot, accession: GitHub}            # 186 LC / 350 recovered / 61 never infected, ~5 weeks (early)
-  - {study_id: Buggert2025,  matrix: data/prot/Buggert2025_npx_uniprot.tsv,  meta: data/meta/Buggert2025_meta.csv,  feature_space: uniprot, accession: Zenodo}            # 70 LC / 70 recovered, Explore 3072, ~14 months
-  - {study_id: Su2022,       matrix: data/prot/Su2022_npx_uniprot.tsv,       meta: data/meta/Su2022_meta.csv,       feature_space: uniprot, accession: Mendeley}          # INCOV, 309 LC / 209 recovered / 457 never infected
-  - {study_id: EatonFitch2024, matrix: data/prot/GSE275334_olink_uniprot.tsv, meta: data/meta/GSE275334_meta.csv,   feature_space: uniprot, accession: GSE275334}         # paired with the RNA cohort: bilayer bridge for mosaic integration
-  - {study_id: Vijayakumar2022, matrix: data/prot/Vijayakumar2022_npx_uniprot.tsv, meta: data/meta/Vijayakumar2022_meta.csv, feature_space: uniprot, accession: Mendeley}  # 41 LC / 38 recovered / 29 never infected
-  - {study_id: Liew2024,     matrix: data/prot/Liew2024_npx_uniprot.tsv,     meta: data/meta/Liew2024_meta.csv,     feature_space: uniprot, accession: EGAD00001009745}   # PHOSP-COVID, 424 LC / 233 recovered, controlled access (apply early)
+  # Accessions resolved 2026-11-09 against paper data statements and repository APIs; evidence in docs/proteomics_inventory.csv.
+  - {study_id: Zoodsma2022,  matrix: data/prot/Zoodsma2022_npx_uniprot.tsv,  meta: data/meta/Zoodsma2022_meta.csv,  feature_space: uniprot, accession: "github:CiiM-Bioinformatics-group/Postcovid-targeted-proteomics@d45e36077d735c242788e72b871ce4a3d1e728a9"}  # NPX in data/MHH/raw/*_NPX_*_v1.xlsx; paper: 350 acute hospitalised / 186 convalescent / 61 healthy, LC labels not defined (verify before use)
+  - {study_id: Buggert2025,  matrix: data/prot/Buggert2025_npx_uniprot.tsv,  meta: data/meta/Buggert2025_meta.csv,  feature_space: uniprot, accession: "doi:10.5281/zenodo.14772494"}  # Gao 2025 Nat Immunol; Explore 3072 plate{1,2,3}_olink.csv; UK 51 LC / 51 convalescent, SE 95 LC only (not 70/70)
+  - {study_id: Su2022,       matrix: data/prot/Su2022_npx_uniprot.tsv,       meta: data/meta/Su2022_meta.csv,       feature_space: uniprot, accession: "doi:10.17632/96v329bg7g.1"}  # INCOV Table S2.xlsx: batch corrected z scores adjusted for age/sex/BMI, not NPX; 309 patients (LC split from PASC in Table S1) / 457 healthy
+  - {study_id: EatonFitch2024, matrix: data/prot/EatonFitch2024_olink_uniprot.tsv, meta: data/meta/EatonFitch2024_meta.csv, feature_space: uniprot, accession: TODO}  # GSE275334 is NanoString PBMC RNA with no Olink; no public Olink source found, so no RNA-Olink bridge cohort
+  - {study_id: Vijayakumar2022, matrix: data/prot/Vijayakumar2022_npx_uniprot.tsv, meta: data/meta/Vijayakumar2022_meta.csv, feature_space: uniprot, accession: "doi:10.5061/dryad.2ngf1vhq3"}  # plasma_long_personal_clinical_flow.csv; Olink 19 post-COVID / 9 healthy, no recovered arm (Mendeley 10.17632/th35tt4zwm.1 holds stats only)
+  - {study_id: Liew2024,     matrix: data/prot/Liew2024_npx_uniprot.tsv,     meta: data/meta/Liew2024_meta.csv,     feature_space: uniprot, accession: "PHOSP-COVID ODAP (controlled, https://phosp.org/resource/)"}  # no public accession (EGAD00001009745 was an unrelated HCC set); plasma Explore 384 Inflammation, 426 LC / 233 recovered; analysis only inside ODAP
+  - {study_id: Cervia2024,   matrix: data/prot/Cervia2024_somascan_uniprot.tsv, meta: data/meta/Cervia2024_meta.csv, feature_space: uniprot, accession: "doi:10.17632/dvf6yvrg4x.1"}  # SomaScan serum, not Olink (aptamer family, own within-study scaling); 40 LC / 73 recovered at 6 months + 39 healthy; code doi:10.5281/zenodo.10022438
+# MS discovery family (separate layer: layer ms, harmonised separately and only combined with Olink at UniProt level
+# through rank operators). Kept commented so this olink config does not mix layers; move to configs/lc_proteomics_ms.yaml.
+# ms_cohorts:
+#   - {study_id: Captur2022,    accession: PXD036590, repository: PRIDE}   # Agilent 6410 QqQ SRM/MRM, 91 targets, plasma, 43 files, no SDRF; 156 HCW
+#   - {study_id: Pushalkar2024, accession: PXD036597, repository: PRIDE}   # Q Exactive HF DIA (Spectronaut), serum, 74 raw, no SDRF; 29 convalescent / 29 healthy
+#   - {study_id: Chowdhury2024, accession: PXD047623, repository: PRIDE}   # Bruker DIA (DIA-NN), plasma, 52 raw, SDRF yes; 25 PCC + non-PCC controls
+#   - {study_id: Chen2022,      accession: PXD026442, repository: iProX}   # IPX0003104000, timsTOF Pro DIA, serum 30 healthy / 60 at 6 m / 58 at 12 m recovered, no LC labels
+#   - {study_id: Li2024,        accession: PXD044441, repository: iProX}   # IPX0006875000, timsTOF Pro 4D-DIA, 18 serum samples, no LC labels
+#   - {study_id: Song2025,      accession: TODO,      repository: PRIDE}   # PXD052898 is cited in the paper but not released (PRIDE and ProteomeCentral 404); plasma peptidomics of recovered patients
 preprocessing:
   matrices: [plasma, serum]
   deduplicate: true
