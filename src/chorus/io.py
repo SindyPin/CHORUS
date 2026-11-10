@@ -153,6 +153,38 @@ class CohortSet:
             Ms.append(Mc)
         return pd.concat(Xs), pd.concat(Ms)
 
+    def one_sample_per_subject(self, acute_timepoints: Iterable[str] = ("acute",)) -> "CohortSet":
+        """Keep the earliest post acute sample of each subject within each cohort.
+
+        Samples whose ``timepoint`` is in ``acute_timepoints`` (case insensitive, for example
+        the GSE226260 whole blood draws labelled Acute) are dropped first. Among the remaining
+        samples of a subject the earliest is the one with the smallest ``days_since_infection``;
+        where that is missing a numeric ``timepoint`` is used, then a date ``timepoint``, then
+        file order. Repeated draws or libraries of one person would otherwise enter the
+        evaluation as independent samples.
+        """
+        acute = {str(a).lower() for a in acute_timepoints}
+        out: List[Cohort] = []
+        for c in self.cohorts:
+            m = c.meta
+            missing = pd.Series(np.nan, index=m.index)
+            tp = m["timepoint"].where(m["timepoint"].notna(), "").astype(str).str.strip() if "timepoint" in m.columns else missing.fillna("").astype(str)
+            tp_num = pd.to_numeric(tp.where(tp != ""), errors="coerce")
+            tp_date = pd.to_datetime(tp.where(tp_num.isna() & (tp != "")), errors="coerce", format="mixed")
+            order = pd.DataFrame(
+                {
+                    "subject": m["subject_id"].astype(str),
+                    "days": pd.to_numeric(m.get("days_since_infection", missing), errors="coerce"),
+                    "tp_num": tp_num,
+                    "tp_date": tp_date,
+                    "pos": np.arange(len(m)),
+                },
+                index=m.index,
+            )[~tp.str.lower().isin(acute)]
+            first = order.sort_values(["days", "tp_num", "tp_date", "pos"], na_position="last").groupby("subject", sort=False).head(1).index
+            out.append(c.subset(pd.Series(m.index.isin(first), index=m.index)))
+        return CohortSet(out)
+
     def deduplicate_subjects(self, priority: Optional[List[str]] = None) -> "CohortSet":
         """Drop subjects that appear in more than one study, keeping the first study in ``priority``.
 

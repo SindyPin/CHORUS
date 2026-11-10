@@ -44,6 +44,7 @@ preprocessing:
   matrices: [whole_blood, PBMC]   # primary analysis pools both; rerun with [whole_blood] and with [PBMC] as sensitivity analyses
   min_cpm: 1.0
   min_fraction_samples: 0.5
+  one_sample_per_subject: true    # earliest post acute sample per subject (days_since_infection, then timepoint); timepoint Acute dropped (GSE226260 WB)
   deduplicate: true
 benchmark:
   positive: LC

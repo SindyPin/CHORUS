@@ -115,3 +115,24 @@ def test_train_only_cohort_is_never_held_out():
     res, _, _ = run_loso(cs, cfg, verbose=False)
     assert cs.study_ids[0] not in set(res["held_out"])
     assert res["n_train_studies"].eq(3).all()  # still used for training
+
+
+def test_one_sample_per_subject_keeps_earliest_post_acute():
+    from chorus.io import Cohort, CohortSet
+
+    meta = pd.DataFrame(
+        {
+            "sample_id": ["a1", "a2", "a3", "b1", "b2", "c1", "c2", "d1"],
+            "subject_id": ["a", "a", "a", "b", "b", "c", "c", "d"],
+            "timepoint": ["Acute", "3_6M", ">12M", "3", "1", "7/29/2021", "4/2/2021", "acute"],
+            "days_since_infection": [27, 140, 400, None, None, None, None, 10],
+            "lc_status": "LC",
+            "case_definition": "study_specific",
+            "sample_matrix": "whole_blood",
+        }
+    ).set_index("sample_id", drop=False)
+    X = pd.DataFrame(np.arange(16.0).reshape(8, 2), index=meta.index, columns=["g1", "g2"])
+    cs = CohortSet([Cohort("T", "bulk_rna", X, meta)]).one_sample_per_subject()
+    kept = set(cs["T"].X.index)
+    assert kept == {"a2", "b2", "c2"}  # acute draws dropped, d has no post acute sample
+    assert cs["T"].meta.index.equals(cs["T"].X.index)

@@ -82,6 +82,8 @@ def load_config(path: str) -> tuple:
     pre = cfg.get("preprocessing", {})
     if pre.get("matrices"):
         cs = select_tissue(cs, pre["matrices"])
+    if pre.get("one_sample_per_subject", False):
+        cs = cs.one_sample_per_subject(pre.get("acute_timepoints", ["acute"]))
     if pre.get("deduplicate", True):
         cs = cs.deduplicate_subjects()
     feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5))
