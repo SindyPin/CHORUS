@@ -107,6 +107,8 @@ def test_loader_rounds_estimated_counts_and_logs_normalised_values(tmp_path):
     pd.DataFrame({"s1": [0, 120, 3], "s2": [10, 60, 7]}, index=X.index).to_csv(tmp_path / "int.tsv", sep="\t")
     raw = Cohort.from_files("T", "bulk_rna", tmp_path / "int.tsv", tmp_path / "meta.csv", is_counts=True, provenance="author_matrix")
     assert raw.source["provenance"] == "author_matrix"
+    ours = Cohort.from_files("T", "bulk_rna", tmp_path / "m.tsv.gz", tmp_path / "meta.csv", is_counts=True, provenance="requantify")
+    assert ours.source["provenance"] == "requantify" and ours.X.loc["s1", "ENSG02"] == 120
     norm = Cohort.from_files("T", "bulk_rna", tmp_path / "m.tsv.gz", tmp_path / "meta.csv", is_counts=False)
     assert norm.source["provenance"] == "author_normalised"
     assert np.isclose(norm.X.loc["s1", "ENSG02"], np.log2(121.4))

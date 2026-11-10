@@ -73,7 +73,7 @@ class Cohort:
 
         When ``is_counts`` is true and the matrix is not integer valued (estimated counts from
         Salmon or RSEM), values are rounded to integers and provenance is recorded as
-        ``author_estimated_counts``. When ``is_counts`` is false and the matrix maximum exceeds
+        ``author_estimated_counts`` (unless it is ``requantify``, our own re-quantification). When ``is_counts`` is false and the matrix maximum exceeds
         ``LINEAR_SCALE_MAX``, the author values are taken to be normalised on a linear scale and
         are transformed with log2(x + 1); provenance is then recorded as ``author_normalised``.
         """
@@ -91,7 +91,8 @@ class Cohort:
         if is_counts:
             if np.nanmax(np.abs(X.values - np.round(X.values))) > 0:
                 X = X.round()
-                source = {**source, "provenance": "author_estimated_counts"}
+                if source.get("provenance") != "requantify":  # our own salmon output keeps its provenance
+                    source = {**source, "provenance": "author_estimated_counts"}
         elif np.nanmax(X.values) > LINEAR_SCALE_MAX:
             X = np.log2(X + 1)
             source = {**source, "provenance": "author_normalised", "transform": "log2p1"}
