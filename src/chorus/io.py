@@ -71,8 +71,10 @@ class Cohort:
         accordingly. Ensembl version suffixes (ENSG00000123456.7) are removed by default so
         that studies quantified against different annotation releases share identifiers.
 
-        When ``is_counts`` is false and the matrix maximum exceeds ``LINEAR_SCALE_MAX``, the
-        author values are taken to be on a linear scale (normalised or estimated counts) and
+        When ``is_counts`` is true and the matrix is not integer valued (estimated counts from
+        Salmon or RSEM), values are rounded to integers and provenance is recorded as
+        ``author_estimated_counts``. When ``is_counts`` is false and the matrix maximum exceeds
+        ``LINEAR_SCALE_MAX``, the author values are taken to be normalised on a linear scale and
         are transformed with log2(x + 1); provenance is then recorded as ``author_normalised``.
         """
         X = _read_table(matrix_path)
@@ -84,11 +86,15 @@ class Cohort:
         if strip_ensembl_version and feature_space == "ensembl_gene":
             X.columns = [c.split(".")[0] if str(c).startswith("ENSG") else c for c in X.columns]
             X = X.T.groupby(level=0).sum().T if X.columns.duplicated().any() else X
-        if not is_counts:  # after the version merge, so duplicates are summed on the linear scale
-            X = X.apply(pd.to_numeric, errors="coerce")
-            if np.nanmax(X.values) > LINEAR_SCALE_MAX:
-                X = np.log2(X + 1)
-                source = {**source, "provenance": "author_normalised", "transform": "log2p1"}
+        # after the version merge, so duplicates are summed on the linear scale
+        X = X.apply(pd.to_numeric, errors="coerce")
+        if is_counts:
+            if np.nanmax(np.abs(X.values - np.round(X.values))) > 0:
+                X = X.round()
+                source = {**source, "provenance": "author_estimated_counts"}
+        elif np.nanmax(X.values) > LINEAR_SCALE_MAX:
+            X = np.log2(X + 1)
+            source = {**source, "provenance": "author_normalised", "transform": "log2p1"}
         meta = meta.copy()
         meta["study_id"] = study_id
         meta["omics_layer"] = layer
