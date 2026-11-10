@@ -26,16 +26,13 @@ benchmark:
   positive: LC
   negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849 and GSE169687 controls)
   harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
-  selectors:
+  selectors:   # no prior selectors: the TACO 411 and MRCONTROL 32 lists were derived from GSE215865, the test set here
     - {name: variance, k: 500}                      # TACO baseline (most variable genes)
     - {name: differential, k: 200}
     - {name: invariant, k: 200}
-    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: prior_only}
-    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: union, k: 200}
-    - {name: prior, genes: priors/mrcontrol_32_genes.txt, mode: union, k: 200}
   classifiers: [logreg, rf, taco, cross_study]
-  covariates: [age, sex, sample_matrix]
-  protect: [age, sex, sample_matrix]
+  covariates: [sample_matrix]     # age and sex are recorded only for GSE226260_PBMC (data/meta/curation_notes.md)
+  protect: [sample_matrix]
   nested_select_harmoniser: true
   min_test_per_class: 5
   n_boot: 1000

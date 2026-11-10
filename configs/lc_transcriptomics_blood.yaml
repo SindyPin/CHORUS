@@ -31,7 +31,8 @@ cohorts:
     # states they recovered from COVID-19 without symptoms, so the negative class is COVID_recovered. GEO has 19 LC where the paper reports 18 (ask the lead contact).
     # Author matrix holds estimated (fractional) counts keyed by gene symbol, rounded by the loader; mapped to Ensembl with scripts/map_symbols_to_ensembl.py (28,872 of 28,889 symbols).
     # Labels and ids verified (docs/gse270045_check.md), but group is confounded with sample collection (LC all S0xx_11, controls CCI/HP) and its
-    # LC genes run opposite to the training cohorts; report a sensitivity run without it.
+    # LC genes run opposite to the training cohorts. Reported together with a sensitivity run excluding it
+    # (results/lc_transcriptomics_blood_noGSE270045).
   # ---- LC versus COVID recovered labels exist but are not in GEO: obtain before inclusion ----
   - {study_id: GSE267625,     matrix: data/counts/GSE267625/GSE267625_P4O2_COVID_blood_transcriptome.csv.gz, meta: data/meta/GSE267625_meta.csv, is_counts: true, provenance: author_estimated_counts, accession: GSE267625, enabled: false}
     # Blankestijn 2024 (P4O2). Whole blood, 111 libraries (79 at 3 months, 32 at 12 months). LC / recovered labels via the paper supplement or p4o2@amsterdamumc.nl.
@@ -64,8 +65,8 @@ benchmark:
     - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: union, k: 200}
     - {name: prior, genes: priors/mrcontrol_32_genes.txt, mode: union, k: 200}
   classifiers: [logreg, rf, taco, cross_study]
-  covariates: [age, sex, sample_matrix]
-  protect: [age, sex, sample_matrix]
+  covariates: [sample_matrix]     # age and sex are recorded only for GSE226260_PBMC (data/meta/curation_notes.md)
+  protect: [sample_matrix]
   nested_select_harmoniser: true
   min_test_per_class: 5
   n_boot: 1000

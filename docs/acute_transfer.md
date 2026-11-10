@@ -37,5 +37,8 @@ chorus run configs/lc_acute_transfer.yaml --within
   a year after discharge (Thompson 2023). The LC definitions also differ by cohort.
 - **Severity.** Every GSE215865 subject was hospitalised, while most training cohorts are mainly mild infections.
   Severity cannot be adjusted for because it is not in the GEO metadata.
-- **Missing prior lists.** The `prior` selectors need `priors/taco_411_dce_genes.txt` and
-  `priors/mrcontrol_32_genes.txt`, which are not yet in the repository.
+- **No prior selectors.** The TACO 411 DCE genes and the MRCONTROL 32 causal genes were both derived from GSE215865 with its
+  Long COVID labels: TACO trained on the Mount Sinai blood RNA-seq, and MRCONTROL used it for its RNA-seq step. Selecting
+  features with them would carry information from the test labels into training, so this config uses only the variance,
+  differential and invariant selectors. The prior selectors stay in the primary config, which does not include GSE215865.
+- **Covariates.** The only covariate is `sample_matrix`, because age and sex are recorded only for GSE226260_PBMC.
