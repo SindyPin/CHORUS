@@ -25,7 +25,8 @@ def load_gene_list(path: str | Path, column: Optional[str] = None, strip_version
     """Load a one column text file or a csv/tsv/xlsx column of gene identifiers."""
     path = Path(path)
     if path.suffix in {".txt", ".lst"}:
-        genes = [ln.strip() for ln in path.read_text().splitlines() if ln.strip() and not ln.startswith("#")]
+        genes = [ln.split("#", 1)[0].strip() for ln in path.read_text().splitlines()]  # "#" starts a comment, also after an id
+        genes = [g for g in genes if g]
     else:
         if path.suffix in {".xlsx", ".xls"}:
             df = pd.read_excel(path)

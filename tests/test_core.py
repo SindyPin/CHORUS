@@ -150,3 +150,10 @@ def test_covariate_matrix_one_hot_encodes_text_columns(dtype):
     cov = _covariate_matrix(meta, ["age", "sample_matrix"])
     assert list(cov.columns) == ["cov_age", "cov_sample_matrix_PBMC", "cov_sample_matrix_whole_blood"]
     assert cov["cov_sample_matrix_PBMC"].tolist() == [1.0, 0.0, 1.0]
+
+
+def test_gene_list_ignores_inline_comments(tmp_path):
+    from chorus.features.priors import load_gene_list
+
+    (tmp_path / "g.txt").write_text("# header\nENSG00000141510  # TP53\nENSG00000005339.12 # CREBBP\n\n")
+    assert load_gene_list(tmp_path / "g.txt") == ["ENSG00000141510", "ENSG00000005339"]
