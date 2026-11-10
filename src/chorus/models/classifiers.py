@@ -9,7 +9,8 @@ Names (configs):
   xgb             gradient boosting (optional dependency xgboost)
   tabpfn          TabPFN v2 foundation model (optional dependency tabpfn)
   taco            soft voting ensemble of tabpfn + rf + extratrees + svc + mlp, as in TACO
-                  (falls back to the four model ensemble when tabpfn is not installed)
+                  (falls back to the four model ensemble when tabpfn is not installed or
+                  the environment sets CHORUS_DISABLE_TABPFN=1)
   cross_study     ensemble of per study learners weighted by cross study AUROC
                   (Patil and Parmigiani 2018); the merging versus ensembling comparator
 
@@ -19,6 +20,7 @@ the training median inside a pipeline so that proteomics matrices with NaN are a
 
 from __future__ import annotations
 
+import os
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -43,6 +45,8 @@ def _pipe(est, scale: bool = True) -> Pipeline:
 
 
 def _tabpfn(random_state: int):
+    if os.environ.get("CHORUS_DISABLE_TABPFN") == "1":  # for example when the TabPFN licence token is unavailable
+        return None
     try:
         from tabpfn import TabPFNClassifier
     except ImportError:

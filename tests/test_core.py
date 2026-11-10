@@ -186,3 +186,11 @@ def test_chorus_operator_competitive_under_imbalance():
     m = res.groupby("harmoniser")["auroc"].mean()
     assert m["chorus"] >= m["identity"] - 0.02 and m["chorus"] >= m["combat_addon"] - 0.02
     assert res["sign_agreement"].notna().any()
+
+
+def test_taco_without_tabpfn_when_disabled(monkeypatch):
+    from chorus.models import make_classifier
+
+    monkeypatch.setenv("CHORUS_DISABLE_TABPFN", "1")
+    clf = make_classifier("taco", 0)
+    assert [n for n, _ in clf.estimators] == ["rf", "extratrees", "svc", "mlp"]
