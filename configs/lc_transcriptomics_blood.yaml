@@ -56,7 +56,7 @@ preprocessing:
 benchmark:
   positive: LC
   negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849 and GSE169687 controls)
-  harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
+  harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled, chorus]
   selectors:
     - {name: variance, k: 500}                      # TACO baseline (most variable genes)
     - {name: differential, k: 200}
