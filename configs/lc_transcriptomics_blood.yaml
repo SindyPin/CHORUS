@@ -22,6 +22,8 @@ cohorts:
   - {study_id: GSE215865,     matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
     # Thompson 2023 (Mount Sinai). Whole blood, acute hospitalised, 1,392 libraries longitudinal; LC labels from the Synapse clinical table already used in TACO
     # (SindyPin/TACO Data/411_DCEG_Paths_average.csv: Subject_ID, Long_COVID). Use one sample per subject (first sample) for pooling; keep the full set for the acute transfer experiment.
+    # Labels (scripts/build_cohort_meta.py): Long_COVID 1 + COVID positive = LC (302 subjects), 0 + positive = COVID_recovered (122), 0 + negative = never_infected (64);
+    # one subject with Long_COVID 1 but COVID negative (Subj_e53e70d3) is excluded, and 19 subjects missing from the TACO table are unknown.
   - {study_id: GSE270045,     matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz, meta: data/meta/GSE270045_meta.csv, is_counts: false, provenance: author_normalised, accession: GSE270045}
     # Shahbaz 2025 (PMID 41205594). Whole blood, 19 LC (post COVID ME/CFS, at least 12 months) / 17 controls. GEO calls the controls healthy, but the paper
     # states they recovered from COVID-19 without symptoms, so the negative class is COVID_recovered. GEO has 19 LC where the paper reports 18 (ask the lead contact).
