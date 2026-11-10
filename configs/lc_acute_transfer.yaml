@@ -1,0 +1,43 @@
+# CHORUS acute transfer experiment: can a Long COVID signature learnt from post acute blood transcriptomes be read in blood
+# drawn during the acute hospital stay, before the outcome is known? See docs/acute_transfer.md.
+# Training: the enabled post acute cohorts of configs/lc_transcriptomics_blood.yaml, all train_only, so they are never held out.
+# Test: GSE215865 (Thompson 2023, Mount Sinai), the only cohort that is held out. Keep the cohort entries in step with the primary config.
+layer: bulk_rna
+cohorts:
+  # ---- training: post acute cohorts (LC versus COVID recovered) ----
+  - {study_id: GSE226260_WB,   matrix: data/counts/GSE226260/GSE226260_wholeblood_counts.csv.gz, meta: data/meta/GSE226260_WB_meta.csv,   is_counts: true, provenance: author_matrix, accession: GSE226260, train_only: true}
+  - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,       meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260, train_only: true}
+  - {study_id: GSE251849,      matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,            meta: data/meta/GSE251849_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE251849, train_only: true}
+  - {study_id: GSE270045,      matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz,    meta: data/meta/GSE270045_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE270045, train_only: true}
+    # Add GSE224615, GSE267625, GSE222253, GSE169687 and PRJNA1184005 here (train_only: true) when they are enabled in the primary config.
+  # ---- test: acute hospital draws with later LC outcome ----
+  - {study_id: GSE215865,      matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
+    # Labels from scripts/build_cohort_meta.py (step 4 rule): Long_COVID 1 + COVID positive = LC (302 subjects), 0 + positive = COVID_recovered (122);
+    # 0 + negative = never_infected (64) falls outside the contrast; Subj_e53e70d3 (LC but COVID negative) and 19 subjects missing from TACO are unknown.
+    # One sample per subject: the earliest library (smallest days since first sample). GEO labels only 21 libraries T0, so "T0" here means each
+    # subject's first available draw: day 0 for 418 of 508 subjects, days 1 to 31 for the other 90 (earlier libraries not deposited).
+preprocessing:
+  matrices: [whole_blood, PBMC]   # rerun with [whole_blood] to match the test matrix
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  one_sample_per_subject: true
+  deduplicate: true
+benchmark:
+  positive: LC
+  negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849 and GSE169687 controls)
+  harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
+  selectors:
+    - {name: variance, k: 500}                      # TACO baseline (most variable genes)
+    - {name: differential, k: 200}
+    - {name: invariant, k: 200}
+    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: prior_only}
+    - {name: prior, genes: priors/taco_411_dce_genes.txt, mode: union, k: 200}
+    - {name: prior, genes: priors/mrcontrol_32_genes.txt, mode: union, k: 200}
+  classifiers: [logreg, rf, taco, cross_study]
+  covariates: [age, sex, sample_matrix]
+  protect: [age, sex, sample_matrix]
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/lc_acute_transfer

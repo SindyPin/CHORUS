@@ -20,7 +20,8 @@ cohorts:
     # Yin 2024 (LIINC). PBMC, 8 months, 23 LC / 13 non-LC in GEO; no count matrix, re-quantify 36 SRA runs (HiSeq 4000). Disabled until re-quantified.
   - {study_id: GSE251849,     matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,      meta: data/meta/GSE251849_meta.csv,     is_counts: true, provenance: author_estimated_counts, accession: GSE251849}
     # Greene 2024. PBMC, 11 LC (6 + 5 brain fog) / 5 convalescent / 7 healthy. Small; held out only in the pooled analysis. Author values are estimated (fractional) counts, rounded by the loader.
-  - {study_id: GSE215865,     matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
+  - {study_id: GSE215865,     matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865, enabled: false}
+    # Disabled here: acute samples do not belong in the post acute pool. Used as the test set of configs/lc_acute_transfer.yaml.
     # Thompson 2023 (Mount Sinai). Whole blood, acute hospitalised, 1,392 libraries longitudinal; LC labels from the Synapse clinical table already used in TACO
     # (SindyPin/TACO Data/411_DCEG_Paths_average.csv: Subject_ID, Long_COVID). Use one sample per subject (first sample) for pooling; keep the full set for the acute transfer experiment.
     # Labels (scripts/build_cohort_meta.py): Long_COVID 1 + COVID positive = LC (302 subjects), 0 + positive = COVID_recovered (122), 0 + negative = never_infected (64);
@@ -51,7 +52,7 @@ preprocessing:
   deduplicate: true
 benchmark:
   positive: LC
-  negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849, GSE169687 controls and GSE215865 COVID negative subjects)
+  negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849 and GSE169687 controls)
   harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
   selectors:
     - {name: variance, k: 500}                      # TACO baseline (most variable genes)
