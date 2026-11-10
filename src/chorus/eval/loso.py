@@ -62,7 +62,7 @@ def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame
         v = meta[c]
         if c == "sex":
             cols["cov_sex_female"] = (v.astype(str) == "female").astype(float).where(v.notna())
-        elif v.dtype == object:
+        elif not pd.api.types.is_numeric_dtype(v):  # object, str (pandas 3) or category: one hot
             for lvl in sorted(v.dropna().astype(str).unique())[:10]:
                 cols[f"cov_{c}_{lvl}"] = (v.astype(str) == lvl).astype(float)
         else:

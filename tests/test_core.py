@@ -140,3 +140,13 @@ def test_one_sample_per_subject_keeps_earliest_post_acute():
     kept = set(cs["T"].X.index)
     assert kept == {"a2", "b2", "c2"}  # acute draws dropped, d has no post acute sample
     assert cs["T"].meta.index.equals(cs["T"].X.index)
+
+
+@pytest.mark.parametrize("dtype", [object, "string", "str", "category"])
+def test_covariate_matrix_one_hot_encodes_text_columns(dtype):
+    from chorus.eval.loso import _covariate_matrix
+
+    meta = pd.DataFrame({"sample_matrix": pd.Series(["PBMC", "whole_blood", "PBMC"], dtype=dtype), "age": [30, 40, 50]})
+    cov = _covariate_matrix(meta, ["age", "sample_matrix"])
+    assert list(cov.columns) == ["cov_age", "cov_sample_matrix_PBMC", "cov_sample_matrix_whole_blood"]
+    assert cov["cov_sample_matrix_PBMC"].tolist() == [1.0, 0.0, 1.0]
