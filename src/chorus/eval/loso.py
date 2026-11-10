@@ -124,6 +124,8 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
     rows, preds, selected = [], [], {}
     harmonisers = list(cfg.harmonisers) + (["nested"] if cfg.nested_select_harmoniser else [])
     for held_out in cs.study_ids:
+        if cs[held_out].source.get("train_only") == "true":  # contributes to training, never held out
+            continue
         te = s_all == held_out
         tr = ~te
         if (y_all[te] == 1).sum() < cfg.min_test_per_class or (y_all[te] == 0).sum() < cfg.min_test_per_class:

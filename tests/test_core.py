@@ -106,3 +106,12 @@ def test_loader_log_transforms_linear_scale_author_matrix(tmp_path):
     assert np.isclose(c.X.loc["s1", "ENSG02"], np.log2(121.5))
     small = Cohort.from_files("T", "bulk_rna", tmp_path / "m.tsv.gz", tmp_path / "meta.csv", is_counts=True)
     assert small.X.loc["s1", "ENSG02"] == 120.5  # counts are left for log CPM
+
+
+def test_train_only_cohort_is_never_held_out():
+    cs = simulate_cohorts(n_studies=4, n_per_study=[60, 60, 60, 60], n_features=200, n_causal=10, n_shortcut=20, seed=2)
+    cs.cohorts[0].source["train_only"] = "true"
+    cfg = LosoConfig(harmonisers=["center_scale"], selectors=[{"name": "variance", "k": 50}], classifiers=["logreg"], n_boot=10)
+    res, _, _ = run_loso(cs, cfg, verbose=False)
+    assert cs.study_ids[0] not in set(res["held_out"])
+    assert res["n_train_studies"].eq(3).all()  # still used for training

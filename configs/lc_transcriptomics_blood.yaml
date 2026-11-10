@@ -13,29 +13,32 @@ cohorts:
   - {study_id: GSE226260_WB,  matrix: data/counts/GSE226260/GSE226260_wholeblood_counts.csv.gz, meta: data/meta/GSE226260_WB_meta.csv,  is_counts: true, provenance: author_matrix, accession: GSE226260}
     # Aid 2025 (Nat Immunol). Whole blood subset: 52 PASC / 51 Recovered, windows 3-6, 6-12, >12 months; labels in GEO (current long_covid_status). Anchor cohort.
   - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,     meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260}
-    # Aid 2025 PBMC subset: 72 PASC / 14 NOPASC; labels in GEO (pasc status). Same participants may appear in the WB subset: de-duplicate by subject id.
+    # Aid 2025 PBMC subset: 72 PASC / 14 NOPASC; labels in GEO (pasc status). Same participants may appear in the WB subset, but the subsets use different subject ids (numeric vs BIxxxx), so overlap cannot be resolved from GEO.
     # Sample s049 (title p22179-s049_601096-14-Dec-2020) carried the malformed tail of the combined file; check it before trusting it.
   - {study_id: GSE224615,     matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv, meta: data/meta/GSE224615_meta.csv, is_counts: true, provenance: requantify, accession: GSE224615, enabled: false}
     # Yin 2024 (LIINC). PBMC, 8 months, 23 LC / 13 non-LC in GEO; no count matrix, re-quantify 36 SRA runs (HiSeq 4000). Disabled until re-quantified.
   - {study_id: GSE251849,     matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,      meta: data/meta/GSE251849_meta.csv,     is_counts: false, provenance: author_normalised, accession: GSE251849}
     # Greene 2024. PBMC, 11 LC (6 + 5 brain fog) / 5 convalescent / 7 healthy. Small; held out only in the pooled analysis. Author values are estimated (fractional) counts.
-  - {study_id: PRJNA1184005,  matrix: data/quant/PRJNA1184005/salmon.merged.gene_counts.tsv, meta: data/meta/PRJNA1184005_meta.csv, is_counts: true, provenance: requantify, accession: PRJNA1184005, enabled: false}
-    # Missailidis 2024. PBMC, 7 LC / 7 recovered; labels from BioSample attributes or the paper. Below the five per class threshold as a held out set; training only.
   - {study_id: GSE215865,     matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
     # Thompson 2023 (Mount Sinai). Whole blood, acute hospitalised, 1,392 libraries longitudinal; LC labels from the Synapse clinical table already used in TACO
     # (SindyPin/TACO Data/411_DCEG_Paths_average.csv: Subject_ID, Long_COVID). Use one sample per subject (first sample) for pooling; keep the full set for the acute transfer experiment.
+  - {study_id: GSE270045,     matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz, meta: data/meta/GSE270045_meta.csv, is_counts: false, provenance: author_normalised, accession: GSE270045}
+    # Shahbaz 2025 (PMID 41205594). Whole blood, 19 LC (post COVID ME/CFS, at least 12 months) / 17 controls. GEO calls the controls healthy, but the paper
+    # states they recovered from COVID-19 without symptoms, so the negative class is COVID_recovered. GEO has 19 LC where the paper reports 18 (ask the lead contact).
+    # Author matrix is keyed by gene symbol; mapped to Ensembl with scripts/map_symbols_to_ensembl.py (28,872 of 28,889 symbols).
   # ---- LC versus COVID recovered labels exist but are not in GEO: obtain before inclusion ----
   - {study_id: GSE267625,     matrix: data/counts/GSE267625/GSE267625_P4O2_COVID_blood_transcriptome.csv.gz, meta: data/meta/GSE267625_meta.csv, is_counts: false, provenance: author_normalised, accession: GSE267625, enabled: false}
     # Blankestijn 2024 (P4O2). Whole blood, 111 libraries (79 at 3 months, 32 at 12 months). LC / recovered labels via the paper supplement or p4o2@amsterdamumc.nl.
     # Author values are estimated (fractional) counts with column ids <subject>_<index>; GSM mapping is positional (docs/count_matrices.md).
+  - {study_id: PRJNA1184005,  matrix: data/quant/PRJNA1184005/salmon.merged.gene_counts.tsv, meta: data/meta/PRJNA1184005_meta.csv, is_counts: true, provenance: requantify, accession: PRJNA1184005, train_only: true, enabled: false}
+    # Missailidis 2024. PBMC, 7 LC / 7 recovered. Neither the BioSample attributes nor the paper carry per sample labels (by age only vacSG34, vacSG102 and
+    # vacSG112 must be recovered); request the key from S. Annesley. Training only (never held out) until labels arrive; also needs re-quantification.
   - {study_id: GSE222253,     matrix: data/counts/GSE222253/GSE222253_merged_counts.csv.gz, meta: data/meta/GSE222253_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE222253, enabled: false}
     # BQC19 (PMID 37680625). Whole blood, 24 hospitalised patients, with versus without post COVID symptoms; symptom labels from the paper or BQC19. Hospitalised only.
-  # ---- LC versus never infected only (secondary contrast, see sensitivity block) ----
-  - {study_id: GSE270045,     matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz, meta: data/meta/GSE270045_meta.csv, is_counts: false, provenance: author_normalised, accession: GSE270045}
-    # Shahbaz 2025. Whole blood, 19 LC (post COVID ME/CFS) / 17 healthy controls. Check infection history of controls in PMID 41205594.
-    # Author matrix is keyed by gene symbol; mapped to Ensembl with scripts/map_symbols_to_ensembl.py (28,872 of 28,889 symbols).
   - {study_id: GSE169687,     matrix: data/counts/GSE169687/GSE169687_merged_counts.csv.gz, meta: data/meta/GSE169687_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE169687, enabled: false}
-    # Ryan 2022. Peripheral blood, convalescents at 12/16/24 weeks by severity, 14 healthy controls; no LC field, treat convalescent as LC only if the paper defines symptoms.
+    # Ryan 2022 (PMID 35027067). Whole blood, 69 convalescents at 12/16/24 weeks after infection plus 14 seronegative controls never infected (never_infected).
+    # LC is defined in the paper as referral to the SA Health long COVID clinic (21 of 69): LC = referred, COVID_recovered = not referred (48). The per subject
+    # referral flag is not in GEO or the open supplements; to be requested from D. Lynn (SAHMRI). Disabled until the flag arrives.
   # Removed: GSE275334 (NanoString PBMC panel, no RNA-seq, no recovered controls, no Olink). GSE286325 (scRNA, raw reads not public) kept aside for a pseudobulk sensitivity analysis.
 preprocessing:
   matrices: [whole_blood, PBMC]   # primary analysis pools both; rerun with [whole_blood] and with [PBMC] as sensitivity analyses
@@ -44,7 +47,7 @@ preprocessing:
   deduplicate: true
 benchmark:
   positive: LC
-  negative: COVID_recovered        # secondary run: negative: never_infected, adding GSE270045 and GSE169687
+  negative: COVID_recovered        # secondary run: negative: never_infected (GSE251849, GSE169687 controls and GSE215865 COVID negative subjects)
   harmonisers: [identity, center_scale, quantile_ref, fsqn, rank, combat_addon, combat_pooled]
   selectors:
     - {name: variance, k: 500}                      # TACO baseline (most variable genes)

@@ -75,6 +75,7 @@ def load_config(path: str) -> tuple:
                 feature_space=c.get("feature_space", "ensembl_gene"),
                 accession=str(c.get("accession", "")),
                 provenance=str(c.get("provenance", "")),
+                train_only=str(bool(c.get("train_only", False))).lower(),
             )
         )
     cs = CohortSet(cohorts)
