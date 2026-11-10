@@ -10,6 +10,16 @@
   therefore downloads each file in 12 parallel byte ranges, retrying and resuming each range with back-off.
 - The ENA file report used is saved as `data/quant/GSE224615/ena_filereport.tsv`.
 
+**Library preparation (GEO sample protocol, for example GSM7027478).**
+- Molecule: `polyA RNA`. PBMCs were incubated in RPMI 1640 with 10% FBS, then total RNA was extracted with the Qiagen
+  AllPrep kit.
+- Library: "following oligo dT enrichment, fragmentation and random priming, cDNA synthesis", then end repair,
+  dA-tailing, adaptor ligation and PCR. This is a **poly(A)-selected, unstranded** library, not rRNA depletion.
+- Sequencing: Illumina HiSeq 4000, paired-end 150 bp.
+- Salmon's automatic library type detection agrees: `IU` (inward, unstranded) in every sample checked so far.
+- The authors' own processing was Trimmomatic, STAR on GRCh37/hg19 and featureCounts. Only a DEG table with normalised
+  counts was deposited, which is why the reads are re-quantified here.
+
 **Reference.**
 - GENCODE release 47 (GRCh38), from https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/:
   - `gencode.v47.transcripts.fa.gz`, md5 9c3ce49c6b6f13f3e4f4deb53ca80bf9
@@ -37,8 +47,17 @@
   them to integers and keeps provenance `requantify`.
 
 **QC.**
-- `data/quant/GSE224615/salmon_qc.tsv` gives the mapping rate per sample and flags samples below 60%.
-- The summary is below.
+- `data/quant/GSE224615/salmon_qc.tsv` gives, per sample:
+  - processed and mapped fragments and the mapping rate;
+  - the mitochondrial fraction (share of NumReads on chrM transcripts);
+  - the detected library type;
+  - the cohort median and MAD of the mapping rate.
+- A sample is **flagged** when its mapping rate is below 40%, or more than 2.5 MAD (raw, unscaled) below the cohort median.
+- Flags are not exclusions. Every sample enters the benchmark, and flagged samples are listed in `results/README.md`
+  so that excluding them can be a later sensitivity run.
+- With a poly(A) library and a transcriptome-only index, low mapping rates mostly reflect intronic, intergenic and
+  mitochondrial reads. In the first sample (GSM7027478, 52.5% mapped), 58% of the quantified reads were on chrM
+  transcripts, against 4.5% in the second.
 
 QC summary: _filled in when the run completes._
 
@@ -49,6 +68,13 @@ QC summary: _filled in when the run completes._
 | curation, smoke tests | `.venv` (miniconda python 3.12.9, x86_64 under Rosetta) | numpy 2.5.4, pandas 3.1.1, scikit-learn 1.9.1 |
 | full benchmark runs | `~/.venvs/chorus-arm64` (Homebrew python 3.12.16, arm64), `pip install -e ".[all,dev]"` | numpy 2.5.4, pandas 3.1.1, scikit-learn 1.9.1, torch 2.15.0, tabpfn 9.2.0, inmoose 0.9.1, xgboost 3.4.1 |
 | salmon | conda env `chorus-salmon` | salmon 1.10.3 |
+
+**Benchmarks run in the arm64 environment.** Every benchmark in `results/` was run with
+`~/.venvs/chorus-arm64/bin/python`, called through `arch -arm64`: the three real-data runs, both simulation runs, and
+the smoke tests from 2026-11-11 on. The exact package versions are pinned in `docs/requirements-chorus-arm64.txt` (`pip
+freeze`, editable install of this package excluded). To recreate the environment:
+`python3.12 -m venv ~/.venvs/chorus-arm64 && ~/.venvs/chorus-arm64/bin/pip install -r docs/requirements-chorus-arm64.txt && ~/.venvs/chorus-arm64/bin/pip install -e .`
+on an arm64 Python 3.12. Earlier smoke tests and all curation scripts used `.venv`.
 
 **Why a second environment.** The project `.venv` is an x86_64 Python. PyTorch publishes no x86_64 macOS wheels after
 2.2.2, which is too old for TabPFN (it fails with `module 'torch' has no attribute 'OutOfMemoryError'`). That torch

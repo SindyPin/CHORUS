@@ -8,7 +8,9 @@ Samples are named by the ENA sample_alias (the GSM for GEO submissions).
 
 ``--aggregate`` sums NumReads per gene with a tx2gene table built from the GENCODE GTF and writes
 genes x samples counts (Ensembl gene ids without version) plus a QC table with the mapping rate
-from each run's aux_info/meta_info.json, flagging rates below 60 percent.
+from each run's aux_info/meta_info.json and the mitochondrial (chrM) share of NumReads. A sample is
+flagged when its mapping rate is below 40 percent or more than 2.5 MAD (raw, unscaled) below the cohort
+median; flags are for sensitivity analyses, not automatic exclusion.
 
   python scripts/salmon_quant_ena.py PRJNA931952 data/ref/gencode_v47/salmon_index_v47_k31 data/quant/GSE224615
   python scripts/salmon_quant_ena.py PRJNA931952 ... data/quant/GSE224615 --aggregate --gtf data/ref/gencode_v47/gencode.v47.annotation.gtf.gz
@@ -32,7 +34,8 @@ from pathlib import Path
 import pandas as pd
 
 FIELDS = "run_accession,sample_alias,library_layout,read_count,fastq_bytes,fastq_md5,fastq_ftp"
-MIN_MAPPING_RATE = 60.0
+MIN_MAPPING_RATE = 40.0  # flag below this, or more than MAD_FLAG median absolute deviations below the cohort median
+MAD_FLAG = 2.5
 
 
 def filereport(project: str) -> pd.DataFrame:
@@ -168,14 +171,15 @@ def tx2gene(gtf: Path) -> pd.DataFrame:
             if f[2] != "transcript":
                 continue
             a = dict(re.findall(r'(\S+) "([^"]*)"', f[8]))
-            rows.append((a["transcript_id"], a["gene_id"], a.get("gene_name", ""), a.get("gene_type", "")))
-    return pd.DataFrame(rows, columns=["transcript_id", "gene_id", "gene_name", "gene_type"])
+            rows.append((a["transcript_id"], a["gene_id"], a.get("gene_name", ""), a.get("gene_type", ""), f[0]))
+    return pd.DataFrame(rows, columns=["transcript_id", "gene_id", "gene_name", "gene_type", "chrom"])
 
 
 def aggregate(out: Path, gtf: Path) -> None:
     t2g = tx2gene(gtf)
     t2g.to_csv(out / "tx2gene_gencode_v47.tsv", sep="\t", index=False)
     m = t2g.set_index("transcript_id")["gene_id"].str.split(".").str[0]
+    mito = set(t2g.loc[t2g["chrom"] == "chrM", "transcript_id"])
     counts, qc = {}, []
     for d in sorted((out / "salmon").iterdir()):
         if not (d / "quant.sf").exists():
@@ -188,14 +192,26 @@ def aggregate(out: Path, gtf: Path) -> None:
         info = json.loads((d / "aux_info" / "meta_info.json").read_text())
         lib = json.loads((d / "lib_format_counts.json").read_text())
         qc.append({"sample": d.name, "num_processed": info["num_processed"], "num_mapped": info["num_mapped"],
-                   "mapping_rate": round(info["percent_mapped"], 2), "library_type": lib.get("expected_format"),
-                   "salmon_version": info.get("salmon_version"), "flag_below_60": info["percent_mapped"] < MIN_MAPPING_RATE})
+                   "mapping_rate": round(info["percent_mapped"], 2),
+                   "mito_fraction": round(q.loc[q["Name"].isin(mito), "NumReads"].sum() / q["NumReads"].sum(), 4),
+                   "library_type": lib.get("expected_format"), "salmon_version": info.get("salmon_version")})
     X = pd.DataFrame(counts).fillna(0.0)
     X.index.name = "gene_id"
     X.to_csv(out / "salmon.merged.gene_counts.tsv", sep="\t", float_format="%.3f")
-    pd.DataFrame(qc).to_csv(out / "salmon_qc.tsv", sep="\t", index=False)
-    print(f"{X.shape[0]} genes x {X.shape[1]} samples; mapping rate below {MIN_MAPPING_RATE}%: "
-          f"{[r['sample'] for r in qc if r['flag_below_60']] or 'none'}")
+    qc = pd.DataFrame(qc)
+    med = qc["mapping_rate"].median()
+    mad = (qc["mapping_rate"] - med).abs().median()  # raw MAD, not scaled to a normal SD
+    low = med - MAD_FLAG * mad
+    qc["cohort_median_mapping"], qc["cohort_mad_mapping"], qc["mad_lower_bound"] = round(med, 2), round(mad, 2), round(low, 2)
+    reason = []
+    for r in qc["mapping_rate"]:
+        why = ([f"below {MIN_MAPPING_RATE:g}%"] if r < MIN_MAPPING_RATE else []) + ([f"more than {MAD_FLAG} MAD below median"] if r < low else [])
+        reason.append("; ".join(why))
+    qc["flag"] = [bool(x) for x in reason]
+    qc["flag_reason"] = reason
+    qc.to_csv(out / "salmon_qc.tsv", sep="\t", index=False)
+    print(f"{X.shape[0]} genes x {X.shape[1]} samples; mapping rate median {med:.1f}%, MAD {mad:.1f}, lower bound {low:.1f}%; "
+          f"flagged: {qc.loc[qc['flag'], 'sample'].tolist() or 'none'}")
 
 
 def main():
