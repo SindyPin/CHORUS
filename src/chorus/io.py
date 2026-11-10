@@ -17,6 +17,9 @@ import pandas as pd
 
 from .schema import ClinicalSchema, validate_metadata
 
+# above this maximum a non-count matrix is treated as linear scale and log2(x + 1) transformed
+LINEAR_SCALE_MAX = 50.0
+
 
 @dataclass
 class Cohort:
@@ -67,6 +70,10 @@ class Cohort:
         Matrices downloaded from GEO are usually features in rows; set ``features_in_rows``
         accordingly. Ensembl version suffixes (ENSG00000123456.7) are removed by default so
         that studies quantified against different annotation releases share identifiers.
+
+        When ``is_counts`` is false and the matrix maximum exceeds ``LINEAR_SCALE_MAX``, the
+        author values are taken to be on a linear scale (normalised or estimated counts) and
+        are transformed with log2(x + 1); provenance is then recorded as ``author_normalised``.
         """
         X = _read_table(matrix_path)
         if features_in_rows:
@@ -77,6 +84,11 @@ class Cohort:
         if strip_ensembl_version and feature_space == "ensembl_gene":
             X.columns = [c.split(".")[0] if str(c).startswith("ENSG") else c for c in X.columns]
             X = X.T.groupby(level=0).sum().T if X.columns.duplicated().any() else X
+        if not is_counts:  # after the version merge, so duplicates are summed on the linear scale
+            X = X.apply(pd.to_numeric, errors="coerce")
+            if np.nanmax(X.values) > LINEAR_SCALE_MAX:
+                X = np.log2(X + 1)
+                source = {**source, "provenance": "author_normalised", "transform": "log2p1"}
         meta = meta.copy()
         meta["study_id"] = study_id
         meta["omics_layer"] = layer
@@ -88,7 +100,8 @@ def _read_table(path: str | Path) -> pd.DataFrame:
     path = Path(path)
     if path.suffix in {".parquet", ".pq"}:
         return pd.read_parquet(path)
-    sep = "\t" if path.suffix in {".tsv", ".txt"} else ","
+    suffix = path.suffixes[-2] if path.suffix == ".gz" and len(path.suffixes) > 1 else path.suffix
+    sep = "\t" if suffix in {".tsv", ".txt"} else ","
     return pd.read_csv(path, sep=sep, index_col=0)
 
 

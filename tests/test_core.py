@@ -92,3 +92,17 @@ def test_nested_selection(sim):
     nested = res[res["harmoniser"] == "nested"]
     assert len(nested) == 5
     assert set(nested["harmoniser_chosen"]) <= {"identity", "center_scale"}
+
+
+def test_loader_log_transforms_linear_scale_author_matrix(tmp_path):
+    from chorus.io import Cohort
+
+    X = pd.DataFrame({"s1": [0.0, 120.5, 3.0], "s2": [10.0, 60.0, 7.25]}, index=["ENSG01.1", "ENSG02.3", "ENSG03.1"])
+    X.to_csv(tmp_path / "m.tsv.gz", sep="\t")
+    meta = pd.DataFrame({"sample_id": ["s1", "s2"], "subject_id": ["a", "b"], "lc_status": ["LC", "COVID_recovered"], "case_definition": "study_specific", "sample_matrix": "PBMC"})
+    meta.to_csv(tmp_path / "meta.csv", index=False)
+    c = Cohort.from_files("T", "bulk_rna", tmp_path / "m.tsv.gz", tmp_path / "meta.csv", is_counts=False, provenance="author_matrix")
+    assert c.source["provenance"] == "author_normalised"
+    assert np.isclose(c.X.loc["s1", "ENSG02"], np.log2(121.5))
+    small = Cohort.from_files("T", "bulk_rna", tmp_path / "m.tsv.gz", tmp_path / "meta.csv", is_counts=True)
+    assert small.X.loc["s1", "ENSG02"] == 120.5  # counts are left for log CPM

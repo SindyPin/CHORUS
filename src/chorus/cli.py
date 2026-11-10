@@ -62,6 +62,8 @@ def load_config(path: str) -> tuple:
     cfg = yaml.safe_load(Path(path).read_text())
     cohorts = []
     for c in cfg["cohorts"]:
+        if not c.get("enabled", True):  # listed for the record, not loaded (missing matrix or labels)
+            continue
         cohorts.append(
             Cohort.from_files(
                 c["study_id"],
@@ -72,6 +74,7 @@ def load_config(path: str) -> tuple:
                 is_counts=c.get("is_counts", False),
                 feature_space=c.get("feature_space", "ensembl_gene"),
                 accession=str(c.get("accession", "")),
+                provenance=str(c.get("provenance", "")),
             )
         )
     cs = CohortSet(cohorts)
