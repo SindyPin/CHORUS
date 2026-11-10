@@ -85,6 +85,23 @@ reported alongside so that the optimism gap is visible.
 | gene_pair | top scoring pair indicators selected on training labels | yes |
 | combat_addon | location/scale ComBat with addon estimation for a new study | yes |
 | combat_pooled | ComBat (inmoose) on all studies, transductive comparator | no, flagged |
+| chorus | invariance anchored harmonisation (below): technical factors estimated from genes that are null in every training cohort, loadings protected by the training outcome, label free addon for a new cohort, residual per study centring | yes |
+
+## The CHORUS operator: invariance anchored harmonisation
+
+Every location and scale harmoniser estimates a study's technical shift from all genes, so
+when the case to control ratio differs between studies the estimate absorbs disease signal
+(Nygaard et al. 2016), and in addon mode on an unlabelled cohort there is no outcome to
+protect with. CHORUS uses the cohort as environment meta-analysis to partition genes into
+an invariant set (consistent association in every training cohort), a null set (no
+association in any cohort, low heterogeneity) and an unstable set (association in some
+cohorts only, the shortcuts). Technical factors are estimated from the null genes alone
+(RUV style), their loadings are fitted jointly with the training outcome so that disease
+effects are not absorbed, and a held out cohort is corrected from its own null gene values
+without labels. The classifier uses the invariant set; the unstable set and the
+``sign_agreement`` diagnostic (fraction of invariant genes whose effect in the held out
+cohort has the training sign) flag cohorts whose signal runs against the training
+environments. Implementation: `chorus.harmonise.anchored.InvarianceAnchored`.
 
 ## Selectors
 

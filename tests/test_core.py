@@ -157,3 +157,30 @@ def test_gene_list_ignores_inline_comments(tmp_path):
 
     (tmp_path / "g.txt").write_text("# header\nENSG00000141510  # TP53\nENSG00000005339.12 # CREBBP\n\n")
     assert load_gene_list(tmp_path / "g.txt") == ["ENSG00000141510", "ENSG00000005339"]
+
+
+def test_chorus_operator_partition_and_addon():
+    from chorus.harmonise import make_harmoniser
+
+    cs = simulate_cohorts(n_studies=5, n_per_study=[100, 90, 110, 80, 100], n_features=800, n_causal=20, n_shortcut=40, case_fraction=[0.2, 0.8, 0.5, 0.3, 0.7], n_factors=2, factor_sd=0.5, seed=7)
+    X, M = cs.pooled()
+    y, s = binary_label(M), M["study_id"]
+    train = s != "S5"
+    H = make_harmoniser("chorus").fit(X[train], s[train], y[train])
+    causal, short = set(truth(cs)["causal"]), set(X.columns[20:60])
+    assert len(set(H.controls_) & causal) <= 1 and len(set(H.controls_) & short) == 0  # weak causal genes can pass the null screen
+    assert len(set(H.invariant_) & short) <= 2 and len(set(H.invariant_) & causal) >= 10  # a shortcut active with one sign in every training study is indistinguishable
+    assert len(set(H.unstable_) & short) >= 30
+    Z = H.transform(X[~train], s[~train])  # unseen study, label free
+    assert Z.shape == (int((~train).sum()), X.shape[1]) and np.isfinite(Z.values).all()
+    with pytest.raises(ValueError):
+        make_harmoniser("chorus").fit(X, s)
+
+
+def test_chorus_operator_competitive_under_imbalance():
+    cs = simulate_cohorts(n_studies=5, n_per_study=[100, 90, 110, 80, 100], n_features=800, n_causal=20, n_shortcut=40, case_fraction=[0.2, 0.8, 0.5, 0.3, 0.7], n_factors=2, factor_sd=0.5, seed=7)
+    cfg = LosoConfig(harmonisers=["identity", "combat_addon", "chorus"], selectors=[{"name": "invariant", "k": 30}], classifiers=["logreg"], n_boot=20)
+    res, _, _ = run_loso(cs, cfg, verbose=False)
+    m = res.groupby("harmoniser")["auroc"].mean()
+    assert m["chorus"] >= m["identity"] - 0.02 and m["chorus"] >= m["combat_addon"] - 0.02
+    assert res["sign_agreement"].notna().any()

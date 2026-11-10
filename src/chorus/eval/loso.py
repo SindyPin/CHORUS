@@ -29,7 +29,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 
 from ..features import make_selector
-from ..harmonise import make_harmoniser
+from ..harmonise import make_harmoniser, sign_agreement
 from ..io import CohortSet
 from ..models import make_classifier
 from ..schema import binary_label
@@ -151,6 +151,11 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                 Xs_tr = pd.concat([sel.transform(Xh_tr), cov_all.loc[X_tr.index]], axis=1)
                 Xs_te = pd.concat([sel.transform(Xh_te), cov_all.loc[X_te.index]], axis=1)
                 selected[(held_out, h, sel_cfg["name"])] = list(sel.selected_)
+                # concordance of the held out cohort with the training environments (diagnostic, uses held out labels only here)
+                tbl = getattr(sel, "table_", None)
+                if tbl is None:
+                    tbl = getattr(sel, "invariant_table_", None)
+                conc = sign_agreement(tbl["effect"], Xh_te, y_all[te], list(sel.selected_)) if tbl is not None else {"n_genes": np.nan, "sign_agreement": np.nan, "effect_spearman": np.nan}
                 for clf_name in cfg.classifiers:
                     try:
                         clf = make_classifier(clf_name, cfg.random_state)
@@ -173,6 +178,8 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "selector": sel_cfg["name"],
                             "n_features": Xs_tr.shape[1],
                             "n_strict_invariant": getattr(sel, "n_strict_", np.nan),
+                            "sign_agreement": conc["sign_agreement"],
+                            "effect_spearman": conc["effect_spearman"],
                             "classifier": clf_name,
                             "n_train": int(tr.sum()),
                             "n_train_studies": int(s_tr.nunique()),

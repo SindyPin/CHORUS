@@ -20,14 +20,16 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--n-studies", type=int, default=6)
     ap.add_argument("--n-features", type=int, default=2000)
+    ap.add_argument("--n-factors", type=int, default=3, help="sample level technical factors shared across genes")
+    ap.add_argument("--factor-sd", type=float, default=0.6)
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    cs = simulate_cohorts(n_studies=a.n_studies, n_features=a.n_features, n_causal=30, n_shortcut=60, seed=a.seed)
+    cs = simulate_cohorts(n_studies=a.n_studies, n_features=a.n_features, n_causal=30, n_shortcut=60, n_factors=a.n_factors, factor_sd=a.factor_sd, seed=a.seed)
     cs.summary().to_csv(out / "cohorts.csv", index=False)
     cfg = LosoConfig(
-        harmonisers=["identity", "center_scale", "quantile_ref", "fsqn", "rank", "combat_addon"],
+        harmonisers=["identity", "center_scale", "quantile_ref", "fsqn", "rank", "combat_addon", "chorus"],
         selectors=[{"name": "variance", "k": 300}, {"name": "differential", "k": 60}, {"name": "invariant", "k": 60}],
         classifiers=["logreg", "rf", "cross_study"],
         covariates=["age", "sex"],
@@ -56,7 +58,7 @@ def draw(res: pd.DataFrame, within: pd.DataFrame, path: Path):
 
     ok = res[res["classifier"].notna() & res.get("error", pd.Series(index=res.index)).isna()] if "error" in res.columns else res
     ok = ok[ok["classifier"] == "logreg"]
-    order_h = ["identity", "center_scale", "quantile_ref", "fsqn", "rank", "combat_addon", "nested"]
+    order_h = ["identity", "center_scale", "quantile_ref", "fsqn", "rank", "combat_addon", "chorus", "nested"]
     order_s = ["variance", "differential", "invariant"]
     piv = ok.pivot_table(index="harmoniser", columns="selector", values="auroc", aggfunc="mean").reindex(order_h)[order_s]
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1.6, 1]})

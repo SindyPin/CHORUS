@@ -18,5 +18,9 @@ from .operators import (  # noqa: F401
     WithinSampleRank,
     make_harmoniser,
 )
+from .anchored import InvarianceAnchored, sign_agreement  # noqa: F401
+
+HARMONISERS["chorus"] = InvarianceAnchored
+
 from .transcriptomics import filter_low_counts, log_cpm, select_tissue  # noqa: F401
 from .proteomics import olink_overlap, within_study_zscore, ms_median_normalise  # noqa: F401

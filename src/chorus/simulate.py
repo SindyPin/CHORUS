@@ -31,6 +31,8 @@ def simulate_cohorts(
     study_scale_sd: float = 0.3,
     case_fraction: Optional[List[float]] = None,
     noise_sd: float = 1.0,
+    n_factors: int = 0,
+    factor_sd: float = 0.0,
     seed: int = 0,
     layer: str = "bulk_rna",
 ) -> CohortSet:
@@ -53,6 +55,12 @@ def simulate_cohorts(
         active = rng.random(n_shortcut) > 0.33
         beta_short = rng.normal(0, shortcut_effect, n_shortcut) * active
         X[:, n_causal : n_causal + n_shortcut] += np.outer(y, beta_short)
+        # sample level technical factors shared across genes (composition, library quality), with
+        # study specific means so that they also act as study effects; off by default
+        if n_factors and factor_sd > 0:
+            loadings = rng.normal(0, factor_sd, (n_factors, n_features))
+            scores = rng.normal(0, 1, (n, n_factors)) + rng.normal(0, 1, n_factors)
+            X += scores @ loadings
         # study location and scale effects per feature (platform, pipeline, tissue mix)
         shift = rng.normal(0, study_shift_sd, n_features)
         scale = np.exp(rng.normal(0, study_scale_sd, n_features))
