@@ -13,7 +13,7 @@ chorus run configs/lc_acute_transfer.yaml --within
 
 **Design.**
 - **Training.** The post-acute cohorts that are enabled in `configs/lc_transcriptomics_blood.yaml`: currently
-  GSE226260_WB, GSE226260_PBMC, GSE251849 and GSE270045.
+  GSE226260_WB, GSE226260_PBMC, GSE224615, GSE251849 and GSE270045.
   - Each is marked `train_only: true`, so `run_loso` never holds them out and GSE215865 is the only held-out study.
   - When a cohort is enabled in the primary config, add it here as `train_only` as well.
 - **Test.** GSE215865 (Thompson 2023, Mount Sinai): whole blood drawn during acute COVID-19 admissions.

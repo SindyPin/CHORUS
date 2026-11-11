@@ -9,7 +9,8 @@ cohorts:
   - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,       meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260, train_only: true}
   - {study_id: GSE251849,      matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,            meta: data/meta/GSE251849_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE251849, train_only: true}
   - {study_id: GSE270045,      matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz,    meta: data/meta/GSE270045_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE270045, train_only: true}
-    # Add GSE224615, GSE267625, GSE222253, GSE169687 and PRJNA1184005 here (train_only: true) when they are enabled in the primary config.
+  - {study_id: GSE224615,      matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv,       meta: data/meta/GSE224615_meta.csv,      is_counts: true, provenance: requantify, accession: GSE224615, train_only: true}
+    # Add GSE267625, GSE222253, GSE169687 and PRJNA1184005 here (train_only: true) when they are enabled in the primary config.
   # ---- test: acute hospital draws with later LC outcome ----
   - {study_id: GSE215865,      matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
     # Labels from scripts/build_cohort_meta.py (step 4 rule): Long_COVID 1 + COVID positive = LC (302 subjects), 0 + positive = COVID_recovered (122);
