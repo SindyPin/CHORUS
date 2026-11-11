@@ -39,6 +39,7 @@ import pandas as pd
 import yaml
 
 from .eval import LosoConfig, run_loso, run_within_study_cv, summarise
+from .eval.loso import selector_label
 from .features.priors import load_gene_list
 from .harmonise.transcriptomics import filter_low_counts, select_tissue, to_continuous
 from .io import Cohort, CohortSet
@@ -91,6 +92,7 @@ def load_config(path: str) -> tuple:
     b = dict(cfg.get("benchmark", {}))
     for s in b.get("selectors", []):
         if s.get("name") == "prior" and isinstance(s.get("genes"), str):
+            s.setdefault("label", selector_label(s))  # keeps the list name once the path is replaced by the genes
             s["genes"] = load_gene_list(s["genes"])
     lc = LosoConfig(**b)
     return cs, lc, cfg

@@ -210,7 +210,8 @@ SELECTORS = {
 }
 
 
-def make_selector(name: str, **kwargs) -> BaseSelector:
+def make_selector(name: str, label: str | None = None, **kwargs) -> BaseSelector:
+    """``label`` only names the configuration in results (see ``chorus.eval.loso.selector_label``)."""
     if name not in SELECTORS:
         raise KeyError(f"unknown selector {name}; choose from {sorted(SELECTORS)}")
     return SELECTORS[name](**kwargs)

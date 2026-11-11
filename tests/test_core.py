@@ -194,3 +194,23 @@ def test_taco_without_tabpfn_when_disabled(monkeypatch):
     monkeypatch.setenv("CHORUS_DISABLE_TABPFN", "1")
     clf = make_classifier("taco", 0)
     assert [n for n, _ in clf.estimators] == ["rf", "extratrees", "svc", "mlp"]
+
+
+def test_prior_selectors_keep_distinct_labels(sim, tmp_path):
+    cs = sim
+    X = cs.pooled()[0]
+    a, b = tmp_path / "list_a.txt", tmp_path / "list_b.txt"
+    a.write_text("\n".join(X.columns[:15]) + "\n")
+    b.write_text("\n".join(X.columns[15:25]) + "\n")
+    sels = [{"name": "prior", "genes": str(a), "mode": "prior_only"}, {"name": "prior", "genes": str(a), "mode": "union", "k": 20},
+            {"name": "prior", "genes": str(b), "mode": "union", "k": 20}]
+    from chorus.eval.loso import selector_label
+    from chorus.features.priors import load_gene_list
+
+    sels = [{**c, "label": selector_label(c), "genes": load_gene_list(c["genes"])} for c in sels]  # as chorus.cli does
+    cfg = LosoConfig(harmonisers=["identity"], selectors=sels, classifiers=["logreg"], n_boot=10)
+    res, _, selected = run_loso(cs, cfg, verbose=False)
+    labels = {"prior:list_a:prior_only", "prior:list_a:union:k20", "prior:list_b:union:k20"}
+    assert set(res["selector"]) == labels
+    assert {k[2] for k in selected} == labels
+    assert (summarise(res)["n_studies"] == len(cs.study_ids)).all()

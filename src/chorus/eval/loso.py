@@ -20,6 +20,7 @@ selector and classifier, so the report can show the optimism gap (Bernau et al. 
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
@@ -108,6 +109,17 @@ def _inner_select_harmoniser(cands: List[str], X_tr, s_tr, y_tr, selector_cfg: D
     return best, means
 
 
+def selector_label(sel_cfg: Dict) -> str:
+    """Name a selector configuration in the results; prior selectors carry their gene list and mode,
+    so that several prior configurations in one grid stay distinct. An explicit ``label`` wins."""
+    if sel_cfg.get("label"):
+        return sel_cfg["label"]
+    if sel_cfg["name"] != "prior" or not isinstance(sel_cfg.get("genes"), (str, Path)):
+        return sel_cfg["name"]
+    label = f"prior:{Path(sel_cfg['genes']).stem}:{sel_cfg.get('mode', 'prior_only')}"
+    return label + (f":k{sel_cfg['k']}" if sel_cfg.get("mode", "prior_only") != "prior_only" and "k" in sel_cfg else "")
+
+
 def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None, verbose: bool = True) -> Tuple[pd.DataFrame, pd.DataFrame, Dict]:
     """Run the benchmark. Returns (results, predictions, selected_features)."""
     X_all, M_all = cs.pooled(features)
@@ -146,11 +158,11 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                     Xh_tr, Xh_te, leak = _fit_harmoniser(chosen, X_tr, s_tr, y_tr, X_te, s_te, protect_tr)
                     sel = make_selector(**sel_cfg).fit(Xh_tr, y_tr, s_tr)
                 except Exception as e:  # keep the benchmark running, record the failure
-                    rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": sel_cfg["name"], "classifier": None, "error": str(e)[:200]})
+                    rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": selector_label(sel_cfg), "classifier": None, "error": str(e)[:200]})
                     continue
                 Xs_tr = pd.concat([sel.transform(Xh_tr), cov_all.loc[X_tr.index]], axis=1)
                 Xs_te = pd.concat([sel.transform(Xh_te), cov_all.loc[X_te.index]], axis=1)
-                selected[(held_out, h, sel_cfg["name"])] = list(sel.selected_)
+                selected[(held_out, h, selector_label(sel_cfg))] = list(sel.selected_)
                 # concordance of the held out cohort with the training environments (diagnostic, uses held out labels only here)
                 tbl = getattr(sel, "table_", None)
                 if tbl is None:
@@ -165,7 +177,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             clf.fit(Xs_tr, y_tr)
                         p = clf.predict_proba(Xs_te)[:, 1]
                     except Exception as e:
-                        rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": sel_cfg["name"], "classifier": clf_name, "error": str(e)[:200]})
+                        rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": selector_label(sel_cfg), "classifier": clf_name, "error": str(e)[:200]})
                         continue
                     m = binary_metrics(y_te := y_all[te].values, p)
                     est, lo, hi = bootstrap_ci(y_te, p, n_boot=cfg.n_boot, seed=cfg.random_state)
@@ -175,7 +187,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "harmoniser": h,
                             "harmoniser_chosen": chosen,
                             "leak_risk": leak,
-                            "selector": sel_cfg["name"],
+                            "selector": selector_label(sel_cfg),
                             "n_features": Xs_tr.shape[1],
                             "n_strict_invariant": getattr(sel, "n_strict_", np.nan),
                             "sign_agreement": conc["sign_agreement"],
@@ -190,9 +202,9 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "seconds": round(time.time() - t0, 1),
                         }
                     )
-                    preds.append(pd.DataFrame({"sample": X_te.index, "held_out": held_out, "harmoniser": h, "selector": sel_cfg["name"], "classifier": clf_name, "y": y_te, "p": p}))
+                    preds.append(pd.DataFrame({"sample": X_te.index, "held_out": held_out, "harmoniser": h, "selector": selector_label(sel_cfg), "classifier": clf_name, "y": y_te, "p": p}))
                     if verbose:
-                        print(f"[{held_out}] {h:>13} | {sel_cfg['name']:>12} | {clf_name:>11} | AUROC {m['auroc']:.3f} ({lo:.2f} to {hi:.2f})")
+                        print(f"[{held_out}] {h:>13} | {selector_label(sel_cfg):>12} | {clf_name:>11} | AUROC {m['auroc']:.3f} ({lo:.2f} to {hi:.2f})")
     results = pd.DataFrame(rows)
     predictions = pd.concat(preds, ignore_index=True) if preds else pd.DataFrame()
     return results, predictions, selected
@@ -235,7 +247,7 @@ def run_within_study_cv(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.In
                 if not ok:
                     continue
                 mt = binary_metrics(y.values, p)
-                rows.append({"study": sid, "selector": sel_cfg["name"], "classifier": clf_name, **mt})
+                rows.append({"study": sid, "selector": selector_label(sel_cfg), "classifier": clf_name, **mt})
     return pd.DataFrame(rows)
 
 
