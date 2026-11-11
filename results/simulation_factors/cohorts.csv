@@ -1,0 +1,7 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,matrix,accession
+S1,bulk_rna,176,2000,84,92,0,whole_blood,simulated
+S2,bulk_rna,141,2000,63,78,0,whole_blood,simulated
+S3,bulk_rna,121,2000,63,58,0,whole_blood,simulated
+S4,bulk_rna,83,2000,58,25,0,whole_blood,simulated
+S5,bulk_rna,89,2000,61,28,0,whole_blood,simulated
+S6,bulk_rna,46,2000,20,26,0,whole_blood,simulated

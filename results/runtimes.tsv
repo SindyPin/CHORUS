@@ -1,0 +1,6 @@
+run	config_or_command	venv	start	end	seconds	exit
+simulation_factors	scripts/simulation_benchmark.py --out results/simulation_factors 	~/.venvs/chorus-arm64	2026-11-11 09:09:10	2026-11-11 09:13:01	231	0
+simulation_shifts_only	scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0	~/.venvs/chorus-arm64	2026-11-11 09:13:14	2026-11-11 09:19:01	346	0
+lc_transcriptomics_blood	chorus run configs/lc_transcriptomics_blood.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:19:36	2026-11-12 09:37:09	1053	0
+lc_transcriptomics_blood_noGSE270045	chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:37:09	2026-11-12 09:50:34	805	0
+lc_acute_transfer	chorus run configs/lc_acute_transfer.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:50:34	2026-11-12 09:54:25	231	0
