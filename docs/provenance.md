@@ -59,7 +59,20 @@
   mitochondrial reads. In the first sample (GSM7027478, 52.5% mapped), 58% of the quantified reads were on chrM
   transcripts, against 4.5% in the second.
 
-QC summary: _filled in when the run completes._
+**QC summary (all 36 runs, 12 November 2026).**
+- 36 of 36 runs quantified; no run failed. Library type `IU` in all 36.
+- Gene matrix: 78,277 genes x 36 samples.
+- Mapping rate: cohort median 81.57%, MAD 1.77 (raw), so the MAD lower bound is 77.13%. No sample is below 40%.
+- Mitochondrial fraction: median 0.045 (range 0.027 to 0.580).
+- Flagged (more than 2.5 MAD below the median), all kept in the benchmark:
+
+  | sample | mapping rate (%) | mitochondrial fraction | processed fragments |
+  |---|---|---|---|
+  | GSM7027478 | 52.53 | 0.580 | 28,651,080 |
+  | GSM7027490 | 59.07 | 0.457 | 16,969,427 |
+  | GSM7027501 | 56.84 | 0.052 | 76,655,739 |
+- Two downloads needed a retry (SRR23348807: an incomplete byte range; SRR23348806: an md5 mismatch); both passed the md5
+  check on the next attempt.
 
 ## Environments
 
