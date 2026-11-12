@@ -364,3 +364,20 @@ def test_concordance_effects_and_spearman():
     ann = conc.cohort_annotation(M).set_index("study_id")
     assert ann.loc["A", "case_definition"] == "WHO_2021" and ann.loc["A", "control_type"] == "COVID_recovered"
     assert ann.loc["A", "time_anchor"] == "positive_test" and ann.loc["A", "n_LC"] == 20
+
+
+def test_enrichment_hypergeometric_and_mapping():
+    from scipy import stats
+
+    enr = _load_script("enrichment")
+    universe = [f"G{i}" for i in range(100)]
+    selected = universe[:10] + ["NOT_IN_UNIVERSE"]
+    gene_list = universe[5:15] + ["ALSO_OUT"]
+    r = enr.hypergeom_enrichment(selected, gene_list, universe)
+    assert (r["universe"], r["list_in_universe"], r["n_selected"], r["overlap"]) == (100, 10, 10, 5)
+    assert np.isclose(r["expected"], 1.0) and np.isclose(r["fold_enrichment"], 5.0)
+    assert np.isclose(r["p_hypergeom"], stats.hypergeom.sf(4, 100, 10, 10))
+    q = enr.bh(pd.Series([0.01, 0.04, 0.03, np.nan]))
+    assert np.allclose(q.iloc[:3], [0.03, 0.04, 0.04]) and np.isnan(q.iloc[3])
+    hgnc = pd.DataFrame({"symbol": ["C1QA", "C4A", "X"], "ensembl_gene_id": ["ENSG1", "ENSG2", "ENSG3"], "uniprot_ids": ["P02745", "P0C0L4|P0C0L5", np.nan]})
+    assert enr.uniprot_to_ensembl(["P0C0L4", "P02745", "Q99999"], hgnc) == ["ENSG1", "ENSG2"]
