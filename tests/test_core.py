@@ -281,3 +281,48 @@ def test_sex_chromosome_genes_include_pseudoautosomal(tmp_path):
     ch = gene_chromosomes(p)
     assert ch["ENSG03"] == "chrX,chrY"
     assert sex_chromosome_genes(ch, ["ENSG01", "ENSG02", "ENSG03", "ENSG04", "ENSG99"]) == ["ENSG02", "ENSG03", "ENSG04"]
+
+
+def test_harmonisation_metrics_on_shifted_studies():
+    from chorus.eval.harmonisation import MARKERS, harmonisation_table
+    from chorus.sex import RPS4Y1, XIST
+
+    cs = simulate_cohorts(n_studies=3, n_per_study=[40, 50, 60], n_features=120, n_causal=10, n_shortcut=10, seed=3)
+    X, M = cs.pooled()
+    y, s = binary_label(M), M["study_id"]
+    rng = np.random.default_rng(0)
+    female = pd.Series(rng.random(len(X)) < 0.5, index=X.index)
+    X[XIST] = np.where(female, 6.0, -3.0) + rng.normal(0, 0.3, len(X)) + s.map({"S1": 0.0, "S2": 2.0, "S3": -1.0}).values
+    X[RPS4Y1] = np.where(female, -4.0, 7.0) + rng.normal(0, 0.3, len(X))
+    neut = list(MARKERS["neutrophil"].values())
+    base = rng.normal(size=len(X))
+    for g in neut:
+        X[g] = base + rng.normal(0, 0.2, len(X))
+    feats = [c for c in X.columns if c.startswith("g") or c.startswith("f") or c not in [XIST, RPS4Y1] + neut]
+    sex = pd.Series(np.where(female, "female", "male"), index=X.index)
+    Xa = make_harmoniser("center_scale").fit(X, s).transform(X, s)
+    t = harmonisation_table(X, Xa, s, y, feats, sex=sex, n_pcs=10, k=10).set_index(["metric", "scope"])
+    assert t.loc[("silhouette_study", "pool"), "after"] < t.loc[("silhouette_study", "pool"), "before"]
+    assert t.loc[("knn_other_study", "pool"), "after"] > t.loc[("knn_other_study", "pool"), "before"]
+    # a per study affine map per gene leaves the within study effect unchanged
+    assert np.isclose(t.loc[("lc_effect_spearman", "mean_over_studies"), "before_vs_after"], 1.0)
+    assert t.loc[("sex_auroc_XIST", "pool"), "after"] > 0.99 and t.loc[("sex_auroc_RPS4Y1", "pool"), "before"] > 0.99
+    assert t.loc[("marker_score_spearman_neutrophil", "pool"), "n_genes"] == len(neut)
+    ident = harmonisation_table(X, X, s, y, feats, sex=sex, n_pcs=10, k=10).set_index(["metric", "scope"])
+    assert np.isclose(ident.loc[("marker_score_spearman_neutrophil", "pool"), "before_vs_after"], 1.0)
+    assert np.isclose(ident.loc[("silhouette_study", "pool"), "before"], ident.loc[("silhouette_study", "pool"), "after"])
+
+
+def test_harmonisation_diagnostics_write_one_table_per_fold_and_harmoniser(sim, tmp_path):
+    from chorus.eval.harmonisation import run_harmonisation_diagnostics
+
+    cfg = LosoConfig(harmonisers=["identity", "center_scale"])
+    feats = list(sim.cohorts[0].features[:150])
+    res = run_harmonisation_diagnostics(sim, cfg, feats, out=tmp_path, n_pcs=10, k=10, verbose=False)
+    folds = sorted(res["held_out"].unique())
+    assert len(folds) == len(sim.study_ids)
+    for f in folds:
+        for h in cfg.harmonisers:
+            assert (tmp_path / f / f"{h}.csv").exists()
+    assert (tmp_path / "all_metrics.csv").exists()
+    assert "error" not in set(res["family"])

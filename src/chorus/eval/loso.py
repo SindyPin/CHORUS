@@ -71,19 +71,25 @@ def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame
     return pd.DataFrame(cols, index=meta.index)
 
 
-def _fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame]):
+def fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame]):
+    """Fit a harmoniser as the benchmark does: on the training studies (labels where the
+    operator uses them), or on training plus held-out samples without labels for a
+    transductive operator. Returns (fitted harmoniser, leak_risk)."""
     kwargs = {}
     if name == "combat_addon" and protect_df is not None and protect_df.shape[1] > 0:
         kwargs["protect"] = protect_df
     H = make_harmoniser(name, **kwargs)
     if getattr(H, "transductive", False):
-        X_all = pd.concat([X_tr, X_te])
-        s_all = pd.concat([s_tr, s_te])
-        H.fit(X_all, s_all)
-        return H.transform(X_tr, s_tr), H.transform(X_te, s_te), True
+        H.fit(pd.concat([X_tr, X_te]), pd.concat([s_tr, s_te]))
+        return H, True
     y_fit = y_tr if getattr(H, "requires_y", False) or name == "combat_addon" else None
     H.fit(X_tr, s_tr, y_fit)
-    return H.transform(X_tr, s_tr), H.transform(X_te, s_te), False
+    return H, False
+
+
+def _fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame]):
+    H, leak = fit_harmoniser(name, X_tr, s_tr, y_tr, X_te, s_te, protect_df)
+    return H.transform(X_tr, s_tr), H.transform(X_te, s_te), leak
 
 
 def _inner_select_harmoniser(cands: List[str], X_tr, s_tr, y_tr, selector_cfg: Dict, cfg: LosoConfig, protect_df) -> Tuple[str, Dict[str, float]]:

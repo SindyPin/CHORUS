@@ -3,6 +3,7 @@
   chorus simulate --out sim/ [--n-studies 6]
   chorus run config.yaml
   chorus summarise results.csv
+  chorus harmonisation config.yaml --out results/<name>_harmonisation
 
 A config file lists cohorts (matrix, metadata, layer, is_counts) and the benchmark grid:
 
@@ -59,7 +60,11 @@ def _cmd_simulate(a):
     print(f"wrote {len(cs.cohorts)} simulated cohorts and {out/'config.yaml'}")
 
 
-def load_config(path: str) -> tuple:
+def load_config(path: str, extra_features=()) -> tuple:
+    """Load the cohorts and benchmark grid of a config. ``extra_features`` are kept after the
+    expression filter when at least one cohort's matrix has them, as NaN in the cohorts without
+    them (for diagnostics on marker genes; pass ``features`` explicitly to pooled views). The
+    filtered gene set itself is returned as ``cfg["filtered_features"]``."""
     cfg = yaml.safe_load(Path(path).read_text())
     cohorts = []
     for c in cfg["cohorts"]:
@@ -88,7 +93,9 @@ def load_config(path: str) -> tuple:
     if pre.get("deduplicate", True):
         cs = cs.deduplicate_subjects()
     feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5))
-    cs = to_continuous(cs, feats)
+    cfg["filtered_features"] = list(feats)
+    extra = [g for g in extra_features if g not in set(feats) and any(g in c.features for c in cs.cohorts)]
+    cs = to_continuous(cs, feats.append(pd.Index(extra)))
     b = dict(cfg.get("benchmark", {}))
     for s in b.get("selectors", []):
         if s.get("name") == "prior" and isinstance(s.get("genes"), str):
@@ -120,6 +127,15 @@ def _cmd_run(a):
         print(w.groupby(["selector", "classifier"])[["auroc", "auroc_pooled"]].mean().to_string())
 
 
+def _cmd_harmonisation(a):
+    from .eval.harmonisation import diagnostic_genes, run_harmonisation_diagnostics
+
+    cs, lc, cfg = load_config(a.config, extra_features=diagnostic_genes())
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    run_harmonisation_diagnostics(cs, lc, cfg["filtered_features"], extra=diagnostic_genes(), out=out, n_pcs=a.n_pcs, k=a.k)
+
+
 def _cmd_summarise(a):
     r = pd.read_csv(a.results)
     print(summarise(r).to_string())
@@ -140,6 +156,12 @@ def main(argv=None):
     r.add_argument("--n-repeats", type=int, default=10, help="repeats of the stratified 5-fold within-study CV")
     r.add_argument("--out", help="output folder (default: out in the config)")
     r.set_defaults(func=_cmd_run)
+    d = sub.add_parser("harmonisation", help="mixing and conservation metrics of each harmoniser on every LOSO training pool")
+    d.add_argument("config")
+    d.add_argument("--out", required=True)
+    d.add_argument("--n-pcs", type=int, default=50)
+    d.add_argument("--k", type=int, default=20, help="nearest neighbours for the mixing fraction")
+    d.set_defaults(func=_cmd_harmonisation)
     m = sub.add_parser("summarise")
     m.add_argument("results")
     m.set_defaults(func=_cmd_summarise)
