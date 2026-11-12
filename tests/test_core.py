@@ -326,3 +326,41 @@ def test_harmonisation_diagnostics_write_one_table_per_fold_and_harmoniser(sim, 
             assert (tmp_path / f / f"{h}.csv").exists()
     assert (tmp_path / "all_metrics.csv").exists()
     assert "error" not in set(res["family"])
+
+def _load_script(name):
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[1] / "scripts" / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_concordance_effects_and_spearman():
+    conc = _load_script("concordance")
+    rng = np.random.default_rng(0)
+    genes = [f"g{j}" for j in range(300)]
+    effect = np.r_[np.linspace(3.0, 1.0, 30), np.zeros(270)]  # graded, so ranks within the top genes carry signal
+    Xs, Ms = [], []
+    for sid, sign in [("A", 1), ("B", 1), ("C", -1)]:
+        n = 40
+        y = np.r_[np.ones(n // 2), np.zeros(n // 2)]
+        X = rng.normal(size=(n, 300)) + sign * np.outer(y, effect)
+        idx = [f"{sid}{i}" for i in range(n)]
+        Xs.append(pd.DataFrame(X, index=idx, columns=genes))
+        Ms.append(pd.DataFrame({"study_id": sid, "lc_status": np.where(y == 1, "LC", "COVID_recovered"), "case_definition": "WHO_2021",
+                                "sample_matrix": "PBMC", "time_anchor": "positive_test", "days_since_infection": 120}, index=idx))
+    X, M = pd.concat(Xs), pd.concat(Ms)
+    eff = conc.cohort_effects(X, M)
+    assert list(eff.columns) == ["A", "B", "C"]
+    r, p = conc.spearman_matrix(eff)
+    assert r.loc["A", "B"] > 0.2 and r.loc["A", "C"] < -0.2 and np.allclose(np.diag(r), 1.0)
+    top = conc.strongest_genes(eff, 30)
+    assert len(set(top.index) & set(genes[:30])) >= 27
+    rt, _ = conc.spearman_matrix(eff.loc[top.index])
+    assert rt.loc["A", "B"] > r.loc["A", "B"]
+    ann = conc.cohort_annotation(M).set_index("study_id")
+    assert ann.loc["A", "case_definition"] == "WHO_2021" and ann.loc["A", "control_type"] == "COVID_recovered"
+    assert ann.loc["A", "time_anchor"] == "positive_test" and ann.loc["A", "n_LC"] == 20
