@@ -238,3 +238,46 @@ def test_within_study_cv_per_fold_mean_recovers_planted_signal():
     assert {"auroc_sd", "auroc_pooled", "auroc_pooled_repeat0"} <= set(w.columns)
     null = run_within_study_cv(_single_study(20, 12, shift=0.0, seed=1), cfg, n_splits=5, n_repeats=4).iloc[0]
     assert 0.3 < null["auroc"] < 0.7
+
+
+
+def _sex_logcpm(n_f=20, n_m=12, seed=0):
+    from chorus.sex import RPS4Y1, XIST
+
+    rng = np.random.default_rng(seed)
+    xist = np.r_[rng.normal(6, 0.5, n_f), rng.normal(-3, 0.5, n_m)]
+    rps = np.r_[rng.normal(-4, 0.5, n_f), rng.normal(7, 0.5, n_m)]
+    idx = [f"F{i}" for i in range(n_f)] + [f"M{i}" for i in range(n_m)]
+    return pd.DataFrame({XIST: xist, RPS4Y1: rps, "ENSG_OTHER": rng.normal(size=n_f + n_m)}, index=idx)
+
+
+def test_infer_sex_splits_two_components_and_flags_outliers():
+    from chorus.sex import RPS4Y1, XIST, infer_sex
+
+    L = _sex_logcpm()
+    L.loc["odd"] = {XIST: -0.2, RPS4Y1: -0.4, "ENSG_OTHER": 0.0}  # neither XIST nor RPS4Y1, as GSM7069947
+    t = infer_sex(L)
+    assert (t.loc[[i for i in L.index if i.startswith("F")], "inferred_sex"] == "female").all()
+    assert (t.loc[[i for i in L.index if i.startswith("M")], "inferred_sex"] == "male").all()
+    assert t.loc["odd", "inferred_sex"] == "ambiguous" and t.loc["odd", "reason"] == "outlier"
+    assert (t["inferred_sex_method"] == "gmm2:XIST+RPS4Y1").all()
+    # without an XIST row the split uses RPS4Y1 alone and says so
+    t1 = infer_sex(_sex_logcpm().drop(columns=XIST))
+    assert (t1["inferred_sex"] == np.where(t1.index.str.startswith("F"), "female", "male")).all()
+    assert t1["inferred_sex_method"].str.startswith("gmm2:RPS4Y1").all()
+
+
+def test_sex_chromosome_genes_include_pseudoautosomal(tmp_path):
+    from chorus.sex import gene_chromosomes, sex_chromosome_genes
+
+    p = tmp_path / "tx2gene.tsv"
+    pd.DataFrame(
+        {
+            "transcript_id": ["T1", "T2", "T3", "T4", "T5"],
+            "gene_id": ["ENSG01.3", "ENSG02.1", "ENSG03.2", "ENSG03.2_PAR_Y", "ENSG04.1"],
+            "chrom": ["chr1", "chrX", "chrX", "chrY", "chrY"],
+        }
+    ).to_csv(p, sep="\t", index=False)
+    ch = gene_chromosomes(p)
+    assert ch["ENSG03"] == "chrX,chrY"
+    assert sex_chromosome_genes(ch, ["ENSG01", "ENSG02", "ENSG03", "ENSG04", "ENSG99"]) == ["ENSG02", "ENSG03", "ENSG04"]

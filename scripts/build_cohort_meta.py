@@ -190,7 +190,13 @@ def main():
         "GSE270045": gse270045(geo["GSE270045"]),
         "GSE215865": gse215865(geo["GSE215865"], pd.read_csv(a.taco, usecols=["Subject_ID", "Long_COVID"])),
     }
+    inferred = d / "inferred_sex.csv"  # written by scripts/infer_sex.py; kept when the tables are rebuilt
+    inferred = pd.read_csv(inferred) if inferred.exists() else None
     for sid, df in built.items():
+        if inferred is not None:
+            m = inferred[inferred["study_id"] == sid].set_index("sample_id")
+            df["inferred_sex"] = df["sample_id"].map(m["inferred_sex"])
+            df["inferred_sex_method"] = df["sample_id"].map(m["provenance"])
         df.to_csv(d / f"{sid}_meta.csv", index=False)
         print(f"{sid}: {len(df)} samples, {df['subject_id'].nunique()} subjects; lc_status {df['lc_status'].value_counts().to_dict()}")
 

@@ -34,6 +34,7 @@ CASE_DEFINITIONS = {
 TIME_ANCHORS = {"symptom_onset", "positive_test", "admission", "discharge", "unknown"}
 SEVERITY_BANDS = {"ambulatory", "hospitalised_no_oxygen", "hospitalised_oxygen", "icu_or_ventilated", "unknown"}
 SEX = {"female", "male", "other", "unknown"}
+INFERRED_SEX = {"female", "male", "ambiguous"}  # from XIST and RPS4Y1 expression (chorus.sex)
 MATRIX = {"plasma", "serum", "whole_blood", "PBMC", "saliva", "urine", "BAL", "CSF", "other"}
 VARIANT_ERA = {"pre_alpha", "alpha", "delta", "omicron", "mixed", "unknown"}
 LAYERS = {"bulk_rna", "sc_rna", "olink", "ms_proteomics", "metabolomics", "dnam", "genomics", "other"}
@@ -62,6 +63,8 @@ class ClinicalSchema:
             "hospitalised",
             "age",
             "sex",
+            "inferred_sex",
+            "inferred_sex_method",
             "bmi",
             "vaccinated_before_infection",
             "variant_era",
@@ -81,6 +84,7 @@ class ClinicalSchema:
             "time_anchor": TIME_ANCHORS,
             "acute_severity": SEVERITY_BANDS,
             "sex": SEX,
+            "inferred_sex": INFERRED_SEX,
             "sample_matrix": MATRIX,
             "variant_era": VARIANT_ERA,
             "omics_layer": LAYERS,
