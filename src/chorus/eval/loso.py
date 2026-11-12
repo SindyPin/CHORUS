@@ -210,45 +210,70 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
     return results, predictions, selected
 
 
-def run_within_study_cv(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None, n_splits: int = 5) -> pd.DataFrame:
-    """Internal stratified CV per study with the same selectors and classifiers (optimism reference)."""
+def run_within_study_cv(
+    cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None, n_splits: int = 5, n_repeats: int = 10, return_folds: bool = False
+):
+    """Internal repeated stratified CV per study with the same selectors and classifiers (optimism reference).
+
+    Metrics are computed on each test fold and averaged over the ``n_splits x n_repeats`` folds
+    (``auroc`` and the other metric columns; ``auroc_sd`` is their spread). Pooling out of fold
+    predictions across folds and computing one AUROC can fall below 0.5 in small studies, because
+    each fold's model has its own score scale and the fold prevalence shifts; that pooled value is
+    kept for comparison as ``auroc_pooled`` (mean over repeats) and ``auroc_pooled_repeat0`` (the
+    first repeat, which uses the same split as the earlier single run). Repeat r uses the split
+    seed ``random_state + r``. With ``return_folds`` the per fold table is returned as well.
+    """
     X_all, M_all = cs.pooled(features)
     y_all = binary_label(M_all, cfg.positive, cfg.negative)
     s_all = M_all["study_id"].astype(str)
     cov_all = _covariate_matrix(M_all, cfg.covariates)
-    rows = []
+    metric_cols = ["auroc", "auprc", "balanced_accuracy", "f1", "mcc", "brier", "ece"]
+    rows, folds = [], []
     for sid in cs.study_ids:
         m = (s_all == sid) & y_all.notna()
         X, y, s = X_all[m], y_all[m], s_all[m]
         if (y == 1).sum() < n_splits or (y == 0).sum() < n_splits:
             continue
-        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=cfg.random_state)
         for sel_cfg in cfg.selectors:
+            # within one study there is a single environment; invariant falls back to differential
+            sc = {"name": "differential", "k": sel_cfg.get("k", 200)} if sel_cfg["name"] == "invariant" else dict(sel_cfg)
             for clf_name in cfg.classifiers:
                 if clf_name == "cross_study":
                     continue
-                p = np.zeros(len(y))
-                ok = True
-                for tr_i, te_i in skf.split(X, y):
-                    try:
-                        sel_name = sel_cfg["name"]
-                        # within one study there is a single environment; invariant falls back to differential
-                        sc = dict(sel_cfg)
-                        if sel_name == "invariant":
-                            sc = {"name": "differential", "k": sel_cfg.get("k", 200)}
-                        sel = make_selector(**sc).fit(X.iloc[tr_i], y.iloc[tr_i], s.iloc[tr_i])
-                        Xtr = pd.concat([sel.transform(X.iloc[tr_i]), cov_all.loc[X.index[tr_i]]], axis=1)
-                        Xte = pd.concat([sel.transform(X.iloc[te_i]), cov_all.loc[X.index[te_i]]], axis=1)
-                        clf = make_classifier(clf_name, cfg.random_state).fit(Xtr, y.iloc[tr_i])
-                        p[te_i] = clf.predict_proba(Xte)[:, 1]
-                    except Exception:
-                        ok = False
-                        break
-                if not ok:
+                fold_rows, pooled, n_failed = [], {}, 0
+                for r in range(n_repeats):
+                    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=cfg.random_state + r)
+                    p = np.full(len(y), np.nan)
+                    for k, (tr_i, te_i) in enumerate(skf.split(X, y)):
+                        try:
+                            sel = make_selector(**sc).fit(X.iloc[tr_i], y.iloc[tr_i], s.iloc[tr_i])
+                            Xtr = pd.concat([sel.transform(X.iloc[tr_i]), cov_all.loc[X.index[tr_i]]], axis=1)
+                            Xte = pd.concat([sel.transform(X.iloc[te_i]), cov_all.loc[X.index[te_i]]], axis=1)
+                            clf = make_classifier(clf_name, cfg.random_state).fit(Xtr, y.iloc[tr_i])
+                            p[te_i] = clf.predict_proba(Xte)[:, 1]
+                        except Exception:
+                            n_failed += 1
+                            continue
+                        fm = binary_metrics(y.values[te_i], p[te_i])
+                        fold_rows.append({"study": sid, "selector": selector_label(sel_cfg), "classifier": clf_name, "repeat": r, "fold": k, **fm})
+                    ok = ~np.isnan(p)
+                    if ok.all():
+                        pooled[r] = roc_auc_score(y.values, p)
+                if not fold_rows:
                     continue
-                mt = binary_metrics(y.values, p)
-                rows.append({"study": sid, "selector": selector_label(sel_cfg), "classifier": clf_name, **mt})
-    return pd.DataFrame(rows)
+                f = pd.DataFrame(fold_rows)
+                folds.append(f)
+                row = {"study": sid, "selector": selector_label(sel_cfg), "classifier": clf_name}
+                row.update({c: float(f[c].mean()) for c in metric_cols})
+                row["auroc_sd"] = float(f["auroc"].std(ddof=1)) if len(f) > 1 else np.nan
+                row["auroc_pooled"] = float(np.mean(list(pooled.values()))) if pooled else np.nan
+                row["auroc_pooled_repeat0"] = float(pooled[0]) if 0 in pooled else np.nan
+                row.update({"n": int(len(y)), "prevalence": float(y.mean()), "n_folds": int(len(f)), "n_failed_folds": n_failed, "n_splits": n_splits, "n_repeats": n_repeats})
+                rows.append(row)
+    out = pd.DataFrame(rows)
+    if return_folds:
+        return out, (pd.concat(folds, ignore_index=True) if folds else pd.DataFrame())
+    return out
 
 
 def summarise(results: pd.DataFrame, by: Tuple[str, ...] = ("harmoniser", "selector", "classifier")) -> pd.DataFrame:

@@ -100,22 +100,24 @@ def load_config(path: str) -> tuple:
 
 def _cmd_run(a):
     cs, lc, cfg = load_config(a.config)
-    out = Path(cfg.get("out", "results"))
+    out = Path(a.out or cfg.get("out", "results"))
     out.mkdir(parents=True, exist_ok=True)
     print(cs.summary().to_string(index=False))
-    results, preds, selected = run_loso(cs, lc)
-    results.to_csv(out / "loso_results.csv", index=False)
-    preds.to_csv(out / "loso_predictions.csv", index=False)
-    (out / "selected_features.json").write_text(json.dumps({"|".join(k): v for k, v in selected.items()}, indent=1))
-    summ = summarise(results)
-    summ.to_csv(out / "loso_summary.csv")
-    print("\nLOSO summary (mean AUROC across held-out studies):")
-    print(summ.head(20).to_string())
-    if a.within:
-        w = run_within_study_cv(cs, lc)
+    if not a.within_only:
+        results, preds, selected = run_loso(cs, lc)
+        results.to_csv(out / "loso_results.csv", index=False)
+        preds.to_csv(out / "loso_predictions.csv", index=False)
+        (out / "selected_features.json").write_text(json.dumps({"|".join(k): v for k, v in selected.items()}, indent=1))
+        summ = summarise(results)
+        summ.to_csv(out / "loso_summary.csv")
+        print("\nLOSO summary (mean AUROC across held-out studies):")
+        print(summ.head(20).to_string())
+    if a.within or a.within_only:
+        w, folds = run_within_study_cv(cs, lc, n_repeats=a.n_repeats, return_folds=True)
         w.to_csv(out / "within_study_cv.csv", index=False)
-        print("\nWithin-study CV AUROC (optimism reference):")
-        print(w.groupby(["selector", "classifier"])["auroc"].mean().to_string())
+        folds.to_csv(out / "within_study_cv_folds.csv", index=False)
+        print(f"\nWithin-study CV AUROC, mean over folds of 5-fold CV x {a.n_repeats} repeats (optimism reference):")
+        print(w.groupby(["selector", "classifier"])[["auroc", "auroc_pooled"]].mean().to_string())
 
 
 def _cmd_summarise(a):
@@ -134,6 +136,9 @@ def main(argv=None):
     r = sub.add_parser("run")
     r.add_argument("config")
     r.add_argument("--within", action="store_true", help="also run within-study CV")
+    r.add_argument("--within-only", action="store_true", help="run within-study CV only, without the leave-one-study-out benchmark")
+    r.add_argument("--n-repeats", type=int, default=10, help="repeats of the stratified 5-fold within-study CV")
+    r.add_argument("--out", help="output folder (default: out in the config)")
     r.set_defaults(func=_cmd_run)
     m = sub.add_parser("summarise")
     m.add_argument("results")

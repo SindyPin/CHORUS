@@ -214,3 +214,27 @@ def test_prior_selectors_keep_distinct_labels(sim, tmp_path):
     assert set(res["selector"]) == labels
     assert {k[2] for k in selected} == labels
     assert (summarise(res)["n_studies"] == len(cs.study_ids)).all()
+
+
+def _single_study(n_pos, n_neg, shift, seed=0):
+    from chorus.io import Cohort, CohortSet
+
+    rng = np.random.default_rng(seed)
+    n = n_pos + n_neg
+    ids = [f"s{i}" for i in range(n)]
+    meta = pd.DataFrame({"sample_id": ids, "subject_id": ids, "study_id": "P", "lc_status": ["LC"] * n_pos + ["COVID_recovered"] * n_neg,
+                         "case_definition": "study_specific", "sample_matrix": "PBMC"}).set_index("sample_id", drop=False)
+    X = pd.DataFrame(rng.normal(size=(n, 200)), index=meta.index, columns=[f"g{j}" for j in range(200)])
+    X.iloc[:n_pos, :10] += shift  # planted signal in the first 10 genes
+    return CohortSet([Cohort("P", "bulk_rna", X, meta)])
+
+
+def test_within_study_cv_per_fold_mean_recovers_planted_signal():
+    cfg = LosoConfig(selectors=[{"name": "differential", "k": 20}], classifiers=["logreg"], n_boot=10)
+    w, folds = run_within_study_cv(_single_study(20, 12, shift=1.5), cfg, n_splits=5, n_repeats=4, return_folds=True)
+    row = w.iloc[0]
+    assert row["n_folds"] == 20 and row["n_failed_folds"] == 0 and len(folds) == 20
+    assert row["auroc"] > 0.9 and np.isclose(row["auroc"], folds["auroc"].mean())
+    assert {"auroc_sd", "auroc_pooled", "auroc_pooled_repeat0"} <= set(w.columns)
+    null = run_within_study_cv(_single_study(20, 12, shift=0.0, seed=1), cfg, n_splits=5, n_repeats=4).iloc[0]
+    assert 0.3 < null["auroc"] < 0.7
