@@ -1,0 +1,6 @@
+study_id,case_definition,control_type,control_case_definition,time_anchor,sample_matrix,n_LC,n_control,other_lc_status,days_LC_median,days_LC_min,days_LC_max,days_control_median,days_control_min,days_control_max
+GSE226260_WB,study_specific,COVID_recovered,study_specific,unknown,whole_blood,17,20,missing,143.0,79.0,833.0,126.0,100.0,368.0
+GSE226260_PBMC,study_specific,COVID_recovered,study_specific,missing,PBMC,28,8,missing,,,,,,
+GSE224615,WHO_2021,COVID_recovered,WHO_2021,unknown,PBMC,23,13,missing,243.0,243.0,243.0,243.0,243.0,243.0
+GSE251849,study_specific,COVID_recovered,study_specific,missing,PBMC,11,5,never_infected,,,,,,
+GSE270045,study_specific,COVID_recovered,study_specific,missing,whole_blood,19,17,missing,,,,,,

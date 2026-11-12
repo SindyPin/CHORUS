@@ -1,9 +1,0 @@
-held_out,harmoniser,harmoniser_chosen,leak_risk,selector,n_features,n_strict_invariant,sign_agreement,effect_spearman,classifier,n_train,n_train_studies,auroc,auprc,balanced_accuracy,f1,mcc,brier,ece,n,prevalence,auroc_lo,auroc_hi,inner_scores,seconds,error
-GSE226260,identity,identity,False,variance,500.0,,,,logreg,95.0,3.0,0.010510510510510516,0.3203848321755771,0.4583333333333333,0.0,-0.20987524639084773,0.5394553546034925,0.5553545010172846,73.0,0.5068493150684932,0.0,0.036092342342342314,,0.5,
-GSE226260,center_scale,center_scale,False,variance,500.0,,,,logreg,95.0,3.0,0.5,0.5068493150684932,0.5,0.6727272727272727,0.0,0.25,0.006849315068493178,73.0,0.5068493150684932,0.5,0.5,,0.5,
-GSE226260,combat_addon,combat_addon,False,variance,500.0,,,,logreg,95.0,3.0,0.09234234234234236,0.3357675484595552,0.5,0.0,0.0,0.504297081376804,0.5013189084522423,73.0,0.5068493150684932,0.021002252252252267,0.18620495495495495,,0.6,
-GSE226260,chorus,chorus,,variance,,,,,,,,,,,,,,,,,,,,,invariance anchored harmonisation needs at least two labelled training studies
-GSE226260,identity,identity,,invariant,,,,,,,,,,,,,,,,,,,,,no study had enough cases and controls for effect estimation
-GSE226260,center_scale,center_scale,,invariant,,,,,,,,,,,,,,,,,,,,,no study had enough cases and controls for effect estimation
-GSE226260,combat_addon,combat_addon,,invariant,,,,,,,,,,,,,,,,,,,,,no study had enough cases and controls for effect estimation
-GSE226260,chorus,chorus,,invariant,,,,,,,,,,,,,,,,,,,,,invariance anchored harmonisation needs at least two labelled training studies

@@ -19,8 +19,10 @@ without the TabPFN base learner**. The simulation runs do not use `taco`.
 ## Runs
 
 Runtimes are wall-clock seconds from `results/runtimes.tsv`, all on the same laptop. The runs of 11 and 12 November were
-made one after another. On 13 November `lc_transcriptomics_blood_within_v2` ran at the same time as the two control runs,
-so the three runtimes overlap.
+made one after another. On 13 November `lc_transcriptomics_blood_within_v2` ran at the same time as the two morning
+control runs (the label permutation and the sample_matrix control removed since), so those runtimes overlap. The later
+13 November runs (from `infer_sex` on) ran one after another. `infer_sex` was run twice with identical output; the
+runtime is that of the second run.
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -30,8 +32,12 @@ so the three runtimes overlap.
 | `simulation_factors` | `scripts/simulation_benchmark.py --out results/simulation_factors` | built into the script | 231 (started 2026-11-11 09:09:10) |
 | `simulation_shifts_only` | `scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0` | built into the script | 346 (started 2026-11-11 09:13:14) |
 | `lc_transcriptomics_blood_within_v2` | `chorus run configs/lc_transcriptomics_blood.yaml --within-only --out results/lc_transcriptomics_blood_within_v2` | configs/lc_transcriptomics_blood.yaml | 1320 (started 2026-11-13 07:05:33) |
-| `control_matrix_label` | `scripts/control_runs.py matrix configs/lc_transcriptomics_blood.yaml --out results/control_matrix_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 49 (started 2026-11-13 07:06:20) |
 | `control_label_permutation` | `scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20` | configs/lc_transcriptomics_blood.yaml, changed by the script | 192 (started 2026-11-13 07:07:17) |
+| `control_sex_label/inferred_sex.csv` | `scripts/infer_sex.py configs/lc_transcriptomics_blood.yaml --copy results/control_sex_label/inferred_sex.csv` | configs/lc_transcriptomics_blood.yaml (raw matrices) | 16 (started 2026-11-13 09:08:07) |
+| `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 84 (started 2026-11-13 08:56:20) |
+| `lc_transcriptomics_blood_harmonisation` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` | configs/lc_transcriptomics_blood.yaml | 100 (started 2026-11-13 09:01:09) |
+| `concordance` | `scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance` | configs/lc_transcriptomics_blood.yaml | 48 (started 2026-11-13 09:03:45) |
+| `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 44 (started 2026-11-13 09:07:08) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (8 harmonisers plus nested selection,
   6 selector configurations, 4 classifiers), with the within-study cross-validation reference.
@@ -45,13 +51,19 @@ so the three runtimes overlap.
 - `lc_transcriptomics_blood_within_v2`: within-study cross-validation only (`--within-only`) for the primary config, with
   the revised method: stratified 5-fold CV repeated 10 times, metrics per fold averaged over the 50 folds, and the pooled
   value kept for comparison. The leave-one-study-out benchmark was not rerun.
-- `control_matrix_label`: positive control. The label is `sample_matrix` (whole_blood positive, PBMC negative). See
-  "Control runs" below.
 - `control_label_permutation`: label permutation control, 20 permutations. See "Control runs" below.
+- `control_sex_label`: positive control with inferred sex as the label, on all filtered genes and without chrX and chrY
+  genes. It replaces the `sample_matrix` control (`control_matrix_label`, removed; it is in git history at commit
+  aad458e). See "Inferred sex" and "Control runs" below.
+- `lc_transcriptomics_blood_harmonisation`: mixing and conservation metrics of every harmoniser on every LOSO training
+  pool of the primary config. See "Harmonisation diagnostics" below.
+- `concordance`: within-cohort LC effects and their pairwise Spearman correlation across cohorts. See "Concordance" below.
+- `enrichment.csv`: enrichment of each fold's invariant genes (from `lc_transcriptomics_blood/selected_features.json`) in
+  the prior gene lists. See "Enrichment" below.
 
 The cohort table each real-data run loaded (samples and labels per study) is printed at the top of its log,
-`results/<folder>.log`. The logs stay local (not committed). Simulation runs and `control_matrix_label` write it to
-`cohorts.csv`.
+`results/<folder>.log`. The logs stay local (not committed). Simulation runs write it to `cohorts.csv`;
+`control_sex_label/cohorts.csv` gives the sex counts per cohort.
 
 **Two versions of within_study_cv.csv.** The `within_study_cv.csv` files in `lc_transcriptomics_blood`,
 `lc_transcriptomics_blood_noGSE270045`, `lc_acute_transfer`, the simulation and smoke folders come from the earlier method:
@@ -69,8 +81,9 @@ selection, 200 bootstrap resamples.
 | lc_transcriptomics_blood | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE251849, GSE270045 | none |
 | lc_transcriptomics_blood_noGSE270045 | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE251849 | none |
 | lc_acute_transfer | GSE215865 | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE251849, GSE270045 |
-| control_matrix_label | GSE226260 (WB and PBMC merged) | GSE224615, GSE251849, GSE270045 |
 | control_label_permutation | as lc_transcriptomics_blood | none |
+| control_sex_label | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE270045 (GSE251849 skipped: 4 males, below 5 per class) | none |
+| lc_transcriptomics_blood_harmonisation | as lc_transcriptomics_blood (training pools of its folds) | none |
 
 ## GSE224615 samples flagged at QC
 
@@ -98,7 +111,13 @@ local.
 - `selected_features.json`: genes selected per held-out study, harmoniser and selector (real-data runs).
 - `within_study_cv_folds.csv`: one row per study, selector, classifier, repeat and fold (`lc_transcriptomics_blood_within_v2`).
 - `permutation_results.csv`, `permutation_summary.csv`: `control_label_permutation` only.
-- `cohorts.csv`: simulation runs and `control_matrix_label`. `figure_simulation.png`: simulation runs only.
+- `cohorts.csv`: simulation runs and `control_sex_label`. `figure_simulation.png`: simulation runs only.
+- `control_sex_label`: `inferred_sex.csv`, `cohorts.csv`, `feature_sets.csv`, `auroc_by_held_out.csv`, and the loso files
+  in `all_genes/` and `no_xy/`.
+- `lc_transcriptomics_blood_harmonisation`: `<held_out>/<harmoniser>.csv` (one table per fold and harmoniser) and
+  `all_metrics.csv` (all of them stacked).
+- `concordance`: `effects.csv`, `spearman_all_genes.csv`, `spearman_all_genes_p.csv`, `spearman_top500.csv`,
+  `spearman_top500_p.csv`, `top500_genes.csv`, `cohort_annotation.csv`.
 
 ## Column glossary
 
@@ -167,23 +186,23 @@ of AUROC over permutations, and `n_permutations`.
 Both use `scripts/control_runs.py` and start from the cohorts, preprocessing and covariates of
 `configs/lc_transcriptomics_blood.yaml`. TabPFN is not involved, because neither control uses `taco`.
 
-**control_matrix_label (positive control).**
-- **Label:** `lc_status` is replaced by `sample_matrix`, with whole_blood positive and PBMC negative.
-- **Held-out study:** GSE226260_WB and GSE226260_PBMC are merged into one held-out study, GSE226260, because a single-matrix
-  cohort would give a one-class test set. The other cohorts (GSE224615, GSE251849, GSE270045) are training only.
+**control_sex_label (positive control).**
+- **Label:** `inferred_sex` (female positive, male negative; see "Inferred sex"), on the samples of the primary contrast
+  (LC or COVID_recovered) after the primary preprocessing. Ambiguous samples are left out (one, GSM7069947).
+- **Counts:** `cohorts.csv`. GSE251849 has 4 males in the contrast and is skipped as a held-out study
+  (`min_test_per_class` 5); it is still used for training.
 - **Grid:** harmonisers identity, center_scale, combat_addon and chorus; selectors variance (k 500) and invariant (k 200);
-  classifier logreg; no nested selection; 1000 bootstrap resamples.
-- **Covariates:** `sample_matrix` is dropped from the covariates and from `protect`, because it is the label.
-- **Training studies hold one class each.** GSE224615 and GSE251849 are PBMC only, and GSE270045 is whole blood only.
-  As a result, in `loso_results.csv`:
-  - 5 of the 8 grid cells failed, and their `error` column says why.
-  - Every invariant cell failed with "no study had enough cases and controls for effect estimation", because the invariant
-    screen needs both classes within a training study.
-  - chorus failed with "invariance anchored harmonisation needs at least two labelled training studies".
-  - center_scale centres and scales each training study separately, which removes between-study differences, here the
-    label difference. All its predictions are equal (AUROC 0.500, interval 0.50 to 0.50).
-- **The merged held-out study differs in more than matrix.** In GSE226260 the matrix goes together with cohort,
-  enrolment period and library chemistry (`docs/gse226260_check.md`).
+  classifier logreg; no nested selection; 1000 bootstrap resamples. Covariates and `protect` are `sample_matrix` as in
+  the primary config.
+- **Two feature sets** (`feature_sets.csv`):
+  - `all_genes`: the 10,442 genes that pass the primary expression filter. These include 320 chrX genes and no chrY
+    gene; XIST and RPS4Y1 are not among them, because the filter requires CPM of at least 1 in half the samples of every
+    cohort.
+  - `no_xy`: the same without chrX and chrY genes (10,122 genes). Chromosomes come from the GENCODE v47 tx2gene table
+    (`data/quant/GSE224615/tx2gene_gencode_v47.tsv`); genes on both chrX and chrY (pseudoautosomal) count as both.
+    Every filtered gene had a chromosome.
+- **auroc_by_held_out.csv**: `feature_set`, `held_out`, `harmoniser`, `selector`, `classifier`, `n_features`, `auroc`,
+  `auroc_lo`, `auroc_hi`, `error`. The full rows are in `all_genes/loso_results.csv` and `no_xy/loso_results.csv`.
 
 **control_label_permutation.**
 - **Permutation:** within each cohort, `lc_status` is permuted among the samples labelled LC or COVID_recovered, so class
@@ -191,3 +210,114 @@ Both use `scripts/control_runs.py` and start from the cohorts, preprocessing and
 - **Benchmark:** the primary leave-one-study-out benchmark with harmonisers identity and chorus, the invariant selector
   (k 200) and logreg. Covariates and `protect` are `sample_matrix` as in the primary config. There is no nested selection.
 - **Repeats:** 20 permutations (seed 0), 1000 bootstrap resamples per fit (the interval columns are not summarised).
+
+## Inferred sex
+
+`scripts/infer_sex.py` (module `chorus.sex`) infers sex inside each cohort of the primary config, on all samples of the
+raw matrix (before one sample per subject and before the expression filter).
+
+- **Input:** log2 CPM of XIST (ENSG00000229807) and RPS4Y1 (ENSG00000129824), library size over all genes, prior count 2.
+- **Split:** a two-component Gaussian mixture (full covariance, `reg_covar` 0.25, 5 initialisations, seed 0). The
+  component with the higher mean XIST minus RPS4Y1 is female.
+- **Ambiguous:** posterior of the assigned component below 0.95 (`low_posterior`), or squared Mahalanobis distance to it
+  above the chi-square 0.999 quantile (`outlier`).
+- **GSE270045:** the author matrix has no XIST row, so the split uses RPS4Y1 alone (lower component female). The method
+  string says so.
+- **Stored:** columns `inferred_sex` and `inferred_sex_method` (method, thresholds, script and date) in
+  `data/meta/<study_id>_meta.csv`, and the per-sample table `data/meta/inferred_sex.csv` (local), copied to
+  `control_sex_label/inferred_sex.csv`. `scripts/build_cohort_meta.py` merges it back when it rebuilds the tables.
+
+| cohort | samples | female | male | ambiguous | genes | agreement with recorded sex |
+|---|---|---|---|---|---|---|
+| GSE226260_WB | 103 | 67 | 36 | 0 | XIST, RPS4Y1 | no recorded sex |
+| GSE226260_PBMC | 86 | 69 | 16 | 1 | XIST, RPS4Y1 | 85 of 85 non-ambiguous |
+| GSE224615 | 36 | 20 | 16 | 0 | XIST, RPS4Y1 | 36 of 36 |
+| GSE251849 | 23 | 18 | 5 | 0 | XIST, RPS4Y1 | no recorded sex |
+| GSE270045 | 36 | 28 | 8 | 0 | RPS4Y1 only | no recorded sex |
+
+- The ambiguous sample is GSM7069947 (GSE226260_PBMC, recorded female): XIST -0.22 and RPS4Y1 -0.36 log2 CPM, squared
+  Mahalanobis distance 35.3. It is the sample with the malformed matrix tail (`docs/gse226260_check.md`).
+- No subject with several samples has different inferred sex across its samples.
+
+**inferred_sex.csv** columns: `study_id`, `sample_id`, `inferred_sex`, `posterior` (of the assigned component),
+`mahalanobis2`, `reason` (empty, `low_posterior` or `outlier`), `xist_logcpm`, `rps4y1_logcpm`, `provenance`,
+`recorded_sex` (the curated `sex` column; empty where not recorded).
+
+## Harmonisation diagnostics
+
+`chorus harmonisation` (module `chorus.eval.harmonisation`) uses the folds of the primary benchmark. For each held-out
+study, the training pool is the labelled (LC or COVID_recovered) samples of the other studies. Each of the 8 harmonisers
+is fitted as in the benchmark: on the training pool with its labels where the operator uses them, and for
+`combat_pooled` on the pool plus the held-out samples without labels. The pool is compared before (log CPM as loaded)
+and after.
+
+- **Genes.** Mixing and LC effect metrics use the 10,442 filtered genes. XIST, RPS4Y1 and the marker genes are added to
+  the harmonised matrix (none of the 10 markers needed adding; XIST and RPS4Y1 did). A gene is added in a fold only
+  when every sample the harmoniser is fitted on has a value. GSE270045 has no XIST row, so XIST enters only the fold
+  where GSE270045 is held out, and not for `combat_pooled` (which also fits on the held-out samples). Column
+  `extra_genes` lists what was added.
+- **Markers.** Neutrophil: FCGR3B, CSF3R, CXCR2, FPR1, MNDA. Lymphocyte: CD3E, CD3D, CD79A, MS4A1, CD2 (the lists in
+  `chorus.harmonise.transcriptomics.composition_covariates`).
+- **Sex labels** are `inferred_sex`; ambiguous samples are left out of the sex metrics.
+
+| metric | family | definition |
+|---|---|---|
+| silhouette_study | technical_mixing | mean silhouette width with study as the label, Euclidean, on the top 50 principal components of the pool after each gene is standardised across the pool |
+| knn_other_study | technical_mixing | mean over samples of the fraction of the 20 nearest neighbours (same space) from another study |
+| knn_other_study_expected_random | technical_mixing | the same fraction under random mixing, mean of (N - n_study) / (N - 1) |
+| lc_effect_spearman | biological_conservation | per training study, Spearman correlation over genes of the within-study Hedges g (LC minus COVID_recovered) before versus after; `mean_over_studies` is their mean |
+| sex_auroc_XIST | biological_conservation | AUROC of XIST for female versus male over the pool |
+| sex_auroc_RPS4Y1 | biological_conservation | AUROC of RPS4Y1 for male versus female over the pool |
+| silhouette_sex | biological_conservation | mean silhouette width by inferred sex on XIST and RPS4Y1 (each standardised across the pool), on those of the two available |
+| marker_score_spearman_neutrophil, marker_score_spearman_lymphocyte | biological_conservation | score = mean over the marker genes of the values standardised across the pool; Spearman correlation of the score before versus after, over the pool and within each study (`mean_over_studies` is the mean of the within-study values) |
+
+**Table columns** (`<held_out>/<harmoniser>.csv` and `all_metrics.csv`): `held_out`, `harmoniser`, `family`, `metric`,
+`scope` (`pool`, a study id or `mean_over_studies`), `before` and `after` (mixing and sex separation), `before_vs_after`
+(LC effect and marker comparisons), `n` (samples, or studies for `mean_over_studies` of lc_effect_spearman), `n_genes`,
+`n_pcs`, `k`, `leak_risk`, `extra_genes`. A failed fit would give one row with `family` = `error` and the message in
+`scope`; there were none.
+
+**Observed behaviour of combat_addon with protect.** In the primary config `protect` is `sample_matrix`, which is
+constant within every cohort. `AddonComBat` regresses each training study on an intercept plus the protected columns and
+the label and takes the intercept as the study location. When a protected column is constant within a study, the
+least-squares solution is not unique, and the minimum-norm intercept `numpy.linalg.lstsq` returns is not the study
+mean. A toy case (two studies of 40 samples, means 0 and 5, protect one-hot by study, `shrink` 0.5) gives study means
+after `combat_addon` of 2.16 and 9.28. Without `protect` they are 2.22 and 2.55. The `combat_addon` rows of every real-data run
+above used `protect: [sample_matrix]`, as do the harmonisation diagnostics. The code was not changed in this round.
+
+## Concordance
+
+`scripts/concordance.py` on the primary config, after its preprocessing (one sample per subject, deduplication).
+
+- **Effect:** inside each cohort, Hedges g of LC minus COVID_recovered per gene on log CPM, over the 10,442 common
+  expressed genes (the genes that pass the expression filter in every cohort).
+- **Correlation:** pairwise Spearman correlation of g between cohorts, over all common genes and over the 500 genes
+  with the largest mean |g| across the five cohorts.
+- **Annotation** (`cohort_annotation.csv`), from the metadata: `case_definition` (of LC samples), `control_type`
+  (`lc_status` of the negative class), `control_case_definition`, `time_anchor` (`missing` when the column is empty),
+  `sample_matrix`, `n_LC`, `n_control`, `other_lc_status` (other statuses present in the cohort and not used), and
+  median, minimum and maximum `days_since_infection` per class (empty when not recorded).
+
+**Files:** `effects.csv` (`gene_id`, `symbol` from the HGNC complete set, one column of g per cohort);
+`spearman_all_genes.csv` and `spearman_top500.csv` (cohort by cohort correlation matrices); `*_p.csv` (two-sided p
+values of the same pairs); `top500_genes.csv` (`gene_id`, `symbol`, `mean_abs_g`).
+
+## Enrichment
+
+`scripts/enrichment.py` takes every `<held_out>|<harmoniser>|invariant` entry of
+`results/lc_transcriptomics_blood/selected_features.json`: 5 folds by 9 harmonisers (including `nested`), 200 genes each.
+
+- **Test:** one-sided hypergeometric (overlap at least as large as observed) over the expressed universe, the 10,442
+  genes that pass the primary expression filter, which is the set the selector chose from. List genes outside the
+  universe are dropped first.
+- **Lists:**
+  - `TACO_411`: `priors/taco_411_dce_genes.txt`, 411 genes, 333 in the universe.
+  - `MRCONTROL_32`: `priors/mrcontrol_32_genes.txt`, 32 genes, 25 in the universe.
+  - `review_complement`: `priors/review_complement_9.txt`. The file holds 11 UniProt accessions (C4A, C4BPB, C5, CFHR1,
+    CFHR5, MBL2, FCN2, MASP2, C1QA, C1QB, C1QC). They map to 11 Ensembl genes through the `uniprot_ids` column of the
+    HGNC complete set, and 2 are in the universe.
+- **q_bh:** Benjamini-Hochberg over all 135 rows.
+
+**enrichment.csv** columns: `held_out`, `harmoniser`, `selector`, `gene_list`, `list_size` (genes after mapping),
+`universe`, `list_in_universe`, `n_selected`, `overlap`, `expected` (n_selected x list_in_universe / universe),
+`fold_enrichment` (overlap / expected), `p_hypergeom`, `q_bh`, `overlap_genes` (symbols).

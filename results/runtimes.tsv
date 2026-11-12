@@ -4,6 +4,10 @@ simulation_shifts_only	scripts/simulation_benchmark.py --out results/simulation_
 lc_transcriptomics_blood	chorus run configs/lc_transcriptomics_blood.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:19:36	2026-11-12 09:37:09	1053	0
 lc_transcriptomics_blood_noGSE270045	chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:37:09	2026-11-12 09:50:34	805	0
 lc_acute_transfer	chorus run configs/lc_acute_transfer.yaml --within	~/.venvs/chorus-arm64	2026-11-12 09:50:34	2026-11-12 09:54:25	231	0
-control_matrix_label	scripts/control_runs.py matrix configs/lc_transcriptomics_blood.yaml --out results/control_matrix_label	~/.venvs/chorus-arm64	2026-11-13 07:06:20	2026-11-13 07:07:09	49	0
 control_label_permutation	scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20	~/.venvs/chorus-arm64	2026-11-13 07:07:17	2026-11-13 07:10:29	192	0
 lc_transcriptomics_blood_within_v2	chorus run configs/lc_transcriptomics_blood.yaml --within-only --out results/lc_transcriptomics_blood_within_v2	~/.venvs/chorus-arm64	2026-11-13 07:05:33	2026-11-13 07:27:33	1320	0
+infer_sex	scripts/infer_sex.py configs/lc_transcriptomics_blood.yaml --copy results/control_sex_label/inferred_sex.csv	~/.venvs/chorus-arm64	2026-11-13 09:08:07	2026-11-13 09:08:23	16	0
+control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label	~/.venvs/chorus-arm64	2026-11-13 08:56:20	2026-11-13 08:57:44	84	0
+lc_transcriptomics_blood_harmonisation	chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation	~/.venvs/chorus-arm64	2026-11-13 09:01:09	2026-11-13 09:02:49	100	0
+concordance	scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance	~/.venvs/chorus-arm64	2026-11-13 09:03:45	2026-11-13 09:04:33	48	0
+enrichment	scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv	~/.venvs/chorus-arm64	2026-11-13 09:07:08	2026-11-13 09:07:52	44	0

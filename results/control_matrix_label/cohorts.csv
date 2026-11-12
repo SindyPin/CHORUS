@@ -1,5 +1,0 @@
-study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,matrix,accession
-GSE226260,bulk_rna,73,10442,0,0,0,"PBMC,whole_blood",GSE226260
-GSE224615,bulk_rna,36,10442,0,0,0,PBMC,GSE224615
-GSE251849,bulk_rna,23,10442,0,0,0,PBMC,GSE251849
-GSE270045,bulk_rna,36,10442,0,0,0,whole_blood,GSE270045
