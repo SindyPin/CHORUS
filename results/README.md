@@ -489,3 +489,19 @@ here `chorus_protected` between `chorus` and `nested`.
 - **Factors chosen by parallel analysis for `chorus_protected` (`n_factors`):** primary benchmark 5 to 9 per fold;
   noGSE270045 4 to 10; acute transfer 5; harmonisation diagnostics 5 to 9.
 - **Not rerun:** `concordance` and `lc_transcriptomics_blood_within_v2` (no harmoniser), and the smoke runs.
+
+## Code changes after version 3 without reruns (14 November 2026)
+
+- **Sex control, forced sex genes (commit efcf77b).**
+  - **Why the rows were equal.** In `control_sex_label`, the `forced_sex_genes` rows equal the `all_genes` rows for the
+    invariant selector only. The forced genes reached the candidate features, but the invariant selector dropped them
+    (I squared 92 to 97 against its limit of 50), so the selected features were the same.
+  - **Variance selector.** With identity, center_scale and combat_addon, the variance selector already kept all 8 forced
+    genes. With chorus and chorus_protected it kept none.
+  - **Fix.** The forced genes present in a fold are now appended to every selector's output (`LosoConfig.forced_features`,
+    result column `n_forced_added`).
+  - **Status.** `control_sex_label` was **not rerun** (no benchmark runs were requested), so its `forced_sex_genes`
+    rows still come from the version 3 code.
+- **Layer adapters (commit b5083c4).** The transcriptomics loader now goes through the `bulk_rna` adapter. The loaded
+  matrices of `configs/lc_transcriptomics_blood.yaml` and `configs/lc_acute_transfer.yaml` were checked to be identical
+  (hash of every cohort matrix) before and after the change.
