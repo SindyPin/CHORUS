@@ -45,16 +45,14 @@ from sklearn.metrics import roc_auc_score, silhouette_samples
 from sklearn.neighbors import NearestNeighbors
 
 from ..features.invariant import per_study_effects
+from ..harmonise.anchored import BLOOD_MARKERS
 from ..io import CohortSet
 from ..schema import binary_label
 from ..sex import RPS4Y1, XIST
 from .loso import LosoConfig, _covariate_matrix, fit_harmoniser
 
 # Ensembl ids of the marker genes in chorus.harmonise.transcriptomics.composition_covariates
-MARKERS: Dict[str, Dict[str, str]] = {
-    "neutrophil": {"FCGR3B": "ENSG00000162747", "CSF3R": "ENSG00000119535", "CXCR2": "ENSG00000180871", "FPR1": "ENSG00000171051", "MNDA": "ENSG00000163563"},
-    "lymphocyte": {"CD3E": "ENSG00000198851", "CD3D": "ENSG00000167286", "CD79A": "ENSG00000105369", "MS4A1": "ENSG00000156738", "CD2": "ENSG00000116824"},
-}
+MARKERS: Dict[str, Dict[str, str]] = BLOOD_MARKERS
 SEX_GENES = {"XIST": XIST, "RPS4Y1": RPS4Y1}
 
 
@@ -236,15 +234,17 @@ def run_harmonisation_diagnostics(
             cols = feats + [g for g in extra if fit_rows[g].notna().all()]
             X_tr, X_te = X_all.loc[tr, cols], X_all.loc[te, cols]
             try:
-                H, leak = fit_harmoniser(h, X_tr, s_all[tr], y_all[tr], X_te, s_all[te], protect_tr)
+                H, leak = fit_harmoniser(h, X_tr, s_all[tr], y_all[tr], X_te, s_all[te], protect_tr, cfg.harmoniser_params.get(h))
                 X_h = H.transform(X_tr, s_all[tr])
+                n_factors = getattr(H, "k_", np.nan)
                 t = harmonisation_table(X_tr, X_h, s_all[tr], y_all[tr], feats, sex_all, n_pcs, k)
             except Exception as e:  # keep going, record the failure
                 t = pd.DataFrame([{"family": "error", "metric": "error", "scope": str(e)[:200]}])
-                leak = np.nan
+                leak, n_factors = np.nan, np.nan
             t.insert(0, "harmoniser", h)
             t.insert(0, "held_out", held_out)
             t["leak_risk"] = leak
+            t["n_factors"] = n_factors
             t["extra_genes"] = ",".join(g for g in cols if g not in set(feats))
             if out is not None:
                 d = Path(out) / held_out

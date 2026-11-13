@@ -23,26 +23,63 @@ cohort concordance diagnostic (``sign_agreement``) that flags cohorts whose sign
 against the training environments.
 
 Model. Let Y be log expression centred by the training grand mean, C the null gene set and
-k the number of technical factors (default: number of training studies). On the training
+k the number of technical factors (see below). On the training
 samples, W (n x k) is the leading left singular subspace of Y_C scaled by the singular
 values, and A (k x p) = argmin ||Y - W A||. For any sample block Y_s (training or new),
 W_s = Y_{s,C} A_C^T (A_C A_C^T)^{-1} and the harmonised values are (Y_s - W_s A) / sd,
 where sd is the per gene residual standard deviation on the training samples. A is estimated
 jointly with the training outcome (RUV-4 style) so that disease effects are not absorbed into
-the loadings of disease genes under case imbalance. By default k is the number of training
-studies plus ``extra_factors``, and a residual label free per study centring and scaling is
-applied after factor removal (``post_center_scale``).
+the loadings of disease genes under case imbalance. A residual label free per study centring
+and scaling is applied after factor removal (``post_center_scale``).
+
+Number of factors. By default (``k_method="parallel"``) k is chosen by parallel analysis
+(Horn 1965) on the null gene block of the training pool: the squared singular values of the
+centred Y_C are compared with the ``pa_quantile`` quantile of those of ``pa_n_perm`` copies
+of Y_C whose columns are permuted independently, and k is the number of leading components
+that exceed it (zero allowed, in which case no factor is removed). ``k_method="studies_plus"``
+gives the earlier rule, the number of training studies plus ``extra_factors`` (version 1 of
+the results). An explicit ``k_factors`` overrides both.
+
+Protected scores. ``protect_scores`` names marker gene sets (``neutrophil`` and
+``lymphocyte`` from ``BLOOD_MARKERS``, or a dict of name to gene ids) whose scores enter the
+joint loading fit alongside the outcome, so that variation they explain is assigned to them
+and not to the technical loadings; like the outcome they are dropped at transform time. A
+score is the mean over its genes of the values standardised across the training pool; its
+genes are left out of the null set, and the factors (and the parallel analysis) use the null
+block after the scores are projected out of it.
 """
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
 
 from ..features.invariant import meta_analyse, per_study_effects
 from .operators import Harmoniser
+
+# Ensembl ids of the blood marker genes in transcriptomics.composition_covariates
+BLOOD_MARKERS: Dict[str, Dict[str, str]] = {
+    "neutrophil": {"FCGR3B": "ENSG00000162747", "CSF3R": "ENSG00000119535", "CXCR2": "ENSG00000180871", "FPR1": "ENSG00000171051", "MNDA": "ENSG00000163563"},
+    "lymphocyte": {"CD3E": "ENSG00000198851", "CD3D": "ENSG00000167286", "CD79A": "ENSG00000105369", "MS4A1": "ENSG00000156738", "CD2": "ENSG00000116824"},
+}
+
+
+def parallel_analysis(Y: np.ndarray, n_perm: int = 20, quantile: float = 0.95, seed: int = 0) -> int:
+    """Number of leading components of the column centred ``Y`` whose squared singular value
+    exceeds the ``quantile`` of those from ``n_perm`` column-wise permutations (Horn 1965).
+    Can be zero."""
+    Y = Y - Y.mean(axis=0)
+    obs = np.linalg.svd(Y, compute_uv=False) ** 2
+    rng = np.random.default_rng(seed)
+    null = np.empty((n_perm, len(obs)))
+    for b in range(n_perm):
+        Yp = np.column_stack([rng.permutation(Y[:, j]) for j in range(Y.shape[1])])
+        null[b] = np.linalg.svd(Yp, compute_uv=False) ** 2
+    thr = np.quantile(null, quantile, axis=0)
+    above = obs > thr
+    return int(len(obs) if above.all() else np.argmin(above))
 
 
 class InvarianceAnchored(Harmoniser):
@@ -61,6 +98,11 @@ class InvarianceAnchored(Harmoniser):
         unstable_min_g: float = 0.5,
         extra_factors: int = 4,
         post_center_scale: bool = True,
+        k_method: str = "parallel",
+        pa_n_perm: int = 20,
+        pa_quantile: float = 0.95,
+        protect_scores: Optional[Union[List[str], Dict[str, List[str]]]] = None,
+        seed: int = 0,
         eps: float = 1e-8,
     ):
         self.n_controls = n_controls
@@ -73,7 +115,22 @@ class InvarianceAnchored(Harmoniser):
         self.unstable_min_g = unstable_min_g
         self.extra_factors = extra_factors
         self.post_center_scale = post_center_scale
+        self.k_method = k_method
+        self.pa_n_perm = pa_n_perm
+        self.pa_quantile = pa_quantile
+        self.protect_scores = protect_scores
+        self.seed = seed
         self.eps = eps
+
+    def _score_genes(self, columns: pd.Index) -> Dict[str, List[str]]:
+        if not self.protect_scores:
+            return {}
+        sets = self.protect_scores if isinstance(self.protect_scores, dict) else {n: list(BLOOD_MARKERS[n].values()) for n in self.protect_scores}
+        out = {n: [g for g in genes if g in columns] for n, genes in sets.items()}
+        missing = [n for n, g in out.items() if not g]
+        if missing:
+            raise ValueError(f"no genes of the protected scores {missing} are in the matrix")
+        return out
 
     # ------------------------------------------------------------------ partition
     def partition(self, X: pd.DataFrame, y: pd.Series, studies: pd.Series) -> Dict[str, List[str]]:
@@ -102,6 +159,9 @@ class InvarianceAnchored(Harmoniser):
             raise ValueError("chorus harmoniser needs training labels to choose the null gene set")
         self.features_ = X.columns
         parts = self.partition(X, y, studies)
+        self.score_genes_ = self._score_genes(X.columns)
+        protected = {g for genes in self.score_genes_.values() for g in genes}
+        parts["null"] = [g for g in parts["null"] if g not in protected]
         self.controls_ = parts["null"]
         self.invariant_ = parts["invariant"]
         self.unstable_ = parts["unstable"]
@@ -111,19 +171,36 @@ class InvarianceAnchored(Harmoniser):
         self.mu_ = np.nanmean(Xv, axis=0)
         Y = Xv - self.mu_
         cidx = X.columns.get_indexer(self.controls_)
-        k = self.k_factors or int(studies.loc[X.index].nunique()) + self.extra_factors
-        k = max(1, min(k, len(self.controls_) - 1, Y.shape[0] - 1))
-        U, S, _ = np.linalg.svd(Y[:, cidx], full_matrices=False)
+        # protected scores, centred; the factors are estimated from the null block after the
+        # scores are projected out, so that they describe variation the scores do not explain
+        Zs = (X - X.mean(axis=0)) / X.std(axis=0, ddof=1).replace(0, 1.0)
+        Sc = np.column_stack([Zs[genes].mean(axis=1).values for genes in self.score_genes_.values()]) if self.score_genes_ else np.zeros((len(X), 0))
+        Sc = Sc - Sc.mean(axis=0)
+        Yc = Y[:, cidx]
+        if Sc.shape[1]:
+            Yc = Yc - Sc @ np.linalg.lstsq(Sc, Yc, rcond=None)[0]
+        if self.k_factors is not None:
+            k = self.k_factors
+        elif self.k_method == "studies_plus":
+            k = int(studies.loc[X.index].nunique()) + self.extra_factors
+        elif self.k_method == "parallel":
+            k = parallel_analysis(Yc, self.pa_n_perm, self.pa_quantile, self.seed)
+        else:
+            raise ValueError(f"unknown k_method {self.k_method}; choose parallel or studies_plus")
+        k = max(0, min(k, len(self.controls_) - 1, Y.shape[0] - 1))
+        U, S, _ = np.linalg.svd(Yc, full_matrices=False)
         W = U[:, :k] * S[:k]
         # loadings are estimated jointly with the training outcome (RUV-4 style), so that the
         # disease effect is not absorbed into the technical loadings of disease genes when case
-        # fractions differ between studies; the outcome column is dropped at transform time
+        # fractions differ between studies; the outcome column and any protected scores are
+        # dropped at transform time
         yv = pd.to_numeric(y.reindex(X.index), errors="coerce").values.astype(float)
         yv = np.where(np.isnan(yv), np.nanmean(yv), yv) - np.nanmean(yv)
-        D = np.column_stack([W, yv])
-        coef, *_ = np.linalg.lstsq(D, Y, rcond=None)  # (k + 1) x p
+        D = np.column_stack([W, yv, Sc])
+        coef, *_ = np.linalg.lstsq(D, Y, rcond=None)  # (k + 1 + n_scores) x p
         A = coef[:k]
         self.beta_ = coef[k]
+        self.score_coef_ = coef[k + 1 :]
         self.A_ = A
         self.A_c_ = A[:, cidx]
         self.k_ = k
@@ -134,6 +211,8 @@ class InvarianceAnchored(Harmoniser):
 
     def _factors(self, Yc: np.ndarray) -> np.ndarray:
         # least squares W = Y_C A_C^T (A_C A_C^T)^-1, computed per sample block
+        if self.k_ == 0:
+            return np.zeros((Yc.shape[0], 0))
         G = self.A_c_ @ self.A_c_.T
         return Yc @ self.A_c_.T @ np.linalg.pinv(G)
 

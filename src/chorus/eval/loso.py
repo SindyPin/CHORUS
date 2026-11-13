@@ -54,6 +54,8 @@ class LosoConfig:
     random_state: int = 0
     sample_mask: Optional[pd.Series] = None  # optional boolean mask over pooled index (sensitivity analyses)
     drop_incomplete_features: bool = False  # per fold, drop features with a missing value in a training or held-out sample
+    harmoniser_params: Dict[str, Dict] = field(default_factory=dict)  # keyword arguments per harmoniser name
+    outer_harmonisers: Optional[List[str]] = None  # rows to run (default all, plus nested); nested still chooses among ``harmonisers``
 
 
 def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame:
@@ -72,11 +74,12 @@ def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame
     return pd.DataFrame(cols, index=meta.index)
 
 
-def fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame]):
+def fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame], params: Optional[Dict] = None):
     """Fit a harmoniser as the benchmark does: on the training studies (labels where the
     operator uses them), or on training plus held-out samples without labels for a
-    transductive operator. Returns (fitted harmoniser, leak_risk)."""
-    kwargs = {}
+    transductive operator. ``params`` are keyword arguments of the operator. Returns
+    (fitted harmoniser, leak_risk)."""
+    kwargs = dict(params or {})
     if name == "combat_addon" and protect_df is not None and protect_df.shape[1] > 0:
         kwargs["protect"] = protect_df
     H = make_harmoniser(name, **kwargs)
@@ -88,9 +91,9 @@ def fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional
     return H, False
 
 
-def _fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame]):
-    H, leak = fit_harmoniser(name, X_tr, s_tr, y_tr, X_te, s_te, protect_df)
-    return H.transform(X_tr, s_tr), H.transform(X_te, s_te), leak
+def _fit_harmoniser(name: str, X_tr, s_tr, y_tr, X_te, s_te, protect_df: Optional[pd.DataFrame], params: Optional[Dict] = None):
+    H, leak = fit_harmoniser(name, X_tr, s_tr, y_tr, X_te, s_te, protect_df, params)
+    return H.transform(X_tr, s_tr), H.transform(X_te, s_te), leak, getattr(H, "k_", np.nan)
 
 
 def _inner_select_harmoniser(cands: List[str], X_tr, s_tr, y_tr, selector_cfg: Dict, cfg: LosoConfig, protect_df) -> Tuple[str, Dict[str, float]]:
@@ -104,7 +107,7 @@ def _inner_select_harmoniser(cands: List[str], X_tr, s_tr, y_tr, selector_cfg: D
             continue
         for h in cands:
             try:
-                Xa, Xb, _ = _fit_harmoniser(h, X_tr[~m_te], s_tr[~m_te], y_tr[~m_te], X_tr[m_te], s_tr[m_te], None if protect_df is None else protect_df.loc[s_tr.index[~m_te]])
+                Xa, Xb, _, _ = _fit_harmoniser(h, X_tr[~m_te], s_tr[~m_te], y_tr[~m_te], X_tr[m_te], s_tr[m_te], None if protect_df is None else protect_df.loc[s_tr.index[~m_te]], cfg.harmoniser_params.get(h))
                 sel = make_selector(**selector_cfg).fit(Xa, y_tr[~m_te], s_tr[~m_te])
                 clf = make_classifier(cfg.inner_classifier, cfg.random_state)
                 clf.fit(sel.transform(Xa), y_tr[~m_te])
@@ -142,6 +145,8 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
 
     rows, preds, selected = [], [], {}
     harmonisers = list(cfg.harmonisers) + (["nested"] if cfg.nested_select_harmoniser else [])
+    if cfg.outer_harmonisers is not None:
+        harmonisers = [h for h in harmonisers if h in cfg.outer_harmonisers]
     for held_out in cs.study_ids:
         if cs[held_out].source.get("train_only") == "true":  # contributes to training, never held out
             continue
@@ -167,7 +172,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                 if h == "nested":
                     chosen, inner = _inner_select_harmoniser(cfg.harmonisers, X_tr, s_tr, y_tr, sel_cfg, cfg, protect_tr)
                 try:
-                    Xh_tr, Xh_te, leak = _fit_harmoniser(chosen, X_tr, s_tr, y_tr, X_te, s_te, protect_tr)
+                    Xh_tr, Xh_te, leak, n_factors = _fit_harmoniser(chosen, X_tr, s_tr, y_tr, X_te, s_te, protect_tr, cfg.harmoniser_params.get(chosen))
                     sel = make_selector(**sel_cfg).fit(Xh_tr, y_tr, s_tr)
                 except Exception as e:  # keep the benchmark running, record the failure
                     rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": selector_label(sel_cfg), "classifier": None, "error": str(e)[:200]})
@@ -199,6 +204,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "harmoniser": h,
                             "harmoniser_chosen": chosen,
                             "leak_risk": leak,
+                            "n_factors": n_factors,
                             "selector": selector_label(sel_cfg),
                             "n_features": Xs_tr.shape[1],
                             "n_features_dropped_incomplete": n_dropped,

@@ -432,3 +432,52 @@ def test_sex_control_forced_genes_and_incomplete_feature_drop(sim):
     res, _, _ = run_loso(cs, cfg, features=feats, verbose=False)
     assert "error" not in res.columns or res["error"].isna().all()
     assert (res["n_features_dropped_incomplete"] == 2).all()  # XIST and YLOW are missing in some cohort of every fold
+
+
+def test_parallel_analysis_counts_factors():
+    from chorus.harmonise.anchored import parallel_analysis
+
+    rng = np.random.default_rng(0)
+    noise = rng.normal(size=(150, 300))
+    assert parallel_analysis(noise) == 0
+    signal = noise + rng.normal(size=(150, 3)) @ rng.normal(0, 1.0, size=(3, 300))
+    assert parallel_analysis(signal) == 3
+
+
+def test_chorus_zero_factors_and_protected_marker_scores():
+    from chorus.harmonise.anchored import BLOOD_MARKERS
+
+    rng = np.random.default_rng(1)
+    n_s, n, p = 3, 60, 400
+    genes = [f"g{j}" for j in range(p)]
+    s = pd.Series(np.repeat([f"S{i}" for i in range(n_s)], n), index=[f"x{i}" for i in range(n_s * n)])
+    y = pd.Series(rng.integers(0, 2, len(s)).astype(float), index=s.index)
+    # no study shift and no factor: parallel analysis on the null block finds none
+    X0 = pd.DataFrame(rng.normal(size=(len(s), p)), index=s.index, columns=genes)
+    H0 = make_harmoniser("chorus").fit(X0, s, y)
+    assert H0.k_ == 0 and np.isfinite(H0.transform(X0, s).values).all()
+    assert make_harmoniser("chorus", k_method="studies_plus").fit(X0, s, y).k_ == n_s + 4
+    # a composition score that varies within studies and moves most genes, plus one technical factor
+    neut = list(BLOOD_MARKERS["neutrophil"].values())
+    comp = rng.normal(size=len(s))
+    tech = rng.normal(size=len(s))
+    L = rng.normal(0, 0.8, size=p)
+    T = rng.normal(0, 0.8, size=p)
+    X = pd.DataFrame(np.outer(comp, L) + np.outer(tech, T) + rng.normal(size=(len(s), p)), index=s.index, columns=genes)
+    for g in neut:
+        X[g] = comp + rng.normal(0, 0.3, len(s))
+
+    def score(Z):
+        z = (Z[neut] - Z[neut].mean()) / Z[neut].std()
+        return z.mean(axis=1)
+
+    rho = {}
+    for name, kw in [("plain", {}), ("protected", {"protect_scores": ["neutrophil"]})]:
+        H = make_harmoniser("chorus", **kw).fit(X, s, y)
+        Z = H.transform(X, s)
+        rho[name] = np.mean([pd.Series(score(X)[s == k]).corr(score(Z)[s == k], method="spearman") for k in s.unique()])
+        if name == "protected":
+            assert not set(neut) & set(H.controls_) and H.score_coef_.shape == (1, X.shape[1])
+    assert rho["protected"] > 0.9 and rho["protected"] > rho["plain"] + 0.2, rho
+    H = make_harmoniser("chorus", protect_scores={"custom": neut[:2]}).fit(X, s, y)
+    assert list(H.score_genes_) == ["custom"]
