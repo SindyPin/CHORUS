@@ -1,0 +1,3 @@
+feature_set,n_features,n_chrX,n_chrY,n_chromosome_unknown,XIST_in,RPS4Y1_in
+all_genes,10442,320,0,0,False,False
+no_xy,10122,0,0,0,False,False

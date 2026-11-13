@@ -1,3 +1,4 @@
-feature_set,n_features,n_chrX,n_chrY,n_chromosome_unknown,XIST_in,RPS4Y1_in
-all_genes,10442,320,0,0,False,False
-no_xy,10122,0,0,0,False,False
+feature_set,n_features,n_chrX,n_chrY,n_chromosome_unknown,XIST_in,RPS4Y1_in,n_forced
+all_genes,10442,320,0,0,False,False,0
+no_xy,10122,0,0,0,False,False,0
+forced_sex_genes,11123,321,680,0,True,True,681

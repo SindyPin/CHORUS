@@ -1,0 +1,6 @@
+study_id,n_contrast,female,male,ambiguous
+GSE226260_WB,37,24,13,0.0
+GSE226260_PBMC,36,29,6,1.0
+GSE224615,36,20,16,0.0
+GSE251849,16,12,4,0.0
+GSE270045,36,28,8,0.0

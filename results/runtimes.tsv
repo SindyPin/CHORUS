@@ -11,3 +11,12 @@ control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.y
 lc_transcriptomics_blood_harmonisation	chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation	~/.venvs/chorus-arm64	2026-11-13 09:01:09	2026-11-13 09:02:49	100	0
 concordance	scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance	~/.venvs/chorus-arm64	2026-11-13 09:03:45	2026-11-13 09:04:33	48	0
 enrichment	scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv	~/.venvs/chorus-arm64	2026-11-13 09:07:08	2026-11-13 09:07:52	44	0
+simulation_factors	scripts/simulation_benchmark.py --out results/simulation_factors (version 2)	~/.venvs/chorus-arm64	2026-11-13 11:19:20	2026-11-13 11:27:09	469	0
+simulation_shifts_only	scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0 (version 2)	~/.venvs/chorus-arm64	2026-11-13 11:27:09	2026-11-13 11:35:01	472	0
+control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label (version 2; failed, duplicated RPS4Y1 column)	~/.venvs/chorus-arm64	2026-11-13 11:35:01	2026-11-13 11:35:47	46	1
+lc_transcriptomics_blood_harmonisation	chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation (version 2)	~/.venvs/chorus-arm64	2026-11-13 11:35:47	2026-11-13 11:37:23	96	0
+lc_transcriptomics_blood	chorus run configs/lc_transcriptomics_blood.yaml --only-harmonisers combat_addon,chorus,nested	~/.venvs/chorus-arm64	2026-11-13 11:37:23	2026-11-13 11:44:00	397	0
+lc_transcriptomics_blood_noGSE270045	chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --only-harmonisers combat_addon,chorus,nested	~/.venvs/chorus-arm64	2026-11-13 11:44:00	2026-11-13 11:49:00	300	0
+lc_acute_transfer	chorus run configs/lc_acute_transfer.yaml --only-harmonisers combat_addon,chorus,nested	~/.venvs/chorus-arm64	2026-11-13 11:49:00	2026-11-13 11:50:41	101	0
+control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label (version 2, first complete run; feature_sets.csv chromosome counts wrong)	~/.venvs/chorus-arm64	2026-11-13 11:51:32	2026-11-13 11:53:11	99	0
+control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label (version 2, final)	~/.venvs/chorus-arm64	2026-11-13 11:54:39	2026-11-13 11:56:19	100	0
