@@ -481,3 +481,25 @@ def test_chorus_zero_factors_and_protected_marker_scores():
     assert rho["protected"] > 0.9 and rho["protected"] > rho["plain"] + 0.2, rho
     H = make_harmoniser("chorus", protect_scores={"custom": neut[:2]}).fit(X, s, y)
     assert list(H.score_genes_) == ["custom"]
+
+
+def test_rerun_of_some_harmonisers_replaces_only_their_rows(sim, tmp_path):
+    import json
+
+    from chorus.cli import _merge_rerun
+
+    cfg = LosoConfig(harmonisers=["identity", "center_scale"], selectors=[{"name": "variance", "k": 20}], classifiers=["logreg"], n_boot=10, nested_select_harmoniser=True)
+    feats = list(sim.cohorts[0].features[:80])
+    res, preds, sel = run_loso(sim, cfg, features=feats, verbose=False)
+    res.to_csv(tmp_path / "loso_results.csv", index=False)
+    preds.to_csv(tmp_path / "loso_predictions.csv", index=False)
+    (tmp_path / "selected_features.json").write_text(json.dumps({"|".join(k): v for k, v in sel.items()}))
+    cfg.outer_harmonisers = ["center_scale", "nested"]
+    res2, preds2, sel2 = run_loso(sim, cfg, features=feats, verbose=False)
+    assert set(res2["harmoniser"]) == {"center_scale", "nested"}
+    res2["auroc"] = -1.0  # mark the rerun rows
+    r, p, s = _merge_rerun(tmp_path, cfg.outer_harmonisers, res2, preds2, {"|".join(k): v for k, v in sel2.items()})
+    assert len(r) == len(res) and len(p) == len(preds) and set(s) == {"|".join(k) for k in sel}
+    assert (r.loc[r["harmoniser"].isin(["center_scale", "nested"]), "auroc"] == -1).all()
+    assert (r.loc[r["harmoniser"] == "identity", "auroc"].values == res.loc[res["harmoniser"] == "identity", "auroc"].values).all()
+    assert list(r[["held_out", "harmoniser"]].itertuples(index=False)) == list(res[["held_out", "harmoniser"]].itertuples(index=False))

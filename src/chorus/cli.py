@@ -111,10 +111,15 @@ def _cmd_run(a):
     out.mkdir(parents=True, exist_ok=True)
     print(cs.summary().to_string(index=False))
     if not a.within_only:
+        if a.only_harmonisers:
+            lc.outer_harmonisers = a.only_harmonisers.split(",")
         results, preds, selected = run_loso(cs, lc)
+        selected = {"|".join(k): v for k, v in selected.items()}
+        if a.only_harmonisers:
+            results, preds, selected = _merge_rerun(out, lc.outer_harmonisers, results, preds, selected)
         results.to_csv(out / "loso_results.csv", index=False)
         preds.to_csv(out / "loso_predictions.csv", index=False)
-        (out / "selected_features.json").write_text(json.dumps({"|".join(k): v for k, v in selected.items()}, indent=1))
+        (out / "selected_features.json").write_text(json.dumps(selected, indent=1))
         summ = summarise(results)
         summ.to_csv(out / "loso_summary.csv")
         print("\nLOSO summary (mean AUROC across held-out studies):")
@@ -125,6 +130,22 @@ def _cmd_run(a):
         folds.to_csv(out / "within_study_cv_folds.csv", index=False)
         print(f"\nWithin-study CV AUROC, mean over folds of 5-fold CV x {a.n_repeats} repeats (optimism reference):")
         print(w.groupby(["selector", "classifier"])[["auroc", "auroc_pooled"]].mean().to_string())
+
+
+def _merge_rerun(out: Path, harmonisers, results: pd.DataFrame, preds: pd.DataFrame, selected: dict):
+    """Replace the rows of ``harmonisers`` in the existing results of ``out`` with a rerun,
+    keeping every other row, in the order of the existing files."""
+    old_r = pd.read_csv(out / "loso_results.csv")
+    old_p = pd.read_csv(out / "loso_predictions.csv")
+    sel_path = out / "selected_features.json"
+    old_s = json.loads(sel_path.read_text()) if sel_path.exists() else {}
+    keep = {k: v for k, v in old_s.items() if k.split("|")[1] not in set(harmonisers)}
+    r = pd.concat([old_r[~old_r["harmoniser"].isin(harmonisers)], results], ignore_index=True)
+    p = pd.concat([old_p[~old_p["harmoniser"].isin(harmonisers)], preds], ignore_index=True)
+    cols = ["held_out", "selector", "harmoniser", "classifier"]  # the loop order of run_loso
+    keys = {c: r[c].map({v: i for i, v in enumerate(pd.unique(old_r[c]))}) for c in cols}
+    r = r.iloc[pd.DataFrame(keys).reset_index(drop=True).sort_values(cols, kind="stable").index].reset_index(drop=True)
+    return r, p, {**keep, **selected}
 
 
 def _cmd_harmonisation(a):
@@ -155,6 +176,7 @@ def main(argv=None):
     r.add_argument("--within-only", action="store_true", help="run within-study CV only, without the leave-one-study-out benchmark")
     r.add_argument("--n-repeats", type=int, default=10, help="repeats of the stratified 5-fold within-study CV")
     r.add_argument("--out", help="output folder (default: out in the config)")
+    r.add_argument("--only-harmonisers", help="comma separated rows to rerun (nested still chooses among all harmonisers); they replace the same rows of the existing results in the output folder")
     r.set_defaults(func=_cmd_run)
     d = sub.add_parser("harmonisation", help="mixing and conservation metrics of each harmoniser on every LOSO training pool")
     d.add_argument("config")
