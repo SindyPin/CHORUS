@@ -3,7 +3,7 @@
 sex      Positive control: the label is inferred_sex (female = positive, male = negative;
          ambiguous samples left out), from XIST and RPS4Y1 inside each cohort
          (scripts/infer_sex.py), on the samples of the primary LC versus COVID_recovered
-         contrast. Grid: identity, center_scale, combat_addon and chorus; variance and
+         contrast. Grid: identity, center_scale, combat_addon, chorus and chorus_protected; variance and
          invariant selectors; logreg. Run twice: on the filtered genes of the config
          (all_genes) and on the same genes without those on chrX or chrY (no_xy, chromosomes
          from the GENCODE v47 tx2gene table). This replaces the earlier sample_matrix control.
@@ -124,7 +124,7 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
         lc,
         positive="female",
         negative="male",
-        harmonisers=["identity", "center_scale", "combat_addon", "chorus"],
+        harmonisers=["identity", "center_scale", "combat_addon", "chorus", "chorus_protected"],
         selectors=sel,
         classifiers=["logreg"],
         nested_select_harmoniser=False,

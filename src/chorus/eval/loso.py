@@ -56,6 +56,7 @@ class LosoConfig:
     drop_incomplete_features: bool = False  # per fold, drop features with a missing value in a training or held-out sample
     harmoniser_params: Dict[str, Dict] = field(default_factory=dict)  # keyword arguments per harmoniser name
     outer_harmonisers: Optional[List[str]] = None  # rows to run (default all, plus nested); nested still chooses among ``harmonisers``
+    nested_candidates: Optional[List[str]] = None  # harmonisers nested chooses among (default ``harmonisers``)
 
 
 def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame:
@@ -170,7 +171,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                 t0 = time.time()
                 chosen, inner = h, {}
                 if h == "nested":
-                    chosen, inner = _inner_select_harmoniser(cfg.harmonisers, X_tr, s_tr, y_tr, sel_cfg, cfg, protect_tr)
+                    chosen, inner = _inner_select_harmoniser(cfg.nested_candidates or cfg.harmonisers, X_tr, s_tr, y_tr, sel_cfg, cfg, protect_tr)
                 try:
                     Xh_tr, Xh_te, leak, n_factors = _fit_harmoniser(chosen, X_tr, s_tr, y_tr, X_te, s_te, protect_tr, cfg.harmoniser_params.get(chosen))
                     sel = make_selector(**sel_cfg).fit(Xh_tr, y_tr, s_tr)

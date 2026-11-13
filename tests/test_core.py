@@ -553,3 +553,17 @@ def test_combat_addon_training_study_means_equal_after_transform():
     Z = make_harmoniser("combat_addon", shrink=0.5).fit(X, s, y).transform(X, s)
     assert (Z.groupby(s).mean() - Z.mean()).abs().max().max() > 0.1
 
+
+def test_chorus_protected_variant_and_nested_candidates(sim):
+    from chorus.harmonise import make_harmoniser as mk
+
+    H = mk("chorus_protected")
+    assert H.protect_scores == ["neutrophil", "lymphocyte"] and mk("chorus").protect_scores in (None, [], ())
+    assert mk("chorus_protected", seed=3).seed == 3
+    feats = list(sim.cohorts[0].features[:80])
+    cfg = LosoConfig(harmonisers=["identity", "center_scale", "rank"], nested_candidates=["identity", "center_scale"], selectors=[{"name": "variance", "k": 20}], classifiers=["logreg"], n_boot=10, nested_select_harmoniser=True)
+    res, _, _ = run_loso(sim, cfg, features=feats, verbose=False)
+    assert set(res["harmoniser"]) == {"identity", "center_scale", "rank", "nested"}
+    chosen = res.loc[res["harmoniser"] == "nested", "harmoniser_chosen"]
+    assert len(chosen) and set(chosen) <= {"identity", "center_scale"}
+
