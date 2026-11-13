@@ -23,31 +23,32 @@ made one after another. On 13 November `lc_transcriptomics_blood_within_v2` ran 
 control runs (the label permutation and the sample_matrix control removed since), so those runtimes overlap. The later
 13 November runs (from `infer_sex` on) ran one after another. `infer_sex` was run twice with identical output; the
 runtime is that of the second run. The version 2 reruns of 13 November (from 11:19) ran one after another; see "Version 2
-changes" for what they replaced.
+changes" for what they replaced. The version 3 reruns of 13 November (from 15:12) ran one after another; see "Version 3
+changes".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
 | `lc_transcriptomics_blood_v1` | `chorus run configs/lc_transcriptomics_blood.yaml --within` (written to `lc_transcriptomics_blood`, copied) | configs/lc_transcriptomics_blood.yaml | 1053 (started 2026-11-12 09:19:36) |
-| `lc_transcriptomics_blood` | the v1 run, then `chorus run configs/lc_transcriptomics_blood.yaml --only-harmonisers combat_addon,chorus,nested` | configs/lc_transcriptomics_blood.yaml | 397 for the rerun (started 2026-11-13 11:37:23) |
+| `lc_transcriptomics_blood` | the v1 run, then `chorus run configs/lc_transcriptomics_blood.yaml --only-harmonisers combat_addon,chorus,nested` (version 2), then `--only-harmonisers combat_addon,chorus_protected,nested` (version 3) | configs/lc_transcriptomics_blood.yaml | 397 for the version 2 rerun (started 2026-11-13 11:37:23), 404 for the version 3 rerun (started 15:12:49) |
 | `lc_transcriptomics_blood_noGSE270045_v1` | `chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --within` (copied) | configs/lc_transcriptomics_blood_noGSE270045.yaml | 805 (started 2026-11-12 09:37:09) |
-| `lc_transcriptomics_blood_noGSE270045` | the v1 run, then `chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --only-harmonisers combat_addon,chorus,nested` | configs/lc_transcriptomics_blood_noGSE270045.yaml | 300 for the rerun (started 2026-11-13 11:44:00) |
+| `lc_transcriptomics_blood_noGSE270045` | the v1 run, then `chorus run configs/lc_transcriptomics_blood_noGSE270045.yaml --only-harmonisers combat_addon,chorus,nested` (version 2), then `--only-harmonisers combat_addon,chorus_protected,nested` (version 3) | configs/lc_transcriptomics_blood_noGSE270045.yaml | 300 for the version 2 rerun (started 2026-11-13 11:44:00), 312 for the version 3 rerun (started 15:19:33) |
 | `lc_acute_transfer_v1` | `chorus run configs/lc_acute_transfer.yaml --within` (copied) | configs/lc_acute_transfer.yaml | 231 (started 2026-11-12 09:50:34) |
-| `lc_acute_transfer` | the v1 run, then `chorus run configs/lc_acute_transfer.yaml --only-harmonisers combat_addon,chorus,nested` | configs/lc_acute_transfer.yaml | 101 for the rerun (started 2026-11-13 11:49:00) |
+| `lc_acute_transfer` | the v1 run, then `chorus run configs/lc_acute_transfer.yaml --only-harmonisers combat_addon,chorus,nested` (version 2), then `--only-harmonisers combat_addon,chorus_protected,nested` (version 3) | configs/lc_acute_transfer.yaml | 101 for the version 2 rerun (started 2026-11-13 11:49:00), 105 for the version 3 rerun (started 15:24:45) |
 | `simulation_factors_v1` | `scripts/simulation_benchmark.py --out results/simulation_factors` (folder renamed) | built into the script | 231 (started 2026-11-11 09:09:10) |
-| `simulation_factors` | `scripts/simulation_benchmark.py --out results/simulation_factors` | built into the script | 469 (started 2026-11-13 11:19:20) |
+| `simulation_factors` | `scripts/simulation_benchmark.py --out results/simulation_factors` | built into the script | 475 (version 3, started 2026-11-13 15:30:07) |
 | `simulation_shifts_only_v1` | `scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0` (folder renamed) | built into the script | 346 (started 2026-11-11 09:13:14) |
-| `simulation_shifts_only` | `scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0` | built into the script | 472 (started 2026-11-13 11:27:09) |
+| `simulation_shifts_only` | `scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0` | built into the script | 466 (version 3, started 2026-11-13 15:38:02) |
 | `lc_transcriptomics_blood_within_v2` | `chorus run configs/lc_transcriptomics_blood.yaml --within-only --out results/lc_transcriptomics_blood_within_v2` | configs/lc_transcriptomics_blood.yaml | 1320 (started 2026-11-13 07:05:33) |
-| `control_label_permutation` | `scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20` | configs/lc_transcriptomics_blood.yaml, changed by the script | 192 (started 2026-11-13 07:07:17) |
+| `control_label_permutation` | `scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20` | configs/lc_transcriptomics_blood.yaml, changed by the script | 178 (version 3, started 2026-11-13 15:46:30) |
 | `control_sex_label/inferred_sex.csv` | `scripts/infer_sex.py configs/lc_transcriptomics_blood.yaml --copy results/control_sex_label/inferred_sex.csv` | configs/lc_transcriptomics_blood.yaml (raw matrices) | 16 (started 2026-11-13 09:08:07) |
 | `control_sex_label_v1` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` (folder renamed) | configs/lc_transcriptomics_blood.yaml, changed by the script | 84 (started 2026-11-13 08:56:20) |
-| `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 100 (started 2026-11-13 11:54:39) |
+| `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 113 (version 3, started 2026-11-13 15:28:14) |
 | `lc_transcriptomics_blood_harmonisation_v1` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` (folder renamed) | configs/lc_transcriptomics_blood.yaml | 100 (started 2026-11-13 09:01:09) |
-| `lc_transcriptomics_blood_harmonisation` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` | configs/lc_transcriptomics_blood.yaml | 96 (started 2026-11-13 11:35:47) |
+| `lc_transcriptomics_blood_harmonisation` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` | configs/lc_transcriptomics_blood.yaml | 104 (version 3, started 2026-11-13 15:26:30) |
 | `concordance` | `scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance` | configs/lc_transcriptomics_blood.yaml | 48 (started 2026-11-13 09:03:45) |
-| `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 44 (started 2026-11-13 09:07:08) |
+| `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
-- `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (8 harmonisers plus nested selection,
+- `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
   6 selector configurations, 4 classifiers), with the within-study cross-validation reference.
 - `lc_transcriptomics_blood_noGSE270045`: identical except GSE270045 is disabled (sensitivity run;
   `docs/gse270045_check.md`).
@@ -67,8 +68,9 @@ changes" for what they replaced.
   pool of the primary config. See "Harmonisation diagnostics" below.
 - `concordance`: within-cohort LC effects and their pairwise Spearman correlation across cohorts. See "Concordance" below.
 - `enrichment.csv`: enrichment of each fold's invariant genes (from `lc_transcriptomics_blood/selected_features.json`) in
-  the prior gene lists. See "Enrichment" below. It was computed before the version 2 changes and was not rerun.
+  the prior gene lists. See "Enrichment" below. Rerun in version 3 on the current `selected_features.json`.
 - Folders ending in `_v1`: the results before the version 2 changes, kept for comparison. See "Version 2 changes" below.
+  The version 2 results replaced in version 3 were not copied to new folders; they are in git at commit 44dffee.
 
 The cohort table each real-data run loaded (samples and labels per study) is printed at the top of its log,
 `results/<folder>.log`. The logs stay local (not committed). Simulation runs write it to `cohorts.csv`;
@@ -203,7 +205,7 @@ Both use `scripts/control_runs.py` and start from the cohorts, preprocessing and
   (LC or COVID_recovered) after the primary preprocessing. Ambiguous samples are left out (one, GSM7069947).
 - **Counts:** `cohorts.csv`. GSE251849 has 4 males in the contrast and is skipped as a held-out study
   (`min_test_per_class` 5); it is still used for training.
-- **Grid:** harmonisers identity, center_scale, combat_addon and chorus; selectors variance (k 500) and invariant (k 200);
+- **Grid:** harmonisers identity, center_scale, combat_addon, chorus and chorus_protected (since version 3); selectors variance (k 500) and invariant (k 200);
   classifier logreg; no nested selection; 1000 bootstrap resamples. Covariates and `protect` are `sample_matrix` as in
   the primary config.
 - **Three feature sets** (`feature_sets.csv`; `_v1` has the first two):
@@ -275,8 +277,8 @@ raw matrix (before one sample per subject and before the expression filter).
 ## Harmonisation diagnostics
 
 `chorus harmonisation` (module `chorus.eval.harmonisation`) uses the folds of the primary benchmark. For each held-out
-study, the training pool is the labelled (LC or COVID_recovered) samples of the other studies. Each of the 8 harmonisers
-is fitted as in the benchmark: on the training pool with its labels where the operator uses them, and for
+study, the training pool is the labelled (LC or COVID_recovered) samples of the other studies. Each of the 9 harmonisers
+(8 in `_v1`; `chorus_protected` added in version 3) is fitted as in the benchmark: on the training pool with its labels where the operator uses them, and for
 `combat_pooled` on the pool plus the held-out samples without labels. The pool is compared before (log CPM as loaded)
 and after.
 
@@ -303,11 +305,12 @@ and after.
 **Table columns** (`<held_out>/<harmoniser>.csv` and `all_metrics.csv`): `held_out`, `harmoniser`, `family`, `metric`,
 `scope` (`pool`, a study id or `mean_over_studies`), `before` and `after` (mixing and sex separation), `before_vs_after`
 (LC effect and marker comparisons), `n` (samples, or studies for `mean_over_studies` of lc_effect_spearman), `n_genes`,
-`n_pcs`, `k`, `leak_risk`, `n_factors` (`chorus` only; not in `_v1`), `extra_genes`. A failed fit would give one row with `family` = `error` and the message in
+`n_pcs`, `k`, `leak_risk`, `n_factors` (`chorus` and `chorus_protected` only; not in `_v1`), `extra_genes`. A failed fit would give one row with `family` = `error` and the message in
 `scope`; there were none.
 
 **combat_addon with protect.** The `_v1` folder was made with the version 1 `AddonComBat`, in which a protected
-covariate constant within a study moved the study location (see "Version 2 changes").
+covariate constant within a study moved the study location (see "Version 2 changes"). The current folder was made
+with the version 3 `AddonComBat` (see "Version 3 changes").
 
 ## Concordance
 
@@ -329,7 +332,8 @@ values of the same pairs); `top500_genes.csv` (`gene_id`, `symbol`, `mean_abs_g`
 ## Enrichment
 
 `scripts/enrichment.py` takes every `<held_out>|<harmoniser>|invariant` entry of
-`results/lc_transcriptomics_blood/selected_features.json`: 5 folds by 9 harmonisers (including `nested`), 200 genes each.
+`results/lc_transcriptomics_blood/selected_features.json`: 5 folds by 10 harmonisers (including `nested` and
+`chorus_protected`), 200 genes each.
 
 - **Test:** one-sided hypergeometric (overlap at least as large as observed) over the expressed universe, the 10,442
   genes that pass the primary expression filter, which is the set the selector chose from. List genes outside the
@@ -340,7 +344,7 @@ values of the same pairs); `top500_genes.csv` (`gene_id`, `symbol`, `mean_abs_g`
   - `review_complement`: `priors/review_complement_9.txt`. The file holds 11 UniProt accessions (C4A, C4BPB, C5, CFHR1,
     CFHR5, MBL2, FCN2, MASP2, C1QA, C1QB, C1QC). They map to 11 Ensembl genes through the `uniprot_ids` column of the
     HGNC complete set, and 2 are in the universe.
-- **q_bh:** Benjamini-Hochberg over all 135 rows.
+- **q_bh:** Benjamini-Hochberg over all 150 rows (135 before version 3).
 
 **enrichment.csv** columns: `held_out`, `harmoniser`, `selector`, `gene_list`, `list_size` (genes after mapping),
 `universe`, `list_in_universe`, `n_selected`, `overlap`, `expected` (n_selected x list_in_universe / universe),
@@ -368,7 +372,8 @@ value in a training or held-out sample.
   values of the centred null block against the 0.95 quantile of those from 20 copies with each column permuted
   independently (seed 0); k is the number of leading components above it, and can be zero (no factor removed). Version 1
   used the number of training studies plus 4 (`k_method: studies_plus`, still available).
-- **Protected marker scores** (option `protect_scores`, off by default and not used in any rerun): named scores
+- **Protected marker scores** (option `protect_scores`, off by default and not used in the version 2 reruns; used by
+  `chorus_protected` since version 3): named scores
   (`neutrophil`, `lymphocyte`, with the marker genes of the harmonisation diagnostics, or a dict of gene lists) enter
   the joint loading fit alongside the outcome and are dropped at transform time. A score is the mean of its genes
   standardised across the training pool. Its genes are left out of the null set, and the factors and the parallel
@@ -396,5 +401,91 @@ value in a training or held-out sample.
 - No fit failed in any rerun.
 - **Not rerun:** `enrichment.csv` (it reads the version 1 `selected_features.json`, whose `combat_addon`, `chorus` and
   `nested` entries have since been replaced), `control_label_permutation` (uses `chorus`), `concordance` and
-  `lc_transcriptomics_blood_within_v2` (no harmoniser), and the smoke runs.
+  `lc_transcriptomics_blood_within_v2` (no harmoniser), and the smoke runs. `enrichment.csv` and
+  `control_label_permutation` were rerun in version 3.
 
+## Version 3 changes (13 November 2026)
+
+Two code changes, after which the affected results were rerun. The version 2 results they replace are in git at commit
+44dffee. The `_v1` folders are unchanged.
+
+**1. AddonComBat (commit 34b2eec).**
+- **Diagnosis.** After version 2, the `combat_addon` training pool kept study structure in the harmonisation
+  diagnostics: pool silhouette by study 0.21 to 0.26 and other-study neighbour fraction 0.07 to 0.12, against -0.03 to
+  -0.02 and 0.57 to 0.63 for `center_scale`. On the fold with GSE226260_WB held out, the version 2 operator was refitted
+  with parts of it switched off (scratch script, not kept). The columns are:
+  - the maximum over training studies of |study mean minus pool mean|, median over genes, after fit and transform;
+  - the pool silhouette by study;
+  - the other-study neighbour fraction.
+
+  | variant (version 2 code) | max abs study mean deviation | silhouette_study | knn_other_study |
+  |---|---|---|---|
+  | as run: protect `sample_matrix` and label in the design, `shrink` 0.5 | 1.378 | 0.229 | 0.102 |
+  | label only in the design, `shrink` 0.5 | 1.378 | 0.229 | 0.102 |
+  | protect and label, `shrink` 0 | 0.637 | 0.058 | 0.400 |
+  | label only, `shrink` 0 | 0.637 | 0.058 | 0.400 |
+  | no design, `shrink` 0.5 | 1.326 | 0.208 | 0.123 |
+  | no design, `shrink` 0 | 0.000 | -0.033 | 0.605 |
+  | `center_scale` | 0.000 | -0.033 | 0.605 |
+
+  - **Standardisation:** the training studies were shifted and scaled to the grand mean and pooled variance per gene of
+    the training pool.
+  - **Shrinkage:** each study's per gene location deviation from the grand mean was replaced by 0.5 times itself plus
+    0.5 times its average over genes. The log variance ratio was shrunk the same way. So half of each gene's study
+    offset, less its across-gene average, was kept.
+  - **Covariates:** `sample_matrix` is constant within every cohort and was already dropped from the design by the
+    version 2 fix (the rows with and without it are identical). The label stayed in the design uncentred, so the
+    location was the intercept at label 0 (the control mean), and studies with different case fractions kept different
+    means.
+- **Fix.**
+  - The label and protected covariates are centred within each training study before the least-squares fit, so the
+    intercept is the study mean. They still remove their variation from the variance estimate.
+  - `shrink` defaults to 0 (it was 0.5). The option is kept.
+  - The held-out study is unchanged: location and scale come from that study alone, without covariates.
+  - On the same fold the fixed operator gives max deviation 0.000, silhouette -0.043 and other-study fraction 0.610.
+- **Test** (`test_combat_addon_training_study_means_equal_after_transform`):
+  - Setup: three studies with per gene offsets and scales, case fractions 0.2, 0.5 and 0.8, a label effect on half the
+    genes, and a protected covariate that varies within studies.
+  - After fit and transform, the per study gene means equal the pool means within 1e-8, with and without protect.
+  - With `shrink` 0.5 they differ by more than 0.1.
+  - It fails on the version 2 code (largest deviation 6.2).
+
+**2. chorus_protected (commit bcf509d).** A second chorus variant, registered as harmoniser `chorus_protected`:
+`InvarianceAnchored(protect_scores=["neutrophil", "lymphocyte"])`.
+- Its other settings are those of `chorus` (factor count by parallel analysis).
+- Its marker genes are those of the harmonisation diagnostics. All 10 are among the filtered genes of the three
+  benchmarks.
+- It was added to `harmonisers` in the three benchmark configs and in the sex control grid. The harmonisation
+  diagnostics use the config list, so they include it.
+- New config field `nested_candidates` (`LosoConfig.nested_candidates`): the harmonisers that `nested` chooses among,
+  default `harmonisers`. The three configs set it to the version 2 list, so `chorus_protected` is not a nested
+  candidate.
+- It is not in the simulations. The simulated genes (`G00000` to `G01999`) contain no marker genes, so the protected
+  scores cannot be formed (the operator raises an error when a named score has no genes). The simulation grid is
+  unchanged.
+
+**3. --only-harmonisers merge (commit 2b58d1b).** A harmoniser new to the results is placed in the `run_loso` loop order,
+here `chorus_protected` between `chorus` and `nested`.
+
+**Reruns.**
+
+| folder | what was rerun |
+|---|---|
+| `lc_transcriptomics_blood`, `lc_transcriptomics_blood_noGSE270045`, `lc_acute_transfer` | rows `combat_addon`, `chorus_protected` (new) and `nested` (`--only-harmonisers combat_addon,chorus_protected,nested`); other rows and the within-study files unchanged |
+| `simulation_factors`, `simulation_shifts_only` | whole run (only `combat_addon` and `nested` rows can change) |
+| `control_sex_label` | whole run, now with `chorus_protected` |
+| `lc_transcriptomics_blood_harmonisation` | whole run, now with `chorus_protected` |
+| `enrichment.csv` | whole run on the current primary `selected_features.json` |
+| `control_label_permutation` | whole run (identity and the current `chorus`) |
+
+- **Unchanged rows checked against version 2:**
+  - In the three benchmarks, both simulations and `control_sex_label`, the rows of the harmonisers not rerun are
+    identical.
+  - In the harmonisation diagnostics, every harmoniser other than `combat_addon` gives the same values.
+  - In `control_label_permutation` the identity rows are identical.
+- **enrichment.csv:** compared with the file computed before version 2, the `chorus` and `nested` rows changed (4 each),
+  the `combat_addon` rows are unchanged, and the 15 `chorus_protected` rows are new.
+- No fit failed in any rerun.
+- **Factors chosen by parallel analysis for `chorus_protected` (`n_factors`):** primary benchmark 5 to 9 per fold;
+  noGSE270045 4 to 10; acute transfer 5; harmonisation diagnostics 5 to 9.
+- **Not rerun:** `concordance` and `lc_transcriptomics_blood_within_v2` (no harmoniser), and the smoke runs.
