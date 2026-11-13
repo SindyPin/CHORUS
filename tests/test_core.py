@@ -567,3 +567,21 @@ def test_chorus_protected_variant_and_nested_candidates(sim):
     chosen = res.loc[res["harmoniser"] == "nested", "harmoniser_chosen"]
     assert len(chosen) and set(chosen) <= {"identity", "center_scale"}
 
+
+def test_rerun_merge_places_a_new_harmoniser_in_loop_order(sim, tmp_path):
+    import json
+
+    from chorus.cli import _merge_rerun
+
+    cfg = LosoConfig(harmonisers=["identity", "rank"], selectors=[{"name": "variance", "k": 20}], classifiers=["logreg"], n_boot=10, nested_select_harmoniser=True)
+    feats = list(sim.cohorts[0].features[:80])
+    res, preds, sel = run_loso(sim, cfg, features=feats, verbose=False)
+    res.to_csv(tmp_path / "loso_results.csv", index=False)
+    preds.to_csv(tmp_path / "loso_predictions.csv", index=False)
+    (tmp_path / "selected_features.json").write_text(json.dumps({"|".join(k): v for k, v in sel.items()}))
+    cfg2 = LosoConfig(harmonisers=["identity", "center_scale", "rank"], nested_candidates=["identity", "rank"], selectors=cfg.selectors, classifiers=["logreg"], n_boot=10, nested_select_harmoniser=True, outer_harmonisers=["center_scale"])
+    res2, preds2, sel2 = run_loso(sim, cfg2, features=feats, verbose=False)
+    r, p, s = _merge_rerun(tmp_path, ["center_scale"], res2, preds2, {"|".join(k): v for k, v in sel2.items()}, order=cfg2.harmonisers + ["nested"])
+    assert len(r) == len(res) + len(res2)
+    for _, g in r.groupby("held_out", sort=False):
+        assert list(g["harmoniser"]) == ["identity", "center_scale", "rank", "nested"]

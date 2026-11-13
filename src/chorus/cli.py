@@ -116,7 +116,7 @@ def _cmd_run(a):
         results, preds, selected = run_loso(cs, lc)
         selected = {"|".join(k): v for k, v in selected.items()}
         if a.only_harmonisers:
-            results, preds, selected = _merge_rerun(out, lc.outer_harmonisers, results, preds, selected)
+            results, preds, selected = _merge_rerun(out, lc.outer_harmonisers, results, preds, selected, order=list(lc.harmonisers) + ["nested"])
         results.to_csv(out / "loso_results.csv", index=False)
         preds.to_csv(out / "loso_predictions.csv", index=False)
         (out / "selected_features.json").write_text(json.dumps(selected, indent=1))
@@ -132,9 +132,10 @@ def _cmd_run(a):
         print(w.groupby(["selector", "classifier"])[["auroc", "auroc_pooled"]].mean().to_string())
 
 
-def _merge_rerun(out: Path, harmonisers, results: pd.DataFrame, preds: pd.DataFrame, selected: dict):
+def _merge_rerun(out: Path, harmonisers, results: pd.DataFrame, preds: pd.DataFrame, selected: dict, order=None):
     """Replace the rows of ``harmonisers`` in the existing results of ``out`` with a rerun,
-    keeping every other row, in the order of the existing files."""
+    keeping every other row, in the order of the existing files. A harmoniser new to the
+    files is placed by ``order`` (the harmoniser loop order of run_loso), else last."""
     old_r = pd.read_csv(out / "loso_results.csv")
     old_p = pd.read_csv(out / "loso_predictions.csv")
     sel_path = out / "selected_features.json"
@@ -143,7 +144,10 @@ def _merge_rerun(out: Path, harmonisers, results: pd.DataFrame, preds: pd.DataFr
     r = pd.concat([old_r[~old_r["harmoniser"].isin(harmonisers)], results], ignore_index=True)
     p = pd.concat([old_p[~old_p["harmoniser"].isin(harmonisers)], preds], ignore_index=True)
     cols = ["held_out", "selector", "harmoniser", "classifier"]  # the loop order of run_loso
-    keys = {c: r[c].map({v: i for i, v in enumerate(pd.unique(old_r[c]))}) for c in cols}
+    levels = {c: list(pd.unique(pd.concat([old_r[c], results[c]]))) for c in cols}
+    if order is not None:
+        levels["harmoniser"] = [h for h in order if h in set(levels["harmoniser"])] + [h for h in levels["harmoniser"] if h not in set(order)]
+    keys = {c: r[c].map({v: i for i, v in enumerate(levels[c])}) for c in cols}
     r = r.iloc[pd.DataFrame(keys).reset_index(drop=True).sort_values(cols, kind="stable").index].reset_index(drop=True)
     return r, p, {**keep, **selected}
 
