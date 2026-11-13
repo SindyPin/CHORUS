@@ -225,7 +225,9 @@ class AddonComBat(Harmoniser):
 
     Training studies: for each feature, batch means (optionally after regressing out
     protected covariates such as the outcome and sex) and batch variances are estimated and
-    each study is shifted and scaled to the grand mean and pooled variance. Shrinkage of the
+    each study is shifted and scaled to the grand mean and pooled variance. A protected
+    covariate that is constant within a study is dropped from that study's design, so that
+    it cannot move the study location (the intercept). Shrinkage of the
     batch parameters toward their across-feature average is applied with weight ``shrink``
     (0 = none, approximating limma removeBatchEffect; 1 = full pooling).
 
@@ -244,6 +246,13 @@ class AddonComBat(Harmoniser):
         self.eps = eps
 
     def _batch_params(self, block: np.ndarray, Z: Optional[np.ndarray]) -> tuple:
+        if Z is not None:
+            # a covariate constant within the study (for example sample_matrix in a single matrix
+            # cohort) is collinear with the intercept; the least squares intercept is then not
+            # unique and the minimum norm solution is not the study location, so it is dropped
+            Z = Z[:, np.ptp(Z, axis=0) > 0] if Z.shape[0] else Z
+            if Z.shape[1] == 0:
+                Z = None
         if Z is not None and Z.shape[0] == block.shape[0] and Z.shape[0] > Z.shape[1] + 2:
             Zc = np.column_stack([np.ones(len(block)), Z])
             beta, *_ = np.linalg.lstsq(Zc, block, rcond=None)

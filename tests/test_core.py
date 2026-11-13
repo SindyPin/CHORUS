@@ -381,3 +381,22 @@ def test_enrichment_hypergeometric_and_mapping():
     assert np.allclose(q.iloc[:3], [0.03, 0.04, 0.04]) and np.isnan(q.iloc[3])
     hgnc = pd.DataFrame({"symbol": ["C1QA", "C4A", "X"], "ensembl_gene_id": ["ENSG1", "ENSG2", "ENSG3"], "uniprot_ids": ["P02745", "P0C0L4|P0C0L5", np.nan]})
     assert enr.uniprot_to_ensembl(["P0C0L4", "P02745", "Q99999"], hgnc) == ["ENSG1", "ENSG2"]
+
+
+def test_combat_addon_protected_covariate_constant_within_study():
+    rng = np.random.default_rng(0)
+    n, p = 40, 50
+    idx = [f"a{i}" for i in range(n)] + [f"b{i}" for i in range(n)]
+    s = pd.Series(["A"] * n + ["B"] * n, index=idx)
+    X = pd.DataFrame(rng.normal(size=(2 * n, p)) + np.r_[np.zeros(n), np.full(n, 5.0)][:, None], index=idx, columns=[f"g{j}" for j in range(p)])
+    y = pd.Series(rng.integers(0, 2, 2 * n).astype(float), index=idx)
+    protect = pd.DataFrame({"m_A": (s == "A").astype(float), "m_B": (s == "B").astype(float)})  # one hot by study, as sample_matrix
+    means = {}
+    for name, prot in [("protect", protect), ("none", None)]:
+        H = make_harmoniser("combat_addon", protect=prot) if prot is not None else make_harmoniser("combat_addon")
+        Z = H.fit(X, s, y).transform(X, s)
+        means[name] = Z.groupby(s).mean().mean(axis=1)
+    for name in means:
+        assert abs(means[name]["A"] - means[name]["B"]) < 0.3, means
+        assert np.allclose(means[name], 2.5, atol=0.3), means
+    assert np.allclose(means["protect"], means["none"])
