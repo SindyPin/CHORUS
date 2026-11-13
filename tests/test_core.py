@@ -664,3 +664,46 @@ def test_layer_adapters_map_each_layer_to_its_shared_space():
     with pytest.raises(KeyError):
         to_feature_space("unknown_layer", raw)
 
+
+def test_proteomics_write_cohort_contract_and_shared_protein_table(tmp_path, monkeypatch):
+    import sys
+    from pathlib import Path
+
+    from chorus.adapters import to_feature_space
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "proteomics"))
+    common = _load_script("proteomics/common")
+    build_all = _load_script("proteomics/build_all")
+    for mod in (common, build_all):
+        monkeypatch.setattr(mod, "DATA", tmp_path / "proteomics")
+        monkeypatch.setattr(mod, "META", tmp_path / "meta")
+
+    def cohort(study, proteins, phases, status):
+        long = pd.DataFrame(
+            [{"SampleID": f"{study}_{i}", "OlinkID": f"O{p}", "UniProt": p, "NPX": float(i)} for i in range(len(phases)) for p in proteins]
+        )
+        a = to_feature_space("olink", long)
+        meta = pd.DataFrame(
+            {"subject_id": [f"{study}_s{i // 2}" for i in range(len(phases))], "lc_status": status, "case_definition": "study_specific", "sample_matrix": "plasma", "sample_phase": phases},
+            index=a.X.index,
+        )
+        return a, meta
+
+    a, m = cohort("A", ["P05231", "P01024", "P02768"], ["acute", "post_acute", "acute", "post_acute"], ["LC", "LC", "COVID_recovered", "COVID_recovered"])
+    row = common.write_cohort("A", a, m)
+    assert (row["n_LC"], row["n_COVID_recovered"], row["n_acute"], row["n_proteins"]) == (1, 1, 2, 3)
+    written = pd.read_csv(tmp_path / "proteomics" / "A" / "A_matrix.csv", index_col=0)
+    assert list(written.columns) == list(a.X.index) and written.index.name == "uniprot"
+    meta = pd.read_csv(tmp_path / "meta" / "A_meta.csv")
+    assert list(meta.columns[:7]) == ["sample_id", "subject_id", "study_id", "lc_status", "case_definition", "sample_matrix", "omics_layer"]
+    assert (meta["omics_layer"] == "olink").all()
+    b, mb = cohort("B", ["P05231", "P02768", "Q99999"], ["post_acute", "not_applicable"], ["LC", "never_infected"])
+    common.write_cohort("B", b, mb)
+    text = build_all.tables({"A": "no"})
+    assert "| A | olink | 4 (2) | 1 (1) | 1 (1) | 0 | 2 | 0 |" in text
+    assert "| A | 3 | 2 |" in text and "| B | 2 | 3 |" in text  # shared proteins, diagonal = cohort size
+    # a vocabulary violation and a matrix / metadata mismatch are refused
+    with pytest.raises(ValueError):
+        common.write_cohort("C", b, mb.assign(lc_status="long_covid"))
+    with pytest.raises(ValueError):
+        common.write_cohort("C", b, mb.iloc[:1])
