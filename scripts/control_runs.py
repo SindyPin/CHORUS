@@ -102,7 +102,7 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
         for g in forced:
             fold_rows.append({"held_out": held_out, "gene_id": g, "in_every_training_cohort": bool(used.loc[g, train].all()), "in_held_out": bool(used.loc[g, held_out]), "used": bool(used.loc[g, train].all() and used.loc[g, held_out])})
     folds = pd.DataFrame(fold_rows)
-    on = chroms.reindex(feats)
+    on = chroms
     info = pd.DataFrame(
         [
             {
