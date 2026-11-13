@@ -57,6 +57,7 @@ class LosoConfig:
     harmoniser_params: Dict[str, Dict] = field(default_factory=dict)  # keyword arguments per harmoniser name
     outer_harmonisers: Optional[List[str]] = None  # rows to run (default all, plus nested); nested still chooses among ``harmonisers``
     nested_candidates: Optional[List[str]] = None  # harmonisers nested chooses among (default ``harmonisers``)
+    forced_features: List[str] = field(default_factory=list)  # appended to every selector's output when present in the fold
 
 
 def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame:
@@ -110,14 +111,21 @@ def _inner_select_harmoniser(cands: List[str], X_tr, s_tr, y_tr, selector_cfg: D
             try:
                 Xa, Xb, _, _ = _fit_harmoniser(h, X_tr[~m_te], s_tr[~m_te], y_tr[~m_te], X_tr[m_te], s_tr[m_te], None if protect_df is None else protect_df.loc[s_tr.index[~m_te]], cfg.harmoniser_params.get(h))
                 sel = make_selector(**selector_cfg).fit(Xa, y_tr[~m_te], s_tr[~m_te])
+                cols = list(sel.selected_) + _forced_extra(cfg, sel.selected_, Xa.columns)
                 clf = make_classifier(cfg.inner_classifier, cfg.random_state)
-                clf.fit(sel.transform(Xa), y_tr[~m_te])
-                scores[h].append(roc_auc_score(y_tr[m_te], clf.predict_proba(sel.transform(Xb))[:, 1]))
+                clf.fit(Xa[cols], y_tr[~m_te])
+                scores[h].append(roc_auc_score(y_tr[m_te], clf.predict_proba(Xb[cols])[:, 1]))
             except Exception:
                 scores[h].append(np.nan)
     means = {h: float(np.nanmean(v)) if len(v) else np.nan for h, v in scores.items()}
     best = max(means, key=lambda h: (np.nan_to_num(means[h], nan=-1)))
     return best, means
+
+
+def _forced_extra(cfg: LosoConfig, selected, columns) -> List[str]:
+    """Forced features present in the fold and not already selected, in the order given."""
+    have, chosen = set(columns), set(selected)
+    return [g for g in dict.fromkeys(cfg.forced_features) if g in have and g not in chosen]
 
 
 def selector_label(sel_cfg: Dict) -> str:
@@ -178,9 +186,10 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                 except Exception as e:  # keep the benchmark running, record the failure
                     rows.append({"held_out": held_out, "harmoniser": h, "harmoniser_chosen": chosen, "selector": selector_label(sel_cfg), "classifier": None, "error": str(e)[:200]})
                     continue
-                Xs_tr = pd.concat([sel.transform(Xh_tr), cov_all.loc[X_tr.index]], axis=1)
-                Xs_te = pd.concat([sel.transform(Xh_te), cov_all.loc[X_te.index]], axis=1)
-                selected[(held_out, h, selector_label(sel_cfg))] = list(sel.selected_)
+                forced = _forced_extra(cfg, sel.selected_, Xh_tr.columns)
+                Xs_tr = pd.concat([sel.transform(Xh_tr), Xh_tr[forced], cov_all.loc[X_tr.index]], axis=1)
+                Xs_te = pd.concat([sel.transform(Xh_te), Xh_te.reindex(columns=forced), cov_all.loc[X_te.index]], axis=1)
+                selected[(held_out, h, selector_label(sel_cfg))] = list(sel.selected_) + forced
                 # concordance of the held out cohort with the training environments (diagnostic, uses held out labels only here)
                 tbl = getattr(sel, "table_", None)
                 if tbl is None:
@@ -209,6 +218,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "selector": selector_label(sel_cfg),
                             "n_features": Xs_tr.shape[1],
                             "n_features_dropped_incomplete": n_dropped,
+                            "n_forced_added": len(forced),
                             "n_strict_invariant": getattr(sel, "n_strict_", np.nan),
                             "sign_agreement": conc["sign_agreement"],
                             "effect_spearman": conc["effect_spearman"],

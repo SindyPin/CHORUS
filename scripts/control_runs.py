@@ -13,7 +13,9 @@ sex      Positive control: the label is inferred_sex (female = positive, male = 
          cohort's inferred male samples (the expression filter of the config applied to males);
          elsewhere it is set to missing. Per fold a forced gene is used only when every training
          cohort and the held-out cohort have it (the held-out cohort must be scored), so
-         LosoConfig.drop_incomplete_features is set for this set.
+         LosoConfig.drop_incomplete_features is set for this set. The forced genes that remain
+         are appended to every selector's output (LosoConfig.forced_features), so they reach the
+         classifier whether or not the selector picks them.
 
 permute  Label permutation control: lc_status is shuffled within each cohort among the samples in
          the LC versus COVID_recovered contrast (class counts per cohort unchanged), then the
@@ -141,7 +143,8 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
     print(folds.groupby("held_out")["used"].sum().to_string())
     allres = []
     for name, f in feature_sets.items():
-        res, preds, selected = run_loso(cs2, dataclasses.replace(cfg2, drop_incomplete_features=name == "forced_sex_genes"), features=f)
+        is_forced = name == "forced_sex_genes"
+        res, preds, selected = run_loso(cs2, dataclasses.replace(cfg2, drop_incomplete_features=is_forced, forced_features=forced if is_forced else []), features=f)
         d = out / name
         d.mkdir(exist_ok=True)
         res.to_csv(d / "loso_results.csv", index=False)
@@ -151,7 +154,7 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
             summarise(res).to_csv(d / "loso_summary.csv")
         allres.append(res.assign(feature_set=name))
     res = pd.concat(allres, ignore_index=True)
-    cols = ["feature_set", "held_out", "harmoniser", "selector", "classifier", "n_features", "n_features_dropped_incomplete", "auroc", "auroc_lo", "auroc_hi", "error"]
+    cols = ["feature_set", "held_out", "harmoniser", "selector", "classifier", "n_features", "n_features_dropped_incomplete", "n_forced_added", "auroc", "auroc_lo", "auroc_hi", "error"]
     res.reindex(columns=cols).to_csv(out / "auroc_by_held_out.csv", index=False)
     print(res.reindex(columns=cols).to_string(index=False))
 

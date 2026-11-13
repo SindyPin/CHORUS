@@ -1,3 +1,5 @@
+import dataclasses
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -585,3 +587,27 @@ def test_rerun_merge_places_a_new_harmoniser_in_loop_order(sim, tmp_path):
     assert len(r) == len(res) + len(res2)
     for _, g in r.groupby("held_out", sort=False):
         assert list(g["harmoniser"]) == ["identity", "center_scale", "rank", "nested"]
+
+
+def test_forced_features_reach_the_classifier_for_every_selector(sim):
+    # a forced feature that the selector would not pick (pure noise) is appended to the selected
+    # features in every fold and for every selector, and is dropped when absent from the fold
+    rng = np.random.default_rng(0)
+    from chorus.io import Cohort, CohortSet
+
+    cohorts = []
+    for c in sim.cohorts:
+        X = c.X.iloc[:, :60].copy()
+        X["FORCED"] = rng.normal(0, 1e-3, len(X))  # near zero variance: never in the variance top k
+        cohorts.append(Cohort(c.study_id, c.layer, X, c.meta, c.feature_space, False, dict(c.source)))
+    cs = CohortSet(cohorts)
+    feats = list(sim.cohorts[0].features[:60]) + ["FORCED"]
+    sels = [{"name": "variance", "k": 10}, {"name": "invariant", "k": 10}]
+    base = LosoConfig(harmonisers=["identity", "center_scale"], selectors=sels, classifiers=["logreg"], n_boot=10, nested_select_harmoniser=True)
+    r0, _, s0 = run_loso(cs, base, features=feats, verbose=False)
+    assert not any("FORCED" in v for v in s0.values())
+    cfg = dataclasses.replace(base, forced_features=["FORCED", "NOT_IN_DATA"])
+    r1, _, s1 = run_loso(cs, cfg, features=feats, verbose=False)
+    assert all(v[-1] == "FORCED" and "NOT_IN_DATA" not in v for v in s1.values())
+    assert (r1["n_forced_added"] == 1).all()
+    assert (r1["n_features"] == r0["n_features"] + 1).all()
