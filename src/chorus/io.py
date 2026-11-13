@@ -15,6 +15,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from .adapters import to_feature_space
 from .schema import ClinicalSchema, validate_metadata
 
 # above this maximum a non-count matrix is treated as linear scale and log2(x + 1) transformed
@@ -84,8 +85,7 @@ class Cohort:
         if "sample_id" in meta.columns:
             meta = meta.set_index("sample_id", drop=False)
         if strip_ensembl_version and feature_space == "ensembl_gene":
-            X.columns = [c.split(".")[0] if str(c).startswith("ENSG") else c for c in X.columns]
-            X = X.T.groupby(level=0).sum().T if X.columns.duplicated().any() else X
+            X = to_feature_space("bulk_rna", X).X  # layer adapter: version removed, duplicates summed
         # after the version merge, so duplicates are summed on the linear scale
         X = X.apply(pd.to_numeric, errors="coerce")
         if is_counts:

@@ -11,6 +11,8 @@ Vocabularies follow, where one exists, an external standard:
   acute severity       WHO Clinical Progression Scale (0 to 10) collapsed to four bands
   time anchor          symptom onset, positive test, hospital admission, hospital discharge
   sample matrix        plasma, serum, whole blood, PBMC, saliva, urine, BAL, CSF, other
+  control type         COVID recovered, never infected (pre-pandemic, contemporary, unspecified)
+  sample phase         pre-infection, acute, post-acute
 """
 
 from __future__ import annotations
@@ -37,7 +39,11 @@ SEX = {"female", "male", "other", "unknown"}
 INFERRED_SEX = {"female", "male", "ambiguous"}  # from XIST and RPS4Y1 expression (chorus.sex)
 MATRIX = {"plasma", "serum", "whole_blood", "PBMC", "saliva", "urine", "BAL", "CSF", "other"}
 VARIANT_ERA = {"pre_alpha", "alpha", "delta", "omicron", "mixed", "unknown"}
-LAYERS = {"bulk_rna", "sc_rna", "olink", "ms_proteomics", "metabolomics", "dnam", "genomics", "other"}
+LAYERS = {"bulk_rna", "sc_rna", "olink", "somascan", "ms_proteomics", "metabolomics", "dnam", "genomics", "other"}
+# what a control sample is; LC cases and acute samples are not_applicable
+CONTROL_TYPES = {"COVID_recovered", "never_infected_prepandemic", "never_infected_contemporary", "never_infected_unspecified", "not_applicable"}
+# when the sample was drawn relative to the infection; acute samples keep the later outcome in lc_status when known
+SAMPLE_PHASES = {"pre_infection", "acute", "post_acute", "not_applicable", "unknown"}
 
 
 @dataclass
@@ -72,6 +78,9 @@ class ClinicalSchema:
             "symptom_domains",
             "lc_definition_strict_who",
             "platform",
+            "control_type",
+            "sample_phase",
+            "timepoint",
             "collection_country",
             "overlaps_with_study",
             "notes",
@@ -88,6 +97,8 @@ class ClinicalSchema:
             "sample_matrix": MATRIX,
             "variant_era": VARIANT_ERA,
             "omics_layer": LAYERS,
+            "control_type": CONTROL_TYPES,
+            "sample_phase": SAMPLE_PHASES,
         }
     )
 

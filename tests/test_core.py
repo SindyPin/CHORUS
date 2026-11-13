@@ -611,3 +611,56 @@ def test_forced_features_reach_the_classifier_for_every_selector(sim):
     assert all(v[-1] == "FORCED" and "NOT_IN_DATA" not in v for v in s1.values())
     assert (r1["n_forced_added"] == 1).all()
     assert (r1["n_features"] == r0["n_features"] + 1).all()
+
+
+def test_layer_adapters_map_each_layer_to_its_shared_space():
+    from chorus.adapters import ADAPTERS, canonical_uniprot, to_feature_space, uniprot_key
+
+    assert {"bulk_rna", "olink", "somascan", "ms_proteomics"} <= set(ADAPTERS)
+    assert ADAPTERS["olink"].feature_space == ADAPTERS["somascan"].feature_space == ADAPTERS["ms_proteomics"].feature_space == "uniprot"
+    assert canonical_uniprot("P05231-2") == "P05231" and canonical_uniprot("CON__P02768") is None
+    assert uniprot_key(["P29460", "P29459", "P29459"]) == "P29459_P29460"
+    # bulk RNA: version suffixes removed, coinciding genes summed
+    raw = pd.DataFrame([[1, 2, 3], [4, 5, 6]], index=["s1", "s2"], columns=["ENSG00000000003.14", "ENSG00000000003.15", "ENSG00000000005.6"])
+    a = to_feature_space("bulk_rna", raw)
+    assert list(a.X.columns) == ["ENSG00000000003", "ENSG00000000005"] and a.X.loc["s2", "ENSG00000000003"] == 9
+    # Olink long export: IL6 on two panels averaged, QC failures masked, a complex keyed by both accessions
+    long = pd.DataFrame(
+        {
+            "SampleID": ["s1", "s1", "s1", "s2", "s2", "s2", "s1", "s2"],
+            "OlinkID": ["OID1", "OID2", "OID3", "OID1", "OID2", "OID3", "OID4", "OID4"],
+            "UniProt": ["P05231", "P05231", "P29460;P29459", "P05231", "P05231", "P29460;P29459", "", ""],
+            "NPX": [1.0, 3.0, 5.0, 2.0, 4.0, 6.0, 9.0, 9.0],
+            "QC": ["PASS", "PASS", "PASS", "PASS", "FAIL", "PASS", "PASS", "PASS"],
+        }
+    )
+    o = to_feature_space("olink", long, qc_col="QC")
+    assert sorted(o.X.columns) == ["P05231", "P29459_P29460"]
+    assert o.X.loc["s1", "P05231"] == 2.0 and o.X.loc["s2", "P05231"] == 2.0  # s2 OID2 failed QC
+    assert o.features.set_index("feature").loc["P05231", "n_sources"] == 2 and o.notes["assays_without_uniprot"] == "1"
+    # SomaScan: linear RFU to log2, non-human aptamer dropped, two aptamers of one protein averaged
+    rfu = pd.DataFrame({"10000-1": [4.0, 16.0], "10001-2": [16.0, 64.0], "10002-3": [256.0, 256.0]}, index=["s1", "s2"])
+    ann = pd.DataFrame({"SeqId": ["10000-1", "10001-2", "10002-3"], "UniProt": ["P01024", "P01024", "P00000"], "Organism": ["Human", "Human", "Mouse"]})
+    sm = to_feature_space("somascan", rfu, annotation=ann, keep=ann.set_index("SeqId")["Organism"] == "Human")
+    assert list(sm.X.columns) == ["P01024"] and np.allclose(sm.X["P01024"], [3.0, 5.0])
+    # MS protein groups: contaminants and decoys dropped, isoform suffix removed, zeros missing, log2
+    pg = pd.DataFrame(
+        {
+            "Protein IDs": ["P02768-2;P02768", "CON__P02769", "REV__P12345", "sp|P01024|CO3_HUMAN", "P02768"],
+            "Intensity a": [1024.0, 5.0, 5.0, 0.0, 4096.0],
+            "Intensity b": [256.0, 5.0, 5.0, 64.0, 1024.0],
+        }
+    )
+    ms = to_feature_space("ms_proteomics", pg, id_col="Protein IDs", sample_cols=["Intensity a", "Intensity b"])
+    assert sorted(ms.X.columns) == ["P01024", "P02768"] and list(ms.X.index) == ["Intensity a", "Intensity b"]
+    assert np.isnan(ms.X.loc["Intensity a", "P01024"]) and ms.X.loc["Intensity b", "P01024"] == 6.0
+    assert ms.X.loc["Intensity a", "P02768"] == 11.0  # mean of log2 1024 and 4096
+    assert ms.notes["groups_contaminant_or_decoy"] == "2"
+    # DIA-NN sorts a group's accessions alphabetically; a preferred (reviewed) accession wins
+    dia = pd.DataFrame({"Protein.Group": ["A0A087WWT3;P02768", "A0A0B4J2F0"], "r1": [8.0, 4.0]})
+    d = to_feature_space("ms_proteomics", dia, id_col="Protein.Group", sample_cols=["r1"], preferred_accessions={"P02768"})
+    assert sorted(d.X.columns) == ["A0A0B4J2F0", "P02768"] and d.notes["groups_keyed_outside_preferred"] == "1"
+    assert sorted(to_feature_space("ms_proteomics", dia, id_col="Protein.Group", sample_cols=["r1"]).X.columns) == ["A0A087WWT3", "A0A0B4J2F0"]
+    with pytest.raises(KeyError):
+        to_feature_space("unknown_layer", raw)
+
