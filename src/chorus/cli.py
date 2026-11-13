@@ -94,7 +94,7 @@ def load_config(path: str, extra_features=()) -> tuple:
         cs = cs.deduplicate_subjects()
     feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5))
     cfg["filtered_features"] = list(feats)
-    extra = [g for g in extra_features if g not in set(feats) and any(g in c.features for c in cs.cohorts)]
+    extra = [g for g in dict.fromkeys(extra_features) if g not in set(feats) and any(g in c.features for c in cs.cohorts)]
     cs = to_continuous(cs, feats.append(pd.Index(extra)))
     b = dict(cfg.get("benchmark", {}))
     for s in b.get("selectors", []):

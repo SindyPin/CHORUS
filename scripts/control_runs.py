@@ -72,7 +72,7 @@ def forced_sex_genes(cs: CohortSet, chroms: pd.Series, min_cpm: float = 1.0, min
 def sex_control(config: str, out: Path, gene_table: str) -> None:
     chroms = gene_chromosomes(gene_table)
     ychr = list(chroms.index[chroms == "chrY"])
-    cs, lc, cfg = load_config(config, extra_features=[XIST, RPS4Y1] + ychr)
+    cs, lc, cfg = load_config(config, extra_features=[XIST, RPS4Y1] + [g for g in ychr if g != RPS4Y1])
     cohorts, counts = [], []
     for c in cs.cohorts:
         if "inferred_sex" not in c.meta.columns:

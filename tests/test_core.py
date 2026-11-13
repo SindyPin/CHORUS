@@ -503,3 +503,21 @@ def test_rerun_of_some_harmonisers_replaces_only_their_rows(sim, tmp_path):
     assert (r.loc[r["harmoniser"].isin(["center_scale", "nested"]), "auroc"] == -1).all()
     assert (r.loc[r["harmoniser"] == "identity", "auroc"].values == res.loc[res["harmoniser"] == "identity", "auroc"].values).all()
     assert list(r[["held_out", "harmoniser"]].itertuples(index=False)) == list(res[["held_out", "harmoniser"]].itertuples(index=False))
+
+
+def test_load_config_extra_features_deduplicated(sim, tmp_path):
+    import yaml
+
+    from chorus.cli import load_config
+
+    cohorts = []
+    g = sim.cohorts[0].features[0]
+    for i, c in enumerate(sim.cohorts):
+        X = c.X.drop(columns=g) if i == 1 else c.X  # g fails the shared filter, so it can only enter as an extra
+        X.T.to_csv(tmp_path / f"{c.study_id}.tsv", sep="\t")
+        c.meta.to_csv(tmp_path / f"{c.study_id}_meta.csv", index=False)
+        cohorts.append({"study_id": c.study_id, "matrix": str(tmp_path / f"{c.study_id}.tsv"), "meta": str(tmp_path / f"{c.study_id}_meta.csv"), "is_counts": False})
+    (tmp_path / "c.yaml").write_text(yaml.safe_dump({"layer": "bulk_rna", "cohorts": cohorts, "preprocessing": {"deduplicate": False}, "benchmark": {}}))
+    cs, _, cfg = load_config(str(tmp_path / "c.yaml"), extra_features=["NOT_THERE", g, g])
+    assert g not in cfg["filtered_features"] and list(cs.cohorts[0].X.columns).count(g) == 1
+    assert cs.cohorts[1].X[g].isna().all()
