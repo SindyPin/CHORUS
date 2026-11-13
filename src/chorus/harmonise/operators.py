@@ -223,13 +223,15 @@ class GenePairRank(Harmoniser):
 class AddonComBat(Harmoniser):
     """Location/scale ComBat style adjustment with addon estimation.
 
-    Training studies: for each feature, batch means (optionally after regressing out
-    protected covariates such as the outcome and sex) and batch variances are estimated and
-    each study is shifted and scaled to the grand mean and pooled variance. A protected
-    covariate that is constant within a study is dropped from that study's design, so that
-    it cannot move the study location (the intercept). Shrinkage of the
-    batch parameters toward their across-feature average is applied with weight ``shrink``
-    (0 = none, approximating limma removeBatchEffect; 1 = full pooling).
+    Training studies: for each feature, the study location and variance are estimated and each
+    study is shifted and scaled to the grand mean and pooled variance of the training pool. The
+    outcome and any protected covariates enter the per study design centred within the study,
+    so the location (the intercept) is the study mean and the covariates only remove their
+    variation from the variance estimate; a covariate constant within a study is dropped from
+    that study's design. Optional shrinkage of the batch parameters toward their across-feature
+    average with weight ``shrink`` (0 = none, the default, approximating limma
+    removeBatchEffect; 1 = full pooling); with ``shrink`` > 0 part of each feature's study
+    offset is kept, so the study means are no longer equal after transform.
 
     New study at transform time: location and scale are estimated from that study alone,
     without covariates, exactly as the bapred "addon" variant. This keeps the held-out study
@@ -240,7 +242,7 @@ class AddonComBat(Harmoniser):
 
     name = "combat_addon"
 
-    def __init__(self, protect: Optional[pd.DataFrame] = None, shrink: float = 0.5, eps: float = 1e-8):
+    def __init__(self, protect: Optional[pd.DataFrame] = None, shrink: float = 0.0, eps: float = 1e-8):
         self.protect = protect
         self.shrink = shrink
         self.eps = eps
@@ -248,13 +250,13 @@ class AddonComBat(Harmoniser):
     def _batch_params(self, block: np.ndarray, Z: Optional[np.ndarray]) -> tuple:
         if Z is not None:
             # a covariate constant within the study (for example sample_matrix in a single matrix
-            # cohort) is collinear with the intercept; the least squares intercept is then not
-            # unique and the minimum norm solution is not the study location, so it is dropped
+            # cohort) is collinear with the intercept, so it is dropped
             Z = Z[:, np.ptp(Z, axis=0) > 0] if Z.shape[0] else Z
             if Z.shape[1] == 0:
                 Z = None
         if Z is not None and Z.shape[0] == block.shape[0] and Z.shape[0] > Z.shape[1] + 2:
-            Zc = np.column_stack([np.ones(len(block)), Z])
+            # covariates centred within the study: the intercept is then the study mean
+            Zc = np.column_stack([np.ones(len(block)), Z - Z.mean(axis=0)])
             beta, *_ = np.linalg.lstsq(Zc, block, rcond=None)
             resid = block - Zc @ beta
             mu = beta[0]

@@ -521,3 +521,35 @@ def test_load_config_extra_features_deduplicated(sim, tmp_path):
     cs, _, cfg = load_config(str(tmp_path / "c.yaml"), extra_features=["NOT_THERE", g, g])
     assert g not in cfg["filtered_features"] and list(cs.cohorts[0].X.columns).count(g) == 1
     assert cs.cohorts[1].X[g].isna().all()
+
+
+def test_combat_addon_training_study_means_equal_after_transform():
+    # study offsets per gene, different case fractions, label effect on half of the genes and a
+    # protected covariate that varies within studies: after fit and transform every training
+    # study has the same per gene mean (the pool mean) and the same per gene variance
+    rng = np.random.default_rng(1)
+    p, frac, sizes = 60, [0.2, 0.5, 0.8], [30, 50, 40]
+    blocks, studies, ys, cov = [], [], [], []
+    for k, (n, f) in enumerate(zip(sizes, frac)):
+        y = (rng.random(n) < f).astype(float)
+        c = rng.normal(size=n)
+        B = rng.normal(size=(n, p)) * np.exp(rng.normal(0, 0.4, p)) + rng.normal(0, 2, p)
+        B[:, : p // 2] += 1.5 * y[:, None]
+        B += 0.8 * c[:, None]
+        blocks.append(B)
+        studies += [f"S{k}"] * n
+        ys.append(y)
+        cov.append(c)
+    idx = [f"x{i}" for i in range(sum(sizes))]
+    X = pd.DataFrame(np.vstack(blocks), index=idx, columns=[f"g{j}" for j in range(p)])
+    s = pd.Series(studies, index=idx)
+    y = pd.Series(np.concatenate(ys), index=idx)
+    prot = pd.DataFrame({"c": np.concatenate(cov)}, index=idx)
+    for H in [make_harmoniser("combat_addon"), make_harmoniser("combat_addon", protect=prot)]:
+        Z = H.fit(X, s, y).transform(X, s)
+        mu = Z.groupby(s).mean()
+        assert np.allclose(mu.values, Z.mean().values[None, :], atol=1e-8), (mu - Z.mean()).abs().max().max()
+    # shrinkage, when asked for, keeps part of the offsets
+    Z = make_harmoniser("combat_addon", shrink=0.5).fit(X, s, y).transform(X, s)
+    assert (Z.groupby(s).mean() - Z.mean()).abs().max().max() > 0.1
+
