@@ -53,6 +53,7 @@ class LosoConfig:
     n_boot: int = 500
     random_state: int = 0
     sample_mask: Optional[pd.Series] = None  # optional boolean mask over pooled index (sensitivity analyses)
+    drop_incomplete_features: bool = False  # per fold, drop features with a missing value in a training or held-out sample
 
 
 def _covariate_matrix(meta: pd.DataFrame, covariates: List[str]) -> pd.DataFrame:
@@ -153,6 +154,11 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
         if s_all[tr].nunique() < cfg.min_train_studies:
             continue
         X_tr, X_te, y_tr, s_tr, s_te = X_all[tr], X_all[te], y_all[tr], s_all[tr], s_all[te]
+        n_dropped = 0
+        if cfg.drop_incomplete_features:
+            complete = X_tr.notna().all(axis=0) & X_te.notna().all(axis=0)
+            n_dropped = int((~complete).sum())
+            X_tr, X_te = X_tr.loc[:, complete], X_te.loc[:, complete]
         protect_tr = None if prot_all is None else prot_all.loc[X_tr.index]
         for sel_cfg in cfg.selectors:
             for h in harmonisers:
@@ -195,6 +201,7 @@ def run_loso(cs: CohortSet, cfg: LosoConfig, features: Optional[pd.Index] = None
                             "leak_risk": leak,
                             "selector": selector_label(sel_cfg),
                             "n_features": Xs_tr.shape[1],
+                            "n_features_dropped_incomplete": n_dropped,
                             "n_strict_invariant": getattr(sel, "n_strict_", np.nan),
                             "sign_agreement": conc["sign_agreement"],
                             "effect_spearman": conc["effect_spearman"],

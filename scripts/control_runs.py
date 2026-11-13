@@ -7,6 +7,13 @@ sex      Positive control: the label is inferred_sex (female = positive, male = 
          invariant selectors; logreg. Run twice: on the filtered genes of the config
          (all_genes) and on the same genes without those on chrX or chrY (no_xy, chromosomes
          from the GENCODE v47 tx2gene table). This replaces the earlier sample_matrix control.
+         A third set (forced_sex_genes) adds XIST, RPS4Y1 and the expressed chrY genes to
+         all_genes: a chrY gene (chrY only, not pseudoautosomal) counts as expressed in a cohort
+         when its log2 CPM is at least log2(min_cpm) in at least min_fraction_samples of the
+         cohort's inferred male samples (the expression filter of the config applied to males);
+         elsewhere it is set to missing. Per fold a forced gene is used only when every training
+         cohort and the held-out cohort have it (the held-out cohort must be scored), so
+         LosoConfig.drop_incomplete_features is set for this set.
 
 permute  Label permutation control: lc_status is shuffled within each cohort among the samples in
          the LC versus COVID_recovered contrast (class counts per cohort unchanged), then the
@@ -38,8 +45,34 @@ from chorus.sex import RPS4Y1, XIST, gene_chromosomes, sex_chromosome_genes
 GENE_TABLE = "data/quant/GSE224615/tx2gene_gencode_v47.tsv"
 
 
+def forced_sex_genes(cs: CohortSet, chroms: pd.Series, min_cpm: float = 1.0, min_fraction: float = 0.5):
+    """Mask the chrY only genes that are not expressed in a cohort's inferred males.
+
+    Returns (cohort set with those values set to missing, candidate genes, presence table with
+    one row per gene and cohort: in_matrix, expressed_in_males, fraction of males at or above
+    the threshold, n_males)."""
+    ychr = [g for g in chroms.index[chroms == "chrY"]]
+    cand = [XIST, RPS4Y1] + [g for g in ychr if g != RPS4Y1]
+    cand = [g for g in cand if any(g in c.features and c.X[g].notna().any() for c in cs.cohorts)]
+    rows, cohorts = [], []
+    for c in cs.cohorts:
+        X = c.X.copy()
+        males = c.meta.index[c.meta["inferred_sex"] == "male"]
+        for g in cand:
+            present = g in X.columns and bool(X[g].notna().all())
+            frac = float((X.loc[males, g] >= np.log2(min_cpm)).mean()) if present and len(males) else np.nan
+            expressed = g in (XIST, RPS4Y1) or (present and frac >= min_fraction)
+            if g in X.columns and not (present and expressed):
+                X[g] = np.nan
+            rows.append({"study_id": c.study_id, "gene_id": g, "in_matrix": present, "frac_males_expressed": frac, "n_males": len(males), "used": present and expressed})
+        cohorts.append(Cohort(c.study_id, c.layer, X, c.meta, c.feature_space, c.is_counts, dict(c.source)))
+    return CohortSet(cohorts), cand, pd.DataFrame(rows)
+
+
 def sex_control(config: str, out: Path, gene_table: str) -> None:
-    cs, lc, cfg = load_config(config)
+    chroms = gene_chromosomes(gene_table)
+    ychr = list(chroms.index[chroms == "chrY"])
+    cs, lc, cfg = load_config(config, extra_features=[XIST, RPS4Y1] + ychr)
     cohorts, counts = [], []
     for c in cs.cohorts:
         if "inferred_sex" not in c.meta.columns:
@@ -54,9 +87,21 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
     print(counts.to_string(index=False))
 
     feats = pd.Index(cfg["filtered_features"])
-    chroms = gene_chromosomes(gene_table)
     xy = set(sex_chromosome_genes(chroms, feats))
-    feature_sets = {"all_genes": feats, "no_xy": feats[~feats.isin(xy)]}
+    pre = cfg.get("preprocessing", {})
+    cs2, forced, presence = forced_sex_genes(cs2, chroms, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5))
+    forced = [g for g in forced if g not in set(feats)]
+    feature_sets = {"all_genes": feats, "no_xy": feats[~feats.isin(xy)], "forced_sex_genes": feats.append(pd.Index(forced))}
+    # per fold use of the forced genes: present in every training cohort and in the held-out cohort
+    used = presence.pivot(index="gene_id", columns="study_id", values="used").reindex(forced)
+    fold_rows = []
+    for held_out in cs2.study_ids:
+        if counts.set_index("study_id").reindex([held_out]).reindex(columns=["female", "male"]).fillna(0).min(axis=1).iloc[0] < lc.min_test_per_class:
+            continue
+        train = [s for s in cs2.study_ids if s != held_out]
+        for g in forced:
+            fold_rows.append({"held_out": held_out, "gene_id": g, "in_every_training_cohort": bool(used.loc[g, train].all()), "in_held_out": bool(used.loc[g, held_out]), "used": bool(used.loc[g, train].all() and used.loc[g, held_out])})
+    folds = pd.DataFrame(fold_rows)
     on = chroms.reindex(feats)
     info = pd.DataFrame(
         [
@@ -68,6 +113,7 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
                 "n_chromosome_unknown": int(on.reindex(f).isna().sum()),
                 "XIST_in": XIST in f,
                 "RPS4Y1_in": RPS4Y1 in f,
+                "n_forced": len([g for g in f if g in set(forced)]),
             }
             for name, f in feature_sets.items()
         ]
@@ -86,9 +132,16 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
     out.mkdir(parents=True, exist_ok=True)
     counts.to_csv(out / "cohorts.csv", index=False)
     info.to_csv(out / "feature_sets.csv", index=False)
+    sym = _symbols()
+    presence.insert(2, "symbol", presence["gene_id"].map(sym))
+    presence.insert(3, "chrom", presence["gene_id"].map(chroms))
+    presence.to_csv(out / "forced_genes_by_cohort.csv", index=False)
+    folds.insert(2, "symbol", folds["gene_id"].map(sym))
+    folds.to_csv(out / "forced_genes_by_fold.csv", index=False)
+    print(folds.groupby("held_out")["used"].sum().to_string())
     allres = []
     for name, f in feature_sets.items():
-        res, preds, selected = run_loso(cs2, cfg2, features=f)
+        res, preds, selected = run_loso(cs2, dataclasses.replace(cfg2, drop_incomplete_features=name == "forced_sex_genes"), features=f)
         d = out / name
         d.mkdir(exist_ok=True)
         res.to_csv(d / "loso_results.csv", index=False)
@@ -98,9 +151,16 @@ def sex_control(config: str, out: Path, gene_table: str) -> None:
             summarise(res).to_csv(d / "loso_summary.csv")
         allres.append(res.assign(feature_set=name))
     res = pd.concat(allres, ignore_index=True)
-    cols = ["feature_set", "held_out", "harmoniser", "selector", "classifier", "n_features", "auroc", "auroc_lo", "auroc_hi", "error"]
+    cols = ["feature_set", "held_out", "harmoniser", "selector", "classifier", "n_features", "n_features_dropped_incomplete", "auroc", "auroc_lo", "auroc_hi", "error"]
     res.reindex(columns=cols).to_csv(out / "auroc_by_held_out.csv", index=False)
     print(res.reindex(columns=cols).to_string(index=False))
+
+
+def _symbols(path: str = "data/ref/hgnc_complete_set.txt") -> pd.Series:
+    if not Path(path).exists():
+        return pd.Series(dtype=str)
+    t = pd.read_csv(path, sep="\t", usecols=["symbol", "ensembl_gene_id"], dtype=str).dropna()
+    return t.drop_duplicates("ensembl_gene_id").set_index("ensembl_gene_id")["symbol"]
 
 
 def permutation_control(config: str, out: Path, n_perm: int, seed: int) -> None:

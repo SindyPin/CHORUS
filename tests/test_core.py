@@ -400,3 +400,35 @@ def test_combat_addon_protected_covariate_constant_within_study():
         assert abs(means[name]["A"] - means[name]["B"]) < 0.3, means
         assert np.allclose(means[name], 2.5, atol=0.3), means
     assert np.allclose(means["protect"], means["none"])
+
+
+def test_sex_control_forced_genes_and_incomplete_feature_drop(sim):
+    from chorus.io import Cohort, CohortSet
+    from chorus.sex import RPS4Y1, XIST
+
+    ctl = _load_script("control_runs")
+    rng = np.random.default_rng(0)
+    cohorts = []
+    for i, c in enumerate(sim.cohorts):
+        X = c.X.iloc[:, :60].copy()
+        meta = c.meta.copy()
+        female = rng.random(len(X)) < 0.5
+        meta["inferred_sex"] = np.where(female, "female", "male")
+        if i != 0:  # the first cohort has no XIST row, as GSE270045
+            X[XIST] = np.where(female, 6.0, -3.0) + rng.normal(0, 0.3, len(X))
+        X[RPS4Y1] = np.where(female, -4.0, 7.0) + rng.normal(0, 0.3, len(X))
+        X["YEXPR"] = np.where(female, -5.0, 4.0)  # chrY gene expressed in males everywhere
+        X["YLOW"] = np.where(female, -5.0, -2.0 if i == 1 else 4.0)  # not expressed in the males of cohort 1
+        cohorts.append(Cohort(c.study_id, c.layer, X, meta, c.feature_space, False, dict(c.source)))
+    chroms = pd.Series({"YEXPR": "chrY", "YLOW": "chrY", RPS4Y1: "chrY", XIST: "chrX"})
+    cs, cand, presence = ctl.forced_sex_genes(CohortSet(cohorts), chroms)
+    assert set(cand) == {XIST, RPS4Y1, "YEXPR", "YLOW"}
+    p = presence.set_index(["study_id", "gene_id"])["used"]
+    assert not p[(sim.study_ids[0], XIST)] and p[(sim.study_ids[1], XIST)]
+    assert not p[(sim.study_ids[1], "YLOW")] and p[(sim.study_ids[0], "YLOW")] and p.xs("YEXPR", level="gene_id").all()
+    assert cs[sim.study_ids[1]].X["YLOW"].isna().all()
+    cfg = LosoConfig(harmonisers=["identity"], selectors=[{"name": "variance", "k": 10}], classifiers=["logreg"], n_boot=10, drop_incomplete_features=True)
+    feats = list(sim.cohorts[0].features[:60]) + [XIST, RPS4Y1, "YEXPR", "YLOW"]
+    res, _, _ = run_loso(cs, cfg, features=feats, verbose=False)
+    assert "error" not in res.columns or res["error"].isna().all()
+    assert (res["n_features_dropped_incomplete"] == 2).all()  # XIST and YLOW are missing in some cohort of every fold
