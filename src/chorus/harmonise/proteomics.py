@@ -71,6 +71,35 @@ def ms_median_normalise(cs: CohortSet, min_detect_fraction: float = 0.7, log_tra
     return CohortSet(out)
 
 
+IMPUTE_METHODS = ("none", "study_min", "study_median")
+
+
+def impute_within_study(cs: CohortSet, method: str = "study_min", per_study: Optional[dict] = None) -> tuple:
+    """Fill missing values of each cohort from that cohort's own values of the same protein, without
+    labels: ``study_min`` (the smallest observed value, for MS intensities missing mostly below
+    detection) or ``study_median`` (for affinity values masked at QC). ``per_study`` maps a study
+    id to its own method. A protein with no value in a cohort stays missing there. The held-out
+    cohort of a LOSO fold is filled from its own values only, so this is addon safe.
+
+    Returns (imputed cohort set, observed fraction table: feature x study, before imputation).
+    The number of values filled is recorded in each cohort's ``source['n_values_imputed']``."""
+    out, observed = [], {}
+    for c in cs.cohorts:
+        how = (per_study or {}).get(c.study_id, method)
+        if how not in IMPUTE_METHODS:
+            raise ValueError(f"{c.study_id}: unknown imputation {how}; choose from {IMPUTE_METHODS}")
+        X = c.X.astype(float)
+        observed[c.study_id] = X.notna().mean(axis=0)
+        n_missing = X.isna().values.sum()
+        if how == "study_min":
+            X = X.fillna(X.min(axis=0))
+        elif how == "study_median":
+            X = X.fillna(X.median(axis=0))
+        n_filled = int(n_missing - X.isna().values.sum())
+        out.append(Cohort(c.study_id, c.layer, X, c.meta, c.feature_space, c.is_counts, {**c.source, "impute": how, "n_values_imputed": n_filled}))
+    return CohortSet(out), pd.DataFrame(observed)
+
+
 def missingness_indicators(X: pd.DataFrame, min_missing_fraction: float = 0.05) -> pd.DataFrame:
     """Binary indicators for proteins with meaningful missingness, to append as features."""
     frac = X.isna().mean(axis=0)

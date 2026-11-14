@@ -1,0 +1,37 @@
+# CHORUS proteomics Test 1, MS block: Long COVID versus COVID recovered from plasma or serum mass spectrometry
+# (DIA and DDA discovery proteomics), leave one study out on the proteins shared by all three cohorts (UniProt keys of
+# the leading protein, docs/proteomics_cohorts.md). Cohort files are written by scripts/proteomics/build_all.py;
+# curation decisions of 15 November 2026 are applied in the builders (docs/proteomics_cohorts.md, "Curation decisions").
+layer: proteomics
+cohorts:
+  - {study_id: Cervia2024_MS,      matrix: data/proteomics/Cervia2024_MS/Cervia2024_MS_matrix.csv,           meta: data/meta/Cervia2024_MS_meta.csv,      feature_space: uniprot, accession: "doi:10.17632/dvf6yvrg4x.1"}
+    # Cervia-Hasler 2024 (Science). DIA-NN MaxLFQ log2, serum, 6-month samples; the same people as Cervia2024_SomaScan (affinity block).
+  - {study_id: Chowdhury2024,      matrix: data/proteomics/Chowdhury2024/Chowdhury2024_matrix.csv,           meta: data/meta/Chowdhury2024_meta.csv,      feature_space: uniprot, accession: PXD047623}
+    # Chowdhury 2024 (Front Physiol). DIA-NN 1.8.1 pg_matrix log2, plasma; LC sampled before and after an exercise intervention:
+    # the pre-intervention sample is kept (timepoint_order); controls are convalescent_unverified.
+  - {study_id: Kovarik2023_plasma, matrix: data/proteomics/Kovarik2023_plasma/Kovarik2023_plasma_matrix.csv, meta: data/meta/Kovarik2023_plasma_meta.csv, feature_space: uniprot, accession: PXD036969}
+    # Kovarik 2023 (iScience). MaxQuant LFQ log2 (timsTOF DDA-PASEF), EDTA plasma; one sample per person.
+preprocessing:
+  matrices: [plasma, serum]
+  drop_sample_phases: [acute]
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [pre_intervention, post_intervention]
+  deduplicate: true
+  impute: study_min                         # MS intensities missing mostly below detection; per cohort, label free
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [identity, center_scale, rank, fsqn, combat_addon, chorus]
+  selectors:
+    - {name: variance, k: 100}
+    - {name: differential, k: 50}
+    - {name: invariant, k: 50}
+  classifiers: [logreg, rf]
+  covariates: []
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/lc_proteomics_ms

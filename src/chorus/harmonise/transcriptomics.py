@@ -16,22 +16,24 @@ import pandas as pd
 from ..io import Cohort, CohortSet
 
 
-def filter_low_counts(cs: CohortSet, min_cpm: float = 1.0, min_fraction_samples: float = 0.5) -> pd.Index:
+def filter_low_counts(cs: CohortSet, min_cpm: float = 1.0, min_fraction_samples: float = 0.5, combine: str = "intersection") -> pd.Index:
     """Genes with CPM >= min_cpm in at least ``min_fraction_samples`` of samples in EVERY study.
 
     Filtering per study and intersecting avoids keeping genes that are only expressed in one
-    platform (for example globin or neutrophil genes in whole blood versus PBMC).
+    platform (for example globin or neutrophil genes in whole blood versus PBMC). A cohort that
+    is not counts contributes every feature with at least one value. ``combine="union"`` keeps
+    the features that pass in any study instead (pairwise comparisons on shared features).
     """
     keep: Optional[set] = None
     for c in cs.cohorts:
         if not c.is_counts:
-            genes = set(c.features)
+            genes = set(c.features[c.X.notna().any(axis=0).values])
         else:
             lib = c.X.sum(axis=1).replace(0, np.nan)
             cpm = c.X.div(lib, axis=0) * 1e6
             frac = (cpm >= min_cpm).mean(axis=0)
             genes = set(frac.index[frac >= min_fraction_samples])
-        keep = genes if keep is None else keep & genes
+        keep = genes if keep is None else (keep | genes if combine == "union" else keep & genes)
     return pd.Index(sorted(keep or []))
 
 

@@ -14,8 +14,16 @@ that pass the expression filter in every cohort). Outputs, in --out:
   cohort_annotation.csv         per cohort: case_definition, control type (lc_status of the
                                 negative class), time_anchor, sample matrix, class counts and
                                 days_since_infection per class, all from the metadata
+  n_shared.csv                  cohort x cohort number of features with an effect in both
+
+Proteomics configs (feature_space uniprot) are keyed by UniProt accession; the symbol comes from
+the uniprot_ids column of the HGNC complete set (a multi-protein key "P1_P2" gets the symbols
+joined by "_"). With ``preprocessing: features: union`` in the config, every cohort keeps its own
+features and each pair of cohorts is correlated over the features both have (n_shared.csv). The
+values are those after the config's preprocessing, including its imputation.
 
   python scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance
+  python scripts/concordance.py configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/concordance --top 50
 """
 
 from __future__ import annotations
@@ -56,6 +64,26 @@ def spearman_matrix(effects: pd.DataFrame) -> tuple:
             r.loc[a, b] = r.loc[b, a] = rho
             p.loc[a, b] = p.loc[b, a] = pv
     return r, p
+
+
+def shared_counts(effects: pd.DataFrame) -> pd.DataFrame:
+    """Number of features with a value in both columns, for every pair of columns."""
+    ok = effects.notna().astype(int)
+    return ok.T @ ok
+
+
+def feature_symbols(features: pd.Index, hgnc: str, feature_space: str = "ensembl_gene") -> pd.Series:
+    """HGNC symbol per feature: by Ensembl gene id, or by UniProt accession for ``uniprot``."""
+    if feature_space != "uniprot":
+        t = pd.read_csv(hgnc, sep="\t", usecols=["symbol", "ensembl_gene_id"], dtype=str).dropna()
+        return t.drop_duplicates("ensembl_gene_id").set_index("ensembl_gene_id")["symbol"].reindex(features)
+    t = pd.read_csv(hgnc, sep="\t", usecols=["symbol", "uniprot_ids"], dtype=str).dropna()
+    acc = {}
+    for sym, ids in zip(t["symbol"], t["uniprot_ids"]):
+        for a in ids.split("|"):
+            acc.setdefault(a.strip(), sym)
+    out = [("_".join(acc.get(a, "") for a in str(f).split("_")) if all(a in acc for a in str(f).split("_")) else None) for f in features]
+    return pd.Series(out, index=features, dtype=object)
 
 
 def strongest_genes(effects: pd.DataFrame, n: int = 500) -> pd.Series:
@@ -108,13 +136,15 @@ def main():
     eff = cohort_effects(X, M, lc.positive, lc.negative)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    sym = pd.read_csv(a.hgnc, sep="\t", usecols=["symbol", "ensembl_gene_id"], dtype=str).dropna().drop_duplicates("ensembl_gene_id").set_index("ensembl_gene_id")["symbol"]
-    eff.insert(0, "symbol", sym.reindex(eff.index).values)
+    space = cs.cohorts[0].feature_space
+    sym = feature_symbols(eff.index, a.hgnc, space)
+    eff.insert(0, "symbol", sym.values)
     eff.rename_axis("gene_id").to_csv(out / "effects.csv")
     g = eff.drop(columns="symbol")
     r, p = spearman_matrix(g)
     r.to_csv(out / "spearman_all_genes.csv")
     p.to_csv(out / "spearman_all_genes_p.csv")
+    shared_counts(g).to_csv(out / "n_shared.csv")
     top = strongest_genes(g, a.top)
     pd.DataFrame({"symbol": sym.reindex(top.index).values, "mean_abs_g": top.values}, index=top.index.rename("gene_id")).to_csv(out / f"top{a.top}_genes.csv")
     rt, pt = spearman_matrix(g.loc[top.index])

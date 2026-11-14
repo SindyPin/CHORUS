@@ -1,0 +1,27 @@
+# CHORUS proteomics concordance across both blocks: within-cohort LC versus COVID recovered effects (Hedges g) of the six
+# Test 1 cohorts, each on its own proteins, correlated pair by pair over the proteins the two cohorts share
+# (scripts/concordance.py; preprocessing features: union). Same sample selection and imputation as
+# configs/lc_proteomics_affinity.yaml and configs/lc_proteomics_ms.yaml. Not a benchmark config.
+# deduplicate is off: Cervia2024_SomaScan and Cervia2024_MS are the same people measured on two platforms, and each
+# cohort's effects are computed on its own samples.
+layer: proteomics
+cohorts:
+  - {study_id: Buggert2025,         matrix: data/proteomics/Buggert2025/Buggert2025_matrix.csv,                 meta: data/meta/Buggert2025_meta.csv,         feature_space: uniprot, impute: study_median}
+  - {study_id: Cervia2024_SomaScan, matrix: data/proteomics/Cervia2024_SomaScan/Cervia2024_SomaScan_matrix.csv, meta: data/meta/Cervia2024_SomaScan_meta.csv, feature_space: uniprot, impute: study_median}
+  - {study_id: Su2022,              matrix: data/proteomics/Su2022/Su2022_matrix.csv,                           meta: data/meta/Su2022_meta.csv,              feature_space: uniprot, impute: study_median}
+  - {study_id: Cervia2024_MS,       matrix: data/proteomics/Cervia2024_MS/Cervia2024_MS_matrix.csv,             meta: data/meta/Cervia2024_MS_meta.csv,       feature_space: uniprot, impute: study_min}
+  - {study_id: Chowdhury2024,       matrix: data/proteomics/Chowdhury2024/Chowdhury2024_matrix.csv,             meta: data/meta/Chowdhury2024_meta.csv,       feature_space: uniprot, impute: study_min}
+  - {study_id: Kovarik2023_plasma,  matrix: data/proteomics/Kovarik2023_plasma/Kovarik2023_plasma_matrix.csv,   meta: data/meta/Kovarik2023_plasma_meta.csv,  feature_space: uniprot, impute: study_min}
+preprocessing:
+  matrices: [plasma, serum]
+  drop_sample_phases: [acute]
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [T1, T2, T3, pre_intervention, post_intervention]
+  deduplicate: false
+  features: union
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+out: results/concordance_proteomics_all

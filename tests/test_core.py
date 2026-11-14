@@ -707,3 +707,118 @@ def test_proteomics_write_cohort_contract_and_shared_protein_table(tmp_path, mon
         common.write_cohort("C", b, mb.assign(lc_status="long_covid"))
     with pytest.raises(ValueError):
         common.write_cohort("C", b, mb.iloc[:1])
+
+
+def _prot_cohort_files(tmp_path, study, X, meta):
+    """Write a UniProt x sample matrix and its metadata as the proteomics builders do."""
+    X.T.rename_axis("uniprot").to_csv(tmp_path / f"{study}_matrix.csv")
+    meta.rename_axis("sample_id").assign(study_id=study, omics_layer="proteomics").to_csv(tmp_path / f"{study}_meta.csv")
+    return {"study_id": study, "matrix": str(tmp_path / f"{study}_matrix.csv"), "meta": str(tmp_path / f"{study}_meta.csv"), "feature_space": "uniprot"}
+
+
+def test_proteomics_preprocessing_phase_filter_timepoint_order_and_imputation(tmp_path):
+    import yaml
+
+    from chorus.cli import load_config
+
+    rng = np.random.default_rng(0)
+    base = {"case_definition": "study_specific", "sample_matrix": "plasma"}
+    # A: subject a0 has an acute and a post acute LC sample; a1 has pre and post intervention samples (post first in file)
+    ma = pd.DataFrame(
+        [
+            {"subject_id": "a0", "lc_status": "LC", "sample_phase": "acute", "timepoint": "T1"},
+            {"subject_id": "a0", "lc_status": "LC", "sample_phase": "post_acute", "timepoint": "T3"},
+            {"subject_id": "a1", "lc_status": "LC", "sample_phase": "post_acute", "timepoint": "post_intervention"},
+            {"subject_id": "a1", "lc_status": "LC", "sample_phase": "post_acute", "timepoint": "pre_intervention"},
+            {"subject_id": "a2", "lc_status": "COVID_recovered", "sample_phase": "post_acute", "timepoint": "single_visit"},
+            {"subject_id": "a3", "lc_status": "never_infected", "sample_phase": "not_applicable", "timepoint": "single_visit"},
+        ],
+        index=[f"A{i}" for i in range(6)],
+    ).assign(**base)
+    Xa = pd.DataFrame(rng.normal(size=(6, 3)), index=ma.index, columns=["P1", "P2", "P3"])
+    Xa.loc["A4", "P1"] = np.nan  # one missing value in a kept sample
+    Xa.loc[:, "P3"] = np.nan  # P3 has no value in A: not shared
+    mb = pd.DataFrame({"subject_id": ["b0", "b1"], "lc_status": ["LC", "COVID_recovered"], "sample_phase": "post_acute", "timepoint": "single_visit"}, index=["B0", "B1"]).assign(**base)
+    Xb = pd.DataFrame([[1.0, 2.0, 3.0], [5.0, np.nan, 4.0]], index=mb.index, columns=["P1", "P2", "P4"])
+    cfg = {
+        "layer": "proteomics",
+        "cohorts": [_prot_cohort_files(tmp_path, "A", Xa, ma), _prot_cohort_files(tmp_path, "B", Xb, mb)],
+        "preprocessing": {
+            "matrices": ["plasma"],
+            "drop_sample_phases": ["acute"],
+            "keep_lc_status": ["LC", "COVID_recovered"],
+            "one_sample_per_subject": True,
+            "acute_timepoints": [],
+            "timepoint_order": ["T1", "T2", "T3", "pre_intervention", "post_intervention"],
+            "impute": "study_min",
+        },
+        "benchmark": {},
+    }
+    cfg["preprocessing"].pop("matrices")  # select_tissue keeps cohorts with at least 6 samples of the matrix
+    path = tmp_path / "c.yaml"
+    path.write_text(yaml.safe_dump(cfg))
+    cs, _, out = load_config(str(path))
+    # a0: acute sample dropped; a1: pre_intervention kept although later in file; a3 (never_infected) dropped
+    assert set(cs["A"].meta.index) == {"A1", "A3", "A4"}
+    assert out["filtered_features"] == ["P1", "P2"]  # P3 has no value in A, P4 is absent from A
+    a = cs["A"].X
+    assert a.loc["A4", "P1"] == pytest.approx(Xa.loc[["A1", "A3"], "P1"].min())  # study minimum of the kept samples
+    assert cs["B"].X.loc["B1", "P2"] == 2.0 and cs["B"].source["n_values_imputed"] == 1
+    assert out["observed_fraction"].loc["P1", "A"] == pytest.approx(2 / 3)
+    # union keeps every feature with a value somewhere; a feature absent from a cohort stays missing there
+    cfg["preprocessing"].update(features="union", impute="study_median")
+    path.write_text(yaml.safe_dump(cfg))
+    cs, _, out = load_config(str(path))
+    assert out["filtered_features"] == ["P1", "P2", "P4"]
+    assert cs["A"].X["P4"].isna().all() and cs["B"].X["P4"].notna().all()
+
+
+def test_relabel_acute_keeps_the_earliest_acute_draw_and_the_original_status():
+    from chorus.io import Cohort, CohortSet
+
+    meta = pd.DataFrame(
+        {
+            "subject_id": ["s0", "s0", "s0", "s1", "s2"],
+            "lc_status": ["LC", "LC", "LC", "never_infected", "unknown"],
+            "sample_phase": ["acute", "acute", "post_acute", "not_applicable", "acute"],
+            "timepoint": ["T2", "T1", "T3", "single_visit", "T1"],
+            "case_definition": "study_specific",
+            "sample_matrix": "plasma",
+        },
+        index=["x0", "x1", "x2", "x3", "x4"],
+    )
+    cs = CohortSet([Cohort("S", "proteomics", pd.DataFrame({"P1": range(5)}, index=meta.index, dtype=float), meta)])
+    cs = cs.relabel_acute().filter_samples(keep_lc_status=["acute", "never_infected"]).one_sample_per_subject([], ["T1", "T2", "T3"])
+    m = cs["S"].meta
+    assert set(m.index) == {"x1", "x3", "x4"}
+    assert m.loc["x1", "lc_status"] == "acute" and m.loc["x1", "lc_status_original"] == "LC"
+    assert m.loc["x4", "lc_status_original"] == "unknown"
+    assert cs.summary()["acute"].iloc[0] == 2
+
+
+def test_concordance_uniprot_symbols_and_pairwise_shared_counts(tmp_path):
+    conc = _load_script("concordance")
+    hgnc = tmp_path / "hgnc.txt"
+    pd.DataFrame({"symbol": ["IL6", "C3", "ALB"], "ensembl_gene_id": ["E1", "E2", "E3"], "uniprot_ids": ["P05231", "P01024", "P02768|Q00001"]}).to_csv(hgnc, sep="\t", index=False)
+    sym = conc.feature_symbols(pd.Index(["P05231", "P01024_P02768", "Q00001", "Z99999"]), str(hgnc), "uniprot")
+    assert list(sym) == ["IL6", "C3_ALB", "ALB", None]
+    assert list(conc.feature_symbols(pd.Index(["E2"]), str(hgnc))) == ["C3"]
+    eff = pd.DataFrame({"a": [0.1, 0.2, np.nan, 0.4], "b": [0.3, np.nan, 0.1, 0.2], "c": [np.nan, np.nan, 1.0, 2.0]})
+    n = conc.shared_counts(eff)
+    assert n.loc["a", "a"] == 3 and n.loc["a", "b"] == 2 and n.loc["a", "c"] == 1 and n.loc["b", "c"] == 2
+
+
+def test_curation_helper_drops_samples_and_empty_features_and_schema_vocabulary(monkeypatch):
+    import sys
+    from pathlib import Path
+
+    from chorus.adapters import Adapted
+    from chorus.schema import CONTROL_TYPES, LAYERS
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "proteomics"))
+    common = _load_script("proteomics/common")
+    X = pd.DataFrame({"P1": [1.0, 2.0, 3.0], "P2": [np.nan, np.nan, 4.0]}, index=["r1", "r2", "r3"])
+    a = Adapted(X, pd.DataFrame({"feature": ["P1", "P2"], "source_ids": ["p1", "p2"], "n_sources": 1}), "uniprot", "ms_proteomics")
+    b = common.drop_samples(a, pd.Series([True, True, False], index=X.index))
+    assert list(b.X.index) == ["r1", "r2"] and list(b.X.columns) == ["P1"] and list(b.features["feature"]) == ["P1"]
+    assert "convalescent_unverified" in CONTROL_TYPES and "proteomics" in LAYERS

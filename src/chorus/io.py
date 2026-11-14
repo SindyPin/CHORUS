@@ -160,23 +160,53 @@ class CohortSet:
             Ms.append(Mc)
         return pd.concat(Xs), pd.concat(Ms)
 
-    def one_sample_per_subject(self, acute_timepoints: Iterable[str] = ("acute",)) -> "CohortSet":
+    def filter_samples(self, keep_lc_status: Optional[Iterable[str]] = None, drop_sample_phases: Optional[Iterable[str]] = None) -> "CohortSet":
+        """Keep the samples whose ``lc_status`` is in ``keep_lc_status`` and drop those whose
+        ``sample_phase`` is in ``drop_sample_phases`` (either may be None)."""
+        out: List[Cohort] = []
+        for c in self.cohorts:
+            m = pd.Series(True, index=c.meta.index)
+            if keep_lc_status is not None:
+                m &= c.meta["lc_status"].astype(str).isin(set(keep_lc_status))
+            if drop_sample_phases is not None and "sample_phase" in c.meta.columns:
+                m &= ~c.meta["sample_phase"].astype(str).isin(set(drop_sample_phases))
+            out.append(c.subset(m))
+        return CohortSet(out)
+
+    def relabel_acute(self, label: str = "acute") -> "CohortSet":
+        """Set ``lc_status`` to ``label`` for the samples whose ``sample_phase`` is acute, whatever
+        their later outcome; the previous value is kept in ``lc_status_original``. Used by the
+        acute versus never infected positive control."""
+        out: List[Cohort] = []
+        for c in self.cohorts:
+            meta = c.meta.copy()
+            meta["lc_status_original"] = meta["lc_status"]
+            if "sample_phase" in meta.columns:
+                meta.loc[meta["sample_phase"].astype(str) == "acute", "lc_status"] = label
+            out.append(Cohort(c.study_id, c.layer, c.X, meta, c.feature_space, c.is_counts, dict(c.source)))
+        return CohortSet(out)
+
+    def one_sample_per_subject(self, acute_timepoints: Iterable[str] = ("acute",), timepoint_order: Optional[Iterable[str]] = None) -> "CohortSet":
         """Keep the earliest post acute sample of each subject within each cohort.
 
         Samples whose ``timepoint`` is in ``acute_timepoints`` (case insensitive, for example
         the GSE226260 whole blood draws labelled Acute) are dropped first. Among the remaining
         samples of a subject the earliest is the one with the smallest ``days_since_infection``;
         where that is missing a numeric ``timepoint`` is used, then a date ``timepoint``, then
-        file order. Repeated draws or libraries of one person would otherwise enter the
+        file order. ``timepoint_order`` lists timepoint labels from earliest to latest (for example
+        pre_intervention, post_intervention); a listed label sorts by its position in place of the
+        numeric ``timepoint``. Repeated draws or libraries of one person would otherwise enter the
         evaluation as independent samples.
         """
         acute = {str(a).lower() for a in acute_timepoints}
+        rank = {str(t): float(i) for i, t in enumerate(timepoint_order or [])}
         out: List[Cohort] = []
         for c in self.cohorts:
             m = c.meta
             missing = pd.Series(np.nan, index=m.index)
             tp = m["timepoint"].where(m["timepoint"].notna(), "").astype(str).str.strip() if "timepoint" in m.columns else missing.fillna("").astype(str)
             tp_num = pd.to_numeric(tp.where(tp != ""), errors="coerce")
+            tp_num = tp.map(rank).where(tp.isin(set(rank)), tp_num)
             tp_date = pd.to_datetime(tp.where(tp_num.isna() & (tp != "")), errors="coerce", format="mixed")
             order = pd.DataFrame(
                 {
@@ -222,6 +252,8 @@ class CohortSet:
                     "LC": int(st.get("LC", 0)),
                     "COVID_recovered": int(st.get("COVID_recovered", 0)),
                     "never_infected": int(st.get("never_infected", 0)),
+                    **({"acute": int(st.get("acute", 0))} if "acute" in st.index else {}),
+                    **({"n_values_imputed": c.source["n_values_imputed"]} if "n_values_imputed" in c.source else {}),
                     "matrix": ",".join(sorted(set(c.meta.get("sample_matrix", pd.Series(dtype=str)).dropna().astype(str)))),
                     "accession": c.source.get("accession", ""),
                 }

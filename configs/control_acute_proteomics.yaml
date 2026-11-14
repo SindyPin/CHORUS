@@ -1,0 +1,39 @@
+# CHORUS proteomics positive control: acute COVID-19 versus never infected, leave one study out on the proteins shared by
+# all cohorts used. A sample is "acute" when its sample_phase is acute, whatever its later outcome (lc_status is
+# replaced by "acute", the curated value kept in lc_status_original); never_infected is the curated lc_status.
+# Cohorts: those with both classes after one sample per subject and removal of subjects measured in two cohorts.
+layer: proteomics
+cohorts:
+  - {study_id: Cervia2024_SomaScan,  matrix: data/proteomics/Cervia2024_SomaScan/Cervia2024_SomaScan_matrix.csv,   meta: data/meta/Cervia2024_SomaScan_meta.csv,  feature_space: uniprot, accession: "doi:10.17632/dvf6yvrg4x.1"}
+    # acute (diagnosis) samples of 113 patients; 34 healthy controls (the 5 linked to later COVID-19 subjects are dropped by the builder)
+  - {study_id: Su2022,               matrix: data/proteomics/Su2022/Su2022_matrix.csv,                             meta: data/meta/Su2022_meta.csv,               feature_space: uniprot, accession: "doi:10.17632/96v329bg7g.1"}
+    # INCOV acute draws T1 and T2 (the earliest kept per patient); healthy donors (never_infected_unspecified); authors' Z scores
+  - {study_id: Zoodsma2022_Hannover, matrix: data/proteomics/Zoodsma2022_Hannover/Zoodsma2022_Hannover_matrix.csv, meta: data/meta/Zoodsma2022_Hannover_meta.csv, feature_space: uniprot, accession: "github:CiiM-Bioinformatics-group/Postcovid-targeted-proteomics@d45e36077d735c242788e72b871ce4a3d1e728a9"}
+    # 62 healthy donors; the acute samples are 13 bridge samples (12 patients) of the Nijmegen hospitalised cohort run with Hannover
+  - {study_id: Zoodsma2022_Breda,    matrix: data/proteomics/Zoodsma2022_Breda/Zoodsma2022_Breda_matrix.csv,       meta: data/meta/Zoodsma2022_Breda_meta.csv,    feature_space: uniprot, accession: "github:CiiM-Bioinformatics-group/Postcovid-targeted-proteomics@d45e36077d735c242788e72b871ce4a3d1e728a9", enabled: false}
+    # Disabled: its 5 never infected samples are bridge samples of Hannover healthy donors (TK_10, TK_33, TK_55, TK_63, TK_65) who are
+    # already in Zoodsma2022_Hannover, so after removal of subjects measured twice Breda has acute samples only.
+    # Zoodsma2022_Nijmegen has no never infected sample and is not listed.
+preprocessing:
+  matrices: [plasma, serum]
+  relabel_acute: true
+  keep_lc_status: [acute, never_infected]
+  one_sample_per_subject: true
+  acute_timepoints: []                      # keep acute draws; the earliest acute draw per subject is kept
+  timepoint_order: [T1, T2, T3, W1T1, W1T2, W1T3, W1T4, W2T1, W3T1, W4T1, W5T1, W6T1]
+  deduplicate: true
+  impute: study_median
+benchmark:
+  positive: acute
+  negative: never_infected
+  harmonisers: [identity, center_scale, rank, fsqn, combat_addon, chorus]
+  selectors:
+    - {name: variance, k: 100}
+    - {name: invariant, k: 50}
+  classifiers: [logreg]
+  covariates: []
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/control_acute_proteomics
