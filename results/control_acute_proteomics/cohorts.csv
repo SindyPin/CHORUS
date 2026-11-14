@@ -1,0 +1,4 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,acute,n_values_imputed,matrix,accession
+Cervia2024_SomaScan,proteomics,147,163,0,0,34,113,0,serum,doi:10.17632/dvf6yvrg4x.1
+Su2022,proteomics,493,163,0,0,289,204,0,plasma,doi:10.17632/96v329bg7g.1
+Zoodsma2022_Hannover,proteomics,74,163,0,0,62,12,82,plasma,github:CiiM-Bioinformatics-group/Postcovid-targeted-proteomics@d45e36077d735c242788e72b871ce4a3d1e728a9

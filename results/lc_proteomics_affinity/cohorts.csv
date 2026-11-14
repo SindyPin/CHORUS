@@ -1,0 +1,4 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,n_values_imputed,matrix,accession
+Buggert2025,proteomics,197,376,146,51,0,642,plasma,doi:10.5281/zenodo.14772494
+Cervia2024_SomaScan,proteomics,113,376,40,73,0,0,serum,doi:10.17632/dvf6yvrg4x.1
+Su2022,proteomics,125,376,75,50,0,0,plasma,doi:10.17632/96v329bg7g.1

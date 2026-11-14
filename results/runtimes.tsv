@@ -29,3 +29,12 @@ simulation_factors	scripts/simulation_benchmark.py --out results/simulation_fact
 simulation_shifts_only	scripts/simulation_benchmark.py --out results/simulation_shifts_only --n-factors 0 (version 3)	~/.venvs/chorus-arm64	2026-11-13 15:38:02	2026-11-13 15:45:48	466	0
 enrichment	scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv (version 3)	~/.venvs/chorus-arm64	2026-11-13 15:45:48	2026-11-13 15:46:30	42	0
 control_label_permutation	scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20 (version 3)	~/.venvs/chorus-arm64	2026-11-13 15:46:30	2026-11-13 15:49:28	178	0
+lc_proteomics_affinity	chorus run configs/lc_proteomics_affinity.yaml --within	~/.venvs/chorus-arm64	2026-11-15 06:49:03	2026-11-15 06:52:59	236	0
+lc_proteomics_ms	chorus run configs/lc_proteomics_ms.yaml --within	~/.venvs/chorus-arm64	2026-11-15 06:52:59	2026-11-15 06:56:45	226	0
+control_acute_proteomics	chorus run configs/control_acute_proteomics.yaml --within	~/.venvs/chorus-arm64	2026-11-15 06:56:45	2026-11-15 06:57:08	23	0
+lc_proteomics_affinity/harmonisation	chorus harmonisation configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/harmonisation	~/.venvs/chorus-arm64	2026-11-15 06:57:08	2026-11-15 06:57:12	4	0
+lc_proteomics_ms/harmonisation	chorus harmonisation configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/harmonisation	~/.venvs/chorus-arm64	2026-11-15 06:57:12	2026-11-15 06:57:13	1	0
+lc_proteomics_affinity/concordance	scripts/concordance.py configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/concordance --top 50	~/.venvs/chorus-arm64	2026-11-15 06:57:13	2026-11-15 06:57:16	2	0
+lc_proteomics_ms/concordance	scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50	~/.venvs/chorus-arm64	2026-11-15 06:57:16	2026-11-15 06:57:17	1	0
+concordance_proteomics_all	scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50	~/.venvs/chorus-arm64	2026-11-15 06:57:17	2026-11-15 06:57:24	7	0
+control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label (version 4: forced_features)	~/.venvs/chorus-arm64	2026-11-15 06:57:24	2026-11-15 06:59:16	112	0

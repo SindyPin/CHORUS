@@ -24,7 +24,7 @@ control runs (the label permutation and the sample_matrix control removed since)
 13 November runs (from `infer_sex` on) ran one after another. `infer_sex` was run twice with identical output; the
 runtime is that of the second run. The version 2 reruns of 13 November (from 11:19) ran one after another; see "Version 2
 changes" for what they replaced. The version 3 reruns of 13 November (from 15:12) ran one after another; see "Version 3
-changes".
+changes". The runs of 15 November (from 06:49) ran one after another; see "Proteomics (15 November 2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -42,10 +42,19 @@ changes".
 | `control_label_permutation` | `scripts/control_runs.py permute configs/lc_transcriptomics_blood.yaml --out results/control_label_permutation --n-perm 20` | configs/lc_transcriptomics_blood.yaml, changed by the script | 178 (version 3, started 2026-11-13 15:46:30) |
 | `control_sex_label/inferred_sex.csv` | `scripts/infer_sex.py configs/lc_transcriptomics_blood.yaml --copy results/control_sex_label/inferred_sex.csv` | configs/lc_transcriptomics_blood.yaml (raw matrices) | 16 (started 2026-11-13 09:08:07) |
 | `control_sex_label_v1` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` (folder renamed) | configs/lc_transcriptomics_blood.yaml, changed by the script | 84 (started 2026-11-13 08:56:20) |
-| `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 113 (version 3, started 2026-11-13 15:28:14) |
+| `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 112 (rerun with `forced_features`, started 2026-11-15 06:57:24; version 3: 113) |
 | `lc_transcriptomics_blood_harmonisation_v1` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` (folder renamed) | configs/lc_transcriptomics_blood.yaml | 100 (started 2026-11-13 09:01:09) |
 | `lc_transcriptomics_blood_harmonisation` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` | configs/lc_transcriptomics_blood.yaml | 104 (version 3, started 2026-11-13 15:26:30) |
 | `concordance` | `scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance` | configs/lc_transcriptomics_blood.yaml | 48 (started 2026-11-13 09:03:45) |
+| `lc_proteomics_affinity` | `chorus run configs/lc_proteomics_affinity.yaml --within` | configs/lc_proteomics_affinity.yaml | 236 (started 2026-11-15 06:49:03) |
+| `lc_proteomics_ms` | `chorus run configs/lc_proteomics_ms.yaml --within` | configs/lc_proteomics_ms.yaml | 226 (started 2026-11-15 06:52:59) |
+| `control_acute_proteomics` | `chorus run configs/control_acute_proteomics.yaml --within` | configs/control_acute_proteomics.yaml | 23 (started 2026-11-15 06:56:45) |
+| `lc_proteomics_affinity/harmonisation` | `chorus harmonisation configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/harmonisation` | configs/lc_proteomics_affinity.yaml | 4 (started 2026-11-15 06:57:08) |
+| `lc_proteomics_ms/harmonisation` | `chorus harmonisation configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/harmonisation` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:12) |
+| `lc_proteomics_affinity/concordance` | `scripts/concordance.py configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/concordance --top 50` | configs/lc_proteomics_affinity.yaml | 2 (started 2026-11-15 06:57:13) |
+| `lc_proteomics_ms/concordance` | `scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:16) |
+| `concordance_proteomics_all` | `scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50` | configs/concordance_proteomics_all.yaml | 7 (started 2026-11-15 06:57:17) |
+| `control_acute_transcriptomics` | no run: fewer than three cohorts qualify (`cohorts.csv`) | none | none |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -95,6 +104,10 @@ selection, 200 bootstrap resamples.
 | control_label_permutation | as lc_transcriptomics_blood | none |
 | control_sex_label (and _v1) | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE270045 (GSE251849 skipped: 4 males, below 5 per class) | none |
 | lc_transcriptomics_blood_harmonisation | as lc_transcriptomics_blood (training pools of its folds) | none |
+| lc_proteomics_affinity (and its harmonisation and concordance) | Buggert2025, Cervia2024_SomaScan, Su2022 | none |
+| lc_proteomics_ms (and its harmonisation and concordance) | Cervia2024_MS, Chowdhury2024, Kovarik2023_plasma | none |
+| control_acute_proteomics | Cervia2024_SomaScan, Su2022, Zoodsma2022_Hannover | none |
+| concordance_proteomics_all | no folds; the six cohorts of the two blocks | none |
 
 ## GSE224615 samples flagged at QC
 
@@ -130,6 +143,15 @@ local.
   `all_metrics.csv` (all of them stacked).
 - `concordance`: `effects.csv`, `spearman_all_genes.csv`, `spearman_all_genes_p.csv`, `spearman_top500.csv`,
   `spearman_top500_p.csv`, `top500_genes.csv`, `cohort_annotation.csv`.
+- Proteomics folders (`lc_proteomics_affinity`, `lc_proteomics_ms`, `control_acute_proteomics`): the loso and
+  within-study files above, plus `cohorts.csv` (samples, class counts and `n_values_imputed` per cohort) and
+  `features_observed_fraction.csv` (per protein and cohort, the fraction of the cohort's samples with a value before
+  imputation; one row per protein used, the proteins shared by all cohorts of the config).
+  `lc_proteomics_affinity` and `lc_proteomics_ms` also hold `harmonisation/` (as `lc_transcriptomics_blood_harmonisation`)
+  and `concordance/` (as `concordance`, with `top50` in place of `top500`, and `n_shared.csv`).
+- `concordance_proteomics_all`: as `concordance`, with `top50` files and `n_shared.csv` (proteins with an effect in both
+  cohorts of each pair).
+- `control_acute_transcriptomics`: `cohorts.csv` only (see "Proteomics (15 November 2026)").
 
 ## Column glossary
 
@@ -231,7 +253,8 @@ Both use `scripts/control_runs.py` and start from the cohorts, preprocessing and
     selector with identity, center_scale and combat_addon in every fold, none for chorus with the variance selector,
     and none for the invariant selector. In the GSE224615 fold (identity), the 8 genes have I squared between 92 and 97
     and Q_p 0, so they fail the strict invariance screen (I squared at most 50), and 254 genes pass it; the invariant
-    rows of `forced_sex_genes` therefore equal those of `all_genes`.
+    rows of `forced_sex_genes` therefore equal those of `all_genes`. This paragraph describes the version 3 files; since
+    the 15 November rerun the forced genes are appended to every selector's output ("Proteomics (15 November 2026)", item 6).
 - **auroc_by_held_out.csv**: `feature_set`, `held_out`, `harmoniser`, `selector`, `classifier`, `n_features`, `auroc`,
   `auroc_lo`, `auroc_hi`, `error`. The full rows are in `all_genes/loso_results.csv` and `no_xy/loso_results.csv`.
 
@@ -500,8 +523,143 @@ here `chorus_protected` between `chorus` and `nested`.
     genes. With chorus and chorus_protected it kept none.
   - **Fix.** The forced genes present in a fold are now appended to every selector's output (`LosoConfig.forced_features`,
     result column `n_forced_added`).
-  - **Status.** `control_sex_label` was **not rerun** (no benchmark runs were requested), so its `forced_sex_genes`
-    rows still come from the version 3 code.
+  - **Status.** `control_sex_label` was not rerun on 14 November. It was rerun on 15 November; see "Proteomics (15
+    November 2026)", item 6.
 - **Layer adapters (commit b5083c4).** The transcriptomics loader now goes through the `bulk_rna` adapter. The loaded
   matrices of `configs/lc_transcriptomics_blood.yaml` and `configs/lc_acute_transfer.yaml` were checked to be identical
   (hash of every cohort matrix) before and after the change.
+
+## Proteomics (15 November 2026)
+
+**1. Curation applied first** (in the builders; `docs/proteomics_cohorts.md`, "Curation decisions"):
+- **Cervia2024:** the 5 healthy controls that match later COVID-19 subjects are linked to them
+  (`linked_healthy_subject_id`), and their healthy samples are dropped (SomaScan: 39 to 34 healthy).
+- **Chowdhury2024:** the authors' labels are kept, the controls have `control_type` convalescent_unverified, and the 4
+  unlabelled runs are excluded.
+- **Zoodsma2022:** the 16 Nijmegen patients stay excluded.
+- **Captur2022:** not used.
+
+The schema gains `control_type` convalescent_unverified and the pooled layer `proteomics`.
+
+**Loader options added for these configs** (`chorus.cli.load_config`, `preprocessing`). Transcriptomics configs do not
+use them.
+
+| option | effect |
+|---|---|
+| `drop_sample_phases` | drops samples whose `sample_phase` is listed (Test 1: `acute`, because acute draws carry the later outcome in `lc_status`) |
+| `keep_lc_status` | keeps only the listed `lc_status` values, before one sample per subject |
+| `timepoint_order` | timepoint labels from earliest to latest, for one sample per subject. Chowdhury2024 keeps the pre-intervention sample, and Su2022 and Zoodsma keep the earliest acute draw. |
+| `relabel_acute` | `lc_status` becomes `acute` for every sample with `sample_phase` acute (the curated value is kept in `lc_status_original`) |
+| `impute` | per cohort and protein, from that cohort's own retained values, without labels. `study_median` for affinity (values masked at QC); `study_min` for MS (missing mostly below detection). A cohort entry can set its own `impute`. |
+| `features: union` | every cohort keeps its own proteins (pairwise concordance); the default is the proteins shared by all cohorts |
+
+- **Shared proteins.** For a cohort that is not counts, a protein counts as present when it has at least one value
+  among the retained samples.
+- **Other choices.** No covariates and no `protect` are used. Repeated runs of one Buggert2025 sample (20 subjects) are
+  reduced to the first in file order.
+
+**2. Test 1, LC versus COVID_recovered** (`lc_proteomics_affinity`, `lc_proteomics_ms`).
+- **Samples:** one post-acute sample per subject. Leave-one-study-out within each block, on the proteins shared by all
+  three cohorts of the block.
+- **Grid:**
+  - harmonisers identity, center_scale, rank, fsqn, combat_addon, chorus, and nested selection over these six;
+  - selectors variance (k 100), differential (k 50), invariant (k 50);
+  - classifiers logreg and rf;
+  - 1000 bootstrap resamples;
+  - within-study CV with the per-fold method (5 folds x 10 repeats, `--within`).
+- **Selector sizes:** k was chosen for these blocks; the transcriptomics grid uses 500/200/200 on 10,442 genes.
+- **Failed fits:** none, in 126 rows per block.
+
+| block | cohort | samples (LC / COVID_recovered) | proteins used | values imputed |
+|---|---|---|---|---|
+| affinity | Buggert2025 | 197 (146 / 51) | 376 | 642 (median) |
+| affinity | Cervia2024_SomaScan | 113 (40 / 73) | 376 | 0 |
+| affinity | Su2022 | 125 (75 / 50) | 376 | 0 |
+| MS | Cervia2024_MS | 113 (40 / 73) | 182 | 907 (minimum) |
+| MS | Chowdhury2024 | 30 (21 / 9) | 182 | 56 (minimum) |
+| MS | Kovarik2023_plasma | 26 (13 / 13) | 182 | 646 (minimum) |
+
+The per-protein observed fractions are in `features_observed_fraction.csv`. In the MS block, 49 (Cervia2024_MS), 11
+(Chowdhury2024) and 69 (Kovarik2023_plasma) of the 182 proteins have at least one missing value; the lowest observed
+fractions are 0.44, 0.20 and 0.08.
+
+**Su2022 and the harmonisers.** The Su2022 values are the authors' Z scores: batch corrected, adjusted for age, sex and
+BMI, and scaled by the mean and standard deviation of the residuals of the matched healthy controls. The other two
+affinity cohorts are NPX (Buggert2025) and log2 RFU (Cervia2024_SomaScan). What each harmoniser does to Su2022:
+
+| harmoniser | on Su2022 | meaningful for Su2022 |
+|---|---|---|
+| identity | pools the Z scores with NPX and log2 RFU on their own scales | no: the units differ by construction |
+| center_scale | per protein z-score within Su2022's retained samples, a linear map of the authors' values; the same operation as on the other cohorts | yes. The authors' age, sex and BMI adjustment stays, and is not applied to the other cohorts. |
+| combat_addon | per protein location and scale of the study mapped to the training pool's grand mean and pooled variance | yes, as center_scale. The pool's grand mean and variance mix the three units. |
+| fsqn | maps each protein's within-study ranks onto the training pool's quantiles of that protein | the within-study ranks are unaffected by the authors' per-protein transform. The reference quantiles are taken from the raw training values, so they mix units whenever cohorts with different units are in training (any affinity fold). |
+| rank | within-sample rank across proteins | no: in Su2022 it orders proteins by deviation from healthy controls; in NPX and RFU cohorts, by measured level |
+| chorus | centring by the training grand mean, factors from the null proteins of the pooled training values, then a per-study z-score | partly. The final per-study z-score is as center_scale. The factors are estimated on the pool before any per-study scaling, so they are fitted on mixed units. |
+| nested | chooses one of the above per fold | as the harmoniser chosen (`harmoniser_chosen`) |
+
+**3. Diagnostics and concordance.**
+- **Harmonisation diagnostics:** `lc_proteomics_affinity/harmonisation` and `lc_proteomics_ms/harmonisation`, same
+  metrics as for transcriptomics.
+  - There are no sex rows (the cohorts have no `inferred_sex`).
+  - The marker rows have `n_genes` 0 and empty values, because the marker genes are Ensembl ids, not UniProt.
+  - n_pcs is 50.
+  - No failed fit.
+- **Concordance per block:** `lc_proteomics_affinity/concordance` and `lc_proteomics_ms/concordance`, on the 376 and
+  182 shared proteins after the same preprocessing and imputation as the benchmark. `--top 50`.
+  - Symbols come from the HGNC `uniprot_ids` column; a multi-protein key gets its symbols joined by "_", and an
+    unmapped key has no symbol.
+- **Concordance across all six cohorts:** `concordance_proteomics_all`, from `configs/concordance_proteomics_all.yaml`.
+  - Same sample selection, with imputation per cohort (median for affinity, minimum for MS).
+  - Each cohort is kept on its own proteins (`features: union`, 7,419 in all; 38 without a symbol), and each pair is
+    correlated over the proteins both have.
+  - Deduplication is off, because Cervia2024_SomaScan and Cervia2024_MS are the same people.
+  - `n_shared.csv` gives the number of proteins per pair. Su2022 shares 4 or 5 proteins with each MS cohort, so those
+    three correlations rest on 4 or 5 values.
+  - Chowdhury2024 has 404 proteins here: one of its 405 has no value in the 30 retained samples.
+
+**4. Positive control in proteomics, acute versus never_infected** (`control_acute_proteomics`).
+- **Label:** acute = `sample_phase` acute, whatever the later outcome; never_infected = curated `lc_status`. The earliest
+  acute draw per subject is kept.
+- **Grid:** the six harmonisers plus nested; selectors variance (k 100) and invariant (k 50); logreg; within-study CV.
+- **Cohorts:** those with both classes after one sample per subject and removal of subjects measured in two cohorts.
+  - **Zoodsma2022_Breda is disabled.** Its 5 never infected samples are bridge samples of Hannover healthy donors
+    already in Zoodsma2022_Hannover (TK_10, TK_33, TK_55, TK_63, TK_65), so it keeps acute samples only.
+  - **Zoodsma2022_Nijmegen** has no never infected sample.
+  - **Zoodsma2022_Hannover's acute samples** are 13 bridge samples (12 patients) of the Nijmegen hospitalised cohort.
+
+| cohort | acute | never_infected | proteins used | values imputed |
+|---|---|---|---|---|
+| Cervia2024_SomaScan | 113 | 34 | 163 | 0 |
+| Su2022 | 204 | 289 | 163 | 0 |
+| Zoodsma2022_Hannover | 12 | 62 | 163 | 82 |
+
+- **chorus failed in every fold** (6 error rows, both selectors): "only 0 null genes passed the screen" (Cervia2024_SomaScan
+  held out), "only 6" (Su2022) and "only 4" (Zoodsma2022_Hannover). The default null screen of `InvarianceAnchored` was
+  not changed.
+- `nested` chooses among all six candidates. A candidate that fails in an inner fold scores missing there.
+
+**5. Positive control in transcriptomics, acute versus never_infected** (`control_acute_transcriptomics/cohorts.csv`).
+- **Survey:** every transcriptomics cohort on disk was checked for acute COVID-19 samples and never infected or healthy
+  samples. Only GSE215865 has both: 1,218 libraries (424 subjects) of COVID-19 positive admissions, and 151 libraries
+  (64 subjects) of COVID-19 negative admissions curated as never_infected. Those are acutely ill patients without
+  COVID-19, not healthy donors.
+- **GSE226260 acute set (p20169):** 104 acute samples with a severity. The other 38 samples (36 subjects) have
+  "pasc severity: N/A" and no other field. The paper reports 35 uninfected participants, but GEO labels no sample as
+  uninfected.
+- **Other cohorts:** GSE169687 (14 never infected) and GSE251849 (7) have no acute samples. GSE222253 (11 in hospital)
+  has no uninfected samples.
+- **Not run:** at most one cohort qualifies (two if the GSE226260 N/A samples were taken as uninfected), against the
+  three required.
+
+**6. Sex control rerun** (`control_sex_label`, with `LosoConfig.forced_features`).
+- **Forced genes added:** `n_forced_added` is 8 in every `forced_sex_genes` row except the variance selector with
+  identity, center_scale and combat_addon, where it is 0 because the selector already chose all 8. The forced genes
+  therefore reach the model in every row.
+- **Rows equal to all_genes:** 2 of the 40 `forced_sex_genes` rows have the same AUROC as `all_genes` (GSE224615 held
+  out, invariant selector, center_scale and combat_addon).
+- **all_genes and no_xy:** identical to the version 3 files except `seconds` and the new `n_forced_added` column (0).
+- **Earlier statement superseded:** the statement under "Control runs" that the invariant rows of `forced_sex_genes`
+  equal those of `all_genes` describes the version 3 files.
+
+**Files not committed:** the logs (`results/<run>.log`, the diagnostics and concordance logs named with `_` in place of
+`/`) and `selected_features.json`.
