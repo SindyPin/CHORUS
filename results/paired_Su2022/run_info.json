@@ -1,0 +1,24 @@
+{
+ "cohort": "Su2022",
+ "layers": [
+  "olink",
+  "metabolomics"
+ ],
+ "layers_missing": [],
+ "contrasts": {
+  "lc": {
+   "positive": "LC",
+   "negative": "COVID_recovered",
+   "n_positive": 68,
+   "n_negative": 45,
+   "seconds": 378.4
+  },
+  "acute": {
+   "positive": "acute",
+   "negative": "never_infected",
+   "n_positive": 198,
+   "n_negative": 27,
+   "seconds": 648.5
+  }
+ }
+}

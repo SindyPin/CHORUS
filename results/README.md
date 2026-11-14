@@ -24,7 +24,8 @@ control runs (the label permutation and the sample_matrix control removed since)
 13 November runs (from `infer_sex` on) ran one after another. `infer_sex` was run twice with identical output; the
 runtime is that of the second run. The version 2 reruns of 13 November (from 11:19) ran one after another; see "Version 2
 changes" for what they replaced. The version 3 reruns of 13 November (from 15:12) ran one after another; see "Version 3
-changes". The runs of 15 November (from 06:49) ran one after another; see "Proteomics (15 November 2026)".
+changes". The runs of 15 November (from 06:49) ran one after another; see "Proteomics (15 November 2026)". The two
+Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same people (15 November 2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -55,6 +56,8 @@ changes". The runs of 15 November (from 06:49) ran one after another; see "Prote
 | `lc_proteomics_ms/concordance` | `scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:16) |
 | `concordance_proteomics_all` | `scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50` | configs/concordance_proteomics_all.yaml | 7 (started 2026-11-15 06:57:17) |
 | `control_acute_transcriptomics` | no run: fewer than three cohorts qualify (`cohorts.csv`) | none | none |
+| `paired_Cervia2024` | `scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024` | built into the script | 2059 (started 2026-11-15 07:43:05) |
+| `paired_Su2022` | `scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022` | built into the script | 1029 (started 2026-11-15 08:17:24) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -152,6 +155,9 @@ local.
 - `concordance_proteomics_all`: as `concordance`, with `top50` files and `n_shared.csv` (proteins with an effect in both
   cohorts of each pair).
 - `control_acute_transcriptomics`: `cohorts.csv` only (see "Proteomics (15 November 2026)").
+- `paired_<cohort>/<contrast>/` (`lc`, `acute`): `samples.csv`, `features.csv`, `fold_metrics.csv`, `summary.csv`,
+  `predictions.csv`, `probability_correlation.csv`, and for Cervia2024 `effects.csv` and `effect_correlation.csv`;
+  `paired_<cohort>/run_info.json` gives the class counts and why a contrast was skipped (see "Test 2").
 
 ## Column glossary
 
@@ -636,6 +642,23 @@ affinity cohorts are NPX (Buggert2025) and log2 RFU (Cervia2024_SomaScan). What 
 - **chorus failed in every fold** (6 error rows, both selectors): "only 0 null genes passed the screen" (Cervia2024_SomaScan
   held out), "only 6" (Su2022) and "only 4" (Zoodsma2022_Hannover). The default null screen of `InvarianceAnchored` was
   not changed.
+- **Why the chorus rows are absent (checked 15 November).** They are present in `loso_results.csv` as error rows
+  (column `error`, no metrics). They are absent from `loso_summary.csv` and `loso_predictions.csv`, which keep only
+  fits that succeeded.
+  - **The screen.** `InvarianceAnchored` needs at least 20 null proteins. A null protein has a meta-analytic p above
+    0.2, an absolute Hedges g below 0.35 in every training cohort, I squared at most 50, and training variance at or
+    above the 20th percentile.
+  - **Per fold,** on the 163 proteins of the acute contrast:
+
+    | held out | p above 0.2 | max abs g below 0.35 | I squared at most 50 | variance ok | all four | needed |
+    |---|---|---|---|---|---|---|
+    | Cervia2024_SomaScan | 40 | 5 | 40 | 130 | 0 | 20 |
+    | Su2022 | 85 | 17 | 47 | 130 | 6 | 20 |
+    | Zoodsma2022_Hannover | 73 | 14 | 29 | 130 | 4 | 20 |
+
+  - **Decision.** The failure is the operator refusing to fit, not a bug, so it is documented and the screen
+    thresholds were not relaxed. Relaxing them would make "null" proteins that are associated with the label in the
+    training cohorts.
 - `nested` chooses among all six candidates. A candidate that fails in an inner fold scores missing there.
 
 **5. Positive control in transcriptomics, acute versus never_infected** (`control_acute_transcriptomics/cohorts.csv`).
@@ -663,3 +686,58 @@ affinity cohorts are NPX (Buggert2025) and log2 RFU (Cervia2024_SomaScan). What 
 
 **Files not committed:** the logs (`results/<run>.log`, the diagnostics and concordance logs named with `_` in place of
 `/`) and `selected_features.json`.
+
+## Test 2: layers on the same people (15 November 2026)
+
+**Paired sets** (`docs/paired_cohorts.md`). A sample is paired when its `sample_id` is in every layer and its labels
+agree across the layers' metadata. One sample per subject is kept: the earliest by timepoint.
+
+| cohort | layers (features used) | LC vs COVID_recovered | acute vs never_infected |
+|---|---|---|---|
+| Cervia2024 | SomaScan (6402), MS (301 of 308; 7 dropped as observed in fewer than half the samples) | 40 / 73 | not run: the MS layer has no acute or healthy sample |
+| Su2022 | Olink (441), metabolomics (891, `data/metabolomics/Su2022_metabolomics`, Table S2.2) | 68 / 45 (T3) | 198 / 27 (earliest paired acute draw; healthy donors in both sheets) |
+| Kovarik2023 | not built | | |
+
+**Kovarik2023 not built.** The supplement was downloaded and checked, but its tables share only column labels
+(`healthy_<n>` and the like). Those labels do not link the triglyceride table (S4) to the Biocrates table (S3) on the
+126 triglycerides they share, so they cannot be relied on to link the eicosanoid and Biocrates tables to the proteomics
+runs (`docs/paired_cohorts.md`).
+
+**Models** (`chorus.eval.paired.PairedCV`). Repeated stratified 5-fold CV, 10 repeats, split seed `random_state + r`;
+every model is fitted and scored on the same folds.
+- **Missing values:** filled inside each fold from that fold's training samples (MS: per protein minimum; the other
+  layers: median). Features observed in fewer than half of the cohort's paired samples are dropped first (label free).
+- **Classifier:** logreg (the CHORUS `logreg`: standardised, C 0.5, balanced classes) for every model except DIABLO.
+
+| model | per fold |
+|---|---|
+| `layer:<name>` | features standardised on the training fold, top 50 by absolute training effect (differential selector), logreg |
+| `early_fusion` | the per-layer selections concatenated, each layer divided by the square root of its number of selected features |
+| `late_fusion` | `chorus.integrate.mosaic.LateFusion` fitted on inner 5-fold out-of-fold layer probabilities of the training fold, applied to the layer models refitted on the whole training fold |
+| `mofa` | MOFA+ (mofapy2 0.7.5), 10 factors, one group, layers as views (feature names prefixed by the layer), all features, fitted on the training fold; test samples projected onto the training loadings (`mofa_factors`); logreg on the factors |
+| `diablo` | mixOmics 6.32.0 `block.splsda` in R 4.5.3, 2 components, keepX 20 per block and component, design 0.1 off the diagonal, `scale = TRUE`; the score is the positive-class column of `predict(...)$WeightedPredict` at component 2, clipped to [0, 1]. It is not a probability, so its Brier score and ECE are those of this score. |
+
+**Agreement between layers.**
+- `effect_correlation.csv` (Cervia2024 only, the one pair with a shared feature space): Spearman correlation of the
+  Hedges g (LC minus COVID_recovered, all 113 paired samples) between SomaScan and MS over the UniProt keys in both
+  layers (173).
+- `probability_correlation.csv`: per repeat and pair of models, Spearman and Pearson correlation across subjects of
+  the out-of-fold probabilities. Every subject is predicted once per repeat. The pairs include the layer models with
+  each other and with the fusion models.
+
+**Positive control:** acute versus never_infected, the same models and tables, in Su2022 only (the only paired cohort
+with both classes).
+
+**Failures:** none. Every model has 50 folds in each run (`n_failed_folds` 0).
+
+**Column glossary.**
+- `fold_metrics.csv`: `model`, `repeat`, `fold`, `n` (test samples), `prevalence`, and the metrics of
+  loso_results.csv on that fold; `error` is filled on a failed fold.
+- `summary.csv`: per model, the mean over folds of each metric, `auroc_sd`, `n_folds` and `n_failed_folds`.
+- `predictions.csv`: `sample`, `repeat`, `fold`, `model`, `y`, `p`, `error`.
+- `samples.csv`: `sample_id`, `subject_id`, `y`, `timepoint`, `label`.
+- `features.csv`: `layer`, `n_features_cohort`, `n_dropped_missing`, `n_used`, `impute`.
+- `effects.csv`: Hedges g per feature (rows) and layer (columns).
+- `effect_correlation.csv`: `layer_a`, `layer_b`, `n_shared`, `spearman`, `p`.
+
+**Not committed:** the logs (`results/paired_<cohort>.log`).

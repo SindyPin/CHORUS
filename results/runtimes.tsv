@@ -38,3 +38,5 @@ lc_proteomics_affinity/concordance	scripts/concordance.py configs/lc_proteomics_
 lc_proteomics_ms/concordance	scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50	~/.venvs/chorus-arm64	2026-11-15 06:57:16	2026-11-15 06:57:17	1	0
 concordance_proteomics_all	scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50	~/.venvs/chorus-arm64	2026-11-15 06:57:17	2026-11-15 06:57:24	7	0
 control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label (version 4: forced_features)	~/.venvs/chorus-arm64	2026-11-15 06:57:24	2026-11-15 06:59:16	112	0
+paired_Cervia2024	scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024	~/.venvs/chorus-arm64	2026-11-15 07:43:05	2026-11-15 08:17:24	2059	0
+paired_Su2022	scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022	~/.venvs/chorus-arm64	2026-11-15 08:17:24	2026-11-15 08:34:33	1029	0
