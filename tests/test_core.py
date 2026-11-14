@@ -822,3 +822,90 @@ def test_curation_helper_drops_samples_and_empty_features_and_schema_vocabulary(
     b = common.drop_samples(a, pd.Series([True, True, False], index=X.index))
     assert list(b.X.index) == ["r1", "r2"] and list(b.X.columns) == ["P1"] and list(b.features["feature"]) == ["P1"]
     assert "convalescent_unverified" in CONTROL_TYPES and "proteomics" in LAYERS
+
+
+def _paired_views(n=60, seed=0):
+    rng = np.random.default_rng(seed)
+    y = pd.Series(np.r_[np.ones(n // 2), np.zeros(n - n // 2)], index=[f"s{i}" for i in range(n)])
+    a = pd.DataFrame(rng.normal(size=(n, 30)), index=y.index, columns=[f"P{i}" for i in range(30)])
+    a.iloc[:, :3] += 1.5 * y.values[:, None]
+    b = pd.DataFrame(rng.normal(size=(n, 20)), index=y.index, columns=[f"P{i}" for i in range(20)])
+    b.iloc[:, :3] += 1.0 * y.values[:, None]
+    b.iloc[0, 5] = np.nan  # a missing value, filled inside the fold
+    return {"a": a, "b": b}, y
+
+
+def test_paired_cv_same_folds_for_every_model_and_agreement_tables():
+    from chorus.eval.paired import PairedCV, effect_correlation, probability_correlation, summarise_folds
+
+    views, y = _paired_views()
+    cv = PairedCV(views, y, impute={"b": "min"}, k=5, n_repeats=2)
+    F, P = cv.run(models=["layer:a", "layer:b", "early_fusion", "late_fusion"], verbose=False)
+    assert set(F["model"]) == {"layer:a", "layer:b", "early_fusion", "late_fusion"} and F["error"].isna().all()
+    # every model is scored on the same test folds
+    folds = {m: g.sort_values(["repeat", "fold", "sample"])[["repeat", "fold", "sample"]].values.tolist() for m, g in P.groupby("model")}
+    assert all(v == folds["layer:a"] for v in folds.values())
+    assert len(P[P["model"] == "layer:a"]) == 2 * len(y)  # each subject once per repeat
+    assert (cv.folds().groupby("repeat")["sample"].nunique() == len(y)).all()
+    s = summarise_folds(F)
+    assert (s["n_folds"] == 10).all() and (s["n_failed_folds"] == 0).all()
+    pc = probability_correlation(P)
+    assert len(pc) == 2 * 6 and pc["n"].eq(len(y)).all()
+    E, C = effect_correlation(views, y)
+    assert C.loc[0, "n_shared"] == 20 and E.loc["P0", "a"] > 0.5
+    # a sample missing from a layer is refused
+    with pytest.raises(ValueError):
+        PairedCV({"a": views["a"], "b": views["b"].iloc[1:]}, y)
+
+
+def test_metabolomics_adapter_and_write_cohort_other_root(tmp_path, monkeypatch):
+    import sys
+    from pathlib import Path
+
+    from chorus.adapters import to_feature_space
+
+    raw = pd.DataFrame({" lactate ": [1.0, 2.0], "glucose": [3.0, np.nan], "lactate": [3.0, 4.0]}, index=["x", "y"])
+    a = to_feature_space("metabolomics", raw, prefix="m:")
+    assert list(a.X.columns) == ["m:glucose", "m:lactate"] and a.X.loc["x", "m:lactate"] == 2.0 and a.feature_space == "metabolite_name"
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "proteomics"))
+    common = _load_script("proteomics/common")
+    monkeypatch.setattr(common, "META", tmp_path / "meta")
+    meta = pd.DataFrame({"subject_id": ["x", "y"], "lc_status": ["LC", "COVID_recovered"], "case_definition": "study_specific", "sample_matrix": "plasma"}, index=a.X.index)
+    common.write_cohort("M", a, meta, root=tmp_path / "metabolomics")
+    written = pd.read_csv(tmp_path / "metabolomics" / "M" / "M_matrix.csv", index_col=0)
+    assert written.index.name == "metabolite_name" and list(written.columns) == ["x", "y"]
+
+
+def test_paired_samples_agree_across_layers_and_keep_the_earliest_draw():
+    pl = _load_script("paired_layers")
+    meta = pd.DataFrame(
+        {
+            "subject_id": ["p1", "p1", "p1", "h1", "p2"],
+            "lc_status": ["LC", "LC", "LC", "never_infected", "COVID_recovered"],
+            "sample_phase": ["acute", "acute", "post_acute", "not_applicable", "post_acute"],
+            "timepoint": ["T2", "T1", "T3", "single_visit", "T3"],
+        },
+        index=["p1-T2", "p1-T1", "p1-T3", "h1", "p2-T3"],
+    )
+    views = {"a": pd.DataFrame({"f": range(5)}, index=meta.index), "b": pd.DataFrame({"g": range(4)}, index=meta.index[[0, 1, 2, 4]])}
+    acute = pl.paired_samples(views, {"a": meta, "b": meta}, "acute", ["T1", "T2", "T3"])
+    assert list(acute.index) == ["p1-T1"]  # earliest acute draw; h1 is not in layer b
+    lc = pl.paired_samples(views, {"a": meta, "b": meta}, "lc", ["T1", "T2", "T3"])
+    assert set(lc.index) == {"p1-T3", "p2-T3"} and lc.loc["p1-T3", "y"] == 1.0
+    other = meta.assign(lc_status=["LC", "LC", "COVID_recovered", "never_infected", "COVID_recovered"])
+    with pytest.raises(ValueError):
+        pl.paired_samples(views, {"a": meta, "b": other}, "lc", ["T1", "T2", "T3"])
+
+
+def test_paired_cv_mofa_and_diablo_when_available():
+    from chorus.eval.paired import PairedCV, diablo_available, mofa_available
+
+    if not (mofa_available() and diablo_available()):
+        pytest.skip("mofapy2 or R mixOmics not available")
+    views, y = _paired_views(n=40)
+    views = {k: v.add_prefix(f"{k}_") if k == "b" else v for k, v in views.items()}
+    F, P = PairedCV(views, y, k=5, n_splits=3, n_repeats=1, mofa_factors_n=3, diablo_keepx=5).run(models=["layer:a", "mofa", "diablo"], verbose=False)
+    assert F["error"].isna().all(), F["error"].dropna().tolist()
+    assert set(F["model"]) == {"layer:a", "mofa", "diablo"}
+    d = P[P["model"] == "diablo"]
+    assert d["p"].between(0, 1).all() and len(d) == len(y)

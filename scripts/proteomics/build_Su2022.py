@@ -152,22 +152,10 @@ def pasc_table(raw: Path) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------------- build
-def build() -> list:
-    raw = raw_dir(STUDY)
-    P = read_xlsx_sheet(raw / "Table S2.xlsx", "S2.1 Proteomics")
-    id_cols = ["Patient Subject ID", "Blood Draw", "Healthy or INCOV", "age", "sex", "BMI"]
-    assays = [c for c in P.columns if c not in id_cols]
-    is_healthy = P["Healthy or INCOV"] == "Healthy"
-    hid = P["Patient Subject ID"].map(lambda x: f"{int(x)}" if isinstance(x, float) else str(x))
-    P["sample_id"] = np.where(is_healthy, "HC-" + hid, P["Blood Draw"].astype(str))
-    P["subject_id"] = np.where(is_healthy, "HC-" + hid, P["Patient Subject ID"].astype(str))
-    if P["sample_id"].duplicated().any():
-        raise ValueError("duplicated sample ids in S2.1")
-    wide = P.set_index("sample_id")[assays].apply(pd.to_numeric, errors="coerce")
-
-    ann, sym_table = assay_annotation(assays)
-    adapted = to_feature_space("olink", wide, annotation=ann, assay_col="assay", uniprot_col="UniProt")
-
+def sample_metadata(P: pd.DataFrame, raw: Path, platform: str) -> pd.DataFrame:
+    """ClinicalSchema rows for the draws of a Table S2 sheet (columns Patient Subject ID, Blood
+    Draw, Healthy or INCOV, age, sex, BMI, plus sample_id and subject_id); shared by the Olink
+    (S2.1) and metabolomics (S2.2) builders."""
     s1 = read_xlsx_sheet(raw / "Table S1.xlsx", "S1.1 INCOV").set_index("Blood draw")
     s1["wos"] = s1["Who Ordinal Scale"].map(wos_numeric)
     s1["tp"] = s1.index.str.split("-").str[1]
@@ -180,7 +168,7 @@ def build() -> list:
     rows = []
     for sid, r in P.set_index("sample_id").iterrows():
         subj = r["subject_id"]
-        row = {"subject_id": subj, "sample_matrix": "plasma", "platform": PLATFORM, "collection_country": "United States"}
+        row = {"subject_id": subj, "sample_matrix": "plasma", "platform": platform, "collection_country": "United States"}
         notes = []
         if r["Healthy or INCOV"] == "Healthy":
             row.update(
@@ -239,6 +227,26 @@ def build() -> list:
 
     meta = pd.DataFrame(rows, index=P["sample_id"].values)
     meta.index.name = "sample_id"
+    return meta
+
+
+def build() -> list:
+    raw = raw_dir(STUDY)
+    P = read_xlsx_sheet(raw / "Table S2.xlsx", "S2.1 Proteomics")
+    id_cols = ["Patient Subject ID", "Blood Draw", "Healthy or INCOV", "age", "sex", "BMI"]
+    assays = [c for c in P.columns if c not in id_cols]
+    is_healthy = P["Healthy or INCOV"] == "Healthy"
+    hid = P["Patient Subject ID"].map(lambda x: f"{int(x)}" if isinstance(x, float) else str(x))
+    P["sample_id"] = np.where(is_healthy, "HC-" + hid, P["Blood Draw"].astype(str))
+    P["subject_id"] = np.where(is_healthy, "HC-" + hid, P["Patient Subject ID"].astype(str))
+    if P["sample_id"].duplicated().any():
+        raise ValueError("duplicated sample ids in S2.1")
+    wide = P.set_index("sample_id")[assays].apply(pd.to_numeric, errors="coerce")
+
+    ann, sym_table = assay_annotation(assays)
+    adapted = to_feature_space("olink", wide, annotation=ann, assay_col="assay", uniprot_col="UniProt")
+
+    meta = sample_metadata(P, raw, PLATFORM)
     meta = meta.loc[adapted.X.index]
 
     st = sym_table.copy()

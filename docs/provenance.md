@@ -128,5 +128,18 @@ the SHA-256 of each file. Every published checksum matched. The repositories pub
   PMC9670186 Zoodsma 2022, PMC9719844 Kovarik 2023). Cervia-Hasler 2024 is not in Europe PMC, so its methods were read
   on the Science site. Kovarik 2023 Table S1 (mmc2.xlsx) was read from the Europe
   PMC supplementary files to map MaxQuant sample codes to groups; it is not stored in the repository.
+- **Kovarik 2023 supplement (downloaded 2026-11-15)** for Test 2: `mmc2.xlsx` (Table S1, proteomics), `mmc3.xlsx`
+  (Table S2, eicosanoids, nAUC), `mmc4.xlsx` (Table S3, Biocrates MxP Quant 500, log2 µM), `mmc5.xlsx` (Table S4,
+  triglyceride heatmap values) and the record `PMC9719844.2.json`, from the PMC Open Access dataset on AWS
+  (`https://pmc-oa-opendata.s3.amazonaws.com/PMC9719844.2/`, article version 2, CC BY), into
+  `data/proteomics/Kovarik2023_plasma/raw/supplement/` (local). The MD5 of each file equals the one in the record:
+  mmc2 967c9d2b168cc807c9feaa6276a75790, mmc3 42686e41f05ac4edf3737ee19a51217a, mmc4 d5468dba9c7df74d94e9c70ffd7e079e,
+  mmc5 d71a151d7e8f2895b74fc083be07e216. The Europe PMC supplementary files service first answered 503 and then broke
+  off the transfer, so it was not used. Why the tables were not used is in `docs/paired_cohorts.md`.
+- **Su2022 metabolomics:** sheet "S2.2 Metabolomics" of the `Table S2.xlsx` above (same file, same SHA-256), built by
+  `scripts/proteomics/build_Su2022_metabolomics.py` into `data/metabolomics/Su2022_metabolomics/` (local).
+- **R for DIABLO:** R 4.5.3 (`/usr/local/bin/Rscript`) with mixOmics 6.32.0 from Bioconductor, installed on
+  2026-11-15 into the separate library `~/Library/R/chorus-mixomics` (with BiocManager and its dependencies), so the
+  system R library is unchanged. `chorus.eval.paired` reads that path from `CHORUS_R_LIB` (default as above).
 - **Reference:** `data/ref/hgnc_complete_set.txt` is the HGNC complete set already in use. It maps symbols to UniProt for
   Su2022 and Captur2022.

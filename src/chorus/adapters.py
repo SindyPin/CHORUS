@@ -14,6 +14,8 @@ the name of the feature space. The shared spaces are
   ms_proteomics   UniProt accession of the leading protein of each protein group, isoform suffix
                   removed; contaminant and decoy groups dropped; zero intensities missing; log2;
                   groups with the same leading accession averaged on the log2 scale
+  metabolomics    analyte name as deposited (optionally prefixed by the panel); within study only,
+                  no RefMet mapping yet
 
 Adapters only rename, filter and aggregate. Normalisation and cross study harmonisation stay in
 ``chorus.harmonise``. Register a new layer with ``@layer_adapter("name", "feature_space")`` and
@@ -241,3 +243,20 @@ def ms_proteomics(
     if preferred is not None:
         notes["groups_keyed_outside_preferred"] = str(int((~key.dropna().isin(preferred)).sum()))
     return Adapted(X, feats, "uniprot", "ms_proteomics", notes)
+
+
+@layer_adapter("metabolomics", "metabolite_name")
+def metabolomics(raw: pd.DataFrame, prefix: str = "", log2: Optional[bool] = False) -> Adapted:
+    """Samples x analytes (metabolites, lipids, eicosanoids) into a name keyed space. The key is
+    the analyte name as deposited with surrounding whitespace removed, prefixed by ``prefix``
+    (to keep panels of one study apart, for example ``eicosanoid:``); names that then coincide
+    are averaged. There is no cross study identifier mapping (RefMet) yet, so the space is only
+    shared within a study. With ``log2`` None the values are log2 transformed when on the linear
+    scale (above 50); the default False keeps them as deposited."""
+    key = pd.Series([f"{prefix}{str(c).strip()}" for c in raw.columns], index=raw.columns)
+    wide = raw.apply(pd.to_numeric, errors="coerce")
+    transform = "as_provided"
+    if log2 or (log2 is None and np.nanmax(wide.values) > LINEAR_SCALE_MAX):
+        wide, transform = np.log2(wide.where(wide > 0)), "log2"
+    X, feats = _aggregate(wide, key)
+    return Adapted(X, feats, "metabolite_name", "metabolomics", {"transform": transform})

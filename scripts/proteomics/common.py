@@ -47,9 +47,11 @@ def drop_samples(adapted: Adapted, keep) -> Adapted:
     return dataclasses.replace(adapted, X=X, features=feats)
 
 
-def write_cohort(study: str, adapted: Adapted, meta: pd.DataFrame, extra: Optional[Dict] = None) -> Dict:
-    """Validate and write one cohort. ``adapted.X`` is samples x proteins; ``meta`` is indexed
-    by sample_id in the same order. Returns the summary row."""
+def write_cohort(study: str, adapted: Adapted, meta: pd.DataFrame, extra: Optional[Dict] = None, root: Optional[Path] = None) -> Dict:
+    """Validate and write one cohort. ``adapted.X`` is samples x features; ``meta`` is indexed
+    by sample_id in the same order. ``root`` replaces data/proteomics for the matrix and feature
+    table (other layers of the same people, for example data/metabolomics); the matrix index is
+    named by the feature space (``uniprot`` for proteins). Returns the summary row."""
     schema = ClinicalSchema()
     X = adapted.X
     if not X.index.equals(pd.Index(meta.index)):
@@ -64,10 +66,10 @@ def write_cohort(study: str, adapted: Adapted, meta: pd.DataFrame, extra: Option
             raise ValueError(f"{study}: metadata lacks required column {c}")
     meta = meta[cols]
     validate_metadata(meta, schema, strict=True)
-    out = DATA / study
+    out = (root or DATA) / study
     out.mkdir(parents=True, exist_ok=True)
     M = X.T
-    M.index.name = "uniprot"
+    M.index.name = adapted.feature_space
     M.to_csv(out / f"{study}_matrix.csv")
     adapted.features.to_csv(out / f"{study}_features.csv", index=False)
     META.mkdir(parents=True, exist_ok=True)
