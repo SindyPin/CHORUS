@@ -19,6 +19,11 @@ post-covex26/27); they are mapped to DIA_Pre_26/27 by source name (pre-covexNN -
 from the SDRF are ``unknown``: DIA_Pre_13 / DIA_Post_13 (named like the PCC runs of participant 13; arm not
 given), DIA_C59_60a and DIA_Sheela (no label). SDRF sex "H" = homme (male): the per arm male counts match the
 paper (Table 2 / section 3.6: exercise 6 of 12 in proteomics, no-exercise 2 of 10; controls 3 of 9).
+
+Curation decisions (15 November 2026): the authors' labels are kept; the no-PCC controls have control_type
+``convalescent_unverified`` (the paper calls them convalescent, but no per person infection record is
+deposited or reported); the four unlabelled runs are excluded from the written cohort (listed in the summary
+as ``runs_excluded_unlabelled``), and proteins left without any value are dropped with them.
 """
 
 from __future__ import annotations
@@ -30,7 +35,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import raw_dir, swissprot_accessions, write_cohort  # noqa: E402
+from common import drop_samples, raw_dir, swissprot_accessions, write_cohort  # noqa: E402
 
 from chorus.adapters import to_feature_space  # noqa: E402
 
@@ -119,7 +124,7 @@ def build() -> list:
                 if run in fixed:
                     row["notes"] += f"; SDRF data file '{r['comment[data file]']}' corrected to this run by source name"
             elif src.startswith("control"):
-                row.update({"subject_id": f"{STUDY}_{src}", "lc_status": "COVID_recovered", "control_type": "COVID_recovered",
+                row.update({"subject_id": f"{STUDY}_{src}", "lc_status": "COVID_recovered", "control_type": "convalescent_unverified",
                             "sample_phase": "post_acute", "case_definition": "study_specific", "timepoint": "single_visit",
                             "intervention_arm": "not_applicable", "time_anchor": "unknown", "acute_severity": "unknown",
                             "notes": CONTROL_NOTE})
@@ -148,12 +153,21 @@ def build() -> list:
     meta = meta[first + [c for c in meta.columns if c not in first]]
 
     missing_sdrf = sorted(set(s["file_stem"]) - set(by_file) - set(runs.values()))
+    n_not_in_sdrf = int((meta["sdrf_source_name"].isna()).sum()) if "sdrf_source_name" in meta else len(meta)
+    # curation: the unlabelled runs are excluded
+    labelled = meta["lc_status"] != "unknown"
+    excluded = sorted(meta.index[~labelled])
+    n_groups_before = adapted.X.shape[1]
+    adapted = drop_samples(adapted, labelled)
+    meta = meta.loc[adapted.X.index]
     extra = {
         "id_col": ID_COL,
         "n_protein_groups_diann": int(len(pg)),
         "adapter_notes": adapted.notes,
         "n_missing_values": int(adapted.X.isna().sum().sum()),
-        "n_runs_not_in_sdrf": int((meta["sdrf_source_name"].isna()).sum()) if "sdrf_source_name" in meta else len(meta),
+        "n_runs_not_in_sdrf": n_not_in_sdrf,
+        "runs_excluded_unlabelled": excluded,
+        "n_proteins_dropped_with_them": n_groups_before - adapted.X.shape[1],
         "sdrf_rows_corrected": sorted(fixed),
         "sdrf_files_without_run": missing_sdrf,
         "n_by_status_timepoint": meta.groupby(["lc_status", "timepoint"]).size().to_dict(),

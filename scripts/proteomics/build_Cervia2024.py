@@ -4,9 +4,9 @@ doi:10.1126/science.adg7942, PMID 38236961; Mendeley Data 10.17632/dvf6yvrg4x.1,
 
 Two layers measured on the same people (Zurich cohort, serum), written as two cohorts:
 
-  Cervia2024_SomaScan  (somascan)       39 healthy controls (first visit) and 113 COVID-19 patients
+  Cervia2024_SomaScan  (somascan)       34 healthy controls (first visit; 39 before curation) and 113 COVID-19 patients
                                         at acute infection (Sampling_month ONE) and 6-month
-                                        follow-up (SIX); 265 samples
+                                        follow-up (SIX); 260 samples
   Cervia2024_MS        (ms_proteomics)  DIA LC-MS/MS of 6-month follow-up sera (119 columns)
 
 Raw files (data/proteomics/Cervia2024/raw):
@@ -24,6 +24,11 @@ Reshaping before the adapters (the adapters are unchanged):
     non-human UniProt mnemonic suffix (_MOUSE, _AEQVI, _HV2BE, _ECOLI, ...) or HIV are dropped.
   * The MS table is already one row per protein group and one column per sample; it is passed as is.
 
+Curation decision (15 November 2026): five healthy controls (COV_ZH_90/181/185/197/198_ID) have the sample
+number, sex and age of a later COVID-19 subject (COV_ZH_<n>_2_ID) and are taken to be that person before
+infection. Their healthy samples are dropped from both cohorts, and the COVID-19 subject's rows record the link
+in ``linked_healthy_subject_id`` (with a note).
+
 Sample ids are the authors' SampleId with "COV-ZH " written "COV_ZH_" (the MS column style), so the
 same serum sample has the same sample_id in both layers. subject_id is the authors' SubjectID.
 No normalisation, imputation, or batch correction here (values are the authors' processed values).
@@ -39,7 +44,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import raw_dir, swissprot_accessions, write_cohort  # noqa: E402
+from common import drop_samples, raw_dir, swissprot_accessions, write_cohort  # noqa: E402
 
 from chorus.adapters import to_feature_space  # noqa: E402
 
@@ -145,13 +150,16 @@ def sample_row(r: pd.Series, subj: pd.DataFrame, platform: str) -> dict:
         )
         notes.append("healthy control recruited Apr 2020 to Apr 2021, no history of SARS-CoV-2 infection, negative anti-S1 IgA and IgG serology")
         if pd.notna(m["later_covid_subject_id"]):
-            row["later_covid_subject_id"] = m["later_covid_subject_id"]
-            notes.append(
-                f"same sample number, sex and age as COVID-19 subject {m['later_covid_subject_id']} (probably the same person sampled before infection); "
-                "kept as the authors' healthy control"
-            )
+            row["later_covid_subject_id"] = m["later_covid_subject_id"]  # this sample is dropped (linked_healthy)
         return {**row, "notes": "; ".join(notes)}
 
+    earlier = subj.index[subj["later_covid_subject_id"] == s]
+    if len(earlier):
+        row["linked_healthy_subject_id"] = earlier[0]
+        notes.append(
+            f"same person as healthy control {earlier[0]} (same sample number, sex and age; sampled before infection); "
+            "that healthy sample is dropped from the cohort"
+        )
     lc = m["PACS_6M_woDys"]
     status = "LC" if lc == 1 else "COVID_recovered" if lc == 0 else "unknown"
     days = r["Days"]
@@ -192,7 +200,12 @@ def build_somascan(six, ac, apt, subj) -> dict:
     rows = {r["sample_id"]: sample_row(r, subj, SOMA_PLATFORM) for _, r in D.iterrows()}
     meta = pd.DataFrame.from_dict(rows, orient="index").loc[adapted.X.index]
     meta.index.name = "sample_id"
+    linked = meta["later_covid_subject_id"].notna()
+    dropped = sorted(meta.index[linked])
+    adapted = drop_samples(adapted, ~linked)
+    meta = meta.loc[adapted.X.index].drop(columns="later_covid_subject_id")
     extra = {
+        "healthy_samples_dropped_linked": dropped,
         "n_aptamers": len(seq),
         "n_aptamers_kept_human": int(keep.reindex(seq).fillna(False).sum()),
         "transform": adapted.notes.get("transform"),
@@ -244,6 +257,10 @@ def build_ms(ms, six, subj) -> dict:
         rows[c] = row
     meta = pd.DataFrame.from_dict(rows, orient="index").loc[adapted.X.index]
     meta.index.name = "sample_id"
+    if "later_covid_subject_id" in meta.columns:  # the MS table holds no healthy sample, so nothing to drop
+        if meta["later_covid_subject_id"].notna().any():
+            raise ValueError("Cervia2024_MS: a linked healthy sample in the MS table")
+        meta = meta.drop(columns="later_covid_subject_id")
     extra = {
         "n_protein_groups": len(ms),
         "n_extra_ms_samples": int((~meta["in_somascan"].astype(bool)).sum()),

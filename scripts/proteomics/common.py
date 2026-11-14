@@ -14,6 +14,7 @@ and returns the summary row used by docs/proteomics_cohorts.md. The metadata mus
 from __future__ import annotations
 
 from pathlib import Path
+import dataclasses
 from typing import Dict, Optional
 
 import pandas as pd
@@ -35,6 +36,15 @@ def swissprot_accessions(path: Path = ROOT / "data" / "ref" / "hgnc_complete_set
 
 def raw_dir(study: str) -> Path:
     return DATA / study / "raw"
+
+
+def drop_samples(adapted: Adapted, keep) -> Adapted:
+    """Keep the samples ``keep`` (a boolean mask or index over ``adapted.X``) and drop the features left
+    without any value; the feature table follows. Used for curation exclusions."""
+    X = adapted.X.loc[keep] if not isinstance(keep, pd.Series) else adapted.X.loc[keep.reindex(adapted.X.index).fillna(False).astype(bool)]
+    X = X.loc[:, X.notna().any(axis=0)]
+    feats = adapted.features[adapted.features["feature"].isin(X.columns)].reset_index(drop=True)
+    return dataclasses.replace(adapted, X=X, features=feats)
 
 
 def write_cohort(study: str, adapted: Adapted, meta: pd.DataFrame, extra: Optional[Dict] = None) -> Dict:

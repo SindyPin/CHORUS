@@ -1,7 +1,8 @@
 # Proteomics cohorts
 
 The plasma and serum proteomics cohorts in `docs/proteomics_inventory.csv` that need no login. This file records what was
-built and how. It does not interpret anything, and no benchmark has been run on these cohorts.
+built and how. It does not interpret anything. The benchmarks run on these cohorts are described in `results/README.md`
+("Proteomics").
 
 - **Downloads:** `scripts/proteomics/download.sh`; source, licence, checksums and date are in `docs/provenance.md`
   ("Proteomics cohorts").
@@ -23,12 +24,25 @@ built and how. It does not interpret anything, and no benchmark has been run on 
 
 **Schema additions** (`chorus.schema`):
 - layer `somascan`;
-- `control_type`: COVID_recovered, never_infected_prepandemic, never_infected_contemporary, never_infected_unspecified,
-  not_applicable;
+- `control_type`: COVID_recovered, convalescent_unverified (added 15 November 2026: a control the authors call
+  convalescent without a per person record of infection), never_infected_prepandemic, never_infected_contemporary,
+  never_infected_unspecified, not_applicable;
+- layer `proteomics` (added 15 November 2026): Olink, SomaScan and MS cohorts pooled in one benchmark config;
 - `sample_phase`: pre_infection, acute, post_acute, not_applicable, unknown;
 - `timepoint` (visit label).
 
 Acute samples carry the patient's later outcome in `lc_status` when the authors give it.
+
+## Curation decisions (15 November 2026)
+
+Applied in the builders, so the files in `data/` and the tables below already reflect them.
+
+| cohort | decision | effect |
+|---|---|---|
+| Cervia2024 | the 5 healthy controls that match later COVID-19 subjects are linked to those subjects, and their healthy samples are dropped | Cervia2024_SomaScan: 39 to 34 healthy samples, 265 to 260 samples. The COVID-19 subjects' rows (SomaScan and MS) carry `linked_healthy_subject_id` and a note. `later_covid_subject_id` is removed. |
+| Chowdhury2024 | the authors' labels are kept; the controls get `control_type` convalescent_unverified; the unlabelled runs are excluded | 55 to 51 runs (`DIA_Pre_13`, `DIA_Post_13`, `DIA_C59_60a`, `DIA_Sheela` excluded); 405 proteins, none dropped with them. `lc_status` of the controls stays COVID_recovered. |
+| Zoodsma2022 | the 16 Nijmegen patients not in the authors' "allowed to use" file stay excluded | unchanged |
+| Captur2022 | not used | the cohort is still built (`unknown` labels), but no benchmark config lists it |
 
 <!-- generated:start -->
 ### Cohorts
@@ -40,8 +54,8 @@ Samples are matrix columns (runs); subjects in parentheses. n LC and n COVID rec
 | Buggert2025 | olink | 221 (199) | 159 (146) | 58 (51) | 0 | 0 | 4 | plasma | Olink Explore 3072 (Explore 3.0.5); Olink Explore 3072 (Explore 3.10.0); Olink Explore 3072 (Explore 3.6.0) | 2903 | no (flow cytometry, serology on request only) |
 | Captur2022 | ms_proteomics | 320 (157) | 0 (0) | 0 (0) | 0 | 0 | 320 | plasma | Targeted LC-MRM (custom ~91 protein inflammation/neuroinflammation panel, two MRM methods; Skyline); peptide area / yeast enolase internal standard | 100 | none public |
 | Cervia2024_MS | ms_proteomics | 119 (115) | 40 (40) | 73 (73) | 0 | 0 | 6 | serum | LC-MS/MS DIA (Orbitrap Eclipse; DIA-NN library-free, maxLFQ) | 308 | yes: SomaScan (Cervia2024_SomaScan, same sera) |
-| Cervia2024_SomaScan | somascan | 265 (152) | 40 (40) | 73 (73) | 39 | 113 | 0 | serum | SomaScan 7k (v4; 7596 SOMAmers deposited) | 6402 | yes: MS proteomics (Cervia2024_MS, same sera at 6 months); monocyte scRNA-seq, PBMC flow, VirScan (Mendeley 10.17632/dvf6yvrg4x.1, subsets); Olink Inflammation (Ceglarek 2025) |
-| Chowdhury2024 | ms_proteomics | 55 (33) | 42 (21) | 9 (9) | 0 | 0 | 4 | plasma | LC-MS/MS diaPASEF timsTOF Pro (DIA-NN 1.8.1 library-free, MaxLFQ pg_matrix) | 405 | no (glutathione, 8-OHdG, ELISA, flow cytometry; PCC participants from the BQC19 biobank, no omics link given) |
+| Cervia2024_SomaScan | somascan | 260 (147) | 40 (40) | 73 (73) | 34 | 113 | 0 | serum | SomaScan 7k (v4; 7596 SOMAmers deposited) | 6402 | yes: MS proteomics (Cervia2024_MS, same sera at 6 months); monocyte scRNA-seq, PBMC flow, VirScan (Mendeley 10.17632/dvf6yvrg4x.1, subsets); Olink Inflammation (Ceglarek 2025) |
+| Chowdhury2024 | ms_proteomics | 51 (30) | 42 (21) | 9 (9) | 0 | 0 | 0 | plasma | LC-MS/MS diaPASEF timsTOF Pro (DIA-NN 1.8.1 library-free, MaxLFQ pg_matrix) | 405 | no (glutathione, 8-OHdG, ELISA, flow cytometry; PCC participants from the BQC19 biobank, no omics link given) |
 | Kovarik2023_plasma | ms_proteomics | 39 (39) | 13 (13) | 13 (13) | 13 | 0 | 0 | plasma | LC-MS/MS DDA-PASEF timsTOF Pro (MaxQuant 1.6.17.0 LFQ, match between runs) | 323 | yes, per sample in the paper's supplementary tables: eicosanoids, Biocrates metabolomics, triglycerides; no repository accession |
 | Su2022 | olink | 817 (493) | 75 (75) | 50 (50) | 289 | 390 | 13 | plasma | Olink Target 96 (Cardiovascular II, Inflammation, Immune Response, Metabolism, Organ Damage); authors' Z scores | 441 | yes: plasma metabolomics (Table S2.2), PBMC scRNA-seq/CITE-seq (ArrayExpress E-MTAB-10129); TCR-seq without accession |
 | Zoodsma2022_Breda | olink | 576 (293) | 0 (0) | 0 (0) | 5 | 542 | 29 | plasma | Olink Target 96 Inflammation (v.3022); NPX | 92 | none public |
@@ -126,11 +140,12 @@ The same serum samples measured by SomaScan (acute, 6 months and healthy) and by
   - "recovered Long Covid" (symptoms for more than 4 weeks, none at 6 months; 16);
   - the 8 smell- or taste-only patients.
 - **Healthy.** 39 seronegative people recruited at the same time (April 2020 to April 2021), so
-  `never_infected_contemporary`.
+  `never_infected_contemporary`; 34 after curation (below).
 - **Acute samples.** 113, with the 6-month outcome in `lc_status`.
 - **Flags:**
   - 5 healthy controls (COV_ZH_90/181/185/197/198_ID) match later COVID-19 subjects (`..._2_ID`) by number, sex and age.
-    The authors' labels are kept, and the link is in `later_covid_subject_id`.
+    Curation decision: they are taken to be those people before infection. Their healthy samples are dropped, and
+    the later subject's rows record the link in `linked_healthy_subject_id`.
   - 6 MS samples have no SomaScan or label row and are `unknown`.
 - **Values:**
   - SomaScan: SomaScan v4 with 7596 aptamers deposited (7k); the 7289 human aptamers are kept. The deposited values are
@@ -197,15 +212,17 @@ The same serum samples measured by SomaScan (acute, 6 months and healthy) and by
   study_specific.
 - **LC samples.** 21 people with runs before and after the intervention: 12 exercise, 9 no exercise. Both draws are
   `post_acute` and share `subject_id`. `timepoint` and `intervention_arm` record the visit and the arm.
-- **Controls.** "No-PCC, convalescent individuals without PCC", 9 healthy hospital co-workers, so `COVID_recovered`.
+- **Controls.** "No-PCC, convalescent individuals without PCC", 9 healthy hospital co-workers. `lc_status` is the
+  authors' label, `COVID_recovered`, and `control_type` is `convalescent_unverified` (curation decision):
   - No infection test or date is reported for them.
   - The Limitations section asks for future "inclusion of infected individuals who do not develop PCC".
   - The recovered label rests on the Table 1 footnote only.
 - **Run mapping.** Runs are matched to `metadata.sdrf.tsv` by file name.
   - Two SDRF rows (pre-covex26 and pre-covex27) point to the post files; they are mapped to `DIA_Pre_26` and
     `DIA_Pre_27`, which is flagged.
-  - Runs absent from the SDRF are `unknown`: `DIA_Pre_13` and `DIA_Post_13` (probably the 10th no-exercise participant,
-    not deposited), `DIA_C59_60a` and `DIA_Sheela`.
+  - Runs absent from the SDRF have no label: `DIA_Pre_13` and `DIA_Post_13` (probably the 10th no-exercise
+    participant, not deposited), `DIA_C59_60a` and `DIA_Sheela`. Curation decision: they are excluded from the
+    written cohort.
 - **Values.** DIA-NN 1.8.1 `report.pg_matrix.tsv` (MaxLFQ, library-free, UniProt UP000005640 including TrEMBL).
   - Id column `Protein.Group`.
   - DIA-NN orders a group's accessions alphabetically. The adapter therefore takes the first accession that is in the
