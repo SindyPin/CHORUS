@@ -1,0 +1,23 @@
+# CHORUS Test 3 (mosaic, scripts/mosaic_programmes.py): the transcriptomics side of LC versus COVID recovered in programme
+# space. The five post-acute blood cohorts of configs/lc_transcriptomics_blood.yaml with its sample selection, but every
+# cohort keeps the genes that pass its own expression filter (features: per_cohort), not only the genes common to all,
+# so that each cohort's programme coverage is its own. Not a benchmark config.
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE226260_WB,   matrix: data/counts/GSE226260/GSE226260_wholeblood_counts.csv.gz, meta: data/meta/GSE226260_WB_meta.csv,   is_counts: true, provenance: author_matrix, accession: GSE226260}
+  - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,       meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260}
+  - {study_id: GSE224615,      matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv,       meta: data/meta/GSE224615_meta.csv,      is_counts: true, provenance: requantify, accession: GSE224615}
+  - {study_id: GSE251849,      matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,            meta: data/meta/GSE251849_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE251849}
+  - {study_id: GSE270045,      matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz,    meta: data/meta/GSE270045_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE270045}
+preprocessing:
+  matrices: [whole_blood, PBMC]
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+out: results/mosaic_programmes

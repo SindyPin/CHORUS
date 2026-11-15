@@ -1,0 +1,22 @@
+# CHORUS Test 3 positive control (scripts/mosaic_programmes.py): the proteomics side of acute COVID-19 versus never
+# infected in programme space. The cohorts and sample selection of configs/control_acute_proteomics.yaml, but every cohort
+# keeps its own proteins (features: union) instead of the proteins shared by all. Not a benchmark config.
+layer: proteomics
+cohorts:
+  - {study_id: Cervia2024_SomaScan,  matrix: data/proteomics/Cervia2024_SomaScan/Cervia2024_SomaScan_matrix.csv,   meta: data/meta/Cervia2024_SomaScan_meta.csv,  feature_space: uniprot, accession: "doi:10.17632/dvf6yvrg4x.1"}
+  - {study_id: Su2022,               matrix: data/proteomics/Su2022/Su2022_matrix.csv,                             meta: data/meta/Su2022_meta.csv,               feature_space: uniprot, accession: "doi:10.17632/96v329bg7g.1"}
+  - {study_id: Zoodsma2022_Hannover, matrix: data/proteomics/Zoodsma2022_Hannover/Zoodsma2022_Hannover_matrix.csv, meta: data/meta/Zoodsma2022_Hannover_meta.csv, feature_space: uniprot, accession: "github:CiiM-Bioinformatics-group/Postcovid-targeted-proteomics@d45e36077d735c242788e72b871ce4a3d1e728a9"}
+preprocessing:
+  matrices: [plasma, serum]
+  relabel_acute: true
+  keep_lc_status: [acute, never_infected]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [T1, T2, T3, W1T1, W1T2, W1T3, W1T4, W2T1, W3T1, W4T1, W5T1, W6T1]
+  deduplicate: true
+  features: union
+  impute: study_median
+benchmark:
+  positive: acute
+  negative: never_infected
+out: results/mosaic_programmes

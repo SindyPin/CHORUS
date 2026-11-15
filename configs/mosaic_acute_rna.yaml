@@ -1,0 +1,23 @@
+# CHORUS Test 3 positive control (scripts/mosaic_programmes.py): the transcriptomics side of acute COVID-19 versus never
+# infected in programme space. GSE215865 is the only RNA cohort on disk with both classes
+# (results/control_acute_transcriptomics/cohorts.csv). It has no sample_phase column: every library was drawn during a
+# hospital admission, so the COVID-19 positive subjects (curated LC or COVID_recovered by their later outcome) are acute
+# (acute_lc_status), and the COVID-19 negative admissions are never_infected; lc_status unknown is dropped. One library
+# per subject, the earliest. Every cohort keeps the genes that pass its own expression filter. Not a benchmark config.
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE215865, matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865, acute_lc_status: [LC, COVID_recovered]}
+preprocessing:
+  matrices: [whole_blood]
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  relabel_acute: true
+  keep_lc_status: [acute, never_infected]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  positive: acute
+  negative: never_infected
+out: results/mosaic_programmes

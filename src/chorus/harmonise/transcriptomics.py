@@ -16,6 +16,21 @@ import pandas as pd
 from ..io import Cohort, CohortSet
 
 
+def expressed_per_cohort(cs: CohortSet, min_cpm: float = 1.0, min_fraction_samples: float = 0.5) -> dict:
+    """Study id -> genes with CPM >= min_cpm in at least ``min_fraction_samples`` of that study's
+    samples. A cohort that is not counts contributes every feature with at least one value."""
+    out = {}
+    for c in cs.cohorts:
+        if not c.is_counts:
+            out[c.study_id] = set(c.features[c.X.notna().any(axis=0).values])
+        else:
+            lib = c.X.sum(axis=1).replace(0, np.nan)
+            cpm = c.X.div(lib, axis=0) * 1e6
+            frac = (cpm >= min_cpm).mean(axis=0)
+            out[c.study_id] = set(frac.index[frac >= min_fraction_samples])
+    return out
+
+
 def filter_low_counts(cs: CohortSet, min_cpm: float = 1.0, min_fraction_samples: float = 0.5, combine: str = "intersection") -> pd.Index:
     """Genes with CPM >= min_cpm in at least ``min_fraction_samples`` of samples in EVERY study.
 
@@ -25,16 +40,21 @@ def filter_low_counts(cs: CohortSet, min_cpm: float = 1.0, min_fraction_samples:
     the features that pass in any study instead (pairwise comparisons on shared features).
     """
     keep: Optional[set] = None
-    for c in cs.cohorts:
-        if not c.is_counts:
-            genes = set(c.features[c.X.notna().any(axis=0).values])
-        else:
-            lib = c.X.sum(axis=1).replace(0, np.nan)
-            cpm = c.X.div(lib, axis=0) * 1e6
-            frac = (cpm >= min_cpm).mean(axis=0)
-            genes = set(frac.index[frac >= min_fraction_samples])
+    for genes in expressed_per_cohort(cs, min_cpm, min_fraction_samples).values():
         keep = genes if keep is None else (keep | genes if combine == "union" else keep & genes)
     return pd.Index(sorted(keep or []))
+
+
+def mask_unexpressed(cs: CohortSet, expressed: dict) -> CohortSet:
+    """Set to missing the features of each cohort that are not in that cohort's ``expressed`` set
+    (``preprocessing: features: per_cohort``: every cohort keeps the genes that pass its own filter)."""
+    out = []
+    for c in cs.cohorts:
+        keep = c.X.columns.isin(list(expressed[c.study_id]))
+        X = c.X.copy()
+        X.loc[:, ~keep] = np.nan
+        out.append(Cohort(c.study_id, c.layer, X, c.meta, c.feature_space, c.is_counts, dict(c.source)))
+    return CohortSet(out)
 
 
 def log_cpm(X: pd.DataFrame, prior_count: float = 2.0) -> pd.DataFrame:

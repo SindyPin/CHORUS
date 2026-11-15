@@ -909,3 +909,77 @@ def test_paired_cv_mofa_and_diablo_when_available():
     assert set(F["model"]) == {"layer:a", "mofa", "diablo"}
     d = P[P["model"] == "diablo"]
     assert d["p"].between(0, 1).all() and len(d) == len(y)
+
+
+def test_programme_mapping_scoring_and_minimum_members(tmp_path):
+    from chorus.integrate.programmes import common_programmes, map_gene_sets, programme_correlation, programme_members, read_gmt, score_programmes
+
+    (tmp_path / "s.gmt").write_text("SET_A\turl\t1\t2\t3\t4\t5\t6\nSET_B\turl\t1\t2\t99\n")
+    sets = read_gmt(tmp_path / "s.gmt")
+    assert sets["SET_B"] == ["1", "2", "99"]
+    hgnc = pd.DataFrame(
+        {
+            "entrez_id": [str(i) for i in range(1, 7)],
+            "symbol": [f"G{i}" for i in range(1, 7)],
+            "ensembl_gene_id": [f"ENSG{i}" for i in range(1, 7)],
+            "uniprot_ids": ["P1|Q1", "P2", "P3", "P4", "P5", None],
+        }
+    )
+    T = map_gene_sets(sets, hgnc, "test")
+    assert set(T.loc[T["entrez_id"] == "1", "uniprot"]) == {"P1", "Q1"}  # one row per accession
+    assert T.loc[T["entrez_id"] == "99", "symbol"].isna().all()  # not in HGNC: kept, unmapped
+    # a multi-protein key is a member when any accession is; it counts once
+    mem = programme_members(T, ["P1_P9", "P2", "P3", "Q7"], "uniprot")
+    assert sorted(mem["SET_A"]) == ["P1_P9", "P2", "P3"] and mem["SET_B"] == ["P1_P9", "P2"]
+    ens = programme_members(T, [f"ENSG{i}" for i in range(1, 7)], "ensembl_gene")
+    assert len(ens["SET_A"]) == 6
+
+    rng = np.random.default_rng(0)
+    feats = [f"ENSG{i}" for i in range(1, 7)]
+    X = pd.DataFrame(rng.normal(size=(20, 6)), columns=feats, index=[f"s{i}" for i in range(20)])
+    X.iloc[10:] += 5.0  # study offset
+    X.loc[X.index[10:], "ENSG6"] = np.nan  # not measured in study b
+    st = pd.Series(["a"] * 10 + ["b"] * 10, index=X.index)
+    S, cov = score_programmes(X, st, ens, min_members=6)
+    assert S.loc[st == "a", "SET_A"].notna().all() and S.loc[st == "b", "SET_A"].isna().all()  # 5 members measured in b
+    assert np.allclose(S.loc[st == "a", "SET_A"].mean(), 0)  # within cohort standardisation
+    c = cov.set_index(["study_id", "programme"])
+    assert c.loc[("b", "SET_A"), "n_measured"] == 5 and not c.loc[("b", "SET_A"), "scored"]
+    # the scores of a cohort do not depend on the other cohorts
+    Sa, _ = score_programmes(X[st == "a"], st[st == "a"], ens, min_members=6)
+    assert np.allclose(Sa["SET_A"], S.loc[st == "a", "SET_A"])
+    S5, _ = score_programmes(X, st, ens, min_members=5)
+    assert common_programmes(S5, st, ["a", "b"]) == ["SET_A"]
+    C = programme_correlation(S5, S5)
+    assert np.allclose(C["spearman"], 1.0)
+
+
+def test_per_cohort_features_and_acute_relabel_by_status():
+    from chorus.harmonise.transcriptomics import expressed_per_cohort, mask_unexpressed, to_continuous
+    from chorus.io import Cohort, CohortSet
+
+    meta = lambda ids, st: pd.DataFrame({"subject_id": ids, "lc_status": st, "case_definition": "study_specific", "sample_matrix": "whole_blood"}, index=ids)  # noqa: E731
+    Xa = pd.DataFrame({"g1": [100, 100, 100, 100], "g2": [0, 0, 0, 1]}, index=["a0", "a1", "a2", "a3"])
+    Xb = pd.DataFrame({"g1": [100, 100, 100, 100], "g2": [100, 100, 100, 100]}, index=["b0", "b1", "b2", "b3"])
+    cs = CohortSet([Cohort("A", "bulk_rna", Xa, meta(list(Xa.index), ["LC", "COVID_recovered", "never_infected", "unknown"]), is_counts=True), Cohort("B", "bulk_rna", Xb, meta(list(Xb.index), ["LC"] * 4), is_counts=True)])
+    ex = expressed_per_cohort(cs)
+    assert ex["A"] == {"g1"} and ex["B"] == {"g1", "g2"}
+    out = mask_unexpressed(to_continuous(cs, ["g1", "g2"]), ex)
+    assert out["A"].X["g2"].isna().all() and out["B"].X["g2"].notna().all()
+    # a cohort without sample_phase: the listed lc_status values are acute, the rest unchanged
+    r = cs.relabel_acute(acute_lc_status={"A": ["LC", "COVID_recovered"]})
+    assert list(r["A"].meta["lc_status"]) == ["acute", "acute", "never_infected", "unknown"]
+    assert list(r["B"].meta["lc_status"]) == ["LC"] * 4 and list(r["A"].meta["lc_status_original"])[:2] == ["LC", "COVID_recovered"]
+
+
+def test_mosaic_schemes_keep_sensitivity_cohorts_out_of_training():
+    mp = _load_script("mosaic_programmes")
+    envs = {"rna": ["rna:a", "rna:b"], "protein": ["protein:p", "protein:q", "protein:r"], "sensitivity": ["protein:p_ms"]}
+    lc = mp.schemes("lc", envs)
+    assert all("protein:p_ms" not in train for _, train, _ in lc)
+    assert [t for s, _, t in lc if s == "rna_to_protein"] == ["protein:p", "protein:q", "protein:r", "protein:p_ms"]
+    loo = [(train, t) for s, train, t in lc if s == "leave_one_cohort_out"]
+    assert len(loo) == 5 and all(t not in train and len(train) == 4 for train, t in loo)
+    acute = mp.schemes("acute", {"rna": ["rna:a"], "protein": ["protein:p", "protein:q", "protein:r"], "sensitivity": []})
+    assert acute[0] == ("protein_to_rna", ["protein:p", "protein:q", "protein:r"], "rna:a")
+    assert acute[1] == ("rna_plus_other_protein", ["rna:a", "protein:q", "protein:r"], "protein:p")

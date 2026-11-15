@@ -43,7 +43,7 @@ from .eval import LosoConfig, run_loso, run_within_study_cv, summarise
 from .eval.loso import selector_label
 from .features.priors import load_gene_list
 from .harmonise.proteomics import impute_within_study
-from .harmonise.transcriptomics import filter_low_counts, select_tissue, to_continuous
+from .harmonise.transcriptomics import expressed_per_cohort, filter_low_counts, mask_unexpressed, select_tissue, to_continuous
 from .io import Cohort, CohortSet
 from .simulate import simulate_cohorts
 
@@ -90,17 +90,20 @@ def load_config(path: str, extra_features=()) -> tuple:
     if pre.get("matrices"):
         cs = select_tissue(cs, pre["matrices"])
     if pre.get("relabel_acute", False):  # lc_status "acute" for acute phase samples (positive control)
-        cs = cs.relabel_acute()
+        cs = cs.relabel_acute(acute_lc_status={c["study_id"]: c["acute_lc_status"] for c in cfg["cohorts"] if c.get("acute_lc_status")})
     if pre.get("keep_lc_status") is not None or pre.get("drop_sample_phases") is not None:
         cs = cs.filter_samples(pre.get("keep_lc_status"), pre.get("drop_sample_phases"))
     if pre.get("one_sample_per_subject", False):
         cs = cs.one_sample_per_subject(pre.get("acute_timepoints", ["acute"]), pre.get("timepoint_order"))
     if pre.get("deduplicate", True):
         cs = cs.deduplicate_subjects()
-    feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5), combine="union" if pre.get("features") == "union" else "intersection")
+    feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5), combine="union" if pre.get("features") in ("union", "per_cohort") else "intersection")
+    expressed = expressed_per_cohort(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5)) if pre.get("features") == "per_cohort" else None
     cfg["filtered_features"] = list(feats)
     extra = [g for g in dict.fromkeys(extra_features) if g not in set(feats) and any(g in c.features for c in cs.cohorts)]
     cs = to_continuous(cs, feats.append(pd.Index(extra)))
+    if expressed is not None:  # each cohort keeps the features that pass its own filter, the rest missing
+        cs = mask_unexpressed(cs, expressed)
     per_study = {c["study_id"]: c["impute"] for c in cfg["cohorts"] if c.get("impute")}
     if pre.get("impute", "none") != "none" or per_study:
         cs, cfg["observed_fraction"] = impute_within_study(cs, pre.get("impute", "none"), per_study)

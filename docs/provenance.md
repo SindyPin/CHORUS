@@ -143,3 +143,10 @@ the SHA-256 of each file. Every published checksum matched. The repositories pub
   system R library is unchanged. `chorus.eval.paired` reads that path from `CHORUS_R_LIB` (default as above).
 - **Reference:** `data/ref/hgnc_complete_set.txt` is the HGNC complete set already in use. It maps symbols to UniProt for
   Su2022 and Captur2022.
+- **MSigDB gene sets (downloaded 2026-11-15)** for Test 3 (`docs/mosaic.md`): release 2026.2 human, from
+  `https://data.broadinstitute.org/gsea-msigdb/msigdb/release/2026.2.Hs/` into `data/ref/msigdb/` (local), under the
+  Creative Commons Attribution 4.0 International licence (MSigDB v2022.1 and later; the extra terms of the licence page
+  concern KEGG, BioCarta and AAAS/STKE sets only). MD5: `h.all.v2026.2.Hs.entrez.gmt` f945c99da9f9c996387a1e0f9a88a00e,
+  `h.all.v2026.2.Hs.symbols.gmt` c945afd59d949398471c8768fe4d41b0, `c2.cp.reactome.v2026.2.Hs.entrez.gmt`
+  6db9a240e0edd0171bd7c349da51a895, `c2.cp.reactome.v2026.2.Hs.symbols.gmt` 74705d0ea35325b3d56a3412801e5592. The
+  Entrez files are used, mapped through the HGNC complete set above.

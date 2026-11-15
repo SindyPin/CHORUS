@@ -173,16 +173,21 @@ class CohortSet:
             out.append(c.subset(m))
         return CohortSet(out)
 
-    def relabel_acute(self, label: str = "acute") -> "CohortSet":
+    def relabel_acute(self, label: str = "acute", acute_lc_status: Optional[Dict[str, Iterable[str]]] = None) -> "CohortSet":
         """Set ``lc_status`` to ``label`` for the samples whose ``sample_phase`` is acute, whatever
         their later outcome; the previous value is kept in ``lc_status_original``. Used by the
-        acute versus never infected positive control."""
+        acute versus never infected positive control. ``acute_lc_status`` maps a study id to the
+        ``lc_status`` values whose samples are all acute in that study (a cohort without a
+        ``sample_phase`` column whose COVID-19 samples were all drawn during the acute illness,
+        GSE215865)."""
         out: List[Cohort] = []
         for c in self.cohorts:
             meta = c.meta.copy()
             meta["lc_status_original"] = meta["lc_status"]
             if "sample_phase" in meta.columns:
                 meta.loc[meta["sample_phase"].astype(str) == "acute", "lc_status"] = label
+            if acute_lc_status and c.study_id in acute_lc_status:
+                meta.loc[meta["lc_status_original"].astype(str).isin(set(acute_lc_status[c.study_id])), "lc_status"] = label
             out.append(Cohort(c.study_id, c.layer, c.X, meta, c.feature_space, c.is_counts, dict(c.source)))
         return CohortSet(out)
 
