@@ -1,0 +1,12 @@
+env,layer,cohort,role,n_positive,n_negative,n_features_measured,n_scored_hallmark,n_scored_reactome,n_programmes_hallmark,n_programmes_reactome
+rna:GSE226260_WB,rna,GSE226260_WB,primary,17,20,12801,50,1617,50,1867
+rna:GSE226260_PBMC,rna,GSE226260_PBMC,primary,28,8,13866,50,1648,50,1867
+rna:GSE224615,rna,GSE224615,primary,23,13,15734,50,1660,50,1867
+rna:GSE251849,rna,GSE251849,primary,11,5,13872,50,1639,50,1867
+rna:GSE270045,rna,GSE270045,primary,19,17,15561,50,1739,50,1867
+protein:Buggert2025,protein,Buggert2025,primary,146,51,2903,50,967,50,1867
+protein:Cervia2024_SomaScan,protein,Cervia2024_SomaScan,primary,40,73,6402,50,1540,50,1867
+protein:Su2022,protein,Su2022,primary,75,50,441,33,177,50,1867
+protein:Chowdhury2024,protein,Chowdhury2024,primary,21,9,404,22,134,50,1867
+protein:Kovarik2023_plasma,protein,Kovarik2023_plasma,primary,13,13,314,19,144,50,1867
+protein:Cervia2024_MS,protein,Cervia2024_MS,sensitivity,40,73,308,19,113,50,1867

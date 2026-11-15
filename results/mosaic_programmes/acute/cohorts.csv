@@ -1,0 +1,5 @@
+env,layer,cohort,role,n_positive,n_negative,n_features_measured,n_scored_hallmark,n_scored_reactome,n_programmes_hallmark,n_programmes_reactome
+rna:GSE215865,rna,GSE215865,primary,424,64,15173,50,1628,50,1867
+protein:Cervia2024_SomaScan,protein,Cervia2024_SomaScan,primary,113,34,6402,50,1540,50,1867
+protein:Su2022,protein,Su2022,primary,204,289,441,33,177,50,1867
+protein:Zoodsma2022_Hannover,protein,Zoodsma2022_Hannover,primary,12,62,359,26,122,50,1867

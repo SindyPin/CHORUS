@@ -25,7 +25,8 @@ control runs (the label permutation and the sample_matrix control removed since)
 runtime is that of the second run. The version 2 reruns of 13 November (from 11:19) ran one after another; see "Version 2
 changes" for what they replaced. The version 3 reruns of 13 November (from 15:12) ran one after another; see "Version 3
 changes". The runs of 15 November (from 06:49) ran one after another; see "Proteomics (15 November 2026)". The two
-Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same people (15 November 2026)".
+Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same people (15 November 2026)". The Test 3
+run (17:24) ran alone; see "Test 3: mosaic programmes (15 November 2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -58,6 +59,7 @@ Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same 
 | `control_acute_transcriptomics` | no run: fewer than three cohorts qualify (`cohorts.csv`) | none | none |
 | `paired_Cervia2024` | `scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024` | built into the script | 2059 (started 2026-11-15 07:43:05) |
 | `paired_Su2022` | `scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022` | built into the script | 1029 (started 2026-11-15 08:17:24) |
+| `mosaic_programmes` | `scripts/mosaic_programmes.py --out results/mosaic_programmes` | configs/mosaic_lc_rna.yaml, configs/concordance_proteomics_all.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml | 239 (started 2026-11-15 17:24:32; acute 28, lc 209) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -158,6 +160,10 @@ local.
 - `paired_<cohort>/<contrast>/` (`lc`, `acute`): `samples.csv`, `features.csv`, `fold_metrics.csv`, `summary.csv`,
   `predictions.csv`, `probability_correlation.csv`, and for Cervia2024 `effects.csv` and `effect_correlation.csv`;
   `paired_<cohort>/run_info.json` gives the class counts and why a contrast was skipped (see "Test 2").
+- `mosaic_programmes/`: `genesets.csv`, `run_info.json` and, per contrast (`acute`, `lc`), `cohorts.csv`,
+  `coverage.csv`, `effects.csv`, `effects_var.csv`, `concordance_<set>.csv` with `_p` and `n_shared_<set>.csv`
+  (`all`, `hallmark`, `reactome`), `partition.csv`, `loso.csv`, `loso_predictions.csv`, and for `lc`
+  `bridge_cervia.csv` (see "Test 3"). `scores.csv.gz` is not committed.
 
 ## Column glossary
 
@@ -741,3 +747,142 @@ with both classes).
 - `effect_correlation.csv`: `layer_a`, `layer_b`, `n_shared`, `spearman`, `p`.
 
 **Not committed:** the logs (`results/paired_<cohort>.log`).
+
+## Test 3: mosaic programmes (15 November 2026)
+
+**Method:** `docs/mosaic.md`.
+- **Programmes:** MSigDB 2026.2 Hallmark (50) and Reactome (1,867), CC BY 4.0, mapped by Entrez id through HGNC to Ensembl and UniProt.
+- **Scores:** in each cohort, the mean of the members standardised within that cohort, with at least 5 measured members.
+- **Environment:** cohort and layer.
+- **Harmonisers and classifier:** identity and center_scale, with logreg.
+- **Run order:** the positive control (acute versus never_infected) ran first.
+
+**Gene set mapping** (`genesets.csv`). Hallmark: 7,322 gene memberships, 7,321 found in HGNC with an Ensembl id, 7,317 with a UniProt accession. Reactome: 105,477 memberships, 105,472 in HGNC, 105,464 with an Ensembl id, 105,307 with a UniProt accession.
+
+### Positive control: acute versus never_infected (`acute/`)
+
+**Cohorts and coverage** (`cohorts.csv`, `coverage.csv`):
+
+| environment | role | positive / negative | features measured | Hallmark scored (of 50) | Reactome scored (of 1,867) | median fraction of members measured (scored programmes) |
+|---|---|---|---|---|---|---|
+| rna:GSE215865 | primary | 424 / 64 | 15173 | 50 | 1628 | 1.00 |
+| protein:Cervia2024_SomaScan | primary | 113 / 34 | 6402 | 50 | 1540 | 1.00 |
+| protein:Su2022 | primary | 204 / 289 | 441 | 33 | 177 | 0.11 |
+| protein:Zoodsma2022_Hannover | primary | 12 / 62 | 359 | 26 | 122 | 0.12 |
+
+**Concordance of programme effects** (`concordance_all.csv`; Spearman, with the number of programmes scored in both in parentheses; Hallmark and Reactome alone in `concordance_hallmark.csv` and `concordance_reactome.csv`):
+
+| | rna:GSE215865 | protein:Cervia2024_SomaScan | protein:Su2022 | protein:Zoodsma2022_Hannover |
+|---|---|---|---|---|
+| rna:GSE215865 |  | -0.02 (1486) | 0.15 (210) | 0.13 (148) |
+| protein:Cervia2024_SomaScan | -0.02 (1486) |  | 0.27 (210) | 0.31 (148) |
+| protein:Su2022 | 0.15 (210) | 0.27 (210) |  | 0.37 (123) |
+| protein:Zoodsma2022_Hannover | 0.13 (148) | 0.31 (148) | 0.37 (123) |  |
+
+**Invariance partition** (`partition.csv`):
+
+| analysis | environments | programmes partitioned (scored in every environment) | invariant | null | unstable | none | not_partitioned |
+|---|---|---|---|---|---|---|---|
+| primary | 4 | 123 | 0 | 0 | 123 | 0 | 1794 |
+
+**Cross-layer leave one cohort out** (`loso.csv`, logreg; bootstrap 95% interval, 1000 resamples):
+
+| scheme | test | role | positive / negative | programmes | AUROC identity (95% CI) | AUROC center_scale (95% CI) |
+|---|---|---|---|---|---|---|
+| protein_to_rna | rna:GSE215865 | primary | 424 / 64 | 123 | 0.637 (0.579 to 0.695) | 0.681 (0.626 to 0.733) |
+| rna_plus_other_protein | protein:Cervia2024_SomaScan | primary | 113 / 34 | 123 | 0.472 (0.364 to 0.571) | 0.576 (0.471 to 0.683) |
+| rna_plus_other_protein | protein:Su2022 | primary | 204 / 289 | 123 | 0.910 (0.880 to 0.937) | 0.829 (0.786 to 0.865) |
+| rna_plus_other_protein | protein:Zoodsma2022_Hannover | primary | 12 / 62 | 123 | 0.996 (0.984 to 1.000) | 0.960 (0.909 to 0.993) |
+
+### LC versus COVID_recovered (`lc/`)
+
+**Cohorts and coverage:**
+
+| environment | role | positive / negative | features measured | Hallmark scored (of 50) | Reactome scored (of 1,867) | median fraction of members measured (scored programmes) |
+|---|---|---|---|---|---|---|
+| rna:GSE226260_WB | primary | 17 / 20 | 12801 | 50 | 1617 | 0.89 |
+| rna:GSE226260_PBMC | primary | 28 / 8 | 13866 | 50 | 1648 | 0.92 |
+| rna:GSE224615 | primary | 23 / 13 | 15734 | 50 | 1660 | 0.93 |
+| rna:GSE251849 | primary | 11 / 5 | 13872 | 50 | 1639 | 0.92 |
+| rna:GSE270045 | primary | 19 / 17 | 15561 | 50 | 1739 | 0.97 |
+| protein:Buggert2025 | primary | 146 / 51 | 2903 | 50 | 967 | 0.39 |
+| protein:Cervia2024_SomaScan | primary | 40 / 73 | 6402 | 50 | 1540 | 0.91 |
+| protein:Su2022 | primary | 75 / 50 | 441 | 33 | 177 | 0.09 |
+| protein:Chowdhury2024 | primary | 21 / 9 | 404 | 22 | 134 | 0.14 |
+| protein:Kovarik2023_plasma | primary | 13 / 13 | 314 | 19 | 144 | 0.12 |
+| protein:Cervia2024_MS | sensitivity | 40 / 73 | 308 | 19 | 113 | 0.16 |
+
+**Concordance of programme effects** (`concordance_all.csv`, as above; Cervia2024_MS is the sensitivity column, the same sera as Cervia2024_SomaScan):
+
+| | rna:GSE226260_WB | rna:GSE226260_PBMC | rna:GSE224615 | rna:GSE251849 | rna:GSE270045 | protein:Buggert2025 | protein:Cervia2024_SomaScan | protein:Su2022 | protein:Chowdhury2024 | protein:Kovarik2023_plasma | protein:Cervia2024_MS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| rna:GSE226260_WB |  | -0.06 (1662) | 0.25 (1665) | 0.21 (1657) | 0.19 (1661) | -0.04 (966) | 0.23 (1481) | 0.11 (210) | 0.38 (145) | -0.01 (153) | 0.35 (121) |
+| rna:GSE226260_PBMC | -0.06 (1662) |  | -0.03 (1685) | -0.17 (1677) | -0.13 (1691) | -0.23 (976) | -0.08 (1501) | -0.13 (210) | 0.33 (148) | -0.26 (156) | 0.35 (124) |
+| rna:GSE224615 | 0.25 (1665) | -0.03 (1685) |  | 0.24 (1681) | -0.08 (1701) | -0.07 (977) | 0.21 (1506) | -0.04 (210) | 0.50 (147) | -0.07 (156) | 0.60 (124) |
+| rna:GSE251849 | 0.21 (1657) | -0.17 (1677) | 0.24 (1681) |  | -0.34 (1680) | -0.15 (974) | 0.16 (1496) | -0.07 (210) | -0.18 (149) | 0.04 (158) | -0.20 (126) |
+| rna:GSE270045 | 0.19 (1661) | -0.13 (1691) | -0.08 (1701) | -0.34 (1680) |  | 0.07 (991) | 0.05 (1544) | 0.24 (210) | 0.30 (151) | 0.05 (159) | 0.31 (127) |
+| protein:Buggert2025 | -0.04 (966) | -0.23 (976) | -0.07 (977) | -0.15 (974) | 0.07 (991) |  | -0.04 (1011) | -0.08 (210) | 0.16 (152) | -0.27 (160) | 0.17 (129) |
+| protein:Cervia2024_SomaScan | 0.23 (1481) | -0.08 (1501) | 0.21 (1506) | 0.16 (1496) | 0.05 (1544) | -0.04 (1011) |  | 0.08 (210) | -0.01 (156) | 0.25 (163) | 0.21 (132) |
+| protein:Su2022 | 0.11 (210) | -0.13 (210) | -0.04 (210) | -0.07 (210) | 0.24 (210) | -0.08 (210) | 0.08 (210) |  | 0.01 (86) | 0.03 (88) | -0.10 (73) |
+| protein:Chowdhury2024 | 0.38 (145) | 0.33 (148) | 0.50 (147) | -0.18 (149) | 0.30 (151) | 0.16 (152) | -0.01 (156) | 0.01 (86) |  | -0.09 (139) | 0.72 (125) |
+| protein:Kovarik2023_plasma | -0.01 (153) | -0.26 (156) | -0.07 (156) | 0.04 (158) | 0.05 (159) | -0.27 (160) | 0.25 (163) | 0.03 (88) | -0.09 (139) |  | -0.19 (124) |
+| protein:Cervia2024_MS | 0.35 (121) | 0.35 (124) | 0.60 (124) | -0.20 (126) | 0.31 (127) | 0.17 (129) | 0.21 (132) | -0.10 (73) | 0.72 (125) | -0.19 (124) |  |
+
+**Invariance partition** (`partition.csv`; `sensitivity_Cervia2024_MS` replaces Cervia2024_SomaScan with Cervia2024_MS):
+
+| analysis | environments | programmes partitioned (scored in every environment) | invariant | null | unstable | none | not_partitioned |
+|---|---|---|---|---|---|---|---|
+| primary | 10 | 77 | 0 | 0 | 77 | 0 | 1840 |
+| sensitivity_Cervia2024_MS | 10 | 67 | 0 | 0 | 67 | 0 | 1850 |
+
+**Cross-layer leave one cohort out** (`loso.csv`). Cervia2024_MS is a test cohort only, under `rna_to_protein`:
+
+| scheme | test | role | positive / negative | programmes | AUROC identity (95% CI) | AUROC center_scale (95% CI) |
+|---|---|---|---|---|---|---|
+| rna_to_protein | protein:Buggert2025 | primary | 146 / 51 | 961 | 0.568 (0.487 to 0.654) | 0.428 (0.348 to 0.513) |
+| rna_to_protein | protein:Cervia2024_SomaScan | primary | 40 / 73 | 1470 | 0.536 (0.429 to 0.649) | 0.497 (0.382 to 0.608) |
+| rna_to_protein | protein:Su2022 | primary | 75 / 50 | 210 | 0.659 (0.565 to 0.756) | 0.651 (0.561 to 0.747) |
+| rna_to_protein | protein:Chowdhury2024 | primary | 21 / 9 | 144 | 0.614 (0.344 to 0.847) | 0.471 (0.238 to 0.704) |
+| rna_to_protein | protein:Kovarik2023_plasma | primary | 13 / 13 | 153 | 0.562 (0.325 to 0.799) | 0.491 (0.260 to 0.728) |
+| rna_to_protein | protein:Cervia2024_MS | sensitivity | 40 / 73 | 121 | 0.523 (0.410 to 0.638) | 0.468 (0.352 to 0.583) |
+| protein_to_rna | rna:GSE226260_WB | primary | 17 / 20 | 77 | 0.682 (0.476 to 0.844) | 0.638 (0.453 to 0.806) |
+| protein_to_rna | rna:GSE226260_PBMC | primary | 28 / 8 | 77 | 0.518 (0.295 to 0.746) | 0.473 (0.254 to 0.705) |
+| protein_to_rna | rna:GSE224615 | primary | 23 / 13 | 77 | 0.548 (0.334 to 0.763) | 0.515 (0.294 to 0.739) |
+| protein_to_rna | rna:GSE251849 | primary | 11 / 5 | 77 | 0.364 (0.109 to 0.655) | 0.309 (0.054 to 0.600) |
+| protein_to_rna | rna:GSE270045 | primary | 19 / 17 | 77 | 0.851 (0.703 to 0.963) | 0.845 (0.709 to 0.954) |
+| leave_one_cohort_out | rna:GSE226260_WB | primary | 17 / 20 | 77 | 0.688 (0.494 to 0.841) | 0.647 (0.459 to 0.812) |
+| leave_one_cohort_out | rna:GSE226260_PBMC | primary | 28 / 8 | 77 | 0.464 (0.268 to 0.679) | 0.469 (0.254 to 0.705) |
+| leave_one_cohort_out | rna:GSE224615 | primary | 23 / 13 | 77 | 0.552 (0.324 to 0.763) | 0.532 (0.311 to 0.746) |
+| leave_one_cohort_out | rna:GSE251849 | primary | 11 / 5 | 77 | 0.400 (0.091 to 0.710) | 0.345 (0.073 to 0.655) |
+| leave_one_cohort_out | rna:GSE270045 | primary | 19 / 17 | 77 | 0.789 (0.625 to 0.926) | 0.715 (0.542 to 0.870) |
+| leave_one_cohort_out | protein:Buggert2025 | primary | 146 / 51 | 77 | 0.578 (0.485 to 0.667) | 0.551 (0.456 to 0.631) |
+| leave_one_cohort_out | protein:Cervia2024_SomaScan | primary | 40 / 73 | 77 | 0.537 (0.427 to 0.642) | 0.554 (0.447 to 0.661) |
+| leave_one_cohort_out | protein:Su2022 | primary | 75 / 50 | 77 | 0.512 (0.407 to 0.618) | 0.478 (0.377 to 0.583) |
+| leave_one_cohort_out | protein:Chowdhury2024 | primary | 21 / 9 | 77 | 0.545 (0.338 to 0.730) | 0.529 (0.323 to 0.730) |
+| leave_one_cohort_out | protein:Kovarik2023_plasma | primary | 13 / 13 | 77 | 0.704 (0.485 to 0.893) | 0.781 (0.568 to 0.953) |
+
+**Bridge check in Cervia2024** (`bridge_cervia.csv`). SomaScan and MS programme scores of the same 113 sera, Spearman correlation per programme across the sera; `own`: each layer's own measured members, `shared`: only members measured in both layers.
+
+| member set | collection | programmes scored in both layers | median Spearman | minimum | maximum | programmes with Spearman p < 0.05 |
+|---|---|---|---|---|---|---|
+| own | hallmark | 19 | 0.09 | -0.15 | 0.63 | 4 |
+| own | reactome | 113 | 0.14 | -0.15 | 0.73 | 47 |
+| shared | hallmark | 16 | 0.34 | 0.05 | 0.58 | 13 |
+| shared | reactome | 84 | 0.34 | -0.02 | 0.71 | 62 |
+
+**Column glossary.**
+- `cohorts.csv`: `env`, `layer`, `cohort`, `role` (primary or sensitivity), `n_positive`, `n_negative`, `n_features_measured`, `n_scored_<collection>`, `n_programmes_<collection>`.
+- `coverage.csv`: `layer`, `env`, `programme`, `collection`, `n_members` (members in the layer's feature space), `n_measured`, `fraction_measured`, `scored`.
+- `effects.csv`, `effects_var.csv`: per programme, `collection` and Hedges g (or its variance) per environment; missing where the programme is not scored.
+- `partition.csv`: `analysis`, `programme`, `collection`, the meta-analysis columns of `chorus.features.meta_analyse` (`effect`, `se`, `z`, `p`, `Q`, `Q_p`, `I2`, `tau2`, `k`, `sign_consistency`), `set`, `max_abs_g`, `n_env_scored`, `n_env`, `environments`; the meta-analysis columns are empty for `not_partitioned`.
+- `loso.csv`: `scheme`, `test_role`, `train`, `test`, `n_train`, `n_test_pos`, `n_test_neg`, `n_programmes`, `harmoniser`, `classifier`, the metrics of loso_results.csv, `auroc_lo`, `auroc_hi`, `skipped` (empty: nothing was skipped).
+- `loso_predictions.csv`: `scheme`, `test`, `harmoniser`, `classifier`, `sample` (`<cohort>::<sample_id>`), `y`, `p`.
+- `bridge_cervia.csv`: `member_set`, `programme`, `collection`, `n_samples`, `spearman`, `spearman_p`, `pearson`, `pearson_p`, `n_members_somascan`, `n_members_ms`, `n_members_shared`.
+
+**Code and config changes:**
+- `chorus.integrate.programmes`, new.
+- `preprocessing: features: per_cohort`: every cohort keeps the features that pass its own filter.
+- `acute_lc_status`: per cohort, for `relabel_acute`.
+- New configs: `configs/mosaic_lc_rna.yaml`, `configs/mosaic_acute_rna.yaml` and `configs/mosaic_acute_protein.yaml`.
+
+**Not committed:** `scores.csv.gz` and the log (`results/mosaic_programmes.log`).
