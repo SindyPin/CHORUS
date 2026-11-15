@@ -41,3 +41,7 @@ control_sex_label	scripts/control_runs.py sex configs/lc_transcriptomics_blood.y
 paired_Cervia2024	scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024	~/.venvs/chorus-arm64	2026-11-15 07:43:05	2026-11-15 08:17:24	2059	0
 paired_Su2022	scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022	~/.venvs/chorus-arm64	2026-11-15 08:17:24	2026-11-15 08:34:33	1029	0
 mosaic_programmes	scripts/mosaic_programmes.py --out results/mosaic_programmes	~/.venvs/chorus-arm64	2026-11-15 17:24:32	2026-11-15 17:28:31	239	0
+lc_metabolomics	chorus run configs/lc_metabolomics.yaml --within	~/.venvs/chorus-arm64	2026-11-16 00:16:10	2026-11-16 00:19:35	205	0
+lc_metabolomics/harmonisation	chorus harmonisation configs/lc_metabolomics.yaml --out results/lc_metabolomics/harmonisation --n-pcs 10	~/.venvs/chorus-arm64	2026-11-16 00:19:35	2026-11-16 00:19:36	1	0
+lc_metabolomics/concordance	scripts/concordance.py configs/lc_metabolomics.yaml --out results/lc_metabolomics/concordance --top 20	~/.venvs/chorus-arm64	2026-11-16 00:19:36	2026-11-16 00:19:37	1	0
+lc_metabolomics/concordance_all	scripts/concordance.py configs/concordance_metabolomics_all.yaml --out results/lc_metabolomics/concordance_all --top 50	~/.venvs/chorus-arm64	2026-11-16 00:19:51	2026-11-16 00:19:53	2	0

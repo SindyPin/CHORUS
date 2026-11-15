@@ -26,7 +26,9 @@ runtime is that of the second run. The version 2 reruns of 13 November (from 11:
 changes" for what they replaced. The version 3 reruns of 13 November (from 15:12) ran one after another; see "Version 3
 changes". The runs of 15 November (from 06:49) ran one after another; see "Proteomics (15 November 2026)". The two
 Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same people (15 November 2026)". The Test 3
-run (17:24) ran alone; see "Test 3: mosaic programmes (15 November 2026)".
+run (17:24) ran alone; see "Test 3: mosaic programmes (15 November 2026)". The metabolomics runs of 16 November ran one
+after another (the all-cohort concordance was rerun into its final folder at 00:19:51); see "Metabolomics (16 November
+2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -60,6 +62,10 @@ run (17:24) ran alone; see "Test 3: mosaic programmes (15 November 2026)".
 | `paired_Cervia2024` | `scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024` | built into the script | 2059 (started 2026-11-15 07:43:05) |
 | `paired_Su2022` | `scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022` | built into the script | 1029 (started 2026-11-15 08:17:24) |
 | `mosaic_programmes` | `scripts/mosaic_programmes.py --out results/mosaic_programmes` | configs/mosaic_lc_rna.yaml, configs/concordance_proteomics_all.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml | 239 (started 2026-11-15 17:24:32; acute 28, lc 209) |
+| `lc_metabolomics` | `chorus run configs/lc_metabolomics.yaml --within` | configs/lc_metabolomics.yaml | 205 (started 2026-11-16 00:16:10) |
+| `lc_metabolomics/harmonisation` | `chorus harmonisation configs/lc_metabolomics.yaml --out results/lc_metabolomics/harmonisation --n-pcs 10` | configs/lc_metabolomics.yaml | 1 (started 2026-11-16 00:19:35) |
+| `lc_metabolomics/concordance` | `scripts/concordance.py configs/lc_metabolomics.yaml --out results/lc_metabolomics/concordance --top 20` | configs/lc_metabolomics.yaml | 1 (started 2026-11-16 00:19:36) |
+| `lc_metabolomics/concordance_all` | `scripts/concordance.py configs/concordance_metabolomics_all.yaml --out results/lc_metabolomics/concordance_all --top 50` | configs/concordance_metabolomics_all.yaml | 2 (started 2026-11-16 00:19:51) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -164,6 +170,10 @@ local.
   `coverage.csv`, `effects.csv`, `effects_var.csv`, `concordance_<set>.csv` with `_p` and `n_shared_<set>.csv`
   (`all`, `hallmark`, `reactome`), `partition.csv`, `loso.csv`, `loso_predictions.csv`, and for `lc`
   `bridge_cervia.csv` (see "Test 3"). `scores.csv.gz` is not committed.
+- `lc_metabolomics/`: as `lc_proteomics_affinity` (with `harmonisation/` and `concordance/` with `top20` files), plus
+  `concordance_all/` (four cohorts, pairwise shared, `top50` files) and `mapping/` (`mapping_summary.csv`,
+  `n_shared.csv`, `shared_by_k.csv`); see "Metabolomics".
+- `concordance_epigenomics/`: `cohorts.csv` only (groups and why no effect was computed; see "Metabolomics").
 
 ## Column glossary
 
@@ -886,3 +896,110 @@ with both classes).
 - New configs: `configs/mosaic_lc_rna.yaml`, `configs/mosaic_acute_rna.yaml` and `configs/mosaic_acute_protein.yaml`.
 
 **Not committed:** `scores.csv.gz` and the log (`results/mosaic_programmes.log`).
+
+## Metabolomics (16 November 2026)
+
+**Cohorts and identifiers** (`docs/metabolomics_cohorts.md`).
+- **Built:** Martinez2024 (Metabolomics Workbench ST003103), Lopez2023 (Mendeley 8zfdjsypd8), Saito2024
+  (Front Immunol supplementary Table 2) and Holmes2021 (Zenodo 4713391).
+- **Not built:** Mikuteit2023: its supplement holds group summaries only.
+- **Labels:** Holmes2021 is built but `lc_status` unknown, because the deposit does not explain its symptom composites.
+- **Identifiers:** metabolite names are mapped to a shared identifier through RefMet: `HMDB:<id>`, else
+  `RefMet:<name>` (`chorus.metabolites`, adapter `metabolomics_id`).
+- **Mapping tables:** `lc_metabolomics/mapping/`:
+  - `mapping_summary.csv`: per cohort, names mapped by each rule;
+  - `n_shared.csv`: identifiers shared by every pair, Su2022_metabolomics included;
+  - `shared_by_k.csv`: identifiers in at least k cohorts, and shared by each triple of labelled cohorts.
+
+**Why these three cohorts for Test 1.** Of the labelled cohorts (Martinez2024, Lopez2023, Saito2024,
+Su2022_metabolomics), one triple shares 30 or more identifiers: Martinez2024, Lopez2023 and Su2022_metabolomics (38).
+- **Other triples:** Martinez2024 + Lopez2023 + Saito2024 share 15; Martinez2024 + Saito2024 + Su2022_metabolomics
+  share 17; Lopez2023 + Saito2024 + Su2022_metabolomics share 25.
+- **All four:** share 15.
+- **So:** Test 1 runs on that triple and its 38 identifiers (`configs/lc_metabolomics.yaml`). Saito2024 enters the
+  concordance only.
+
+**Test 1 setup** (`lc_metabolomics`). Leave one study out, as for proteomics:
+- **Harmonisers:** identity, center_scale, rank, fsqn, combat_addon and chorus, plus nested.
+- **Selectors:** variance, differential and invariant. Their sizes are the proteomics fractions of the shared features
+  (100 and 50 of 376) applied to 38: variance 10, differential and invariant 5.
+- **Classifiers:** logreg and rf; nested selection on.
+- **Within-study CV:** 5 folds × 10 repeats (per-fold method).
+- **Samples:** post-acute, one per subject: Martinez2024 40 LC / 40 COVID_recovered, Lopez2023 30 / 18,
+  Su2022_metabolomics 68 / 45 (T3).
+- **Imputation:** `study_min`. 29 values were filled in Martinez2024 (one sample has no GC-MS values) and 1 in
+  Lopez2023.
+- **Su2022_metabolomics** holds the authors' adjusted Z scores, so the harmoniser table of "Su2022 and the
+  harmonisers" (Proteomics, 2.) applies to it in the same way. The other two cohorts are log2 areas and log2 µM.
+
+**chorus.** All 9 chorus rows (3 held-out studies × 3 selectors) carry an error: only 12 or 14 null metabolites
+passed the screen, against the 20 required. As for the acute proteomics control, the thresholds were not relaxed.
+The harmonisation diagnostics carry the same message for chorus. `nested` chooses among the other five candidates
+when chorus fails in an inner fold. Choices over the 18 nested rows: rank 8, center_scale 4, combat_addon 2, identity 2, fsqn 2.
+
+**LOSO, mean AUROC across the three held-out studies (minimum to maximum)** (`loso_summary.csv`; per held-out
+rows with bootstrap intervals in `loso_results.csv`):
+
+| harmoniser | differential logreg | differential rf | invariant logreg | invariant rf | variance logreg | variance rf |
+|---|---|---|---|---|---|---|
+| identity | 0.594 (0.504 to 0.696) | 0.536 (0.425 to 0.626) | 0.586 (0.492 to 0.7) | 0.519 (0.5 to 0.534) | 0.528 (0.489 to 0.58) | 0.439 (0.369 to 0.547) |
+| center_scale | 0.621 (0.577 to 0.667) | 0.596 (0.502 to 0.649) | 0.607 (0.575 to 0.644) | 0.501 (0.428 to 0.551) | 0.569 (0.538 to 0.593) | 0.586 (0.495 to 0.71) |
+| rank | 0.554 (0.528 to 0.574) | 0.553 (0.479 to 0.639) | 0.539 (0.476 to 0.582) | 0.486 (0.479 to 0.491) | 0.567 (0.485 to 0.622) | 0.558 (0.444 to 0.71) |
+| fsqn | 0.569 (0.498 to 0.622) | 0.544 (0.519 to 0.57) | 0.547 (0.51 to 0.594) | 0.475 (0.41 to 0.514) | 0.563 (0.469 to 0.668) | 0.505 (0.445 to 0.56) |
+| combat_addon | 0.619 (0.581 to 0.666) | 0.593 (0.475 to 0.653) | 0.607 (0.575 to 0.643) | 0.501 (0.419 to 0.564) | 0.557 (0.455 to 0.721) | 0.519 (0.473 to 0.6) |
+| nested | 0.606 (0.574 to 0.666) | 0.598 (0.502 to 0.652) | 0.574 (0.566 to 0.582) | 0.48 (0.428 to 0.534) | 0.525 (0.469 to 0.622) | 0.533 (0.444 to 0.71) |
+
+**Within-study CV, mean AUROC over folds** (`within_study_cv.csv`; per fold in `within_study_cv_folds.csv`). With
+k = 5, differential and invariant select the same metabolites within one study, so their rows are equal.
+
+| study | differential logreg | differential rf | invariant logreg | invariant rf | variance logreg | variance rf |
+|---|---|---|---|---|---|---|
+| Lopez2023 | 0.661 | 0.559 | 0.661 | 0.559 | 0.621 | 0.59 |
+| Martinez2024 | 0.804 | 0.765 | 0.804 | 0.765 | 0.779 | 0.821 |
+| Su2022_metabolomics | 0.511 | 0.508 | 0.511 | 0.508 | 0.519 | 0.513 |
+
+**Harmonisation diagnostics** (`lc_metabolomics/harmonisation`). These are the transcriptomics metrics, run with
+`--n-pcs 10` because there are 38 features. `all_metrics.csv` has 213 rows. Chorus has one row per held-out study, with family `error` and the null screen message in `scope`.
+
+**Concordance** (`lc_metabolomics/concordance`: the three Test 1 cohorts on their 38 identifiers, with `top20` files;
+`lc_metabolomics/concordance_all`: the four labelled cohorts each on its own identifiers, pairwise over those shared,
+`n_shared.csv`, with `top50` files). Spearman correlation of Hedges g (LC minus COVID_recovered):
+
+Test 1 cohorts, 38 identifiers:
+
+| | Martinez2024 | Lopez2023 | Su2022_metabolomics |
+|---|---|---|---|
+| Martinez2024 |  | 0.112 (38) | 0.532 (38) |
+| Lopez2023 | 0.112 (38) |  | 0.345 (38) |
+| Su2022_metabolomics | 0.532 (38) | 0.345 (38) |  |
+
+All labelled cohorts, pairwise over shared identifiers (number shared in parentheses):
+
+| | Martinez2024 | Lopez2023 | Saito2024 | Su2022_metabolomics |
+|---|---|---|---|---|
+| Martinez2024 |  | 0.156 (41) | -0.287 (17) | 0.058 (158) |
+| Lopez2023 | 0.156 (41) |  | 0.007 (28) | 0.213 (61) |
+| Saito2024 | -0.287 (17) | 0.007 (28) |  | 0.104 (66) |
+| Su2022_metabolomics | 0.058 (158) | 0.213 (61) | 0.104 (66) |  |
+
+- **`top50` files of `concordance_all`:** the 50 identifiers with the largest mean |g| are taken over the union of
+  the four cohorts. So each pair of cohorts has 1 to 4 of them in common, and the top-50 correlations rest on those
+  1 to 4 values.
+
+**Epigenomics** (`concordance_epigenomics/cohorts.csv`, `docs/metabolomics_cohorts.md`). GSE174818, GSE197152 and
+GSE247869 were downloaded (EPIC, whole blood); the groups are documented, but no per-CpG effect was computed.
+- **GSE174818:** acute samples only.
+- **GSE197152:** 15 one-year samples, all described with PASC symptoms, so there is no recovered group.
+- **GSE247869:** 96 six-month samples. The paper's PASC subgroup (28) is not identifiable per sample in GEO or in
+  the supplement.
+- **So:** no series has per-sample LC and COVID_recovered labels.
+
+**Code and config changes:**
+- `chorus.metabolites` (RefMet matching with a cache, identifier rules, pairwise shared counts);
+- the `metabolomics_id` adapter;
+- `scripts/metabolomics/build_cohorts.py` and `scripts/metabolomics/map_ids.py`;
+- `scripts/concordance.py`, which labels `metabolite_id` features with the RefMet name;
+- `configs/lc_metabolomics.yaml` and `configs/concordance_metabolomics_all.yaml`;
+- xlrd 2.0.2 added to the venv.
+
+**Not committed:** the logs and `selected_features.json`.

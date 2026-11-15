@@ -1,0 +1,6 @@
+study_id,n_names,n_unannotated,n_matched_refmet,n_with_hmdb,n_hmdb_refmet,n_hmdb_deposited,n_refmet,n_inchikey_deposited,n_unmatched,n_names_mapped,n_identifiers,n_names_dropped_as_duplicate
+Martinez2024,820,223,584,146,146,0,438,0,13,584,511,73
+Lopez2023,107,0,107,72,72,0,35,0,0,107,106,1
+Saito2024,470,0,312,288,286,2,26,0,156,314,312,2
+Holmes2021,51,0,50,48,48,0,2,0,1,50,48,2
+Su2022_metabolomics,891,109,691,489,489,0,202,0,91,691,679,12

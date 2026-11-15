@@ -1,0 +1,11 @@
+what,cohorts,n
+identifiers in at least 1 cohorts,all,1323
+identifiers in at least 2 cohorts,all,236
+identifiers in at least 3 cohorts,all,56
+identifiers in at least 4 cohorts,all,27
+identifiers in at least 5 cohorts,all,14
+identifiers shared by all 3 cohorts,Martinez2024;Lopez2023;Saito2024,15
+identifiers shared by all 3 cohorts,Martinez2024;Lopez2023;Su2022_metabolomics,38
+identifiers shared by all 3 cohorts,Martinez2024;Saito2024;Su2022_metabolomics,17
+identifiers shared by all 3 cohorts,Lopez2023;Saito2024;Su2022_metabolomics,25
+identifiers shared by all 4 cohorts,Martinez2024;Lopez2023;Saito2024;Su2022_metabolomics,15

@@ -1,0 +1,4 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,n_values_imputed,matrix,accession
+Martinez2024,metabolomics,80,38,40,40,0,29,plasma,ST003103
+Lopez2023,metabolomics,48,38,30,18,0,1,plasma,doi:10.17632/8zfdjsypd8.1
+Su2022_metabolomics,metabolomics,113,38,68,45,0,0,plasma,doi:10.17632/96v329bg7g.1
