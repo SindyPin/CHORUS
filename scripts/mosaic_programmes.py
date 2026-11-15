@@ -31,6 +31,7 @@ The scores themselves (scores.csv.gz) are written next to these files and are no
 Programme membership: --out/genesets.csv (per programme, genes, mapped to Ensembl and UniProt).
 
   python scripts/mosaic_programmes.py --out results/mosaic_programmes
+  python scripts/mosaic_programmes.py --out results/mosaic_programmes_v4 --contrasts lc_v4
 """
 
 from __future__ import annotations
@@ -74,6 +75,12 @@ CONTRASTS = {
     },
     "lc": {
         "configs": {"rna": "configs/mosaic_lc_rna.yaml", "protein": "configs/concordance_proteomics_all.yaml"},
+        "sensitivity": {"protein:Cervia2024_MS": "protein:Cervia2024_SomaScan"},
+    },
+    # version 4 cohort set (16 November 2026): the lc contrast with PRJNA1149196_SA, PRJNA1149196_QLD, GSE297499,
+    # Fineschi2026 and Chowdhury2026 added; run with --contrasts lc_v4
+    "lc_v4": {
+        "configs": {"rna": "configs/mosaic_lc_rna_v4.yaml", "protein": "configs/concordance_proteomics_all_v4.yaml"},
         "sensitivity": {"protein:Cervia2024_MS": "protein:Cervia2024_SomaScan"},
     },
 }
@@ -233,7 +240,7 @@ def run_contrast(contrast: str, out: Path, T: pd.DataFrame, min_members: int = 5
         pd.concat(prs, ignore_index=True)[["scheme", "test", "harmoniser", "classifier", "sample", "y", "p"]].to_csv(d / "loso_predictions.csv", index=False)
     info = {"contrast": contrast, "positive": L["rna"]["positive"], "negative": L["rna"]["negative"], "configs": spec["configs"], "environments": order, "sensitivity": sens, "min_members": min_members}
 
-    if contrast == "lc" and {"protein:Cervia2024_SomaScan", "protein:Cervia2024_MS"} <= set(order):
+    if contrast in ("lc", "lc_v4") and {"protein:Cervia2024_SomaScan", "protein:Cervia2024_MS"} <= set(order):
         B = bridge_cervia(L["protein"], collection, min_members)
         B.to_csv(d / "bridge_cervia.csv", index=False)
         info["bridge_n_programmes"] = B.groupby("member_set")["programme"].size().to_dict()

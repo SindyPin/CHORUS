@@ -307,10 +307,27 @@ def run_within_study_cv(
 
 
 def summarise(results: pd.DataFrame, by: Tuple[str, ...] = ("harmoniser", "selector", "classifier")) -> pd.DataFrame:
-    """Mean, median and spread of AUROC across held-out studies for each configuration."""
-    ok = results[results.get("error").isna()] if "error" in results.columns else results
-    g = ok.groupby(list(by))
+    """Mean, median and spread of AUROC across held-out studies for each configuration.
+
+    Error rows (column ``error``) carry no metrics. They are counted in ``n_errors`` with their distinct messages in
+    ``error``, so a configuration that failed in every fold keeps a row (n_studies 0, metrics empty) instead of being
+    absent. A harmoniser that fails to fit has no classifier; its rows are listed under classifier ``not_fitted``."""
+    err = results["error"].notna() if "error" in results.columns else pd.Series(False, index=results.index)
+    g = results[~err].groupby(list(by))
     out = g["auroc"].agg(["mean", "median", "std", "min", "max", "count"]).rename(columns={"count": "n_studies"})
     out["auprc_mean"] = g["auprc"].mean()
     out["brier_mean"] = g["brier"].mean()
-    return out.sort_values("mean", ascending=False)
+    out["n_errors"] = 0
+    out["error"] = None
+    if err.any():
+        e = results[err].copy()
+        if "classifier" in by:
+            e["classifier"] = e["classifier"].fillna("not_fitted")
+        ge = e.groupby(list(by))
+        n, msg = ge.size(), ge["error"].agg(lambda s: "; ".join(pd.unique(s.astype(str))))
+        out = out.reindex(out.index.union(n.index))
+        out.loc[n.index, "n_errors"] = n
+        out.loc[n.index, "error"] = msg
+        out["n_studies"] = out["n_studies"].fillna(0).astype(int)
+        out["n_errors"] = out["n_errors"].fillna(0).astype(int)
+    return out.sort_values("mean", ascending=False, na_position="last")

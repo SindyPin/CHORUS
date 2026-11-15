@@ -6,6 +6,14 @@ and deleted, so disk use stays at about one run (the next run downloads while th
 quantified). Finished runs (quant.sf present) are skipped, so the script can be restarted.
 Samples are named by the ENA sample_alias (the GSM for GEO submissions).
 
+``--max-pairs N`` quantifies only the first N read pairs (spots) of each run, for projects too large to download
+at full depth: only the leading bytes of each FASTQ file that hold about N reads (from the ENA fastq_bytes and
+read_count, with a 15 percent margin) are fetched, decompressed, and cut to the same number of complete records in
+both mates. A partial file cannot be checked against fastq_md5, so the check is that the prefix decompresses, that
+both mates keep the same number of records and that the read names of the last record agree. The reads kept per
+run are written to ``prefix_reads.tsv``. A run whose files are smaller than the cap is downloaded whole and md5
+checked as usual.
+
 ``--aggregate`` sums NumReads per gene with a tx2gene table built from the GENCODE GTF and writes
 genes x samples counts (Ensembl gene ids without version) plus a QC table with the mapping rate
 from each run's aux_info/meta_info.json and the mitochondrial (chrM) share of NumReads. A sample is
@@ -102,10 +110,72 @@ def _try(errors: list, fn, *args) -> None:
         errors.append(str(e))
 
 
+def _read_name(line: str) -> str:
+    """Read name without the mate suffix (/1, /2) or the comment after the first space."""
+    return re.sub(r"/[12]$", "", line.split()[0])
+
+
+def fetch_prefix(row, tmp: Path, segments: int, max_pairs: int, log: Path) -> list:
+    """Leading bytes of each FASTQ file holding about max_pairs reads, decompressed and cut to the same number of
+    complete records in both mates (see --max-pairs)."""
+    links, sizes = _mates(row.fastq_ftp.split(";"), [int(x) for x in str(row.fastq_bytes).split(";")])
+    caps = [min(size, int(1.15 * max_pairs * size / row.read_count) + 1) for size in sizes]
+    if all(c == size for c, size in zip(caps, sizes)):
+        return fetch(row, tmp, segments)
+    gz, fq = [], []
+    for link, cap in zip(links, caps):
+        dest = tmp / Path(link).name
+        download("https://" + link, dest, cap, segments)
+        gz.append(dest)
+    n_lines = []
+    for g in gz:
+        out = g.with_suffix("")  # .fastq.gz -> .fastq
+        with open(out, "w") as fh:  # a truncated gzip stream decompresses up to the cut; the error at the end is expected
+            zc = subprocess.Popen(["gzip", "-dc", str(g)], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            subprocess.run(["head", "-n", str(4 * max_pairs)], stdin=zc.stdout, stdout=fh)
+            zc.stdout.close()
+            zc.wait()
+        g.unlink()
+        n_lines.append(sum(1 for _ in open(out)))
+        fq.append(out)
+    n = min(x // 4 for x in n_lines)
+    if n == 0:
+        raise RuntimeError(f"{row.run_accession}: no complete record in the downloaded prefix")
+    names = []
+    for f in fq:
+        if sum(1 for _ in open(f)) != 4 * n:
+            tmpf = f.with_suffix(".cut")
+            subprocess.run(["head", "-n", str(4 * n)], stdin=open(f), stdout=open(tmpf, "w"))
+            tmpf.replace(f)
+        with open(f) as fh:
+            last = None
+            for i, line in enumerate(fh):
+                if i % 4 == 0:
+                    last = line
+        names.append(_read_name(last))
+    if len(set(names)) != 1:
+        raise RuntimeError(f"{row.run_accession}: last read names differ between mates: {names}")
+    new = not log.exists()
+    with open(log, "a") as fh:
+        if new:
+            fh.write("run_accession\tsample_alias\tread_pairs_in_run\tread_pairs_used\tbytes_downloaded\tbytes_in_run\n")
+        fh.write(f"{row.run_accession}\t{row.sample_alias}\t{row.read_count}\t{n}\t{sum(caps)}\t{sum(sizes)}\n")
+    return fq
+
+
+def _mates(links: list, *other: list):
+    """For a paired run that ENA lists with an extra unpaired file (<run>.fastq.gz next to <run>_1 and <run>_2), keep
+    the two mate files; the same positions of the other lists are kept."""
+    keep = [i for i, l in enumerate(links) if re.search(r"_[12]\.fastq\.gz$", l)]
+    if len(keep) != 2:
+        keep = list(range(len(links)))
+    return ([links[i] for i in keep], *([o[i] for i in keep] for o in other))
+
+
 def fetch(row, tmp: Path, segments: int) -> list:
     """Download and md5 check the FASTQ files of one run; retry each file up to three times."""
     files = []
-    for link, md5, size in zip(row.fastq_ftp.split(";"), row.fastq_md5.split(";"), str(row.fastq_bytes).split(";")):
+    for link, md5, size in zip(*_mates(row.fastq_ftp.split(";"), row.fastq_md5.split(";"), str(row.fastq_bytes).split(";"))):
         dest = tmp / Path(link).name
         for attempt in range(3):
             try:
@@ -123,7 +193,7 @@ def fetch(row, tmp: Path, segments: int) -> list:
     return files
 
 
-def quantify(project: str, index: Path, out: Path, threads: int, segments: int) -> None:
+def quantify(project: str, index: Path, out: Path, threads: int, segments: int, max_pairs: int = 0) -> None:
     runs = filereport(project)
     (out / "salmon").mkdir(parents=True, exist_ok=True)
     runs.to_csv(out / "ena_filereport.tsv", sep="\t", index=False)
@@ -136,7 +206,8 @@ def quantify(project: str, index: Path, out: Path, threads: int, segments: int) 
     def producer():
         for r in todo:
             try:
-                ready.put((r, fetch(r, tmp, segments), None))
+                files = fetch_prefix(r, tmp, segments, max_pairs, out / "prefix_reads.tsv") if max_pairs else fetch(r, tmp, segments)
+                ready.put((r, files, None))
             except Exception as e:  # pass the failure to the consumer
                 ready.put((r, [], e))
         ready.put(None)
@@ -221,6 +292,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--threads", type=int, default=10)
     ap.add_argument("--segments", type=int, default=16, help="parallel byte ranges per FASTQ download")
+    ap.add_argument("--max-pairs", type=int, default=0, help="quantify only the first N read pairs of each run (0: all)")
     ap.add_argument("--aggregate", action="store_true")
     ap.add_argument("--gtf")
     a = ap.parse_args()
@@ -228,7 +300,7 @@ def main():
     if a.aggregate:
         aggregate(out, Path(a.gtf))
     else:
-        quantify(a.project, Path(a.index), out, a.threads, a.segments)
+        quantify(a.project, Path(a.index), out, a.threads, a.segments, a.max_pairs)
 
 
 if __name__ == "__main__":

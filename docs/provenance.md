@@ -182,3 +182,37 @@ files were not downloaded.
   saved as `data/ref/refmet/refmet.csv` (208,173 entries; SHA-256
   e2c630f9e9c5a5378eb8687f0bdfe02e4e93f5020c6c6226aa2ee72ce1ed2952). Name matching uses the RefMet match REST service;
   its answers are cached in `data/ref/refmet/refmet_match_cache.csv` with the query date.
+
+## Cohorts added 16 November 2026
+
+Downloaded 2026-11-16 into `data/` (local, not committed). Definitions are in `docs/proteomics_cohorts.md` and
+`docs/count_matrices.md` ("Cohorts added 16 November 2026").
+
+| study | source | accession | licence | files taken | checked |
+|---|---|---|---|---|---|
+| Chowdhury2026 (Sci Rep, PMID 41998026) | PRIDE | PXD066724 (released 2026-03-24) | CC0 (PRIDE) | `diann.7z` (1,498,231,135 bytes, equal to the PRIDE size), `metadata.sdrf.tsv`, `PXD066724_community_annotated.sdrf.tsv`. Not taken: the raw `.d.7z` archives | size, SHA-256 (PRIDE publishes no checksum for this project) |
+| Fineschi2026 (Front Immunol, PMID 41808838) | SciLifeLab figshare | 10.17044/scilifelab.31316779 (2026-02-13) | CC BY 4.0 | all 4 files: `XL-4180_raw_data.csv`, `XL-4180_Analysis_Report_2025-06-04.pdf`, `README.txt`, `MANIFEST.txt` | MD5 (figshare) |
+| Fineschi2025 PBMC labels (Front Immunol, PMID 40519915) | SciLifeLab figshare | 10.17044/scilifelab.28832492 (2025-04-29) | CC BY 4.0 | `SamplesPC.txt`, `README.txt`, `MANIFEST.txt`, into `data/counts/Fineschi2025_check/`, for the overlap check only. Not taken: `salmon.merged.gene_counts.tsv` | MD5 (figshare) |
+| Huapaya2024 (Front Immunol, PMID 39324144) | NHLBI figshare | 10.25444/nhlbi.26383798 (2025-07-22) | public domain | `V2 SOMA COVID_project_data.xlsx` (no per sample PASC label; not built) | MD5 (figshare) |
+| GSE297499 (J Infect Dis, PMID 40920586) | GEO | GSE297499 (public 2026-01-21) | GEO | `GSE297499_final_processed_tpm_values_pbmc.txt.gz`, `GSE297499_series_matrix.txt.gz`. Not taken: the CSF TPM file and the reads (SRA PRJNA1265093) | SHA-256 recorded (GEO publishes none) |
+| PRJNA1149196 (Nat Microbiol, PMID 39478108) | ENA / SRA | PRJNA1149196 | INSDC | leading bytes of the FASTQ files of all 101 runs (below); BioSample records (`efetch db=biosample`) as `data/meta/raw_PRJNA1149196/biosamples.xml` and `.csv` | see below |
+
+- **Chowdhury2026 extraction.** From `diann.7z` only the DIA-NN summary tables (`report.pg_matrix.tsv`,
+  `report.pr_matrix.tsv`, `report.gg_matrix.tsv`, `report.unique_genes_matrix.tsv`, `report.stats.tsv`,
+  `report.log.txt`) were extracted, with py7zr 1.1.4 in a separate virtual environment, as for Chowdhury2024.
+- **SHA-256 of the files as downloaded:**
+  - `diann.7z` 8529344794ec95eff511cf8e49c358a2441397268dc5c1eb020af0fcadb30603; `metadata.sdrf.tsv`
+    9c562822260554cfcacc904b6018062aa1b5e5db28ca62eecbcc288563ab307f; `PXD066724_community_annotated.sdrf.tsv`
+    353f448e4b1f1c9ed80020ab802a3472eda9a21eb5f69a9a4fc9f97ba3aea7ad.
+  - `XL-4180_raw_data.csv` 44c04cff0df7661c5107e4cefcb025ba50a5ecf705ccbdddd924f4900d065e5b (MD5
+    bf3536286e0d31ea3b0df82183ad1bad, equal to figshare); `SamplesPC.txt`
+    7d22f7581ef2ea8f9196b62f3ebfdeac2e3007fdbb8404b3ff95634b8a18b4f9 (MD5 d9e2c54105686e68d6d0ac59c51534ef, equal);
+    `V2 SOMA COVID_project_data.xlsx` 76465868c305cd65088763dc426486c0bdcf5f056a54da8dd7f01d002841211f (MD5
+    721ff0a0fa5818098a6dd7f320fca432, equal). The README, MANIFEST and PDF MD5s also equal the figshare values.
+  - `GSE297499_final_processed_tpm_values_pbmc.txt.gz` 37b6c414a64cac36a070bc46ed7494f431f376e8ec1e4e6b3cfce3390010e290;
+    `GSE297499_series_matrix.txt.gz` 746b14e48a6302156f9bcc8f25c7219fa563db52588abade668600878ce7d982.
+  - `biosamples.xml` 05e8530b6a3028c186a429f5f7e2b9621c1df55ad44b97f57c66831da12d8bc0.
+- **GSE297499 matrix.** The PBMC TPM file is keyed by gene symbol (56,609 rows). `scripts/build_rna_cohorts_2026_11.py`
+  maps symbols to Ensembl with the HGNC table (approved symbol, then unique previous symbol; 36,599 rows mapped, the
+  others are mostly StringTie or unannotated ids) and sums rows of one gene, giving
+  `data/counts/GSE297499/GSE297499_pbmc_tpm_ensembl.tsv.gz` (36,499 genes x 26 samples).

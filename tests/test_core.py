@@ -1,4 +1,5 @@
 import dataclasses
+from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -1040,3 +1041,63 @@ def test_read_mwtab_metabolite_block(tmp_path):
     D = bc.read_mwtab_data(p)
     assert list(D.index) == ["C1", "L1", "QC1"] and list(D.columns) == ["Glutamine", "CAR 10:0"]
     assert D.loc["L1", "Glutamine"] == 20 and np.isnan(D.loc["L1", "CAR 10:0"])
+
+
+def test_summary_keeps_configurations_that_failed_in_every_fold():
+    from chorus.eval import summarise
+
+    r = pd.DataFrame([
+        {"held_out": "A", "harmoniser": "identity", "selector": "variance", "classifier": "logreg", "auroc": 0.6, "auprc": 0.5, "brier": 0.2, "error": None},
+        {"held_out": "B", "harmoniser": "identity", "selector": "variance", "classifier": "logreg", "auroc": 0.8, "auprc": 0.7, "brier": 0.1, "error": None},
+        {"held_out": "A", "harmoniser": "chorus", "selector": "variance", "classifier": None, "auroc": np.nan, "auprc": np.nan, "brier": np.nan, "error": "only 4 null genes passed the screen"},
+        {"held_out": "B", "harmoniser": "chorus", "selector": "variance", "classifier": None, "auroc": np.nan, "auprc": np.nan, "brier": np.nan, "error": "only 6 null genes passed the screen"},
+    ])
+    s = summarise(r)
+    assert s.loc[("identity", "variance", "logreg"), "mean"] == pytest.approx(0.7)
+    assert s.loc[("identity", "variance", "logreg"), "n_errors"] == 0
+    row = s.loc[("chorus", "variance", "not_fitted")]
+    assert row["n_studies"] == 0 and row["n_errors"] == 2 and np.isnan(row["mean"])
+    assert "only 4" in row["error"] and "only 6" in row["error"]
+    assert list(s.index)[-1] == ("chorus", "variance", "not_fitted")  # failed configurations sort last
+
+
+def test_salmon_prefix_download_keeps_equal_complete_mates(tmp_path, monkeypatch):
+    import gzip
+
+    q = _load_script_path("salmon_quant_ena")
+    rng = np.random.default_rng(0)
+    src = {}
+    for mate in (1, 2):  # random reads, so that the compressed prefix is proportional to the reads it holds
+        seqs = ["".join(rng.choice(list("ACGT"), 100)) for _ in range(20000)]
+        src[mate] = gzip.compress("".join(f"@R.{i} x/{mate}\n{s}\n+\n{'F' * 100}\n" for i, s in enumerate(seqs, 1)).encode())
+
+    def fake_download(url, dest, size, segments):  # leading bytes of the file, as the byte range download would give
+        dest.write_bytes(src[1 if url.endswith("_1.fastq.gz") else 2][:size])
+
+    monkeypatch.setattr(q, "download", fake_download)
+    links = "h/RUN.fastq.gz;h/RUN_1.fastq.gz;h/RUN_2.fastq.gz"  # ENA lists an unpaired file next to the mates
+    sizes = f"10;{len(src[1])};{len(src[2])}"
+    assert q._mates(links.split(";"), sizes.split(";"))[0] == ["h/RUN_1.fastq.gz", "h/RUN_2.fastq.gz"]
+    row = SimpleNamespace(run_accession="RUN", sample_alias="S1", read_count=20000, fastq_ftp=links, fastq_bytes=sizes, fastq_md5="a;b;c")
+    files = q.fetch_prefix(row, tmp_path, 4, 5000, tmp_path / "prefix_reads.tsv")
+    n = [sum(1 for _ in open(f)) for f in files]
+    assert n[0] == n[1] == 4 * 5000
+    assert open(files[0]).readlines()[-4].split()[0] == open(files[1]).readlines()[-4].split()[0]
+    log = pd.read_csv(tmp_path / "prefix_reads.tsv", sep="\t")
+    assert log.loc[0, "read_pairs_used"] == 5000 and log.loc[0, "read_pairs_in_run"] == 20000
+
+
+def test_series_matrix_samples_and_gse297499_column_join(tmp_path):
+    import gzip
+
+    b = _load_script_path("build_rna_cohorts_2026_11")
+    text = ('!Series_title\t"x"\n!Sample_title\t"2057_V2_PBMC"\t"2014R_PBMC"\t"2023_CSF"\n'
+            '!Sample_geo_accession\t"GSM1"\t"GSM2"\t"GSM3"\n'
+            '!Sample_characteristics_ch1\t"tissue: PBMC"\t"tissue: PBMC"\t"tissue: Cerebrospinal Fluid"\n'
+            '!Sample_characteristics_ch1\t"treatment: NP-Long COVID"\t"treatment: Control"\t"treatment: Control"\n')
+    p = tmp_path / "sm.txt.gz"
+    p.write_bytes(gzip.compress(text.encode()))
+    g = b.series_matrix_samples(p)
+    assert list(g["gsm"]) == ["GSM1", "GSM2", "GSM3"] and list(g["ch_treatment"]) == ["NP-Long COVID", "Control", "Control"]
+    cols = g["title"].str.replace("_", "", regex=False).str.replace("PBMC$", "_PBMC", regex=True)
+    assert list(cols[:2]) == ["2057V2_PBMC", "2014R_PBMC"]
