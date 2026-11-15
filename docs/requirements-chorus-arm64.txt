@@ -100,4 +100,5 @@ tzdata==2026.6
 urllib3==2.8.0
 wrapt==2.5.2
 xgboost==3.4.1
+xlrd==2.0.2
 zarr==3.4.2

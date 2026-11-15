@@ -16,7 +16,8 @@ that pass the expression filter in every cohort). Outputs, in --out:
                                 days_since_infection per class, all from the metadata
   n_shared.csv                  cohort x cohort number of features with an effect in both
 
-Proteomics configs (feature_space uniprot) are keyed by UniProt accession; the symbol comes from
+Metabolomics configs (feature_space metabolite_id) are keyed by the shared metabolite identifier and
+labelled with the RefMet name. Proteomics configs (feature_space uniprot) are keyed by UniProt accession; the symbol comes from
 the uniprot_ids column of the HGNC complete set (a multi-protein key "P1_P2" gets the symbols
 joined by "_"). With ``preprocessing: features: union`` in the config, every cohort keeps its own
 features and each pair of cohorts is correlated over the features both have (n_shared.csv). The
@@ -40,6 +41,7 @@ from chorus.features import per_study_effects
 from chorus.schema import binary_label
 
 HGNC = "data/ref/hgnc_complete_set.txt"
+REFMET = "data/ref/refmet/refmet.csv"
 
 
 def cohort_effects(X: pd.DataFrame, M: pd.DataFrame, positive: str = "LC", negative: str = "COVID_recovered") -> pd.DataFrame:
@@ -73,7 +75,13 @@ def shared_counts(effects: pd.DataFrame) -> pd.DataFrame:
 
 
 def feature_symbols(features: pd.Index, hgnc: str, feature_space: str = "ensembl_gene") -> pd.Series:
-    """HGNC symbol per feature: by Ensembl gene id, or by UniProt accession for ``uniprot``."""
+    """HGNC symbol per feature: by Ensembl gene id, or by UniProt accession for ``uniprot``. For
+    ``metabolite_id`` (``HMDB:<id>`` or ``RefMet:<name>``) the RefMet name, from the RefMet table."""
+    if feature_space == "metabolite_id":
+        t = pd.read_csv(REFMET, dtype=str, usecols=["refmet_name", "hmdb_id"]).dropna()
+        by_hmdb = t.drop_duplicates("hmdb_id").set_index("hmdb_id")["refmet_name"]
+        out = [str(f).split(":", 1)[1] if str(f).startswith("RefMet:") else by_hmdb.get(str(f).split(":", 1)[1]) for f in features]
+        return pd.Series(out, index=features, dtype=object)
     if feature_space != "uniprot":
         t = pd.read_csv(hgnc, sep="\t", usecols=["symbol", "ensembl_gene_id"], dtype=str).dropna()
         return t.drop_duplicates("ensembl_gene_id").set_index("ensembl_gene_id")["symbol"].reindex(features)

@@ -1,0 +1,40 @@
+# CHORUS metabolomics Test 1: Long COVID versus COVID recovered from plasma metabolomics, leave one study out on the
+# metabolites shared by all cohorts (shared identifiers HMDB, else RefMet name; docs/metabolomics_cohorts.md). Cohort files
+# are written by scripts/metabolomics/build_cohorts.py and mapped by scripts/metabolomics/map_ids.py (<study>_ids_matrix.csv).
+# Cohorts: the only three labelled cohorts that share 30 or more identifiers (38; results/lc_metabolomics/mapping/shared_by_k.csv).
+# Saito2024 shares 15 to 28 with the others and is in the concordance only; Holmes2021 has no resolved labels.
+# Values: log2 areas (Martinez2024), log2 µM (Lopez2023), the authors' adjusted Z scores (Su2022_metabolomics).
+# Selector sizes: the proteomics fractions of the shared features (100 and 50 of 376 in configs/lc_proteomics_affinity.yaml)
+# applied to the 38 shared metabolites and rounded: variance 10, differential and invariant 5.
+layer: metabolomics
+cohorts:
+  - {study_id: Martinez2024,        matrix: data/metabolomics/Martinez2024/Martinez2024_ids_matrix.csv,               meta: data/meta/Martinez2024_meta.csv,        feature_space: metabolite_id, accession: "ST003103"}
+    # Martinez 2024 (J Proteome Res). Plasma, CE-MS, GC-MS and LC-MS lipidomics; 40 Long COVID, 40 recovered from mild COVID-19.
+  - {study_id: Lopez2023,           matrix: data/metabolomics/Lopez2023/Lopez2023_ids_matrix.csv,                     meta: data/meta/Lopez2023_meta.csv,           feature_space: metabolite_id, accession: "doi:10.17632/8zfdjsypd8.1"}
+    # Lopez-Hernandez 2023 (Sci Rep). Plasma, TMIC PRIME targeted, about two years after infection; LC class A and B versus recovered.
+  - {study_id: Su2022_metabolomics, matrix: data/metabolomics/Su2022_metabolomics/Su2022_metabolomics_ids_matrix.csv, meta: data/meta/Su2022_metabolomics_meta.csv, feature_space: metabolite_id, accession: "doi:10.17632/96v329bg7g.1"}
+    # Su 2022 (Cell) INCOV. Plasma untargeted, authors' adjusted Z scores; T3 (post acute) draws.
+preprocessing:
+  matrices: [plasma, serum]
+  drop_sample_phases: [acute]
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [T1, T2, T3]
+  deduplicate: true
+  impute: study_min                         # values missing below detection; per cohort, label free
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [identity, center_scale, rank, fsqn, combat_addon, chorus]
+  selectors:
+    - {name: variance, k: 10}
+    - {name: differential, k: 5}
+    - {name: invariant, k: 5}
+  classifiers: [logreg, rf]
+  covariates: []
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/lc_metabolomics

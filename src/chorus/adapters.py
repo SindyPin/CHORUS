@@ -14,8 +14,9 @@ the name of the feature space. The shared spaces are
   ms_proteomics   UniProt accession of the leading protein of each protein group, isoform suffix
                   removed; contaminant and decoy groups dropped; zero intensities missing; log2;
                   groups with the same leading accession averaged on the log2 scale
-  metabolomics    analyte name as deposited (optionally prefixed by the panel); within study only,
-                  no RefMet mapping yet
+  metabolomics    analyte name as deposited (optionally prefixed by the panel); within study only
+  metabolomics_id shared metabolite identifier (HMDB, else RefMet name, else InChIKey) from the
+                  deposited names through RefMet (``chorus.metabolites``); across studies
 
 Adapters only rename, filter and aggregate. Normalisation and cross study harmonisation stay in
 ``chorus.harmonise``. Register a new layer with ``@layer_adapter("name", "feature_space")`` and
@@ -260,3 +261,32 @@ def metabolomics(raw: pd.DataFrame, prefix: str = "", log2: Optional[bool] = Fal
         wide, transform = np.log2(wide.where(wide > 0)), "log2"
     X, feats = _aggregate(wide, key)
     return Adapted(X, feats, "metabolite_name", "metabolomics", {"transform": transform})
+
+
+@layer_adapter("metabolomics_id", "metabolite_id")
+def metabolomics_id(raw: pd.DataFrame, ids: pd.Series, log2: Optional[bool] = False) -> Adapted:
+    """Samples x deposited metabolite names into the shared identifier space (``HMDB:<id>``,
+    ``RefMet:<name>`` or ``InChIKey:<key>``, from ``chorus.metabolites.metabolite_ids``; ``ids``
+    maps a deposited name to its identifier, NaN when unmapped). Unmapped names are dropped. When
+    several names of a cohort map to one identifier (the same metabolite on two platforms of one
+    study, or two spellings), the one with the most observed values is kept, the first in column
+    order on a tie; values are not averaged because platforms differ in scale. ``log2`` as in the
+    ``metabolomics`` adapter. The feature table lists every name that mapped to the identifier
+    (``source_ids``) and the one kept (``kept_source``)."""
+    wide = raw.apply(pd.to_numeric, errors="coerce")
+    transform = "as_provided"
+    if log2 or (log2 is None and np.nanmax(wide.values) > LINEAR_SCALE_MAX):
+        wide, transform = np.log2(wide.where(wide > 0)), "log2"
+    key = ids.reindex(wide.columns).dropna()
+    observed = wide[key.index].notna().sum(axis=0)
+    order = pd.DataFrame({"id": key.values, "obs": observed.values, "pos": range(len(key))}, index=key.index)
+    kept = order.sort_values(["obs", "pos"], ascending=[False, True]).groupby("id", sort=True).head(1)
+    X = wide[kept.index]
+    X.columns = kept["id"].values
+    X = X[sorted(X.columns)]
+    feats = key.groupby(key.values).apply(lambda s: " | ".join(map(str, s.index))).rename("source_ids").to_frame()
+    feats["n_sources"] = key.value_counts().reindex(feats.index).values
+    feats["kept_source"] = pd.Series(kept.index, index=kept["id"].values).reindex(feats.index).values
+    feats.index.name = "feature"
+    notes = {"transform": transform, "names_unmapped": str(int(ids.reindex(wide.columns).isna().sum())), "names_dropped_as_duplicate": str(int(len(key) - len(kept)))}
+    return Adapted(X, feats.reset_index().set_index("feature").loc[X.columns].reset_index(), "metabolite_id", "metabolomics", notes)

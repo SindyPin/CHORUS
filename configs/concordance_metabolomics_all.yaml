@@ -1,0 +1,24 @@
+# CHORUS metabolomics concordance: within cohort LC versus COVID recovered effects (Hedges g) of every labelled metabolomics
+# cohort, each on its own identifiers, correlated pair by pair over the identifiers the two share (scripts/concordance.py;
+# features: union). Same sample selection and imputation as configs/lc_metabolomics.yaml. Holmes2021 is not listed: its
+# LC labels are not resolved (docs/metabolomics_cohorts.md). Not a benchmark config.
+layer: metabolomics
+cohorts:
+  - {study_id: Martinez2024,        matrix: data/metabolomics/Martinez2024/Martinez2024_ids_matrix.csv,               meta: data/meta/Martinez2024_meta.csv,        feature_space: metabolite_id}
+  - {study_id: Lopez2023,           matrix: data/metabolomics/Lopez2023/Lopez2023_ids_matrix.csv,                     meta: data/meta/Lopez2023_meta.csv,           feature_space: metabolite_id}
+  - {study_id: Saito2024,           matrix: data/metabolomics/Saito2024/Saito2024_ids_matrix.csv,                     meta: data/meta/Saito2024_meta.csv,           feature_space: metabolite_id}
+  - {study_id: Su2022_metabolomics, matrix: data/metabolomics/Su2022_metabolomics/Su2022_metabolomics_ids_matrix.csv, meta: data/meta/Su2022_metabolomics_meta.csv, feature_space: metabolite_id}
+preprocessing:
+  matrices: [plasma, serum]
+  drop_sample_phases: [acute]
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [T1, T2, T3]
+  deduplicate: true
+  features: union
+  impute: study_min
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+out: results/lc_metabolomics/concordance_all

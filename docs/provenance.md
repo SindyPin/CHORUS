@@ -150,3 +150,35 @@ the SHA-256 of each file. Every published checksum matched. The repositories pub
   `h.all.v2026.2.Hs.symbols.gmt` c945afd59d949398471c8768fe4d41b0, `c2.cp.reactome.v2026.2.Hs.entrez.gmt`
   6db9a240e0edd0171bd7c349da51a895, `c2.cp.reactome.v2026.2.Hs.symbols.gmt` 74705d0ea35325b3d56a3412801e5592. The
   Entrez files are used, mapped through the HGNC complete set above.
+
+## Metabolomics cohorts (downloaded 2026-11-15 and 2026-11-16)
+
+For the metabolomics arm (`docs/metabolomics_cohorts.md`), into `data/metabolomics/<study>/raw/` (local). The raw MS
+files were not downloaded.
+- **Martinez2024:** Metabolomics Workbench ST003103 (project PR001926), licence CC BY-NC-ND 4.0 as stated by the
+  Workbench study record. The mwTab text of the five analyses was taken from the REST service
+  (`/rest/study/analysis_id/<AN>/mwtab/txt`), plus the sample factors (`/rest/study/study_id/ST003103/factors`). The
+  Workbench publishes no checksum; SHA-256 of the files as downloaded: AN005077
+  964546da90dc5d12a789048ba8ccb6b11694d70c5cf4d346254361cd067da705, AN005078
+  cca14df184de90c7a769e64f0b974a5af803367f1eb3610b49460eeb7e1bd510, AN005079
+  7165c6161393adca57549c3f8aa9d6047ddfe5e1769ed409b6f48412be9759a5, AN005080
+  feea1bb94b67ce60e4e6f3f06406a4a9b6682ecdea609c81e294068de53ebe80, AN005081
+  2fd70f4128b6e312bd5c7f90db95c2f849c24a0b8425d09a2131a0af9cc633e5, factors
+  151d34e3a25850acce9b055575b09d89c1cabb2a684353581a72d40df58144ce.
+- **Lopez2023:** Mendeley Data 10.17632/8zfdjsypd8.1, CC BY 4.0, `DATA AVAILABILITY.xls` (the only file). Its
+  SHA-256 equals the one in the Mendeley file record: 5554301ca0e8a893215e26ed340f3480f5ac431c0bdbe7b86c26d1811b6e558c.
+  Read with xlrd 2.0.2, installed into `~/.venvs/chorus-arm64` for this file (`docs/requirements-chorus-arm64.txt`).
+- **Holmes2021:** Zenodo 10.5281/zenodo.4713391 (concept 10.5281/zenodo.4713390, the accession 4713390 of the
+  catalogue), CC BY 4.0. The README, `sampleDescriptionList.txt` and the four `targetedMS_*.txt` tables were downloaded;
+  the MD5 of each equals the Zenodo record (`record_4713391.json`). The 32 mzML files were not downloaded.
+- **Saito2024:** supplementary material of Saito S et al. 2024 Front Immunol (PMC10830702), CC BY 4.0, from the Europe
+  PMC supplementary files service. `DataSheet_1.pdf` (Supplementary Table 1) SHA-256
+  2378fc7d20742eb444b827afc99b304f62d9a6d182bba79bf38e8628caf34019, `DataSheet_2.xlsx` (Supplementary Table 2)
+  361588d72fef930dfdf0cc2128d7ecd8ee429301058b1502eac13cf237631e14. No publisher checksum is available.
+- **Mikuteit2023:** supplementary material of Mikuteit M et al. 2023 Amino Acids (PMC10564820) from Europe PMC:
+  `726_2023_3305_MOESM1_ESM.docx` (SHA-256 df7e04a85fce35d42ab72df1297745e6319aa16ac5777de36c8fbc31e938ec48) holds QC
+  results and group summaries only, so no cohort was built and the file is not stored.
+- **RefMet:** the full RefMet table from `https://www.metabolomicsworkbench.org/databases/refmet/refmet_download.php`,
+  saved as `data/ref/refmet/refmet.csv` (208,173 entries; SHA-256
+  e2c630f9e9c5a5378eb8687f0bdfe02e4e93f5020c6c6226aa2ee72ce1ed2952). Name matching uses the RefMet match REST service;
+  its answers are cached in `data/ref/refmet/refmet_match_cache.csv` with the query date.

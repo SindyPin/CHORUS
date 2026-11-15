@@ -330,11 +330,16 @@ def test_harmonisation_diagnostics_write_one_table_per_fold_and_harmoniser(sim, 
     assert "error" not in set(res["family"])
 
 def _load_script(name):
+    return _load_script_path(name)
+
+
+def _load_script_path(name):
+    """Load scripts/<name>.py (``name`` may hold a subfolder, ``metabolomics/build_cohorts``)."""
     import importlib.util
     from pathlib import Path
 
     path = Path(__file__).resolve().parents[1] / "scripts" / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
+    spec = importlib.util.spec_from_file_location(name.replace("/", "_"), path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -983,3 +988,55 @@ def test_mosaic_schemes_keep_sensitivity_cohorts_out_of_training():
     acute = mp.schemes("acute", {"rna": ["rna:a"], "protein": ["protein:p", "protein:q", "protein:r"], "sensitivity": []})
     assert acute[0] == ("protein_to_rna", ["protein:p", "protein:q", "protein:r"], "rna:a")
     assert acute[1] == ("rna_plus_other_protein", ["rna:a", "protein:q", "protein:r"], "protein:p")
+
+
+def test_metabolite_ids_priority_cache_and_adapter(tmp_path):
+    from chorus.adapters import to_feature_space
+    from chorus.metabolites import match_names, metabolite_ids, pairwise_shared, strip_prefix
+
+    assert strip_prefix("GCMS::Glutamine") == "Glutamine" and strip_prefix("PC 36:4") == "PC 36:4"
+    refmet = pd.DataFrame(
+        {"refmet_id": ["RM1", "RM2", "RM3"], "hmdb_id": ["HMDB0000641", None, None], "inchi_key": ["K1", "K2", None], "kegg_id": [None, None, None]},
+        index=pd.Index(["Glutamine", "PC 36:4", "Rare"], name="refmet_name"),
+    )
+    calls = []
+
+    def fake(batch):
+        calls.extend(batch)
+        lut = {"L-Glutamine": "Glutamine", "Gln": "Glutamine", "PC aa C36:4": "PC 36:4", "Rare one": "Rare"}
+        return {q: lut.get(q, "") for q in batch}
+
+    cache = tmp_path / "cache.csv"
+    queries = ["L-Glutamine", "Gln", "PC aa C36:4", "Rare one", "Nothing"]
+    m = match_names(queries, cache, fetch=fake, chunk=2, pause=0)
+    assert m["Gln"] == "Glutamine" and m["Nothing"] == ""
+    m2 = match_names(queries, cache, fetch=fake, chunk=2, pause=0)  # second call answered from the cache
+    assert len(calls) == 5 and m2.equals(m)
+    names = ["LC::L-Glutamine", "GC::Gln", "PC aa C36:4", "Rare one", "Nothing", "104.07_11.07", "Deposited only"]
+    dep = pd.DataFrame({"hmdb_id": [None, "HMDB0000123", "HMDB0000999"], "inchi_key": [None, None, None]}, index=["PC aa C36:4", "Deposited only", "Rare one"])
+    T = metabolite_ids(names, refmet, pd.concat([m, pd.Series({"Deposited only": ""})]), dep).set_index("name")
+    assert T.loc["LC::L-Glutamine", "shared_id"] == "HMDB:HMDB0000641" and T.loc["GC::Gln", "shared_id"] == "HMDB:HMDB0000641"
+    assert T.loc["PC aa C36:4", "shared_id"] == "RefMet:PC 36:4"  # RefMet has no HMDB, no deposited HMDB for it
+    assert T.loc["Rare one", "id_source"] == "hmdb_deposited"  # RefMet matched without HMDB, author gave one
+    assert T.loc["Deposited only", "shared_id"] == "HMDB:HMDB0000123" and T.loc["Nothing", "id_source"] == "unmatched"
+    assert T.loc["104.07_11.07", "id_source"] == "unannotated"
+    # adapter: unmapped names dropped; two names of one identifier -> the most complete is kept
+    X = pd.DataFrame({"LC::L-Glutamine": [1.0, np.nan, 3.0], "GC::Gln": [2.0, 2.0, 2.0], "PC aa C36:4": [4.0, 5.0, 6.0], "Nothing": [1.0, 1.0, 1.0]}, index=["s1", "s2", "s3"])
+    ad = to_feature_space("metabolomics_id", X, ids=T["shared_id"])
+    assert list(ad.X.columns) == ["HMDB:HMDB0000641", "RefMet:PC 36:4"]
+    assert ad.X["HMDB:HMDB0000641"].tolist() == [2.0, 2.0, 2.0]
+    f = ad.features.set_index("feature")
+    assert f.loc["HMDB:HMDB0000641", "kept_source"] == "GC::Gln" and f.loc["HMDB:HMDB0000641", "n_sources"] == 2
+    assert ad.notes["names_unmapped"] == "1" and ad.notes["names_dropped_as_duplicate"] == "1"
+    S = pairwise_shared({"a": ["x", "y"], "b": ["y", "z"], "c": ["y"]})
+    assert S.loc["a", "b"] == 1 and S.loc["a", "a"] == 2 and S.loc["b", "c"] == 1
+
+
+def test_read_mwtab_metabolite_block(tmp_path):
+    bc = _load_script_path("metabolomics/build_cohorts")
+    txt = "#MS_METABOLITE_DATA\nMS_METABOLITE_DATA:UNITS\tArea\nMS_METABOLITE_DATA_START\nSamples\tC1\tL1\tQC1\nFactors\ta\tb\tc\nGlutamine\t10\t20\t15\nCAR 10:0 \t1\t\t2\nMS_METABOLITE_DATA_END\n"
+    p = tmp_path / "x.mwtab.txt"
+    p.write_text(txt)
+    D = bc.read_mwtab_data(p)
+    assert list(D.index) == ["C1", "L1", "QC1"] and list(D.columns) == ["Glutamine", "CAR 10:0"]
+    assert D.loc["L1", "Glutamine"] == 20 and np.isnan(D.loc["L1", "CAR 10:0"])
