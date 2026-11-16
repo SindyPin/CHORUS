@@ -31,7 +31,8 @@ after another (the all-cohort concordance was rerun into its final folder at 00:
 2026)". The version 4 proteomics runs of 16 November (from 07:27) ran one after another while the PRJNA1149196 salmon
 quantification ran in the background, so their runtimes overlap with it. The reporting reruns of 16 November (from
 10:51) ran one after another, also during the quantification; see "Version 4 cohort set and reporting fixes (16 November
-2026)".
+2026)". The version 4 transcriptomic runs of 17 November (from 00:36) ran one after another; the runtime of
+`lc_transcriptomics_blood_v4` includes time the laptop was asleep.
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -76,6 +77,11 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 | `lc_proteomics_ms_v4/harmonisation` | `chorus harmonisation configs/lc_proteomics_ms_v4.yaml --out results/lc_proteomics_ms_v4/harmonisation` | configs/lc_proteomics_ms_v4.yaml | 3 (started 2026-11-16 07:47:06) |
 | `lc_proteomics_ms_v4/concordance` | `scripts/concordance.py configs/lc_proteomics_ms_v4.yaml --out results/lc_proteomics_ms_v4/concordance --top 50` | configs/lc_proteomics_ms_v4.yaml | 1 (started 2026-11-16 07:47:09); reporting rerun 1 (started 10:52:37) |
 | `concordance_proteomics_all_v4` | `scripts/concordance.py configs/concordance_proteomics_all_v4.yaml --out results/concordance_proteomics_all_v4 --top 50` | configs/concordance_proteomics_all_v4.yaml | 14 (started 2026-11-16 07:47:10); reporting rerun 14 (started 10:52:39) |
+| `lc_transcriptomics_blood_v4` | `chorus run configs/lc_transcriptomics_blood_v4.yaml --within` | configs/lc_transcriptomics_blood_v4.yaml | 21455, including laptop sleep (started 2026-11-17 00:36:55) |
+| `lc_transcriptomics_blood_harmonisation_v4` | `chorus harmonisation configs/lc_transcriptomics_blood_v4.yaml --out results/lc_transcriptomics_blood_harmonisation_v4` | configs/lc_transcriptomics_blood_v4.yaml | 162 (started 2026-11-17 06:34:30) |
+| `concordance_v4` | `scripts/concordance.py configs/lc_transcriptomics_blood_v4.yaml --out results/concordance_v4` | configs/lc_transcriptomics_blood_v4.yaml | 81 (started 2026-11-17 06:37:12) |
+| `mosaic_programmes_v4` | `scripts/mosaic_programmes.py --out results/mosaic_programmes_v4 --contrasts lc_v4` | configs/mosaic_lc_rna_v4.yaml, configs/concordance_proteomics_all_v4.yaml | 167 (started 2026-11-17 06:38:33) |
+| `lc_transcriptomics_blood_v4_noQCflag` | `chorus run configs/lc_transcriptomics_blood_v4_noQCflag.yaml --within` | configs/lc_transcriptomics_blood_v4_noQCflag.yaml | 3547 (started 2026-11-17 06:41:20) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -132,6 +138,10 @@ selection, 200 bootstrap resamples.
 | lc_proteomics_affinity_v4 (and its harmonisation and concordance) | Buggert2025, Cervia2024_SomaScan, Su2022, Fineschi2026 | none |
 | lc_proteomics_ms_v4 (and its harmonisation and concordance) | Cervia2024_MS, Chowdhury2024, Kovarik2023_plasma, Chowdhury2026 | none |
 | concordance_proteomics_all_v4 | no folds; the eight cohorts of the two v4 blocks | none |
+| lc_transcriptomics_blood_v4 (and `lc_transcriptomics_blood_harmonisation_v4`) | GSE226260_WB, GSE226260_PBMC, GSE224615, GSE251849, GSE270045, PRJNA1149196_SA, GSE297499 | PRJNA1149196_QLD (5 / 4 samples) |
+| lc_transcriptomics_blood_v4_noQCflag | as lc_transcriptomics_blood_v4, GSE224615 without GSM7027478, GSM7027490 and GSM7027501 | PRJNA1149196_QLD |
+| concordance_v4 | no folds; the eight cohorts of lc_transcriptomics_blood_v4 | none |
+| mosaic_programmes_v4/lc_v4 | test cohorts: the RNA and protein cohorts except PRJNA1149196_QLD (5 / 4); Cervia2024_MS as sensitivity | PRJNA1149196_QLD |
 
 ## GSE224615 samples flagged at QC
 
@@ -144,7 +154,9 @@ more than 2.5 MAD (raw) below the cohort median: median 81.57%, MAD 1.77, lower 
 | GSM7027490 | 59.07 | 0.457 | more than 2.5 MAD below median |
 | GSM7027501 | 56.84 | 0.052 | more than 2.5 MAD below median |
 
-**All three are included in every run above.** Excluding them is left for a later sensitivity run. The full per-sample QC
+**All three are included in every run above except `lc_transcriptomics_blood_v4_noQCflag`**, the sensitivity run of
+`lc_transcriptomics_blood_v4` without them (`exclude_samples` in `configs/lc_transcriptomics_blood_v4_noQCflag.yaml`;
+see "Version 4 cohort set and reporting fixes", section 3). The full per-sample QC
 table is `data/quant/GSE224615/salmon_qc.tsv` (local, not committed).
 
 ## Files in each folder
@@ -192,6 +204,11 @@ local.
 - `lc_proteomics_affinity_v4/`, `lc_proteomics_ms_v4/`: as `lc_proteomics_affinity`; `concordance_proteomics_all_v4/`:
   as `concordance_proteomics_all`.
 - `concordance_epigenomics/`: `cohorts.csv` only (groups and why no effect was computed; see "Metabolomics").
+- `lc_transcriptomics_blood_v4/`, `lc_transcriptomics_blood_v4_noQCflag/`: as `lc_transcriptomics_blood`, with
+  `within_study_cv_folds.csv` (the current within-study method); `lc_transcriptomics_blood_harmonisation_v4/`: as
+  `lc_transcriptomics_blood_harmonisation`; `concordance_v4/`: as `concordance`; `mosaic_programmes_v4/`:
+  `genesets.csv`, `run_info.json` and `lc_v4/` with the files of `mosaic_programmes/lc` (`scores.csv.gz` not
+  committed).
 
 ## Column glossary
 
@@ -1126,7 +1143,268 @@ MS block (`lc_proteomics_ms_v4`):
   Chowdhury2024 334, Kovarik2023_plasma 260, Cervia2024_MS 224, Cervia2024_SomaScan 286, Buggert2025 197, Su2022 10,
   Fineschi2026 5. Chowdhury2026 has 472 proteins here: one of its 473 has no value in the 115 retained samples.
 
-**4. Reporting fixes.** All concordance outputs listed in "Runs" were recomputed with the new code ("reporting rerun");
+**3. Test 1 in transcriptomics, version 4** (`lc_transcriptomics_blood_v4`).
+- **Config:** `configs/lc_transcriptomics_blood_v4.yaml`: the five cohorts of `lc_transcriptomics_blood` plus
+  PRJNA1149196_SA, PRJNA1149196_QLD and GSE297499. Grid, preprocessing and selectors as in `lc_transcriptomics_blood`
+  (9 harmonisers plus nested selection, 6 selector configurations, classifiers logreg, rf, taco and cross_study).
+- **PRJNA1149196_QLD** is quantified on all reads; SA on the first 5,000,000 read pairs of each run (`docs/provenance.md`,
+  "PRJNA1149196"). A first version 4 run made with a QLD read prefix (16 November) was not kept: the QLD FASTQ files are
+  ordered by alignment position, so the prefix held only chr1 and chr10 reads and QLD passed the expression filter
+  with 5,914 genes, which cut the genes shared by all cohorts to 2,574.
+- **Samples used** (one sample per subject, earliest post-acute; the `never_infected` samples are not in the contrast):
+
+| cohort | matrix | samples (LC / COVID_recovered) | never_infected (not used) | role |
+|---|---|---|---|---|
+| GSE226260_WB | whole blood | 37 (17 / 20) | 0 | held out and training |
+| GSE226260_PBMC | PBMC | 36 (28 / 8) | 0 | held out and training |
+| GSE224615 | PBMC | 36 (23 / 13) | 0 | held out and training |
+| GSE251849 | PBMC | 16 (11 / 5) | 7 | held out and training |
+| GSE270045 | whole blood | 36 (19 / 17) | 0 | held out and training |
+| PRJNA1149196_SA | whole blood | 39 (28 / 11) | 15 | held out and training |
+| PRJNA1149196_QLD | whole blood | 9 (5 / 4) | 0 | training only (fewer than 5 recovered; `min_test_per_class` 5) |
+| GSE297499 | PBMC | 26 (17 / 9) | 0 | held out and training |
+
+- **Genes:** 10,053 pass the expression filter in every cohort (CPM at least 1 in at least half of the samples; 10,442
+  in `lc_transcriptomics_blood`). PRJNA1149196_SA keeps its 44-week sample per subject (38 subjects have two visits).
+  GSE297499 enters as author TPM (`author_normalised`, log2(x + 1)).
+- **Training pools:** 7 training studies per fold, 196 to 219 samples.
+- **Failed fits** (`loso_results.csv`, column `error`): `chorus` and `chorus_protected` in two folds, every selector:
+  "only 18 null genes passed the screen" (GSE224615 held out) and "only 19" (PRJNA1149196_SA held out). Their summary
+  rows have `n_studies` 5. Nested selection chose `chorus` in two fits of the GSE224615 fold (selectors differential and
+  TACO 411 only), which failed with the same message, so those nested rows have `n_studies` 6. `loso_summary.csv` keeps
+  one `not_fitted` row per failed configuration (14). The default null screen was not changed.
+- **chorus factors** (`n_factors`, the folds that fitted): `chorus` 4 to 6, `chorus_protected` 3 to 5.
+- **Nested choices** (162 rows): fsqn 52, quantile_ref 32, identity 28, center_scale 16, combat_pooled 16, chorus 10
+  (2 of them the failed fits), combat_addon 8.
+
+**Mean AUROC across the held-out studies (minimum to maximum)** (`loso_summary.csv`; per held-out rows with bootstrap
+intervals in `loso_results.csv`). Seven held-out studies unless a count in brackets says otherwise; "not fitted": no
+fold fitted. Selectors: variance (500 most variable genes), differential (200), invariant (200), "TACO 411 only"
+(`priors/taco_411_dce_genes.txt`, the genes in the matrix, `prior_only`), "TACO 411 + 200" (those genes together with
+the 200 invariant genes, `union`), "MR 32 + 200" (`priors/mrcontrol_32_genes.txt` together with the 200 invariant
+genes). `n_features` in `loso_results.csv`: 502, 202, 202, 318, 503 to 512 and 225 to 227.
+
+`logreg`:
+
+| harmoniser | variance | differential | invariant | TACO 411 only | TACO 411 + 200 | MR 32 + 200 |
+|---|---|---|---|---|---|---|
+| identity | 0.413 (0.2 to 0.616) | 0.490 (0.266 to 0.689) | 0.376 (0.145 to 0.594) | 0.464 (0.155 to 0.806) | 0.410 (0.226 to 0.791) | 0.364 (0.109 to 0.579) |
+| center_scale | 0.493 (0.309 to 0.662) | 0.439 (0.218 to 0.606) | 0.402 (0.182 to 0.532) | 0.482 (0.0464 to 0.721) | 0.427 (0.142 to 0.676) | 0.390 (0.218 to 0.504) |
+| quantile_ref | 0.465 (0.273 to 0.675) | 0.441 (0.327 to 0.542) | 0.398 (0.102 to 0.602) | 0.470 (0.152 to 0.826) | 0.412 (0.124 to 0.609) | 0.396 (0.167 to 0.582) |
+| fsqn | 0.466 (0.4 to 0.606) | 0.400 (0.0182 to 0.579) | 0.496 (0.309 to 0.632) | 0.504 (0.291 to 0.68) | 0.462 (0.236 to 0.644) | 0.468 (0.255 to 0.603) |
+| rank | 0.435 (0.218 to 0.601) | 0.499 (0.396 to 0.605) | 0.428 (0.0341 to 0.614) | 0.408 (0.105 to 0.668) | 0.411 (0.0279 to 0.608) | 0.412 (0.0217 to 0.575) |
+| combat_addon | 0.455 (0.272 to 0.682) | 0.441 (0.218 to 0.632) | 0.398 (0.182 to 0.526) | 0.474 (0.0495 to 0.747) | 0.422 (0.13 to 0.679) | 0.381 (0.218 to 0.498) |
+| combat_pooled | 0.502 (0.341 to 0.716) | 0.456 (0.218 to 0.608) | 0.385 (0.109 to 0.547) | 0.486 (0.096 to 0.726) | 0.421 (0.183 to 0.694) | 0.384 (0.164 to 0.518) |
+| chorus | 0.488 (0.182 to 0.683) [5] | 0.293 (0.121 to 0.4) [5] | 0.385 (0.0545 to 0.559) [5] | 0.492 (0.0867 to 0.712) [5] | 0.421 (0.176 to 0.671) [5] | 0.361 (0.0545 to 0.518) [5] |
+| chorus_protected | 0.395 (0.105 to 0.682) [5] | 0.355 (0.238 to 0.453) [5] | 0.341 (0.109 to 0.571) [5] | 0.471 (0.0681 to 0.719) [5] | 0.410 (0.155 to 0.662) [5] | 0.338 (0.0909 to 0.547) [5] |
+| nested | 0.426 (0.272 to 0.565) | 0.494 (0.345 to 0.621) [6] | 0.437 (0.26 to 0.594) | 0.444 (0.0867 to 0.68) [6] | 0.406 (0.13 to 0.609) | 0.424 (0.255 to 0.594) |
+
+`rf`:
+
+| harmoniser | variance | differential | invariant | TACO 411 only | TACO 411 + 200 | MR 32 + 200 |
+|---|---|---|---|---|---|---|
+| identity | 0.459 (0.325 to 0.618) | 0.456 (0.299 to 0.725) | 0.466 (0.29 to 0.686) | 0.415 (0.276 to 0.582) | 0.421 (0.282 to 0.559) | 0.471 (0.257 to 0.626) |
+| center_scale | 0.465 (0.276 to 0.737) | 0.389 (0.0944 to 0.631) | 0.424 (0.17 to 0.691) | 0.458 (0.135 to 0.813) | 0.417 (0.138 to 0.716) | 0.394 (0.133 to 0.612) |
+| quantile_ref | 0.483 (0.364 to 0.606) | 0.549 (0.315 to 0.769) | 0.459 (0.275 to 0.715) | 0.498 (0.339 to 0.694) | 0.433 (0.209 to 0.616) | 0.445 (0.297 to 0.597) |
+| fsqn | 0.495 (0.325 to 0.694) | 0.364 (0.0759 to 0.626) | 0.372 (0.138 to 0.572) | 0.468 (0.241 to 0.831) | 0.377 (0.147 to 0.671) | 0.370 (0.0619 to 0.599) |
+| rank | 0.523 (0.393 to 0.65) | 0.496 (0.186 to 0.679) | 0.448 (0.234 to 0.699) | 0.492 (0.4 to 0.614) | 0.398 (0.113 to 0.65) | 0.442 (0.189 to 0.686) |
+| combat_addon | 0.415 (0.228 to 0.624) | 0.390 (0.0464 to 0.629) | 0.424 (0.173 to 0.679) | 0.474 (0.229 to 0.809) | 0.413 (0.0681 to 0.719) | 0.404 (0.135 to 0.632) |
+| combat_pooled | 0.482 (0.246 to 0.766) | 0.396 (0.0759 to 0.626) | 0.410 (0.128 to 0.66) | 0.447 (0.166 to 0.74) | 0.417 (0.105 to 0.725) | 0.411 (0.138 to 0.644) |
+| chorus | 0.392 (0.113 to 0.604) [5] | 0.351 (0.0743 to 0.542) [5] | 0.398 (0.195 to 0.624) [5] | 0.454 (0.226 to 0.662) [5] | 0.386 (0.118 to 0.65) [5] | 0.398 (0.153 to 0.596) [5] |
+| chorus_protected | 0.379 (0.031 to 0.712) [5] | 0.391 (0.0588 to 0.641) [5] | 0.391 (0.0743 to 0.585) [5] | 0.399 (0.0325 to 0.8) [5] | 0.396 (0.0464 to 0.635) [5] | 0.391 (0.0418 to 0.601) [5] |
+| nested | 0.427 (0.228 to 0.737) | 0.383 (0.0759 to 0.725) [6] | 0.416 (0.17 to 0.715) | 0.458 (0.226 to 0.831) [6] | 0.390 (0.0681 to 0.616) | 0.393 (0.133 to 0.597) |
+
+`taco` (soft-voting ensemble of rf, extratrees, svc and mlp; TabPFN disabled, `CHORUS_DISABLE_TABPFN=1`):
+
+| harmoniser | variance | differential | invariant | TACO 411 only | TACO 411 + 200 | MR 32 + 200 |
+|---|---|---|---|---|---|---|
+| identity | 0.458 (0.218 to 0.678) | 0.497 (0.263 to 0.709) | 0.399 (0.109 to 0.612) | 0.448 (0.3 to 0.588) | 0.462 (0.273 to 0.568) | 0.416 (0.109 to 0.559) |
+| center_scale | 0.465 (0.299 to 0.659) | 0.389 (0.161 to 0.609) | 0.378 (0.155 to 0.562) | 0.458 (0.0929 to 0.724) | 0.390 (0.0681 to 0.671) | 0.367 (0.111 to 0.591) |
+| quantile_ref | 0.507 (0.327 to 0.718) | 0.492 (0.304 to 0.665) | 0.429 (0.198 to 0.609) | 0.528 (0.364 to 0.709) | 0.428 (0.158 to 0.621) | 0.403 (0.266 to 0.565) |
+| fsqn | 0.447 (0.315 to 0.665) | 0.347 (0.0364 to 0.594) | 0.363 (0.18 to 0.568) | 0.455 (0.254 to 0.682) | 0.387 (0.173 to 0.624) | 0.376 (0.111 to 0.556) |
+| rank | 0.458 (0.36 to 0.659) | 0.490 (0.309 to 0.686) | 0.421 (0.158 to 0.662) | 0.465 (0.18 to 0.712) | 0.391 (0.096 to 0.656) | 0.419 (0.0743 to 0.65) |
+| combat_addon | 0.415 (0.142 to 0.676) | 0.388 (0.136 to 0.605) | 0.369 (0.133 to 0.562) | 0.445 (0.0836 to 0.729) | 0.385 (0.0433 to 0.676) | 0.361 (0.108 to 0.571) |
+| combat_pooled | 0.444 (0.279 to 0.671) | 0.400 (0.152 to 0.619) | 0.378 (0.146 to 0.582) | 0.451 (0.136 to 0.715) | 0.386 (0.0557 to 0.676) | 0.367 (0.0898 to 0.603) |
+| chorus | 0.405 (0.183 to 0.662) [5] | 0.334 (0.0279 to 0.529) [5] | 0.354 (0.183 to 0.606) [5] | 0.470 (0.142 to 0.741) [5] | 0.394 (0.115 to 0.644) [5] | 0.354 (0.155 to 0.585) [5] |
+| chorus_protected | 0.389 (0.0495 to 0.744) [5] | 0.366 (0.0867 to 0.585) [5] | 0.359 (0.102 to 0.624) [5] | 0.464 (0.0712 to 0.744) [5] | 0.408 (0.0774 to 0.691) [5] | 0.342 (0.0681 to 0.603) [5] |
+| nested | 0.414 (0.142 to 0.659) | 0.436 (0.282 to 0.709) [6] | 0.393 (0.155 to 0.609) | 0.428 (0.142 to 0.682) [6] | 0.424 (0.0433 to 0.621) | 0.382 (0.111 to 0.536) |
+
+`cross_study` (one logreg per training study, weighted by its mean AUROC on the other training studies minus 0.5):
+
+| harmoniser | variance | differential | invariant | TACO 411 only | TACO 411 + 200 | MR 32 + 200 |
+|---|---|---|---|---|---|---|
+| identity | 0.485 (0.255 to 0.694) | 0.561 (0.196 to 0.908) | 0.487 (0.29 to 0.609) | 0.518 (0 to 0.727) | 0.434 (0.294 to 0.7) | 0.491 (0.272 to 0.671) |
+| center_scale | 0.420 (0.182 to 0.602) | 0.458 (0.238 to 0.627) | 0.371 (0.0867 to 0.571) | 0.586 (0.435 to 0.691) | 0.413 (0.0991 to 0.653) | 0.363 (0.0743 to 0.571) |
+| quantile_ref | 0.479 (0.345 to 0.592) | 0.406 (0.228 to 0.603) | 0.431 (0.156 to 0.612) | 0.449 (0.0217 to 0.694) | 0.415 (0.134 to 0.612) | 0.438 (0.143 to 0.603) |
+| fsqn | 0.501 (0.412 to 0.672) | 0.326 (0.182 to 0.592) | 0.376 (0.121 to 0.659) | 0.504 (0.433 to 0.575) | 0.394 (0.139 to 0.644) | 0.364 (0.096 to 0.618) |
+| rank | 0.544 (0.375 to 0.732) | 0.401 (0 to 0.778) | 0.439 (0.0526 to 0.697) | 0.448 (0.277 to 0.662) | 0.406 (0.0526 to 0.696) | 0.448 (0.0712 to 0.691) |
+| combat_addon | 0.483 (0.255 to 0.683) | 0.458 (0.211 to 0.641) | 0.368 (0.0743 to 0.571) | 0.590 (0.438 to 0.697) | 0.413 (0.102 to 0.653) | 0.363 (0.0774 to 0.576) |
+| combat_pooled | 0.518 (0.291 to 0.696) | 0.451 (0.214 to 0.634) | 0.370 (0.0836 to 0.568) | 0.579 (0.451 to 0.691) | 0.405 (0.0929 to 0.65) | 0.370 (0.0743 to 0.576) |
+| chorus | 0.406 (0.223 to 0.529) [5] | 0.328 (0.00929 to 0.523) [5] | 0.350 (0.096 to 0.594) [5] | 0.331 (0.0557 to 0.482) [5] | 0.338 (0.0557 to 0.568) [5] | 0.340 (0.096 to 0.574) [5] |
+| chorus_protected | 0.431 (0.255 to 0.624) [5] | 0.357 (0.0155 to 0.51) [5] | 0.333 (0.0186 to 0.579) [5] | 0.356 (0.139 to 0.497) [5] | 0.363 (0.0433 to 0.594) [5] | 0.332 (0.0433 to 0.579) [5] |
+| nested | 0.442 (0.182 to 0.672) | 0.493 (0.195 to 0.908) [6] | 0.375 (0.0867 to 0.612) | 0.385 (0.0557 to 0.569) [6] | 0.384 (0.102 to 0.591) | 0.383 (0.0743 to 0.603) |
+
+**Ten highest means** (configurations with at least one fitted fold). The `taco` row ran without TabPFN
+(`CHORUS_DISABLE_TABPFN=1`).
+
+| harmoniser | selector | classifier | mean | median | min | max | n_studies |
+|---|---|---|---|---|---|---|---|
+| combat_addon | TACO 411 only | cross_study | 0.590 | 0.582 | 0.438 | 0.697 | 7 |
+| center_scale | TACO 411 only | cross_study | 0.586 | 0.601 | 0.435 | 0.691 | 7 |
+| combat_pooled | TACO 411 only | cross_study | 0.579 | 0.557 | 0.451 | 0.691 | 7 |
+| identity | differential | cross_study | 0.561 | 0.522 | 0.196 | 0.908 | 7 |
+| quantile_ref | differential | rf | 0.549 | 0.562 | 0.315 | 0.769 | 7 |
+| rank | variance | cross_study | 0.544 | 0.536 | 0.375 | 0.732 | 7 |
+| quantile_ref | TACO 411 only | taco | 0.528 | 0.512 | 0.364 | 0.709 | 7 | (no TabPFN)
+| rank | variance | rf | 0.523 | 0.527 | 0.393 | 0.650 | 7 |
+| identity | TACO 411 only | cross_study | 0.518 | 0.601 | 0.000 | 0.727 | 7 |
+| combat_pooled | variance | cross_study | 0.518 | 0.496 | 0.291 | 0.696 | 7 |
+
+**Within-study cross-validation** (`within_study_cv.csv`, `within_study_cv_folds.csv`; stratified 5-fold CV repeated 10
+times, mean over the 50 folds, no failed fold; no harmoniser, the classifiers other than `cross_study`). AUROC
+with the variance selector, and the range over the six selectors:
+
+| study | n (prevalence LC) | logreg | rf | taco (no TabPFN) | range over selectors, all three classifiers |
+|---|---|---|---|---|---|
+| GSE226260_WB | 37 (0.46) | 0.722 | 0.721 | 0.722 | 0.693 to 0.814 |
+| GSE226260_PBMC | 36 (0.78) | 0.886 | 0.854 | 0.870 | 0.613 to 0.908 |
+| GSE224615 | 36 (0.64) | 0.663 | 0.521 | 0.572 | 0.271 to 0.663 |
+| GSE251849 | 16 (0.69) | 0.783 | 0.810 | 0.743 | 0.710 to 0.893 |
+| GSE270045 | 36 (0.53) | 1.000 | 0.997 | 1.000 | 0.997 to 1.000 |
+| PRJNA1149196_SA | 39 (0.72) | 0.416 | 0.476 | 0.428 | 0.247 to 0.476 |
+| GSE297499 | 26 (0.65) | 0.805 | 0.833 | 0.829 | 0.802 to 0.847 |
+
+**Diagnostics** (`lc_transcriptomics_blood_harmonisation_v4`): as `lc_transcriptomics_blood_harmonisation` (n_pcs 50,
+k 20), on the 10,053 genes; 3,131 rows. RPS4Y1 is added in every fold and XIST where every fitted sample has a value
+(`extra_genes`). Four `error` rows: `chorus` and `chorus_protected` with GSE224615 and with PRJNA1149196_SA held out,
+with the messages above.
+
+**Concordance** (`concordance_v4`, `scripts/concordance.py configs/lc_transcriptomics_blood_v4.yaml`, `--top 500`): the
+eight cohorts on the 10,053 genes (PRJNA1149196_QLD included; 5 / 4 samples). Every pair shares the 10,053 genes (`n_shared.csv`) and
+500 of the top 500 (`n_shared_top500.csv`); no pair is flagged in `pairs.csv`. `cohort_annotation.csv`: `control_type` is `COVID_recovered` for PRJNA1149196_SA, PRJNA1149196_QLD and
+GSE297499 and `missing` for the five earlier cohorts (metadata built before the column existed).
+
+**Sensitivity run without the three GSE224615 samples flagged at QC** (`lc_transcriptomics_blood_v4_noQCflag`,
+`configs/lc_transcriptomics_blood_v4_noQCflag.yaml`: `lc_transcriptomics_blood_v4` with `exclude_samples:
+[GSM7027478, GSM7027490, GSM7027501]` for GSE224615, applied before any preprocessing).
+- GSE224615 has 33 samples (21 LC / 12 COVID_recovered); the 10,053 filtered genes are the same as in the main run.
+- **Failed fits:** `chorus` and `chorus_protected` only with GSE224615 held out ("only 18 null genes passed the
+  screen"), and nested selection in two fits of that fold (selectors differential and TACO 411 only), as in the main
+  run. With PRJNA1149196_SA held out both chorus variants fitted here. 1,638 rows, 14 with an error (main run 1,602 and
+  26).
+- **Change from the main run** (fits present in both, 1,576): AUROC difference noQCflag minus main, median per held-out
+  study from -0.020 (GSE297499) to 0.004 (GSE226260_WB); over all fits from -0.356 to 0.395. Over the 240 summary
+  configurations fitted in both runs, the mean AUROC changes by -0.134 to 0.096 (median -0.004).
+- **Ten highest means** (`loso_summary.csv`; no `taco` row among them):
+
+| harmoniser | selector | classifier | mean | median | min | max | n_studies |
+|---|---|---|---|---|---|---|---|
+| center_scale | TACO 411 only | cross_study | 0.585 | 0.569 | 0.448 | 0.706 | 7 |
+| combat_addon | TACO 411 only | cross_study | 0.584 | 0.564 | 0.448 | 0.702 | 7 |
+| combat_pooled | TACO 411 only | cross_study | 0.577 | 0.564 | 0.455 | 0.694 | 7 |
+| rank | variance | cross_study | 0.562 | 0.539 | 0.375 | 0.690 | 7 |
+| quantile_ref | variance | rf | 0.541 | 0.509 | 0.480 | 0.732 | 7 |
+| rank | TACO 411 only | rf | 0.525 | 0.534 | 0.257 | 0.759 | 7 |
+| quantile_ref | TACO 411 only | rf | 0.518 | 0.492 | 0.306 | 0.771 | 7 |
+| chorus | TACO 411 only | logreg | 0.517 | 0.612 | 0.133 | 0.706 | 6 |
+| rank | variance | rf | 0.516 | 0.497 | 0.400 | 0.752 | 7 |
+| quantile_ref | differential | rf | 0.515 | 0.464 | 0.321 | 0.710 | 7 |
+
+- **Within-study CV of GSE224615** (33 samples): variance selector logreg 0.589, rf 0.539, taco (no TabPFN) 0.515;
+  0.317 to 0.589 over selectors and classifiers (main run 0.271 to 0.663). The other studies' within-study values are
+  identical to the main run.
+
+**4. Test 3, mosaic programmes, version 4** (`mosaic_programmes_v4/lc_v4`; `scripts/mosaic_programmes.py --out
+results/mosaic_programmes_v4 --contrasts lc_v4`, configs `configs/mosaic_lc_rna_v4.yaml` and
+`configs/concordance_proteomics_all_v4.yaml`). Method, programmes, harmonisers and classifier as in "Test 3"; LC versus
+COVID_recovered on the eight RNA cohorts of `lc_transcriptomics_blood_v4` (PRJNA1149196_QLD on all reads) and the
+eight proteomic cohorts of the version 4 blocks (Cervia2024_MS as the sensitivity environment).
+
+**Cohorts and coverage** (`cohorts.csv`, `coverage.csv`). The fraction of members measured is over the members in the
+layer's feature space, which is the union of the layer's cohorts: GSE297499 (36,499 genes) adds members to the RNA
+space, so the fractions of the earlier RNA cohorts are lower than in `mosaic_programmes/lc` while their measured
+members and scored programmes are the same.
+
+| environment | role | positive / negative | features measured | Hallmark scored (of 50) | Reactome scored (of 1,867) | median fraction of members measured (scored programmes) |
+|---|---|---|---|---|---|---|
+| rna:GSE226260_WB | primary | 17 / 20 | 12801 | 50 | 1617 | 0.81 |
+| rna:GSE226260_PBMC | primary | 28 / 8 | 13866 | 50 | 1648 | 0.83 |
+| rna:GSE224615 | primary | 23 / 13 | 15734 | 50 | 1660 | 0.85 |
+| rna:GSE251849 | primary | 11 / 5 | 13872 | 50 | 1639 | 0.84 |
+| rna:GSE270045 | primary | 19 / 17 | 15561 | 50 | 1739 | 0.86 |
+| rna:PRJNA1149196_SA | primary | 28 / 11 | 17751 | 50 | 1667 | 0.87 |
+| rna:PRJNA1149196_QLD | primary | 5 / 4 | 16055 | 50 | 1656 | 0.86 |
+| rna:GSE297499 | primary | 17 / 9 | 36499 | 50 | 1799 | 0.96 |
+| protein:Buggert2025 | primary | 146 / 51 | 2903 | 50 | 967 | 0.38 |
+| protein:Cervia2024_SomaScan | primary | 40 / 73 | 6402 | 50 | 1540 | 0.90 |
+| protein:Su2022 | primary | 75 / 50 | 441 | 33 | 177 | 0.09 |
+| protein:Chowdhury2024 | primary | 21 / 9 | 404 | 22 | 134 | 0.14 |
+| protein:Kovarik2023_plasma | primary | 13 / 13 | 314 | 19 | 144 | 0.12 |
+| protein:Fineschi2026 | primary | 92 / 73 | 358 | 25 | 116 | 0.08 |
+| protein:Chowdhury2026 | primary | 53 / 62 | 472 | 30 | 202 | 0.15 |
+| protein:Cervia2024_MS | sensitivity | 40 / 73 | 308 | 19 | 113 | 0.16 |
+
+**Concordance of programme effects** (`concordance_<set>.csv`, `n_shared_<set>.csv`, `pairs_<set>.csv`). Smallest
+number of shared programmes: 63 (`all`, Fineschi2026 with Cervia2024_MS), 15 (`hallmark`, Fineschi2026 with
+Kovarik2023_plasma and with Cervia2024_MS), 48 (`reactome`, Fineschi2026 with Cervia2024_MS); no pair is flagged.
+
+**Invariance partition** (`partition.csv`):
+
+| analysis | environments | programmes partitioned (scored in every environment) | invariant | null | unstable | none | not_partitioned |
+|---|---|---|---|---|---|---|---|
+| primary | 15 | 63 | 0 | 0 | 63 | 0 | 1854 |
+| sensitivity_Cervia2024_MS | 15 | 55 | 0 | 0 | 55 | 0 | 1862 |
+
+**Cross-layer leave one cohort out** (`loso.csv`). PRJNA1149196_QLD is skipped as a test cohort (`skipped`: fewer than
+5 test samples in a class) and stays in training:
+
+| scheme | test | role | positive / negative | programmes | AUROC identity (95% CI) | AUROC center_scale (95% CI) |
+|---|---|---|---|---|---|---|
+| rna_to_protein | protein:Buggert2025 | primary | 146 / 51 | 959 | 0.460 (0.377 to 0.544) | 0.434 (0.350 to 0.514) |
+| rna_to_protein | protein:Cervia2024_SomaScan | primary | 40 / 73 | 1466 | 0.485 (0.367 to 0.602) | 0.460 (0.346 to 0.577) |
+| rna_to_protein | protein:Su2022 | primary | 75 / 50 | 210 | 0.639 (0.541 to 0.733) | 0.610 (0.516 to 0.704) |
+| rna_to_protein | protein:Chowdhury2024 | primary | 21 / 9 | 144 | 0.630 (0.360 to 0.868) | 0.587 (0.365 to 0.794) |
+| rna_to_protein | protein:Kovarik2023_plasma | primary | 13 / 13 | 153 | 0.456 (0.225 to 0.692) | 0.556 (0.314 to 0.781) |
+| rna_to_protein | protein:Fineschi2026 | primary | 92 / 73 | 141 | 0.493 (0.405 to 0.589) | 0.514 (0.426 to 0.602) |
+| rna_to_protein | protein:Chowdhury2026 | primary | 53 / 62 | 216 | 0.527 (0.422 to 0.631) | 0.520 (0.413 to 0.627) |
+| rna_to_protein | protein:Cervia2024_MS | sensitivity | 40 / 73 | 121 | 0.461 (0.345 to 0.575) | 0.416 (0.300 to 0.528) |
+| protein_to_rna | rna:GSE226260_WB | primary | 17 / 20 | 63 | 0.750 (0.565 to 0.909) | 0.724 (0.524 to 0.868) |
+| protein_to_rna | rna:GSE226260_PBMC | primary | 28 / 8 | 63 | 0.438 (0.232 to 0.661) | 0.446 (0.236 to 0.674) |
+| protein_to_rna | rna:GSE224615 | primary | 23 / 13 | 63 | 0.545 (0.328 to 0.779) | 0.559 (0.334 to 0.783) |
+| protein_to_rna | rna:GSE251849 | primary | 11 / 5 | 63 | 0.364 (0.055 to 0.691) | 0.418 (0.145 to 0.709) |
+| protein_to_rna | rna:GSE270045 | primary | 19 / 17 | 63 | 0.885 (0.762 to 0.975) | 0.882 (0.765 to 0.978) |
+| protein_to_rna | rna:PRJNA1149196_SA | primary | 28 / 11 | 63 | 0.568 (0.344 to 0.776) | 0.526 (0.289 to 0.747) |
+| protein_to_rna | rna:PRJNA1149196_QLD | primary | 5 / 4 | 63 | fewer than 5 test samples in a class | fewer than 5 test samples in a class |
+| protein_to_rna | rna:GSE297499 | primary | 17 / 9 | 63 | 0.392 (0.163 to 0.647) | 0.438 (0.196 to 0.660) |
+| leave_one_cohort_out | rna:GSE226260_WB | primary | 17 / 20 | 63 | 0.776 (0.594 to 0.915) | 0.765 (0.588 to 0.897) |
+| leave_one_cohort_out | rna:GSE226260_PBMC | primary | 28 / 8 | 63 | 0.429 (0.241 to 0.638) | 0.438 (0.245 to 0.652) |
+| leave_one_cohort_out | rna:GSE224615 | primary | 23 / 13 | 63 | 0.602 (0.375 to 0.809) | 0.532 (0.308 to 0.746) |
+| leave_one_cohort_out | rna:GSE251849 | primary | 11 / 5 | 63 | 0.382 (0.091 to 0.691) | 0.455 (0.145 to 0.782) |
+| leave_one_cohort_out | rna:GSE270045 | primary | 19 / 17 | 63 | 0.876 (0.749 to 0.966) | 0.845 (0.703 to 0.954) |
+| leave_one_cohort_out | rna:PRJNA1149196_SA | primary | 28 / 11 | 63 | 0.562 (0.325 to 0.779) | 0.555 (0.325 to 0.773) |
+| leave_one_cohort_out | rna:PRJNA1149196_QLD | primary | 5 / 4 | 63 | fewer than 5 test samples in a class | fewer than 5 test samples in a class |
+| leave_one_cohort_out | rna:GSE297499 | primary | 17 / 9 | 63 | 0.346 (0.144 to 0.562) | 0.503 (0.248 to 0.719) |
+| leave_one_cohort_out | protein:Buggert2025 | primary | 146 / 51 | 63 | 0.638 (0.547 to 0.721) | 0.513 (0.429 to 0.598) |
+| leave_one_cohort_out | protein:Cervia2024_SomaScan | primary | 40 / 73 | 63 | 0.573 (0.472 to 0.680) | 0.567 (0.465 to 0.671) |
+| leave_one_cohort_out | protein:Su2022 | primary | 75 / 50 | 63 | 0.489 (0.386 to 0.586) | 0.448 (0.347 to 0.550) |
+| leave_one_cohort_out | protein:Chowdhury2024 | primary | 21 / 9 | 63 | 0.661 (0.450 to 0.841) | 0.471 (0.259 to 0.677) |
+| leave_one_cohort_out | protein:Kovarik2023_plasma | primary | 13 / 13 | 63 | 0.456 (0.219 to 0.687) | 0.580 (0.337 to 0.805) |
+| leave_one_cohort_out | protein:Fineschi2026 | primary | 92 / 73 | 63 | 0.592 (0.504 to 0.676) | 0.584 (0.498 to 0.666) |
+| leave_one_cohort_out | protein:Chowdhury2026 | primary | 53 / 62 | 63 | 0.564 (0.458 to 0.667) | 0.535 (0.440 to 0.636) |
+
+**Bridge check in Cervia2024** (`bridge_cervia.csv`), identical to `mosaic_programmes/lc` (the same two Cervia2024
+layers):
+
+| member set | collection | programmes scored in both layers | median Spearman | minimum | maximum | programmes with Spearman p < 0.05 |
+|---|---|---|---|---|---|---|
+| own | hallmark | 19 | 0.09 | -0.15 | 0.63 | 4 |
+| own | reactome | 113 | 0.14 | -0.15 | 0.73 | 47 |
+| shared | hallmark | 16 | 0.34 | 0.05 | 0.58 | 13 |
+| shared | reactome | 84 | 0.34 | -0.02 | 0.71 | 62 |
+
+**Not committed:** `scores.csv.gz` and the log.
+
+**5. Reporting fixes.** All concordance outputs listed in "Runs" were recomputed with the new code ("reporting rerun");
 the effects and the all-feature matrices are identical to the previous files in every folder.
 - **`spearman_top<N>.csv` minimum.** A pair of cohorts that shares fewer than 10 of the `top<N>` features is now NaN
   (correlation and p value). `n_shared_top<N>.csv` gives those counts. Changed cells: only in
@@ -1141,12 +1419,13 @@ the effects and the all-feature matrices are identical to the previous files in 
   - `concordance_proteomics_all`: Su2022 with Cervia2024_MS (4), Chowdhury2024 (5), Kovarik2023_plasma (4).
   - `concordance_proteomics_all_v4`: the same three, and Fineschi2026 with Cervia2024_MS (5), Chowdhury2024 (4),
     Kovarik2023_plasma (2) and Chowdhury2026 (5).
-  - None in the other concordance folders, in `mosaic_programmes` (smallest 16 programmes, Hallmark, `lc`) or in
-    `paired_Cervia2024` (173).
+  - None in the other concordance folders (`concordance_v4`: 10,053 for every pair), in `mosaic_programmes` (smallest 16
+    programmes, Hallmark, `lc`), in `mosaic_programmes_v4/lc_v4` (smallest 15, Hallmark) or in `paired_Cervia2024` (173).
 - **`cohort_annotation.csv`.** The column `control_type` (which held the `lc_status` of the negative class) is renamed
   `negative_class_lc_status`. A new column `control_type` gives the schema `control_type` of the negative class from
   the metadata: `convalescent_unverified` for Chowdhury2024 and `COVID_recovered` for the other proteomic and
-  metabolomic cohorts. The five transcriptomic cohorts of `concordance` show `missing`: their metadata files were built
-  before the schema had `control_type` and were not rebuilt.
+  metabolomic cohorts, and for PRJNA1149196_SA, PRJNA1149196_QLD and GSE297499 in `concordance_v4`. The five earlier
+  transcriptomic cohorts (`concordance`, `concordance_v4`) show `missing`: their metadata files were built before the
+  schema had `control_type` and were not rebuilt.
 - **Classifiers.** The `classifier` row of the loso_results.csv glossary now defines all four. `taco` ran without
-  TabPFN (`CHORUS_DISABLE_TABPFN=1`) in every real-data run; this is stated wherever a `taco` value is reported below.
+  TabPFN (`CHORUS_DISABLE_TABPFN=1`) in every real-data run; this is stated wherever a `taco` value is reported (section 3).
