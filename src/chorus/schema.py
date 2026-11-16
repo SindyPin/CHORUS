@@ -7,7 +7,8 @@ a sample to enter a pooled model. Everything else is optional and recorded as mi
 
 Vocabularies follow, where one exists, an external standard:
   case definition      WHO 2021 (symptoms at 3 months lasting 2 months), NICE NG188 (12 weeks),
-                       CDC (4 weeks), NASEM 2024, RECOVER PASC score, self report, study specific
+                       CDC (4 weeks), NASEM 2024, RECOVER PASC score, self report, study specific;
+                       pulmonary_sequelae marks a case defined by a lung function outcome
   acute severity       WHO Clinical Progression Scale (0 to 10) collapsed to four bands
   time anchor          symptom onset, positive test, hospital admission, hospital discharge
   sample matrix        plasma, serum, whole blood, PBMC, saliva, urine, BAL, CSF, other
@@ -32,6 +33,7 @@ CASE_DEFINITIONS = {
     "RECOVER_PASC_score",
     "self_report",
     "study_specific",
+    "pulmonary_sequelae",  # an organ outcome, not a Long COVID definition (GSE228320: DLCO below 60% of predicted); sensitivity cohorts only
     "not_applicable",
 }
 TIME_ANCHORS = {"symptom_onset", "positive_test", "admission", "discharge", "unknown"}

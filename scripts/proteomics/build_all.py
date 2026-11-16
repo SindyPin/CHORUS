@@ -35,6 +35,8 @@ BUILDERS = {
     "build_Chowdhury2024": ["Chowdhury2024"],
     "build_Fineschi2026": ["Fineschi2026"],
     "build_Chowdhury2026": ["Chowdhury2026"],
+    "build_Woodruff2023": ["Woodruff2023"],
+    "build_Bansal2025": ["Bansal2025"],
 }
 DOC = ROOT / "docs" / "proteomics_cohorts.md"
 START, END = "<!-- generated:start -->", "<!-- generated:end -->"

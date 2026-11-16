@@ -1223,3 +1223,11 @@ def test_acute_persistence_cohort_stats_and_days():
     st = ap.cohort_stats(score, y, days, n_boot=50, seed=0)
     assert st["n_lc"] == 30 and st["g"] > 0 and st["g_lo"] < st["g"] < st["g_hi"] and st["days_coef"] == pytest.approx(0.01, abs=0.01)
     assert np.isnan(ap.cohort_stats(score, y, pd.Series(np.nan, index=y.index), n_boot=10, seed=0)["g_adjusted"])
+
+
+def test_schema_accepts_pulmonary_sequelae_case_definition():
+    meta = pd.DataFrame({"sample_id": ["a", "b"], "subject_id": ["a", "b"], "study_id": "S", "lc_status": ["LC", "COVID_recovered"],
+                         "case_definition": ["pulmonary_sequelae", "not_applicable"], "sample_matrix": "whole_blood", "omics_layer": "bulk_rna"})
+    assert validate_metadata(meta, ClinicalSchema(), strict=True) == []
+    with pytest.raises(ValueError):
+        validate_metadata(meta.assign(case_definition="lung"), ClinicalSchema(), strict=True)

@@ -106,3 +106,24 @@ November 2026"). Configs: `configs/lc_transcriptomics_blood_v4.yaml` and its sen
 - **Join:** the TPM columns equal the GEO sample titles with underscores removed (`2057_V2_PBMC` is column
   `2057V2_PBMC`); all 26 columns matched. One sample per subject. Sex female for all (study design).
 - **Time:** no per-sample date or days since infection in GEO; `timepoint` single_visit.
+
+## GSE228320 (Molinero 2022, Biomed Pharmacother 155:113617, PMID 36058144, PMC9424524; added 17 November 2026)
+
+- **Data.** Whole blood RNA-seq (Tempus tubes) of 50 survivors of COVID-19 ARDS (CIBERESUCICOVID, Spain), drawn at the
+  pulmonary evaluation 3 months after hospital discharge. `GSE228320_Raw_counts.txt.gz` holds integer counts
+  (Ensembl gene ids, 60,683 genes × 50 samples, column sums 4.9 M to 12.4 M); its columns are the GSM descriptions
+  (`MC1_n`). The normalised count file of the series was not downloaded.
+- **Counts before building.** GEO characteristic `dlco (%_of_predicted)`: 18 samples below 60 (24.4 to 59.0) and 32
+  at 60 or above (60.0 to 92.5). The sample titles say sequela or control, and every title agrees with its DLCO value
+  (the builder stops otherwise). Sex: 35 male, 15 female.
+- **Labels.** The case is a lung function outcome, not a Long COVID definition:
+  - DLCO below 60% of predicted: `lc_status` LC with `case_definition` pulmonary_sequelae (a vocabulary term added for
+    this cohort).
+  - DLCO 60% or above: `COVID_recovered`. These are ARDS survivors with mild or no diffusion impairment; other symptoms
+    are not recorded.
+  - `dlco_pct_predicted` keeps the value.
+  - Every sample has `acute_severity` icu_or_ventilated, `time_anchor` discharge and `timepoint`
+    3_months_after_discharge.
+- **Role.** A sensitivity cohort. It is in no benchmark config and must not enter the main benchmark.
+- **Builder.** `python scripts/build_rna_cohorts_2026_11.py GSE228320` writes `data/meta/GSE228320_meta.csv`; the
+  matrix is read as deposited.

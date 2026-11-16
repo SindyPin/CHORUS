@@ -273,3 +273,32 @@ data/quant/PRJNA1149196_QLD_full --runs SRR30280882,...,SRR30280890 --threads 8 
   35.65%, 23-00343 35.04%, 23-00408 34.72%, 23-00409 35.07%, 23-00414 35.95%). The flagged ids are listed by
   `aggregate.log` and in `salmon_qc.tsv` (`flag`, `flag_reason`). No QLD sample is flagged.
 - As for GSE224615, flags are not exclusions: every sample enters the benchmark.
+
+## Cohorts added 17 November 2026
+
+Downloaded 2026-11-17 into `data/` (local, not committed). Definitions and the counts reported before building are in
+`docs/proteomics_cohorts.md` and `docs/count_matrices.md` ("Cohorts added 17 November 2026" and "GSE228320"). The two
+Zenodo files are fetched by `scripts/proteomics/download.sh` (run as `ONLY="Woodruff2023 Bansal2025"`; `ONLY` limits a
+run to the named studies), which logs them in `data/proteomics/downloads.tsv`.
+
+| study | source | accession | licence | files taken | checked |
+|---|---|---|---|---|---|
+| Woodruff2023 (Nat Commun, PMID 37452024) | Zenodo | 10.5281/zenodo.8092298 (2023-06-28) | CC BY 4.0 | `Covid-v0.4.0.tar.gz` (26,071,732 bytes); `data/complete.csv` extracted from it (34,243,700 bytes) | MD5 (Zenodo) |
+| Bansal2025 (Commun Med, PMID 41975235) | Zenodo | 10.5281/zenodo.15237087, files of version 15237088 (2025-04-17) | CC BY 4.0 | `baseline57.xlsx` (1,234,901 bytes). Not taken: `Longitudinal_paired34.xlsx`, `baseline_182proteins_univariate.xlsx`, `rcode_longcovid_2024.R` | MD5 (Zenodo) |
+| GSE228320 (Biomed Pharmacother, PMID 36058144) | GEO | GSE228320 | GEO | `GSE228320_Raw_counts.txt.gz` (1,763,745 bytes), `GSE228320_series_matrix.txt.gz` (5,899 bytes), into `data/counts/GSE228320/`. Not taken: `GSE228320_Counts_Normalized_postCOVID.txt.gz`, the reads | SHA-256 recorded (GEO publishes none) |
+
+- **Checksums of the files as downloaded:**
+
+  | file | MD5 | SHA-256 |
+  |---|---|---|
+  | `Covid-v0.4.0.tar.gz` | e2ad5be6185f7f14d9bf6d22c85a3730, equal to Zenodo | 723d12248a60c8e7c73b3d5d3477dea2d1ff633f2618a50eb016b58f67bcc1c6 |
+  | `complete.csv` (extracted) | not recorded | 1d7537e9a90372e31b6d09fc52797ecff450bc62f5e32151a44ebc0cc80256a8 |
+  | `baseline57.xlsx` | d46a796a46c6ed883e5eac8adac249f7, equal to Zenodo | d19681bf7c6297b0978101bdb314e9cebe4b7af4b6b307e83b17cbec0481246a |
+  | `GSE228320_Raw_counts.txt.gz` | not recorded | 407226d486ddbbf81cb1cd5bba886b0fca1cbcfaa8748799c12533b64d929642 |
+  | `GSE228320_series_matrix.txt.gz` | not recorded | 0a8d3d81780a65e506f3fadf342d9d725b1a85e0bf45fcb820735e8c3d066d2f |
+
+- **Inspected, not downloaded into `data/`:**
+  - PRIDE PXD051740 and PXD041762: project records and file lists from the PRIDE API (v3). For PXD041762, the first
+    3 MB of `REC-2349_Russell_v2.sky` were read with an HTTP range request.
+  - The Berezhnoy 2023 supplement (Europe PMC, PMC10203989). It and the partial Skyline file were kept in the session
+    scratch space only.

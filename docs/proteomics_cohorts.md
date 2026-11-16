@@ -51,6 +51,7 @@ Samples are matrix columns (runs); subjects in parentheses. n LC and n COVID rec
 
 | cohort | layer | samples (subjects) | n LC | n COVID recovered | n never infected | n acute | n other or unknown | sample matrix | platform | proteins | other layer on the same people |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| Bansal2025 | olink | 56 (56) | 12 (12) | 20 (20) | 24 | 0 | 0 | plasma | Olink Target 96 Inflammation and Neurology (NPX) | 182 | not checked |
 | Buggert2025 | olink | 221 (199) | 159 (146) | 58 (51) | 0 | 0 | 4 | plasma | Olink Explore 3072 (Explore 3.0.5); Olink Explore 3072 (Explore 3.10.0); Olink Explore 3072 (Explore 3.6.0) | 2903 | no (flow cytometry, serology on request only) |
 | Captur2022 | ms_proteomics | 320 (157) | 0 (0) | 0 (0) | 0 | 0 | 320 | plasma | Targeted LC-MRM (custom ~91 protein inflammation/neuroinflammation panel, two MRM methods; Skyline); peptide area / yeast enolase internal standard | 100 | none public |
 | Cervia2024_MS | ms_proteomics | 119 (115) | 40 (40) | 73 (73) | 0 | 0 | 6 | serum | LC-MS/MS DIA (Orbitrap Eclipse; DIA-NN library-free, maxLFQ) | 308 | yes: SomaScan (Cervia2024_SomaScan, same sera) |
@@ -60,6 +61,7 @@ Samples are matrix columns (runs); subjects in parentheses. n LC and n COVID rec
 | Fineschi2026 | olink | 165 (165) | 92 (92) | 73 (73) | 0 | 0 | 0 | plasma | Olink Explore 384 Inflammation (Explore 3.11.1) | 358 | not checked |
 | Kovarik2023_plasma | ms_proteomics | 39 (39) | 13 (13) | 13 (13) | 13 | 0 | 0 | plasma | LC-MS/MS DDA-PASEF timsTOF Pro (MaxQuant 1.6.17.0 LFQ, match between runs) | 323 | eicosanoids, Biocrates metabolomics, triglycerides in the paper's supplementary tables, but their column labels do not link the tables per sample (docs/paired_cohorts.md); no repository accession |
 | Su2022 | olink | 817 (493) | 75 (75) | 50 (50) | 289 | 390 | 13 | plasma | Olink Target 96 (Cardiovascular II, Inflammation, Immune Response, Metabolism, Organ Damage); authors' Z scores | 441 | yes: plasma metabolomics (Table S2.2), PBMC scRNA-seq/CITE-seq (ArrayExpress E-MTAB-10129); TCR-seq without accession |
+| Woodruff2023 | olink | 149 (149) | 93 (93) | 27 (27) | 0 | 29 | 0 | plasma | Olink Explore 3072 (NPX) | 2924 | not checked |
 | Zoodsma2022_Breda | olink | 576 (293) | 0 (0) | 0 (0) | 5 | 542 | 29 | plasma | Olink Target 96 Inflammation (v.3022); NPX | 92 | none public |
 | Zoodsma2022_Hannover | olink | 261 (260) | 0 (0) | 0 (0) | 62 | 13 | 186 | plasma | Olink Target 96 Cardiometabolic (v.3603), Cardiovascular II (v.5006), Inflammation (v.3022), Neurology (v.8013); NPX | 359 | no omics (flow counts, serology in the annotation; Bonifacius 2021) |
 | Zoodsma2022_Nijmegen | olink | 550 (144) | 0 (0) | 0 (0) | 0 | 550 | 0 | plasma | Olink Target 96 Cardiometabolic (v.3603), Cardiovascular II (v.5006), Inflammation (v.3021); NPX; Olink Target 96 Cardiometabolic (v.3603), Cardiovascular II (v.5006), Inflammation (v.3022); NPX; Olink Target 96 Cardiometabolic (v.3603), Inflammation (v.3021); NPX | 269 | no omics (flow cytometry; Janssen 2021) |
@@ -68,20 +70,22 @@ Samples are matrix columns (runs); subjects in parentheses. n LC and n COVID rec
 
 Number of UniProt keys in common (diagonal: proteins in the cohort).
 
-| | Buggert2025 | Captur2022 | Cervia2024_MS | Cervia2024_SomaScan | Chowdhury2024 | Chowdhury2026 | Fineschi2026 | Kovarik2023_plasma | Su2022 | Zoodsma2022_Breda | Zoodsma2022_Hannover | Zoodsma2022_Nijmegen |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Buggert2025 | 2903 | 50 | 126 | 2147 | 159 | 198 | 358 | 133 | 430 | 92 | 355 | 268 |
-| Captur2022 | 50 | 100 | 26 | 74 | 31 | 40 | 6 | 29 | 9 | 5 | 11 | 11 |
-| Cervia2024_MS | 126 | 26 | 308 | 177 | 218 | 224 | 5 | 187 | 4 | 0 | 23 | 23 |
-| Cervia2024_SomaScan | 2147 | 74 | 177 | 6402 | 216 | 287 | 307 | 186 | 386 | 85 | 344 | 255 |
-| Chowdhury2024 | 159 | 31 | 218 | 216 | 405 | 334 | 4 | 237 | 5 | 0 | 34 | 33 |
-| Chowdhury2026 | 198 | 40 | 224 | 287 | 334 | 473 | 5 | 263 | 11 | 0 | 45 | 45 |
-| Fineschi2026 | 358 | 6 | 5 | 307 | 4 | 5 | 358 | 2 | 186 | 63 | 107 | 94 |
-| Kovarik2023_plasma | 133 | 29 | 187 | 186 | 237 | 263 | 2 | 323 | 4 | 0 | 27 | 27 |
-| Su2022 | 430 | 9 | 4 | 386 | 5 | 11 | 186 | 4 | 441 | 89 | 174 | 174 |
-| Zoodsma2022_Breda | 92 | 5 | 0 | 85 | 0 | 0 | 63 | 0 | 89 | 92 | 92 | 92 |
-| Zoodsma2022_Hannover | 355 | 11 | 23 | 344 | 34 | 45 | 107 | 27 | 174 | 92 | 359 | 269 |
-| Zoodsma2022_Nijmegen | 268 | 11 | 23 | 255 | 33 | 45 | 94 | 27 | 174 | 92 | 269 | 269 |
+| | Bansal2025 | Buggert2025 | Captur2022 | Cervia2024_MS | Cervia2024_SomaScan | Chowdhury2024 | Chowdhury2026 | Fineschi2026 | Kovarik2023_plasma | Su2022 | Woodruff2023 | Zoodsma2022_Breda | Zoodsma2022_Hannover | Zoodsma2022_Nijmegen |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Bansal2025 | 182 | 179 | 5 | 0 | 174 | 1 | 0 | 76 | 0 | 89 | 179 | 92 | 182 | 92 |
+| Buggert2025 | 179 | 2903 | 50 | 126 | 2147 | 159 | 198 | 358 | 133 | 430 | 2903 | 92 | 355 | 268 |
+| Captur2022 | 5 | 50 | 100 | 26 | 74 | 31 | 40 | 6 | 29 | 9 | 51 | 5 | 11 | 11 |
+| Cervia2024_MS | 0 | 126 | 26 | 308 | 177 | 218 | 224 | 5 | 187 | 4 | 127 | 0 | 23 | 23 |
+| Cervia2024_SomaScan | 174 | 2147 | 74 | 177 | 6402 | 216 | 287 | 307 | 186 | 386 | 2163 | 85 | 344 | 255 |
+| Chowdhury2024 | 1 | 159 | 31 | 218 | 216 | 405 | 334 | 4 | 237 | 5 | 160 | 0 | 34 | 33 |
+| Chowdhury2026 | 0 | 198 | 40 | 224 | 287 | 334 | 473 | 5 | 263 | 11 | 199 | 0 | 45 | 45 |
+| Fineschi2026 | 76 | 358 | 6 | 5 | 307 | 4 | 5 | 358 | 2 | 186 | 358 | 63 | 107 | 94 |
+| Kovarik2023_plasma | 0 | 133 | 29 | 187 | 186 | 237 | 263 | 2 | 323 | 4 | 134 | 0 | 27 | 27 |
+| Su2022 | 89 | 430 | 9 | 4 | 386 | 5 | 11 | 186 | 4 | 441 | 433 | 89 | 174 | 174 |
+| Woodruff2023 | 179 | 2903 | 51 | 127 | 2163 | 160 | 199 | 358 | 134 | 433 | 2924 | 92 | 356 | 269 |
+| Zoodsma2022_Breda | 92 | 92 | 5 | 0 | 85 | 0 | 0 | 63 | 0 | 89 | 92 | 92 | 92 | 92 |
+| Zoodsma2022_Hannover | 182 | 355 | 11 | 23 | 344 | 34 | 45 | 107 | 27 | 174 | 356 | 92 | 359 | 269 |
+| Zoodsma2022_Nijmegen | 92 | 268 | 11 | 23 | 255 | 33 | 45 | 94 | 27 | 174 | 269 | 92 | 269 | 269 |
 <!-- generated:end -->
 
 ## Per cohort: definitions and what could not be recovered
@@ -304,3 +308,95 @@ Leads of `docs/dataset_sweep_2026-11.md`. Downloads, checksums and licences are 
 - The non-protein columns are ID, cluster, age, sex, race, variant, vaccination, ordinal scale, days since onset,
   vaccination group, time or phase and sample date. No sheet has a PASC, symptom or lung disease column. The paper's
   18 PASC at 10 months therefore cannot be assigned per sample, and the cohort is not built.
+
+## Cohorts added 17 November 2026
+
+Downloads, checksums and licences are in `docs/provenance.md` ("Cohorts added 17 November 2026"). Both cohorts are
+built (`scripts/proteomics/build_Woodruff2023.py`, `scripts/proteomics/build_Bansal2025.py`). No config uses them yet,
+and no benchmark was rerun.
+
+### Woodruff2023 (Woodruff 2023 Nat Commun; Olink Explore 3072)
+- **Source.** Zenodo 10.5281/zenodo.8092298 (CC BY 4.0), the analysis code release `Covid-v0.4.0.tar.gz`. Only
+  `data/complete.csv` is taken out of the archive. It is a long table with one row per sample and assay: `sample`,
+  `group_hr`, `olinkID`, `uniprot`, `gene`, `NPX`, `group`, `sex`, `race`, `disease_phase`,
+  `initial_disease_severity` and `dpso` (days post symptom onset). Paper PMID 37452024, PMC10349085.
+- **Counts before building.** 158 samples × 2,943 assays:
+
+  | `group_hr` | `disease_phase` | samples |
+  |---|---|---|
+  | PASC | recovery | 93 |
+  | CR | recovery | 27 |
+  | ICU Pre-Dex | acute | 16 |
+  | ICU Post-Dex | acute | 13 |
+  | SLE | sle | 9 (dropped) |
+
+  Each sample id occurs once and no subject repeats across samples.
+- **Labels.** `group_hr` per sample:
+  - PASC = LC, `case_definition` study_specific. These are Emory PASC clinic patients with documented infection or
+    meeting the CDC clinical case definition, who had new or worsening symptoms more than 14 days after onset (paper
+    Methods).
+  - CR = `COVID_recovered`: donors with uncomplicated recoveries, sampled at similar intervals after onset.
+  - ICU Pre-Dex and ICU Post-Dex: `sample_phase` acute and `lc_status` unknown, since no later outcome is given. They
+    are outside the LC contrast; the column `dexamethasone` (before or after) records the group.
+- **CR count.** The paper gives 26 CR donors; the table has 27. The deposit's `data/README.md` notes that sample
+  1433-COV-3140 was listed in both PASC and CR in the Olink table and as CR in the metadata. `complete.csv` lists it
+  once, as CR, and it is kept as CR.
+- **Timing.** `days_since_infection` = `dpso`, `time_anchor` symptom_onset:
+  - PASC: median 111 days; 2 below 28 days and 38 below 90.
+  - CR: median 99 days; 3 below 28 days and 13 below 90.
+
+  Every PASC and CR sample has `sample_phase` post_acute, as the deposit's `disease_phase` (recovery) gives.
+- **Other fields.**
+  - Severity from `initial_disease_severity`: out = ambulatory, icu = icu_or_ventilated, hosp = hospitalised with the
+    band unknown (oxygen not recorded).
+  - Sex is recorded for 2 of the 93 PASC samples and for every CR and ICU sample.
+- **Values.** NPX as deposited. The table has no QC column, so nothing is masked. 2,943 assays give 2,924 UniProt keys
+  (assays of one protein on several panels are averaged).
+
+### Bansal2025 (Bansal 2026 Commun Med; Olink Target 96 Inflammation and Neurology)
+- **Source.** Zenodo 10.5281/zenodo.15237087 (latest version 15237088, CC BY 4.0), `baseline57.xlsx`: the
+  cross-sectional baseline set, one row per participant and assay with the participant's metadata. The longitudinal
+  workbook is not used. Paper PMID 41975235, PMC13442878 (COVID PROFILE cohort, Victoria, Australia).
+- **Group columns and counts before building** (57 participants × 182 assays, `Time` Pre-vax for every row):
+
+  | `study_group` | `Long_COVID status` | participants |
+  |---|---|---|
+  | COVID-19 recovered participant | Long COVID | 12 |
+  | COVID-19 recovered participant | Recovered | 21 |
+  | Non-COVID-19 healthy participant | Healthy | 24 |
+
+  `disease_status_subgroup`: Moderate/Mild 30, Severe 2, Asymptomatic 1, empty for the healthy participants.
+- **Labels.** `Long_COVID status` per participant:
+  - Long COVID = LC, WHO_2021: symptoms persisting or new 3 months after infection and lasting at least 2 months
+    (paper Methods).
+  - Recovered = `COVID_recovered`: symptoms shorter than 90 days.
+  - Healthy = `never_infected` (`never_infected_contemporary`; unvaccinated and SARS-CoV-2 naive, sampled at
+    enrolment).
+  - The COVID-19 samples were drawn 6 to 9 months after the first infection, before vaccination.
+- **Values.** NPX. Values whose `QC_Warning` is not Pass are set missing (1,370 of 10,374), as for Buggert2025 and
+  Fineschi2026. The warning is set per participant and panel:
+  - 13 participants lose one panel (90 or 92 values).
+  - Participant 3 (Recovered) has the warning on both panels, so all its values are missing and it is not in the
+    matrix.
+  - Built: 56 participants, 12 LC, 20 COVID_recovered and 24 never_infected; 182 assays and 182 UniProt keys.
+  - The `Normalization` column is not used.
+
+### Checked, not added (17 November 2026)
+- **PRIDE PXD051740** (SWATH-MS of plasma supernatant and pellet, TripleTOF 5600; J Infect Public Health 2024,
+  doi:10.1016/j.jiph.2024.102571).
+  - The project lists 265 raw files, named by a number and a fraction (`45_P.wiff`, `77_S.wiff`), and one spectral
+    library (`post_covid_swath_library__FDR.xlsx`). It has no SDRF or sample table.
+  - The description says 65 people with post-COVID condition and 9 healthy controls. There is no recovered group, and
+    no per-sample label is deposited.
+- **PRIDE PXD041762** (MRM of 269 peptides, Agilent 6490; Mohammed 2024 J Proteome Res, PMID 38048423).
+  - 74 hospitalised patients were sampled at admission and at 3 and 6 months.
+  - The project has 195 mzML files named by plate well (`REC-2349_H4.mzML`) and two Skyline documents. It has no SDRF.
+  - The Skyline document's replicates are well positions (A1, B1, …), and its first 3 MB hold no annotation
+    definitions. No per-sample LC label is deposited.
+- **Berezhnoy 2023 Front Immunol** (PMID 37228606, PMC10203989, NMR metabolomics and cytokines). The supplement
+  (Europe PMC) has two files:
+  - `Table_1.xlsx`: Supplementary Tables 1 to 10, which are group sizes, feature lists, test results and group means
+    with SDs or fold changes (Acute, HC, LTCS, Recov).
+  - `DataSheet_1.pdf`: seven pages of supplementary figures.
+
+  Neither has a per-sample table.

@@ -7,7 +7,9 @@ cd "$(dirname $0)/../.."
 LOG=data/proteomics/downloads.tsv
 mkdir -p data/proteomics
 [[ -f $LOG ]] || printf "study\tfile\turl\tbytes\tchecksum_type\texpected\tobserved\tmatch\tsha256\tverified\n" > $LOG
+# ONLY="study1 study2" restricts the run to those studies (the other get lines are skipped)
 get() {  # study file url checksum_type expected; a checksum mismatch is retried (3 attempts)
+  [[ -n ${ONLY:-} && " $ONLY " != *" $1 "* ]] && return 0
   local d=data/proteomics/$1/raw; mkdir -p "$d"
   local f="$d/$2" obs sha m try
   for try in 1 2 3; do
@@ -57,13 +59,24 @@ get Chowdhury2024 PXD047623_community_annotated.sdrf.tsv $P/2024/10/PXD047623/PX
 get Chowdhury2024 diann.7z $P/2024/10/PXD047623/diann.7z none ""
 # only the DIA-NN summary tables are taken out of diann.7z (it also holds a 3.5 GB spectral library);
 # needs a python with py7zr (PY7Z=/path/to/python; 7-Zip is not installed here)
-if [[ ! -s data/proteomics/Chowdhury2024/raw/diann/report.pg_matrix.tsv ]]; then
+if [[ ( -z ${ONLY:-} || " $ONLY " == *" Chowdhury2024 "* ) && ! -s data/proteomics/Chowdhury2024/raw/diann/report.pg_matrix.tsv ]]; then
   ${PY7Z:-python3} -c "import py7zr; py7zr.SevenZipFile('data/proteomics/Chowdhury2024/raw/diann.7z').extract(path='data/proteomics/Chowdhury2024/raw/diann', targets=['report.pg_matrix.tsv','report.pr_matrix.tsv','report.gg_matrix.tsv','report.unique_genes_matrix.tsv','report.stats.tsv','report.log.txt'])" || echo "diann.7z not extracted: install py7zr"
 fi
 # Zoodsma2022: the GitHub repository at the commit recorded in docs/proteomics_inventory.csv
 R=data/proteomics/Zoodsma2022/raw/Postcovid-targeted-proteomics
+if [[ -z ${ONLY:-} || " $ONLY " == *" Zoodsma2022 "* ]]; then
 if [[ ! -d $R ]]; then
   git clone -q https://github.com/CiiM-Bioinformatics-group/Postcovid-targeted-proteomics.git $R && git -C $R checkout -q d45e36077d735c242788e72b871ce4a3d1e728a9
 fi
 printf "Zoodsma2022\t(git clone)\thttps://github.com/CiiM-Bioinformatics-group/Postcovid-targeted-proteomics\t%s\tgit_commit\td45e36077d735c242788e72b871ce4a3d1e728a9\t%s\t%s\t\t%s\n" "$(du -sk $R | cut -f1)kB" "$(git -C $R rev-parse HEAD)" "$([[ $(git -C $R rev-parse HEAD) == d45e36077d735c242788e72b871ce4a3d1e728a9 ]] && echo yes || echo NO)" "$(date '+%Y-%m-%d %H:%M:%S')" >> $LOG
+fi
+# Woodruff2023 (17 November 2026): the analysis code release of Zenodo 10.5281/zenodo.8092298; only data/complete.csv is
+# taken out of the archive (scripts/proteomics/build_Woodruff2023.py)
+get Woodruff2023 Covid-v0.4.0.tar.gz https://zenodo.org/api/records/8092298/files/Covid-v0.4.0.tar.gz/content md5 e2ad5be6185f7f14d9bf6d22c85a3730
+if [[ -s data/proteomics/Woodruff2023/raw/Covid-v0.4.0.tar.gz && ! -s data/proteomics/Woodruff2023/raw/complete.csv ]]; then
+  member=$(tar -tzf data/proteomics/Woodruff2023/raw/Covid-v0.4.0.tar.gz | grep -E '(^|/)data/complete\.csv$' | head -1)
+  tar -xzf data/proteomics/Woodruff2023/raw/Covid-v0.4.0.tar.gz -O "$member" > data/proteomics/Woodruff2023/raw/complete.csv
+fi
+# Bansal2025 (17 November 2026): Zenodo 10.5281/zenodo.15237087 (latest version 15237088)
+get Bansal2025 baseline57.xlsx https://zenodo.org/api/records/15237088/files/baseline57.xlsx/content md5 d46a796a46c6ed883e5eac8adac249f7
 echo done

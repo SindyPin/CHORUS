@@ -23,7 +23,17 @@ summed on the linear scale). The loader takes them as author_normalised (log2(x 
 ``treatment`` (NP-Long COVID, Control), joined on the sample title (underscores removed: "2057_V2_PBMC" is the
 column "2057V2_PBMC").
 
-  python scripts/build_rna_cohorts_2026_11.py
+GSE228320 (Molinero 2022, Biomed Pharmacother 155:113617, PMID 36058144, PMC9424524; added 17 November 2026). Whole
+blood RNA-seq (Tempus tubes) of survivors of COVID-19 ARDS (CIBERESUCICOVID, Spain) at the pulmonary evaluation 3 months
+after hospital discharge. Values: the deposited raw counts (GSE228320_Raw_counts.txt.gz, Ensembl, columns are the GSM
+descriptions MC1_n). Label: the GEO characteristic ``dlco (%_of_predicted)``: below 60 is a case (the title says
+sequela), 60 or above a control (the title says control); the build stops if a title disagrees with its DLCO value. The
+case is a lung function outcome, not a Long COVID definition: lc_status LC with case_definition pulmonary_sequelae,
+controls COVID_recovered (ARDS survivors with mild or no diffusion impairment, other symptoms not recorded). A
+sensitivity cohort: it is in no main benchmark config.
+
+  python scripts/build_rna_cohorts_2026_11.py            (PRJNA1149196 and GSE297499)
+  python scripts/build_rna_cohorts_2026_11.py GSE228320  (one study)
 """
 
 from __future__ import annotations
@@ -45,6 +55,7 @@ META = ROOT / "data" / "meta"
 QUANT = ROOT / "data" / "quant" / "PRJNA1149196"
 QUANT_FULL = {"PRJNA1149196_QLD": ROOT / "data" / "quant" / "PRJNA1149196_QLD_full"}  # quantified on all reads
 GSE297499 = ROOT / "data" / "counts" / "GSE297499"
+GSE228320 = ROOT / "data" / "counts" / "GSE228320"
 
 SINCLAIR_STATUS = {"PASC": "LC", "PASC-CVS": "LC", "PASC_CVS": "LC", "Recovered": "COVID_recovered", "Control": "never_infected"}
 SINCLAIR_DAYS = {"44 weeks post infection": 308, "68 weeks post infection": 476}
@@ -109,6 +120,45 @@ def gse297499() -> pd.DataFrame:
     return finish(df, "GSE297499")
 
 
+def gse228320() -> pd.DataFrame:
+    geo = series_matrix_samples(GSE228320 / "GSE228320_series_matrix.txt.gz")
+    with gzip.open(GSE228320 / "GSE228320_series_matrix.txt.gz", "rt") as fh:
+        desc = [line.rstrip("\n").split("\t")[1:] for line in fh if line.startswith("!Sample_description")]
+    geo["column"] = [x.strip('"') for x in desc[1]]  # second description line: MC1_n, the count matrix column
+    X = pd.read_csv(GSE228320 / "GSE228320_Raw_counts.txt.gz", sep="\t", index_col=0, nrows=1)
+    if set(X.columns) != set(geo["column"]):
+        raise ValueError("GSE228320: count matrix columns and GSM descriptions differ")
+    dlco = pd.to_numeric(geo["ch_dlco_(%_of_predicted)"], errors="raise")
+    case = dlco < 60
+    title_case = geo["title"].str.contains("sequela")
+    if not (case == title_case).all() or not (title_case ^ geo["title"].str.contains("control")).all():
+        raise ValueError(f"GSE228320: DLCO and title disagree for {list(geo.loc[case != title_case, 'gsm'])}")
+    df = pd.DataFrame({
+        "sample_id": geo["column"].values,
+        "subject_id": ("GSE228320:" + geo["column"]).values,
+        "lc_status": np.where(case, "LC", "COVID_recovered"),
+        "case_definition": np.where(case, "pulmonary_sequelae", "not_applicable"),
+        "control_type": np.where(case, "not_applicable", "COVID_recovered"),
+        "sample_phase": "post_acute",
+        "sample_matrix": "whole_blood",
+        "time_anchor": "discharge",
+        "acute_severity": "icu_or_ventilated",
+        "hospitalised": True,
+        "age": pd.to_numeric(geo["ch_age"]).values,
+        "sex": geo["ch_Sex"].str.lower().values,
+        "platform": "Illumina RNA-seq, whole blood (Tempus); deposited raw counts",
+        "collection_country": "Spain",
+        "gsm": geo["gsm"].values,
+        "timepoint": "3_months_after_discharge",
+        "dlco_pct_predicted": dlco.values,
+        "notes": np.where(case, "survivor of COVID-19 ARDS with DLCO below 60% of predicted 3 months after discharge (pulmonary sequelae; not a Long COVID definition)",
+                          "survivor of COVID-19 ARDS with DLCO 60% of predicted or above 3 months after discharge"),
+    })
+    out = finish(df, "GSE228320")  # keeps the schema columns, gsm and timepoint
+    out["dlco_pct_predicted"] = dlco.values
+    return out
+
+
 def prjna1149196() -> dict:
     bs = pd.read_csv(META / "raw_PRJNA1149196" / "biosamples.csv", dtype=str)
     runs = pd.read_csv(QUANT / "ena_filereport.tsv", sep="\t", dtype=str)
@@ -161,7 +211,10 @@ def split_counts(meta: dict) -> None:
 
 
 def main():
-    built = {"GSE297499": gse297499(), **prjna1149196()}
+    if sys.argv[1:] == ["GSE228320"]:
+        built = {"GSE228320": gse228320()}
+    else:
+        built = {"GSE297499": gse297499(), **prjna1149196()}
     for sid, df in built.items():
         df.to_csv(META / f"{sid}_meta.csv", index=False)
         print(f"{sid}: {len(df)} samples, {df['subject_id'].nunique()} subjects; lc_status {df['lc_status'].value_counts().to_dict()}")
