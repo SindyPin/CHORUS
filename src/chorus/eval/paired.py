@@ -312,14 +312,21 @@ def effect_correlation(views: Dict[str, pd.DataFrame], y: pd.Series) -> tuple:
         e = per_study_effects(V, y, pd.Series("s", index=y.index))
         eff[name] = e["s"]["g"] if "s" in e else pd.Series(np.nan, index=V.columns)
     E = pd.DataFrame(eff)
+    return E, layer_pairs(E)
+
+
+def layer_pairs(E: pd.DataFrame, min_shared: int = 10) -> pd.DataFrame:
+    """Per pair of layers (columns of ``E``) the Spearman correlation over their shared features,
+    with ``fewer_than_<min_shared>_shared`` set for pairs below ``min_shared`` shared features."""
     rows = []
-    names = list(views)
+    names = list(E.columns)
     for i, a in enumerate(names):
         for b in names[i + 1 :]:
             ok = E[a].notna() & E[b].notna()
             rho, p = stats.spearmanr(E.loc[ok, a], E.loc[ok, b]) if ok.sum() > 2 else (np.nan, np.nan)
-            rows.append({"layer_a": a, "layer_b": b, "n_shared": int(ok.sum()), "spearman": float(rho), "p": float(p)})
-    return E, pd.DataFrame(rows)
+            rows.append({"layer_a": a, "layer_b": b, "n_shared": int(ok.sum()), "spearman": float(rho), "p": float(p),
+                         f"fewer_than_{min_shared}_shared": bool(ok.sum() < min_shared)})
+    return pd.DataFrame(rows)
 
 
 def probability_correlation(P: pd.DataFrame) -> pd.DataFrame:

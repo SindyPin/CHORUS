@@ -12,7 +12,10 @@ For each paired cohort (PAIRED below) and each contrast with both classes on the
                               across subjects of the out of fold probabilities
   effects.csv, effect_correlation.csv   Hedges g of the contrast per feature and layer, and the
                               Spearman correlation between layers over shared features (only when
-                              two layers share a feature space, Cervia2024)
+                              two layers share a feature space, Cervia2024), with
+                              fewer_than_10_shared
+  python scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024 --pairs-only
+  (--pairs-only rewrites effect_correlation.csv from the effects.csv already in --out/<contrast>)
   features.csv                per layer: features in the cohort, dropped for missingness, used
 
 Contrasts: ``lc`` is LC versus COVID_recovered on post-acute samples; ``acute`` is acute (any later
@@ -33,7 +36,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from chorus.eval.paired import PairedCV, effect_correlation, probability_correlation, summarise_folds
+from chorus.eval.paired import PairedCV, effect_correlation, layer_pairs, probability_correlation, summarise_folds
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -164,7 +167,12 @@ def main():
     ap.add_argument("--n-repeats", type=int, default=10)
     ap.add_argument("--k", type=int, default=50, help="features per layer kept by the differential selector inside each fold")
     ap.add_argument("--models", help="comma separated subset (default: all available)")
+    ap.add_argument("--pairs-only", action="store_true", help="rewrite effect_correlation.csv from the existing effects.csv and stop")
     a = ap.parse_args()
+    if a.pairs_only:
+        for f in sorted(Path(a.out).glob("*/effects.csv")):
+            layer_pairs(pd.read_csv(f, index_col=0)).to_csv(f.parent / "effect_correlation.csv", index=False)
+        return
     info = run_cohort(a.cohort, Path(a.out), n_repeats=a.n_repeats, k=a.k, models=a.models.split(",") if a.models else None)
     print(json.dumps(info, indent=1))
 

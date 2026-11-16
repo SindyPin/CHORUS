@@ -370,8 +370,34 @@ def test_concordance_effects_and_spearman():
     rt, _ = conc.spearman_matrix(eff.loc[top.index])
     assert rt.loc["A", "B"] > r.loc["A", "B"]
     ann = conc.cohort_annotation(M).set_index("study_id")
-    assert ann.loc["A", "case_definition"] == "WHO_2021" and ann.loc["A", "control_type"] == "COVID_recovered"
+    assert ann.loc["A", "case_definition"] == "WHO_2021" and ann.loc["A", "negative_class_lc_status"] == "COVID_recovered"
+    assert ann.loc["A", "control_type"] == "missing"  # no schema control_type column in M
+    M2 = M.assign(control_type=np.where(M["lc_status"] == "LC", "not_applicable", "convalescent_unverified"))
+    assert conc.cohort_annotation(M2).set_index("study_id").loc["A", "control_type"] == "convalescent_unverified"
     assert ann.loc["A", "time_anchor"] == "positive_test" and ann.loc["A", "n_LC"] == 20
+
+
+def test_concordance_min_shared_and_pair_flags():
+    conc = _load_script("concordance")
+    rng = np.random.default_rng(1)
+    E = pd.DataFrame(rng.normal(size=(40, 3)), columns=["A", "B", "C"])
+    E.loc[4:, "C"] = np.nan  # C shares 4 features with A and B
+    r, p = conc.spearman_matrix(E, min_shared=10)
+    assert np.isnan(r.loc["A", "C"]) and np.isnan(p.loc["B", "C"]) and not np.isnan(r.loc["A", "B"])
+    r0, _ = conc.spearman_matrix(E)
+    assert not np.isnan(r0.loc["A", "C"])  # without the minimum the 4 shared features give a value
+    n = conc.shared_counts(E)
+    t = conc.pair_table(r0, p, n, "all", 10).set_index(["cohort_a", "cohort_b"])
+    assert t.loc[("A", "C"), "n_shared"] == 4 and t.loc[("A", "C"), "fewer_than_10_shared"]
+    assert not t.loc[("A", "B"), "fewer_than_10_shared"] and len(t) == 3
+
+
+def test_paired_layer_pairs_flag():
+    from chorus.eval.paired import layer_pairs
+
+    E = pd.DataFrame({"a": np.arange(20.0), "b": np.r_[np.arange(5.0), [np.nan] * 15]})
+    t = layer_pairs(E)
+    assert t.loc[0, "n_shared"] == 5 and bool(t.loc[0, "fewer_than_10_shared"])
 
 
 def test_enrichment_hypergeometric_and_mapping():
@@ -529,6 +555,28 @@ def test_load_config_extra_features_deduplicated(sim, tmp_path):
     cs, _, cfg = load_config(str(tmp_path / "c.yaml"), extra_features=["NOT_THERE", g, g])
     assert g not in cfg["filtered_features"] and list(cs.cohorts[0].X.columns).count(g) == 1
     assert cs.cohorts[1].X[g].isna().all()
+
+
+def test_load_config_exclude_samples(sim, tmp_path):
+    import yaml
+
+    from chorus.cli import load_config
+
+    cohorts = []
+    for c in sim.cohorts:
+        c.X.T.to_csv(tmp_path / f"{c.study_id}.tsv", sep="\t")
+        c.meta.to_csv(tmp_path / f"{c.study_id}_meta.csv", index=False)
+        cohorts.append({"study_id": c.study_id, "matrix": str(tmp_path / f"{c.study_id}.tsv"), "meta": str(tmp_path / f"{c.study_id}_meta.csv"), "is_counts": False})
+    drop = list(map(str, sim.cohorts[0].X.index[:3]))
+    cohorts[0]["exclude_samples"] = drop
+    (tmp_path / "c.yaml").write_text(yaml.safe_dump({"layer": "bulk_rna", "cohorts": cohorts, "preprocessing": {"deduplicate": False}, "benchmark": {}}))
+    cs, _, _ = load_config(str(tmp_path / "c.yaml"))
+    assert cs.cohorts[0].n == sim.cohorts[0].n - 3 and not set(drop) & set(map(str, cs.cohorts[0].X.index))
+    assert cs.cohorts[1].n == sim.cohorts[1].n
+    cohorts[0]["exclude_samples"] = ["NOT_A_SAMPLE"]
+    (tmp_path / "c.yaml").write_text(yaml.safe_dump({"layer": "bulk_rna", "cohorts": cohorts, "preprocessing": {"deduplicate": False}, "benchmark": {}}))
+    with pytest.raises(ValueError, match="exclude_samples"):
+        load_config(str(tmp_path / "c.yaml"))
 
 
 def test_combat_addon_training_study_means_equal_after_transform():

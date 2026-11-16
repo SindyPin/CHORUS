@@ -13,6 +13,8 @@ from its own layer's features. The environment of a cohort is its cohort and lay
   concordance_<set>.csv, concordance_<set>_p.csv, n_shared_<set>.csv   Spearman correlation of the
                             programme effects between environments over the programmes scored in
                             both, for set = all, hallmark, reactome
+  pairs_<set>.csv           one row per pair of environments: n_shared, spearman, p and
+                            fewer_than_10_shared (fewer than 10 programmes scored in both)
   partition.csv             invariance partition of the programmes with the environments as
                             environments (InvarianceAnchored.partition, no cap on the null set) over
                             the programmes scored in every environment of the analysis (the others:
@@ -32,6 +34,8 @@ Programme membership: --out/genesets.csv (per programme, genes, mapped to Ensemb
 
   python scripts/mosaic_programmes.py --out results/mosaic_programmes
   python scripts/mosaic_programmes.py --out results/mosaic_programmes_v4 --contrasts lc_v4
+  python scripts/mosaic_programmes.py --out results/mosaic_programmes --contrasts acute,lc --pairs-only
+(--pairs-only rewrites only pairs_<set>.csv from the effects.csv already in --out/<contrast>.)
 """
 
 from __future__ import annotations
@@ -47,7 +51,7 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from concordance import shared_counts, spearman_matrix  # noqa: E402
+from concordance import MIN_SHARED, pair_table, shared_counts, spearman_matrix  # noqa: E402
 
 from chorus.cli import load_config  # noqa: E402
 from chorus.eval.metrics import binary_metrics, bootstrap_ci  # noqa: E402
@@ -197,12 +201,7 @@ def run_contrast(contrast: str, out: Path, T: pd.DataFrame, min_members: int = 5
     V.insert(0, "collection", collection.reindex(V.index).values)
     G.rename_axis("programme").to_csv(d / "effects.csv")
     V.rename_axis("programme").to_csv(d / "effects_var.csv")
-    g = G.drop(columns="collection")
-    for name, sel in [("all", g.index), *[(k, g.index[G["collection"] == k]) for k in GENESETS]]:
-        r, p = spearman_matrix(g.loc[sel])
-        r.to_csv(d / f"concordance_{name}.csv")
-        p.to_csv(d / f"concordance_{name}_p.csv")
-        shared_counts(g.loc[sel]).to_csv(d / f"n_shared_{name}.csv")
+    write_concordance(G, d)
 
     parts = []
     analyses = {"primary": primary}
@@ -249,6 +248,19 @@ def run_contrast(contrast: str, out: Path, T: pd.DataFrame, min_members: int = 5
     return info
 
 
+def write_concordance(G: pd.DataFrame, d: Path, pairs_only: bool = False) -> None:
+    """Concordance matrices and pair tables per programme set from the effects table (with ``collection``)."""
+    g = G.drop(columns="collection")
+    for name, sel in [("all", g.index), *[(k, g.index[G["collection"] == k]) for k in GENESETS]]:
+        r, p = spearman_matrix(g.loc[sel])
+        n = shared_counts(g.loc[sel])
+        if not pairs_only:
+            r.to_csv(d / f"concordance_{name}.csv")
+            p.to_csv(d / f"concordance_{name}_p.csv")
+            n.to_csv(d / f"n_shared_{name}.csv")
+        pair_table(r, p, n, name, MIN_SHARED).to_csv(d / f"pairs_{name}.csv", index=False)
+
+
 def bridge_cervia(P: dict, collection: pd.Series, min_members: int) -> pd.DataFrame:
     """Correlation per programme of the SomaScan and MS scores of the same sera."""
     a, b = "protein:Cervia2024_SomaScan", "protein:Cervia2024_MS"
@@ -283,8 +295,13 @@ def main():
     ap.add_argument("--contrasts", default="acute,lc", help="run order; the positive control first")
     ap.add_argument("--min-members", type=int, default=5)
     ap.add_argument("--n-boot", type=int, default=1000)
+    ap.add_argument("--pairs-only", action="store_true", help="write pairs_<set>.csv from the existing effects.csv and stop")
     a = ap.parse_args()
     out = Path(a.out)
+    if a.pairs_only:
+        for c in a.contrasts.split(","):
+            write_concordance(pd.read_csv(out / c / "effects.csv", index_col=0), out / c, pairs_only=True)
+        return
     out.mkdir(parents=True, exist_ok=True)
     T = gene_set_table()
     gene_set_summary(T).to_csv(out / "genesets.csv", index=False)

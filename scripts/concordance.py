@@ -11,10 +11,19 @@ that pass the expression filter in every cohort). Outputs, in --out:
   spearman_top500.csv           the same over the 500 strongest genes (largest mean |g| across
                                 cohorts), and spearman_top500_p.csv
   top500_genes.csv              those genes, with mean |g|
-  cohort_annotation.csv         per cohort: case_definition, control type (lc_status of the
-                                negative class), time_anchor, sample matrix, class counts and
-                                days_since_infection per class, all from the metadata
+  cohort_annotation.csv         per cohort: case_definition, negative_class_lc_status (lc_status of
+                                the negative class), control_type (the schema control_type of the
+                                negative class, for example convalescent_unverified), time_anchor,
+                                sample matrix, class counts and days_since_infection per class, all
+                                from the metadata
   n_shared.csv                  cohort x cohort number of features with an effect in both
+  n_shared_top500.csv           the same among the 500 strongest genes
+  pairs.csv                     one row per pair of cohorts and feature set (all, top500): n_shared,
+                                spearman, p and fewer_than_10_shared (n_shared below MIN_SHARED)
+
+In spearman_top500.csv (and its p values) a pair that shares fewer than MIN_SHARED (10) of the
+strongest features is NaN. spearman_all_genes.csv keeps every pair; pairs with fewer than 10 shared
+features are flagged in pairs.csv.
 
 Metabolomics configs (feature_space metabolite_id) are keyed by the shared metabolite identifier and
 labelled with the RefMet name. Proteomics configs (feature_space uniprot) are keyed by UniProt accession; the symbol comes from
@@ -41,6 +50,7 @@ from chorus.features import per_study_effects
 from chorus.schema import binary_label
 
 HGNC = "data/ref/hgnc_complete_set.txt"
+MIN_SHARED = 10  # fewest shared features for a correlation over the strongest features; fewer are flagged everywhere
 REFMET = "data/ref/refmet/refmet.csv"
 
 
@@ -54,14 +64,18 @@ def cohort_effects(X: pd.DataFrame, M: pd.DataFrame, positive: str = "LC", negat
     return pd.DataFrame({c: eff[c]["g"] for c in order})
 
 
-def spearman_matrix(effects: pd.DataFrame) -> tuple:
-    """Pairwise Spearman correlation and p value between the columns (genes with both values)."""
+def spearman_matrix(effects: pd.DataFrame, min_shared: int = 0) -> tuple:
+    """Pairwise Spearman correlation and p value between the columns (genes with both values).
+    Pairs with fewer than ``min_shared`` genes with both values are NaN."""
     cols = list(effects.columns)
     r = pd.DataFrame(np.eye(len(cols)), index=cols, columns=cols)
     p = pd.DataFrame(0.0, index=cols, columns=cols)
     for i, a in enumerate(cols):
         for b in cols[i + 1 :]:
             ok = effects[a].notna() & effects[b].notna()
+            if ok.sum() < max(min_shared, 1):
+                r.loc[a, b] = r.loc[b, a] = p.loc[a, b] = p.loc[b, a] = np.nan
+                continue
             rho, pv = stats.spearmanr(effects.loc[ok, a], effects.loc[ok, b])
             r.loc[a, b] = r.loc[b, a] = rho
             p.loc[a, b] = p.loc[b, a] = pv
@@ -72,6 +86,18 @@ def shared_counts(effects: pd.DataFrame) -> pd.DataFrame:
     """Number of features with a value in both columns, for every pair of columns."""
     ok = effects.notna().astype(int)
     return ok.T @ ok
+
+
+def pair_table(r: pd.DataFrame, p: pd.DataFrame, n: pd.DataFrame, feature_set: str, min_shared: int = MIN_SHARED) -> pd.DataFrame:
+    """One row per pair of columns: shared features, correlation, p value and the flag for fewer
+    than ``min_shared`` shared features."""
+    cols = list(r.columns)
+    rows = [
+        {"feature_set": feature_set, "cohort_a": a, "cohort_b": b, "n_shared": int(n.loc[a, b]), "spearman": r.loc[a, b], "p": p.loc[a, b],
+         f"fewer_than_{min_shared}_shared": bool(n.loc[a, b] < min_shared)}
+        for i, a in enumerate(cols) for b in cols[i + 1 :]
+    ]
+    return pd.DataFrame(rows)
 
 
 def feature_symbols(features: pd.Index, hgnc: str, feature_space: str = "ensembl_gene") -> pd.Series:
@@ -113,7 +139,8 @@ def cohort_annotation(M: pd.DataFrame, positive: str = "LC", negative: str = "CO
             {
                 "study_id": sid,
                 "case_definition": values(pos["case_definition"]),
-                "control_type": values(neg["lc_status"]),
+                "negative_class_lc_status": values(neg["lc_status"]),
+                "control_type": values(neg["control_type"]) if "control_type" in neg else "missing",
                 "control_case_definition": values(neg["case_definition"]),
                 "time_anchor": values(m.loc[m["lc_status"].isin([positive, negative]), "time_anchor"]) if "time_anchor" in m else "missing",
                 "sample_matrix": values(m["sample_matrix"]),
@@ -152,18 +179,25 @@ def main():
     r, p = spearman_matrix(g)
     r.to_csv(out / "spearman_all_genes.csv")
     p.to_csv(out / "spearman_all_genes_p.csv")
-    shared_counts(g).to_csv(out / "n_shared.csv")
+    n = shared_counts(g)
+    n.to_csv(out / "n_shared.csv")
     top = strongest_genes(g, a.top)
     pd.DataFrame({"symbol": sym.reindex(top.index).values, "mean_abs_g": top.values}, index=top.index.rename("gene_id")).to_csv(out / f"top{a.top}_genes.csv")
-    rt, pt = spearman_matrix(g.loc[top.index])
+    rt, pt = spearman_matrix(g.loc[top.index], MIN_SHARED)
+    nt = shared_counts(g.loc[top.index])
     rt.to_csv(out / f"spearman_top{a.top}.csv")
     pt.to_csv(out / f"spearman_top{a.top}_p.csv")
+    nt.to_csv(out / f"n_shared_top{a.top}.csv")
+    pairs = pd.concat([pair_table(r, p, n, "all"), pair_table(rt, pt, nt, f"top{a.top}")], ignore_index=True)
+    pairs.to_csv(out / "pairs.csv", index=False)
     ann = cohort_annotation(M, lc.positive, lc.negative)
     ann.to_csv(out / "cohort_annotation.csv", index=False)
     print(f"{g.shape[0]} common genes, {g.shape[1]} cohorts")
     print(ann.to_string(index=False))
     print("\nSpearman, all common genes\n" + r.round(3).to_string())
     print(f"\nSpearman, top {a.top} genes\n" + rt.round(3).to_string())
+    low = pairs[pairs[f"fewer_than_{MIN_SHARED}_shared"]]
+    print(f"\nPairs with fewer than {MIN_SHARED} shared features: {len(low)}\n" + (low.to_string(index=False) if len(low) else ""))
 
 
 if __name__ == "__main__":

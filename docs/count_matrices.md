@@ -42,3 +42,59 @@ with a different annotation, so the subsets must be harmonised (or re-quantified
   only to PRJNA1184005, and the article has no supplementary files. Table 1 gives only group summaries (7 LC aged
   23–53, 7 recovered aged 23–63). The paper's tables are a group summary and a 70-gene DE list.
 - Consequence: re-quantify from SRA (`requantify`). Labels must come from the authors (see `data/meta/label_sources.md`).
+
+## Cohorts added 16 November 2026
+
+Builder: `scripts/build_rna_cohorts_2026_11.py`. Provenance and checksums: `docs/provenance.md` ("Cohorts added 16
+November 2026"). Configs: `configs/lc_transcriptomics_blood_v4.yaml` and its sensitivity variant
+`configs/lc_transcriptomics_blood_v4_noQCflag.yaml`.
+
+### PRJNA1149196 (Sinclair 2024, Nat Microbiol, PMID 39478108, PMC11602718)
+
+- **Data:** 101 BioSamples and 101 paired-end runs of whole-blood total RNA (1.11 TB of FASTQ at ENA, 16.2 to 90.7 M
+  read pairs per run, median 49.2 M). No processed matrix is deposited.
+- **Two studies by site.** BioSample `biomaterial_provider` "Kirsty Short" marks cohort 2; all others are cohort 1.
+  Site, library kit, sequencer and sampling time differ, so they are written as two studies:
+
+| study | site | library, sequencer | samples (subjects) | LC | COVID_recovered | never_infected |
+|---|---|---|---|---|---|---|
+| PRJNA1149196_SA | South Australia (Central Adelaide Health Network) | Nugen Universal Plus total RNA (rRNA and globin depleted), DNBSEQ-T7 | 92 (54) | 55 (28 at 44 weeks, 27 at 68 weeks) | 22 (11 and 11) | 15 |
+| PRJNA1149196_QLD | Queensland (COVID OZGenetics) | Illumina stranded total RNA (Ribo-Zero plus), NovaSeq 6000 | 9 (9) | 5 | 4 | 0 |
+
+- **Labels:** BioSample `disease`.
+  - `PASC` (SA 48 samples): persistent symptoms more than 12 weeks after infection, with ongoing discomfort at
+    sampling.
+  - `PASC-CVS` (SA 7, QLD 5): chest pain or tightness more than 12 weeks after infection.
+  - Both PASC groups are LC, `case_definition` study_specific.
+  - `Recovered` (SA 22, QLD 4): infected, no persistent symptoms more than 12 weeks after infection; COVID_recovered,
+    control_type COVID_recovered.
+  - `Control` (SA 15): uninfected (recruited before community transmission or negative spike serology);
+    never_infected, control_type never_infected_contemporary. Not in the LC versus COVID_recovered contrast.
+- **Time:** BioSample `Timepoint`. SA: "44 weeks post infection" (`days_since_infection` 308) and "68 weeks post
+  infection" (476), nominal visit times anchored at the positive test (March to April 2020 infections). QLD: "1 year
+  post infection" (the paper says more than 520 days); `days_since_infection` is left empty.
+- **Subjects:** BioSample `isolate` with hyphens removed (`SA_LC-068` and `SA_LC068` are both written). 38 SA subjects
+  have samples at both visits; with `one_sample_per_subject` the earliest, the 44 week sample, is kept.
+- **Sex:** BioSample `sex` (SA 49 male, 43 female); QLD "missing", written as unknown.
+- **Overlap:** cohort 1 is the same South Australian participants as GSE169687 (Ryan 2022, 12 to 24 weeks), which is
+  disabled for lack of labels. The ids of the two deposits cannot be linked. `overlaps_with_study` records this.
+- **Counts:** salmon 1.10.3 against the GENCODE v47 index of GSE224615, on the **first 5,000,000 read pairs of each
+  run** (`scripts/salmon_quant_ena.py --max-pairs 5000000`). The full reads (1.11 TB) were not downloaded. Procedure
+  and QC: `docs/provenance.md`. Matrix columns are the ENA `sample_alias`. The merged gene matrix is split by site into
+  `data/quant/PRJNA1149196/PRJNA1149196_{SA,QLD}_gene_counts.tsv.gz`.
+- **Deviation from GSE224615:** GSE224615 was quantified on all reads; here only the first 5 M pairs are used, which
+  is fewer reads per sample than the full runs (16 M to 91 M pairs).
+
+### GSE297499 (Orlinick 2026, J Infect Dis, PMID 40920586, PMC12811860)
+
+- **Data:** PBMC bulk RNA-seq of women from the Yale COVID Mind Study (Illumina NovaSeq X, polyA). Only the PBMC samples
+  are used; the CSF samples of the series are not.
+- **Values:** the authors' TPM (HISAT2, StringTie; `GSE297499_final_processed_tpm_values_pbmc.txt.gz`), keyed by gene
+  symbol, mapped to Ensembl (36,599 of 56,609 symbols; rows of one gene summed), 36,499 genes x 26 samples. Not counts:
+  the config sets `is_counts: false`, `provenance: author_normalised`, and the loader applies log2(x + 1).
+- **Labels:** GEO characteristic `treatment`. `NP-Long COVID` (17): self-reported neuropsychiatric Long COVID meeting
+  the WHO definition, with documented infection; LC, `case_definition` WHO_2021. `Control` (9): documented SARS-CoV-2
+  infection without persistent symptoms; COVID_recovered, control_type COVID_recovered.
+- **Join:** the TPM columns equal the GEO sample titles with underscores removed (`2057_V2_PBMC` is column
+  `2057V2_PBMC`); all 26 columns matched. One sample per subject. Sex female for all (study design).
+- **Time:** no per-sample date or days since infection in GEO; `timepoint` single_visit.

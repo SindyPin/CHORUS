@@ -90,6 +90,8 @@ def gse297499() -> pd.DataFrame:
         "subject_id": "GSE297499:" + pd.Series(subj),
         "lc_status": geo["ch_treatment"].map({"NP-Long COVID": "LC", "Control": "COVID_recovered"}).values,
         "case_definition": np.where(geo["ch_treatment"] == "NP-Long COVID", "WHO_2021", "not_applicable"),
+        "control_type": np.where(geo["ch_treatment"] == "NP-Long COVID", "not_applicable", "COVID_recovered"),
+        "sample_phase": "post_acute",
         "sample_matrix": "PBMC",
         "sex": "female",
         "platform": "Illumina NovaSeq X, polyA RNA; author TPM (HISAT2, StringTie)",

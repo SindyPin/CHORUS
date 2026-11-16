@@ -22,8 +22,8 @@ cohorts:
     # Sample s049 (title p22179-s049_601096-14-Dec-2020) carried the malformed tail of the combined file; check it before trusting it.
   - {study_id: GSE224615,     matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv, meta: data/meta/GSE224615_meta.csv, is_counts: true, provenance: requantify, accession: GSE224615}
     # Yin 2024 (LIINC). PBMC, 8 months, 23 LC / 13 non-LC in GEO; no count matrix, so the 36 ENA runs were re-quantified with salmon against GENCODE v47
-    # (docs/provenance.md). QC flags GSM7027478, GSM7027490 and GSM7027501 (mapping rate more than 2.5 MAD below the cohort median); they are kept, and
-    # excluding them is a later sensitivity run (results/README.md).
+    # (docs/provenance.md). QC flags GSM7027478, GSM7027490 and GSM7027501 (mapping rate more than 2.5 MAD below the cohort median); they are kept here and
+    # excluded in configs/lc_transcriptomics_blood_v4_noQCflag.yaml.
   - {study_id: GSE251849,     matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,      meta: data/meta/GSE251849_meta.csv,     is_counts: true, provenance: author_estimated_counts, accession: GSE251849}
     # Greene 2024. PBMC, 11 LC (6 + 5 brain fog) / 5 convalescent / 7 healthy. Small; held out only in the pooled analysis. Author values are estimated (fractional) counts, rounded by the loader.
   - {study_id: GSE215865,     matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865, enabled: false}

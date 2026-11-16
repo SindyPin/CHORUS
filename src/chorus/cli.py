@@ -85,6 +85,12 @@ def load_config(path: str, extra_features=()) -> tuple:
                 train_only=str(bool(c.get("train_only", False))).lower(),
             )
         )
+        if c.get("exclude_samples"):  # sample ids dropped before any preprocessing (sensitivity runs)
+            co = cohorts[-1]
+            drop = set(map(str, c["exclude_samples"]))
+            if drop - set(map(str, co.X.index)):
+                raise ValueError(f"{c['study_id']}: exclude_samples not in the matrix: {sorted(drop - set(map(str, co.X.index)))}")
+            cohorts[-1] = co.subset(~co.X.index.to_series().astype(str).isin(drop))
     cs = CohortSet(cohorts)
     pre = cfg.get("preprocessing", {})
     if pre.get("matrices"):
