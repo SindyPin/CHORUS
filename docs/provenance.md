@@ -195,7 +195,7 @@ Downloaded 2026-11-16 into `data/` (local, not committed). Definitions are in `d
 | Fineschi2025 PBMC labels (Front Immunol, PMID 40519915) | SciLifeLab figshare | 10.17044/scilifelab.28832492 (2025-04-29) | CC BY 4.0 | `SamplesPC.txt`, `README.txt`, `MANIFEST.txt`, into `data/counts/Fineschi2025_check/`, for the overlap check only. Not taken: `salmon.merged.gene_counts.tsv` | MD5 (figshare) |
 | Huapaya2024 (Front Immunol, PMID 39324144) | NHLBI figshare | 10.25444/nhlbi.26383798 (2025-07-22) | public domain | `V2 SOMA COVID_project_data.xlsx` (no per sample PASC label; not built) | MD5 (figshare) |
 | GSE297499 (J Infect Dis, PMID 40920586) | GEO | GSE297499 (public 2026-01-21) | GEO | `GSE297499_final_processed_tpm_values_pbmc.txt.gz`, `GSE297499_series_matrix.txt.gz`. Not taken: the CSF TPM file and the reads (SRA PRJNA1265093) | SHA-256 recorded (GEO publishes none) |
-| PRJNA1149196 (Nat Microbiol, PMID 39478108) | ENA / SRA | PRJNA1149196 | INSDC | leading bytes of the FASTQ files of all 101 runs (below); BioSample records (`efetch db=biosample`) as `data/meta/raw_PRJNA1149196/biosamples.xml` and `.csv` | see below |
+| PRJNA1149196 (Nat Microbiol, PMID 39478108) | ENA / SRA | PRJNA1149196 | INSDC | leading bytes of the FASTQ files of all 101 runs and the whole FASTQ files of the 9 QLD runs (below); BioSample records (`efetch db=biosample`) as `data/meta/raw_PRJNA1149196/biosamples.xml` and `.csv` | see below |
 
 - **Chowdhury2026 extraction.** From `diann.7z` only the DIA-NN summary tables (`report.pg_matrix.tsv`,
   `report.pr_matrix.tsv`, `report.gg_matrix.tsv`, `report.unique_genes_matrix.tsv`, `report.stats.tsv`,
@@ -216,3 +216,60 @@ Downloaded 2026-11-16 into `data/` (local, not committed). Definitions are in `d
   maps symbols to Ensembl with the HGNC table (approved symbol, then unique previous symbol; 36,599 rows mapped, the
   others are mostly StringTie or unannotated ids) and sums rows of one gene, giving
   `data/counts/GSE297499/GSE297499_pbmc_tpm_ensembl.tsv.gz` (36,499 genes x 26 samples).
+
+## PRJNA1149196 (Sinclair 2024): SA on the first 5,000,000 read pairs of each run, QLD on all reads
+
+**First pass, all 101 runs on a read prefix** (`scripts/salmon_quant_ena.py PRJNA1149196
+data/ref/gencode_v47/salmon_index_v47_k31 data/quant/PRJNA1149196 --max-pairs 5000000 --threads 8 --segments 16`,
+salmon 1.10.3 from the conda env `chorus-salmon`, 16 November 2026).
+- Runs: the ENA file report (`data/quant/PRJNA1149196/ena_filereport.tsv`), 101 paired-end runs, 16.2 M to 90.7 M read
+  pairs per run (median 49.2 M); 1,113.6 GB of gzipped FASTQ in total.
+- For each mate file only the leading bytes expected to hold 5,000,000 reads (from the ENA `fastq_bytes` and
+  `read_count`, plus 15%) are downloaded in 16 byte-range segments: 129.3 GB in total.
+- The prefixes are decompressed, cut to 5,000,000 complete records and checked: both mates keep the same number of
+  records and the read names of the last record agree. A partial file cannot be checked against `fastq_md5`.
+- Index and quantification options as for GSE224615 (GENCODE v47 transcripts, k 31; `salmon quant -l A --validateMappings --gcBias`).
+- Reads used per run: `data/quant/PRJNA1149196/prefix_reads.tsv` (5,000,000 pairs in all 101 runs).
+- **Failed runs and retries.** The first pass (log `quant.log`) quantified 98 runs. Three failed:
+  - SRR30515205 (23-00316) and SRR30515189 (23-00330): a download segment was still incomplete after 10 attempts.
+  - SRR30565305 (23-00343): the last read names differed between mates (`@SRR30565305.5000000` and `+`), so the run
+    was not quantified.
+  The restart (`quant_retry.log`) skips runs that already have `quant.sf`; on the first retry all three were downloaded
+  again and quantified (mapping 39.7%, 41.1% and 35.0%). 101 of 101 runs quantified.
+- Aggregation (`--aggregate --gtf data/ref/gencode_v47/gencode.v47.annotation.gtf.gz`): 78,277 genes x 101 samples in
+  `salmon.merged.gene_counts.tsv`, QC in `salmon_qc.tsv`.
+
+**The QLD prefix is not a sample of the reads.** In the prefix counts of the 9 QLD runs, chr1 genes hold 75.8% to 95.7%
+of the counts and chr10 most of the rest (median 11.3%); in SA chr1 holds 8.7% to 10.8%. The QLD FASTQ files are
+ordered by alignment position, so their first reads come from the first chromosomes in lexical order. Only 5,914 genes
+passed the expression filter (CPM at least 1 in at least half of the samples) in the QLD prefix counts, against 18,004
+in SA. The SA prefix counts are used: their chr1 share (8.7% to 10.8%) is in the range of the QLD counts on all reads
+(7.9% to 10.6%, below).
+
+**QLD on all reads** (`scripts/salmon_quant_ena.py PRJNA1149196 data/ref/gencode_v47/salmon_index_v47_k31
+data/quant/PRJNA1149196_QLD_full --runs SRR30280882,...,SRR30280890 --threads 8 --segments 16`, 16 and 17 November
+2026, log `quant.log`).
+- The 9 QLD runs downloaded whole (27.4 GB), each file checked against the ENA `fastq_md5`; 9 of 9 quantified on the
+  first attempt (44.5 M to 53.4 M fragments).
+- Aggregation as above: 78,277 genes x 9 samples, `data/quant/PRJNA1149196_QLD_full/salmon.merged.gene_counts.tsv`
+  and `salmon_qc.tsv`. chr1 holds 7.9% to 10.6% of the counts; 16,053 genes pass the expression filter.
+- `scripts/build_rna_cohorts_2026_11.py` writes `PRJNA1149196_SA_gene_counts.tsv.gz` (92 samples) from the prefix
+  matrix and `PRJNA1149196_QLD_gene_counts.tsv.gz` (9 samples) from the full-depth matrix, both into
+  `data/quant/PRJNA1149196/`.
+- The version 4 transcriptomic runs made with the QLD prefix matrix (16 November) were not kept in `results/`; all
+  version 4 transcriptomic results use the full-depth QLD matrix.
+
+**QC.**
+
+| site | runs | reads quantified | library type | mapping rate median (range) | mitochondrial fraction median (range) | flagged |
+|---|---|---|---|---|---|---|
+| SA | 92 | first 5 M pairs | ISF (all) | 39.56% (34.72 to 47.05) | 0.0174 (0.0071 to 0.0369) | 56 |
+| QLD | 9 | all (44.5 M to 53.4 M) | ISR (all) | 59.37% (50.81 to 67.33) | 0.0072 (0.0046 to 0.0104) | 0 |
+
+- The QC rule is the one used for GSE224615, applied within each aggregation. SA: in the 101-run prefix aggregation,
+  median 39.71%, MAD 1.5 (raw), lower bound 35.96%. QLD: in the full-depth aggregation, median 59.4%, MAD 4.2, lower
+  bound 48.7%.
+- 56 SA samples are flagged: 51 below 40% only, and 5 below 40% and more than 2.5 MAD below the median (23-00304
+  35.65%, 23-00343 35.04%, 23-00408 34.72%, 23-00409 35.07%, 23-00414 35.95%). The flagged ids are listed by
+  `aggregate.log` and in `salmon_qc.tsv` (`flag`, `flag_reason`). No QLD sample is flagged.
+- As for GSE224615, flags are not exclusions: every sample enters the benchmark.

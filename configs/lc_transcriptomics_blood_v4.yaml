@@ -46,7 +46,8 @@ cohorts:
     # Same participants as GSE169687 (disabled); salmon on the first 5,000,000 read pairs of each run.
   - {study_id: PRJNA1149196_QLD, matrix: data/quant/PRJNA1149196/PRJNA1149196_QLD_gene_counts.tsv.gz, meta: data/meta/PRJNA1149196_QLD_meta.csv, is_counts: true, provenance: requantify, accession: PRJNA1149196}
     # Sinclair 2024 cohort 2 (Queensland). Whole blood, total RNA (Ribo-Zero plus), NovaSeq 6000; 5 PASC-CVS / 4 Recovered at about one
-    # year. Fewer than 5 recovered samples, so it is never held out (min_test_per_class) and only trains.
+    # year. Fewer than 5 recovered samples, so it is never held out (min_test_per_class) and only trains. Salmon on all reads: its FASTQ files are
+    # sorted by alignment position, so a read prefix holds only chr1 and chr10 (data/quant/PRJNA1149196_QLD_full, docs/provenance.md).
   - {study_id: GSE297499,        matrix: data/counts/GSE297499/GSE297499_pbmc_tpm_ensembl.tsv.gz,        meta: data/meta/GSE297499_meta.csv,        is_counts: false, provenance: author_normalised, accession: GSE297499}
     # Orlinick 2026 (Yale). PBMC of women, 17 neuropsychiatric LC / 9 infected without persistent symptoms. Author TPM mapped from symbols
     # to Ensembl; the loader applies log2(x + 1). The CSF samples of the series are not used.

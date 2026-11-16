@@ -1135,6 +1135,23 @@ def test_salmon_prefix_download_keeps_equal_complete_mates(tmp_path, monkeypatch
     assert log.loc[0, "read_pairs_used"] == 5000 and log.loc[0, "read_pairs_in_run"] == 20000
 
 
+def test_salmon_quantify_only_runs(tmp_path, monkeypatch):
+    q = _load_script_path("salmon_quant_ena")
+    runs = pd.DataFrame({"run_accession": ["A", "B", "C"], "sample_alias": ["sa", "sb", "sc"]})
+    monkeypatch.setattr(q, "filereport", lambda project: runs)
+    fetched = []
+
+    def fake_fetch(row, tmp, segments):  # record the run and fail it, so that salmon is never called
+        fetched.append(row.run_accession)
+        raise RuntimeError("not downloaded")
+
+    monkeypatch.setattr(q, "fetch", fake_fetch)
+    q.quantify("P", tmp_path / "idx", tmp_path / "out", 1, 1, only_runs=["C", "A"])
+    assert fetched == ["A", "C"]
+    with pytest.raises(ValueError, match="runs not in P"):
+        q.quantify("P", tmp_path / "idx", tmp_path / "out", 1, 1, only_runs=["D"])
+
+
 def test_series_matrix_samples_and_gse297499_column_join(tmp_path):
     import gzip
 

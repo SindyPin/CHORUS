@@ -8,8 +8,9 @@ written as two studies because site, library kit, sequencer and sampling time di
                     March-April 2020 infection, and uninfected controls
   PRJNA1149196_QLD  cohort 2, Queensland (COVID OZGenetics), NovaSeq 6000, Illumina stranded total RNA with Ribo-Zero
                     plus; PASC-CVS and Recovered, one sample (BioSample "1 year post infection"; paper: more than 520 days)
-Counts: salmon against the GENCODE v47 index of GSE224615 on the first 5,000,000 read pairs of each run
-(scripts/salmon_quant_ena.py --max-pairs; docs/provenance.md). Labels: BioSample attributes ``disease`` and
+Counts: salmon against the GENCODE v47 index of GSE224615 (docs/provenance.md). SA: the first 5,000,000 read pairs of
+each run (scripts/salmon_quant_ena.py --max-pairs). QLD: all reads (--runs, data/quant/PRJNA1149196_QLD_full), because
+its FASTQ files are sorted by alignment position and a prefix holds only chr1 and chr10 reads. Labels: BioSample attributes ``disease`` and
 ``Timepoint`` (data/meta/raw_PRJNA1149196/biosamples.csv, from data/meta/raw_PRJNA1149196/biosamples.xml).
 The subject is the BioSample ``isolate`` with hyphens removed (SA_LC-068 and SA_LC068 are written both ways).
 Matrix columns are the ENA sample_alias.
@@ -42,6 +43,7 @@ from map_symbols_to_ensembl import symbol_map  # noqa: E402
 
 META = ROOT / "data" / "meta"
 QUANT = ROOT / "data" / "quant" / "PRJNA1149196"
+QUANT_FULL = {"PRJNA1149196_QLD": ROOT / "data" / "quant" / "PRJNA1149196_QLD_full"}  # quantified on all reads
 GSE297499 = ROOT / "data" / "counts" / "GSE297499"
 
 SINCLAIR_STATUS = {"PASC": "LC", "PASC-CVS": "LC", "PASC_CVS": "LC", "Recovered": "COVID_recovered", "Control": "never_infected"}
@@ -146,16 +148,16 @@ def prjna1149196() -> dict:
 
 def split_counts(meta: dict) -> None:
     """One gene count matrix per site from the merged salmon output (columns = sample_alias)."""
-    merged = QUANT / "salmon.merged.gene_counts.tsv"
-    if not merged.exists():
-        print("PRJNA1149196: salmon.merged.gene_counts.tsv not written yet; site matrices not split")
-        return
-    X = pd.read_csv(merged, sep="\t", index_col=0)
     for sid, df in meta.items():
+        merged = QUANT_FULL.get(sid, QUANT) / "salmon.merged.gene_counts.tsv"
+        if not merged.exists():
+            print(f"{sid}: {merged} not written yet; matrix not written")
+            continue
+        X = pd.read_csv(merged, sep="\t", index_col=0)
         cols = [c for c in df["sample_id"] if c in X.columns]
         missing = sorted(set(df["sample_id"]) - set(cols))
         X[cols].to_csv(QUANT / f"{sid}_gene_counts.tsv.gz", sep="\t", float_format="%.3f")
-        print(f"{sid}: {len(cols)} samples in the count matrix" + (f"; not quantified: {missing}" if missing else ""))
+        print(f"{sid}: {len(cols)} samples in the count matrix from {merged.parent.name}" + (f"; not quantified: {missing}" if missing else ""))
 
 
 def main():

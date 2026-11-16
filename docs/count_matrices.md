@@ -78,12 +78,20 @@ November 2026"). Configs: `configs/lc_transcriptomics_blood_v4.yaml` and its sen
 - **Sex:** BioSample `sex` (SA 49 male, 43 female); QLD "missing", written as unknown.
 - **Overlap:** cohort 1 is the same South Australian participants as GSE169687 (Ryan 2022, 12 to 24 weeks), which is
   disabled for lack of labels. The ids of the two deposits cannot be linked. `overlaps_with_study` records this.
-- **Counts:** salmon 1.10.3 against the GENCODE v47 index of GSE224615, on the **first 5,000,000 read pairs of each
-  run** (`scripts/salmon_quant_ena.py --max-pairs 5000000`). The full reads (1.11 TB) were not downloaded. Procedure
-  and QC: `docs/provenance.md`. Matrix columns are the ENA `sample_alias`. The merged gene matrix is split by site into
-  `data/quant/PRJNA1149196/PRJNA1149196_{SA,QLD}_gene_counts.tsv.gz`.
-- **Deviation from GSE224615:** GSE224615 was quantified on all reads; here only the first 5 M pairs are used, which
-  is fewer reads per sample than the full runs (16 M to 91 M pairs).
+- **Counts:** salmon 1.10.3 against the GENCODE v47 index of GSE224615.
+  - **SA:** on the **first 5,000,000 read pairs of each run** (`scripts/salmon_quant_ena.py --max-pairs 5000000`). The
+    full reads of the 101 runs (1.11 TB) were not downloaded.
+  - **QLD:** on **all reads** of its 9 runs (`--runs`, 27.4 GB, `data/quant/PRJNA1149196_QLD_full`). Its FASTQ files are
+    ordered by alignment position, so the 5 M pair prefix held only chr1 and chr10 reads (75.8% to 95.7% of the
+    counts on chr1); the prefix matrix is not used.
+  - Procedure and QC: `docs/provenance.md`. Matrix columns are the ENA `sample_alias`. The site matrices are
+    `data/quant/PRJNA1149196/PRJNA1149196_{SA,QLD}_gene_counts.tsv.gz`.
+- **Deviation from GSE224615:** GSE224615 was quantified on all reads; SA uses only the first 5 M pairs, which is fewer
+  reads per sample than the full runs (16 M to 91 M pairs).
+- **QC:** all runs quantified (three SA runs after one retry). Mapping rate median 39.56% in SA (34.72 to 47.05,
+  library type ISF, 5 M pairs) and 59.37% in QLD (50.81 to 67.33, ISR, all reads). With the GSE224615 rule (below 40%,
+  or more than 2.5 MAD below the median of the aggregation) 56 SA samples and no QLD sample are flagged; none is
+  excluded (`docs/provenance.md`).
 
 ### GSE297499 (Orlinick 2026, J Infect Dis, PMID 40920586, PMC12811860)
 

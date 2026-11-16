@@ -12,7 +12,11 @@ read_count, with a 15 percent margin) are fetched, decompressed, and cut to the 
 both mates. A partial file cannot be checked against fastq_md5, so the check is that the prefix decompresses, that
 both mates keep the same number of records and that the read names of the last record agree. The reads kept per
 run are written to ``prefix_reads.tsv``. A run whose files are smaller than the cap is downloaded whole and md5
-checked as usual.
+checked as usual. A prefix is a sample of the reads only when the FASTQ is in sequencing order: files submitted
+sorted by alignment position (PRJNA1149196 cohort 2) give a prefix from the first chromosomes, so check the
+chromosome shares of the counts before using a prefix.
+
+``--runs A,B,...`` quantifies only those run accessions of the project.
 
 ``--aggregate`` sums NumReads per gene with a tx2gene table built from the GENCODE GTF and writes
 genes x samples counts (Ensembl gene ids without version) plus a QC table with the mapping rate
@@ -193,8 +197,13 @@ def fetch(row, tmp: Path, segments: int) -> list:
     return files
 
 
-def quantify(project: str, index: Path, out: Path, threads: int, segments: int, max_pairs: int = 0) -> None:
+def quantify(project: str, index: Path, out: Path, threads: int, segments: int, max_pairs: int = 0, only_runs=None) -> None:
     runs = filereport(project)
+    if only_runs:  # a subset of the project's runs (e.g. one site quantified at full depth)
+        missing = set(only_runs) - set(runs["run_accession"])
+        if missing:
+            raise ValueError(f"runs not in {project}: {sorted(missing)}")
+        runs = runs[runs["run_accession"].isin(only_runs)]
     (out / "salmon").mkdir(parents=True, exist_ok=True)
     runs.to_csv(out / "ena_filereport.tsv", sep="\t", index=False)
     todo = [r for r in runs.itertuples() if not (out / "salmon" / r.sample_alias / "quant.sf").exists()]
@@ -293,6 +302,7 @@ def main():
     ap.add_argument("--threads", type=int, default=10)
     ap.add_argument("--segments", type=int, default=16, help="parallel byte ranges per FASTQ download")
     ap.add_argument("--max-pairs", type=int, default=0, help="quantify only the first N read pairs of each run (0: all)")
+    ap.add_argument("--runs", help="comma separated run accessions to quantify (default: every run of the project)")
     ap.add_argument("--aggregate", action="store_true")
     ap.add_argument("--gtf")
     a = ap.parse_args()
@@ -300,7 +310,7 @@ def main():
     if a.aggregate:
         aggregate(out, Path(a.gtf))
     else:
-        quantify(a.project, Path(a.index), out, a.threads, a.segments, a.max_pairs)
+        quantify(a.project, Path(a.index), out, a.threads, a.segments, a.max_pairs, a.runs.split(",") if a.runs else None)
 
 
 if __name__ == "__main__":
