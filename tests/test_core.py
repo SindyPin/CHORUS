@@ -1166,3 +1166,60 @@ def test_series_matrix_samples_and_gse297499_column_join(tmp_path):
     assert list(g["gsm"]) == ["GSM1", "GSM2", "GSM3"] and list(g["ch_treatment"]) == ["NP-Long COVID", "Control", "Control"]
     cols = g["title"].str.replace("_", "", regex=False).str.replace("PBMC$", "_PBMC", regex=True)
     assert list(cols[:2]) == ["2057V2_PBMC", "2014R_PBMC"]
+
+
+def test_keep_timepoints_numeric_and_text():
+    from chorus.io import Cohort, CohortSet
+
+    X = pd.DataFrame(np.ones((4, 2)), index=list("abcd"), columns=["f1", "f2"])
+    meta = pd.DataFrame({"sample_id": list("abcd"), "subject_id": list("abcd"), "study_id": "S", "lc_status": "LC", "timepoint": [0.0, 1.0, np.nan, 0.0]})
+    cs = CohortSet([Cohort("S", "bulk_rna", X, meta.set_index("sample_id", drop=False))])
+    assert list(cs.keep_timepoints([0])["S"].X.index) == ["a", "d"]
+    meta["timepoint"] = ["T1", "T2", "T1", "acute"]
+    cs = CohortSet([Cohort("S", "bulk_rna", X, meta.set_index("sample_id", drop=False))])
+    assert list(cs.keep_timepoints(["T1"])["S"].X.index) == ["a", "c"]
+
+
+def test_paired_layers_early_contrast():
+    pl = _load_script_path("paired_layers")
+    meta = pd.DataFrame({"lc_status": ["LC", "COVID_recovered", "LC", "never_infected", "COVID_recovered"], "sample_phase": ["acute", "acute", "post_acute", "not_applicable", "post_acute"]})
+    assert pl.contrast_label(meta, "early").tolist()[:2] == [1.0, 0.0] and pl.contrast_label(meta, "early")[2:].isna().all()
+    lc = pl.contrast_label(meta, "lc")
+    assert lc.isna()[:2].all() and lc[2] == 1.0 and lc[4] == 0.0
+
+
+def test_concordance_vs_transfer_statistics():
+    cv = _load_script_path("concordance_vs_transfer")
+    rng = np.random.default_rng(0)
+    rows = []
+    for b in ("A", "B"):
+        for c in range(4):
+            for h in cv.LABEL_FREE[:4]:
+                m = rng.normal()
+                rows.append({"block": b, "held_out": f"{b}{c}", "harmoniser": h, "effect_spearman": m, "sign_agreement": m, "auroc": 0.5 + 0.1 * m})
+    df = pd.DataFrame(rows)
+    r = cv.correlation(df, "effect_spearman", n_boot=50, n_perm=200)
+    assert r["spearman"] == pytest.approx(1.0) and r["n_cohorts"] == 8 and r["p_permutation"] < 0.01
+    v = cv.variance_shares(df).set_index("term")
+    assert set(v.index) == {"held_out_cohort", "harmoniser", "residual"} and (v["share"] >= 0).all()
+
+
+def test_clustering_consensus_separates_groups():
+    cr = _load_script_path("clustering_readiness")
+    rng = np.random.default_rng(0)
+    P = np.vstack([rng.normal(0, 0.1, (20, 3)), rng.normal(5, 0.1, (20, 3))])
+    labels, pac = cr.consensus(P, 2, 20, 0.8, 0)
+    from sklearn.metrics import adjusted_rand_score
+
+    assert adjusted_rand_score(np.repeat([0, 1], 20), labels) == 1.0 and pac == 0.0
+
+
+def test_acute_persistence_cohort_stats_and_days():
+    ap = _load_script_path("acute_persistence")
+    rng = np.random.default_rng(0)
+    y = pd.Series(np.repeat([1, 0], 30))
+    days = pd.Series(rng.uniform(90, 400, 60))
+    score = pd.Series(1.0 * y + 0.01 * days + rng.normal(0, 1, 60))
+    st = ap.cohort_stats(score, y, days, n_boot=50, seed=0)
+    assert st["n_lc"] == 30 and st["g"] > 0 and st["g_lo"] < st["g"] < st["g_hi"] and st["days_coef"] == pytest.approx(0.01, abs=0.01)
+    assert np.isnan(ap.cohort_stats(score, y, pd.Series(np.nan, index=y.index), n_boot=10, seed=0)["g_adjusted"])

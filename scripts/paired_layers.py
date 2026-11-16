@@ -19,11 +19,14 @@ For each paired cohort (PAIRED below) and each contrast with both classes on the
   features.csv                per layer: features in the cohort, dropped for missingness, used
 
 Contrasts: ``lc`` is LC versus COVID_recovered on post-acute samples; ``acute`` is acute (any later
-outcome) versus never_infected (the positive control). One sample per subject: the earliest by
+outcome) versus never_infected (the positive control); ``early`` is the later outcome, LC versus
+COVID_recovered, on acute samples (early detection, run only with --contrasts early). One sample per
+subject: the earliest by
 ``timepoint_order``. A contrast is skipped when the paired samples have fewer than ``n_splits``
 samples in a class.
 
   python scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024
+  python scripts/paired_layers.py --cohort Su2022 --contrasts early --out results/early_detection/vertical
 """
 
 from __future__ import annotations
@@ -66,7 +69,9 @@ PAIRED = {
 CONTRASTS = {
     "lc": {"positive": "LC", "negative": "COVID_recovered"},
     "acute": {"positive": "acute", "negative": "never_infected"},
+    "early": {"positive": "LC", "negative": "COVID_recovered"},
 }
+DEFAULT_CONTRASTS = ["lc", "acute"]
 
 
 def load_layers(cohort: str, root: Path = ROOT) -> tuple:
@@ -87,10 +92,10 @@ def contrast_label(meta: pd.DataFrame, contrast: str) -> pd.Series:
     st = meta["lc_status"].astype(str)
     phase = meta.get("sample_phase", pd.Series("unknown", index=meta.index)).astype(str)
     y = pd.Series(np.nan, index=meta.index)
-    if contrast == "lc":
-        post = phase != "acute"
-        y[post & (st == "LC")] = 1.0
-        y[post & (st == "COVID_recovered")] = 0.0
+    if contrast in ("lc", "early"):
+        keep = phase != "acute" if contrast == "lc" else phase == "acute"
+        y[keep & (st == "LC")] = 1.0
+        y[keep & (st == "COVID_recovered")] = 0.0
     else:
         y[phase == "acute"] = 1.0
         y[st == "never_infected"] = 0.0
@@ -119,7 +124,7 @@ def paired_samples(views: dict, metas: dict, contrast: str, timepoint_order: lis
     return t.drop(columns="order").set_index("sample_id").loc[[s for s in meta.index if s in set(t["sample_id"])]]
 
 
-def run_cohort(cohort: str, out: Path, n_repeats: int = 10, n_splits: int = 5, k: int = 50, models=None) -> dict:
+def run_cohort(cohort: str, out: Path, n_repeats: int = 10, n_splits: int = 5, k: int = 50, models=None, contrasts=None) -> dict:
     views, metas, impute, missing = load_layers(cohort)
     out.mkdir(parents=True, exist_ok=True)
     info = {"cohort": cohort, "layers": list(views), "layers_missing": missing, "contrasts": {}}
@@ -127,7 +132,8 @@ def run_cohort(cohort: str, out: Path, n_repeats: int = 10, n_splits: int = 5, k
         info["skipped"] = "fewer than two layers on disk"
         (out / "run_info.json").write_text(json.dumps(info, indent=1))
         return info
-    for contrast, spec in CONTRASTS.items():
+    for contrast in contrasts or DEFAULT_CONTRASTS:
+        spec = CONTRASTS[contrast]
         samples = paired_samples(views, metas, contrast, PAIRED[cohort]["timepoint_order"])
         counts = samples["y"].value_counts()
         n_pos, n_neg = int(counts.get(1.0, 0)), int(counts.get(0.0, 0))
@@ -167,13 +173,14 @@ def main():
     ap.add_argument("--n-repeats", type=int, default=10)
     ap.add_argument("--k", type=int, default=50, help="features per layer kept by the differential selector inside each fold")
     ap.add_argument("--models", help="comma separated subset (default: all available)")
+    ap.add_argument("--contrasts", default=",".join(DEFAULT_CONTRASTS), help=f"comma separated, from {', '.join(CONTRASTS)}")
     ap.add_argument("--pairs-only", action="store_true", help="rewrite effect_correlation.csv from the existing effects.csv and stop")
     a = ap.parse_args()
     if a.pairs_only:
         for f in sorted(Path(a.out).glob("*/effects.csv")):
             layer_pairs(pd.read_csv(f, index_col=0)).to_csv(f.parent / "effect_correlation.csv", index=False)
         return
-    info = run_cohort(a.cohort, Path(a.out), n_repeats=a.n_repeats, k=a.k, models=a.models.split(",") if a.models else None)
+    info = run_cohort(a.cohort, Path(a.out), n_repeats=a.n_repeats, k=a.k, models=a.models.split(",") if a.models else None, contrasts=a.contrasts.split(","))
     print(json.dumps(info, indent=1))
 
 

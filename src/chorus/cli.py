@@ -101,6 +101,8 @@ def load_config(path: str, extra_features=()) -> tuple:
         cs = cs.filter_samples(pre.get("keep_lc_status"), pre.get("drop_sample_phases"))
     if pre.get("one_sample_per_subject", False):
         cs = cs.one_sample_per_subject(pre.get("acute_timepoints", ["acute"]), pre.get("timepoint_order"))
+    if pre.get("keep_timepoints") is not None:  # the earliest sample of a subject is kept only at these timepoints
+        cs = cs.keep_timepoints(pre["keep_timepoints"])
     if pre.get("deduplicate", True):
         cs = cs.deduplicate_subjects()
     feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5), combine="union" if pre.get("features") in ("union", "per_cohort") else "intersection")

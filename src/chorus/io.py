@@ -173,6 +173,18 @@ class CohortSet:
             out.append(c.subset(m))
         return CohortSet(out)
 
+    def keep_timepoints(self, timepoints: Iterable) -> "CohortSet":
+        """Keep the samples whose ``timepoint`` is one of ``timepoints``, compared as numbers when both
+        are numeric (0 matches 0.0) and as text otherwise; a cohort without the column keeps none."""
+        want = [str(t) for t in timepoints]
+        want_num = set(pd.to_numeric(pd.Series(want), errors="coerce").dropna())
+        out: List[Cohort] = []
+        for c in self.cohorts:
+            tp = c.meta["timepoint"] if "timepoint" in c.meta.columns else pd.Series(np.nan, index=c.meta.index)
+            m = tp.astype(str).isin(set(want)) | pd.to_numeric(tp, errors="coerce").isin(want_num)
+            out.append(c.subset(m))
+        return CohortSet(out)
+
     def relabel_acute(self, label: str = "acute", acute_lc_status: Optional[Dict[str, Iterable[str]]] = None) -> "CohortSet":
         """Set ``lc_status`` to ``label`` for the samples whose ``sample_phase`` is acute, whatever
         their later outcome; the previous value is kept in ``lc_status_original``. Used by the

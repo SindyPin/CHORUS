@@ -1,0 +1,34 @@
+# CHORUS early detection, horizontal (scripts/early_detection.py horizontal): the later outcome, LC versus COVID_recovered,
+# from the acute draw. Su2022 (Olink) and Cervia2024_SomaScan on the proteins they share; with two cohorts the leave one
+# study out loop trains on one and tests on the other, both directions. Acute samples only (sample_phase acute), one per
+# subject, the earliest. Not a Test 1 config.
+layer: proteomics
+cohorts:
+  - {study_id: Su2022,              matrix: data/proteomics/Su2022/Su2022_matrix.csv,                           meta: data/meta/Su2022_meta.csv,              feature_space: uniprot, accession: "doi:10.17632/96v329bg7g.1"}
+    # INCOV acute draws T1 and T2, the earliest kept per patient; lc_status is the outcome at T3 (two to three months)
+  - {study_id: Cervia2024_SomaScan, matrix: data/proteomics/Cervia2024_SomaScan/Cervia2024_SomaScan_matrix.csv, meta: data/meta/Cervia2024_SomaScan_meta.csv, feature_space: uniprot, accession: "doi:10.17632/dvf6yvrg4x.1"}
+    # serum at diagnosis; lc_status is the outcome at six months
+preprocessing:
+  matrices: [plasma, serum]
+  keep_lc_status: [LC, COVID_recovered]
+  drop_sample_phases: [post_acute, not_applicable, unknown]   # acute draws only
+  one_sample_per_subject: true
+  acute_timepoints: []
+  timepoint_order: [T1, T2]
+  deduplicate: true
+  impute: study_median
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [identity, center_scale, rank, fsqn, combat_addon, chorus]
+  selectors:
+    - {name: differential, k: 50}
+    - {name: invariant, k: 50}
+  classifiers: [logreg, rf]
+  covariates: []
+  nested_select_harmoniser: false
+  min_train_studies: 1
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/early_detection/horizontal
