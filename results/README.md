@@ -32,7 +32,8 @@ after another (the all-cohort concordance was rerun into its final folder at 00:
 quantification ran in the background, so their runtimes overlap with it. The reporting reruns of 16 November (from
 10:51) ran one after another, also during the quantification; see "Version 4 cohort set and reporting fixes (16 November
 2026)". The version 4 transcriptomic runs of 17 November (from 00:36) ran one after another; the runtime of
-`lc_transcriptomics_blood_v4` includes time the laptop was asleep.
+`lc_transcriptomics_blood_v4` includes time the laptop was asleep. The six follow-up runs of 17 November (from
+09:19) ran at the same time, so their runtimes overlap; see "Follow-up analyses (17 November 2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -82,6 +83,12 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 | `concordance_v4` | `scripts/concordance.py configs/lc_transcriptomics_blood_v4.yaml --out results/concordance_v4` | configs/lc_transcriptomics_blood_v4.yaml | 81 (started 2026-11-17 06:37:12) |
 | `mosaic_programmes_v4` | `scripts/mosaic_programmes.py --out results/mosaic_programmes_v4 --contrasts lc_v4` | configs/mosaic_lc_rna_v4.yaml, configs/concordance_proteomics_all_v4.yaml | 167 (started 2026-11-17 06:38:33) |
 | `lc_transcriptomics_blood_v4_noQCflag` | `chorus run configs/lc_transcriptomics_blood_v4_noQCflag.yaml --within` | configs/lc_transcriptomics_blood_v4_noQCflag.yaml | 3547 (started 2026-11-17 06:41:20) |
+| `early_detection/vertical` | `scripts/paired_layers.py --cohort Su2022 --contrasts early --out results/early_detection/vertical` | built into the script | 436 (started 2026-11-17 09:19:31) |
+| `early_detection/horizontal` | `scripts/early_detection.py horizontal configs/early_detection_horizontal.yaml --out results/early_detection/horizontal --n-perm 100` | configs/early_detection_horizontal.yaml | 742 (started 2026-11-17 09:21:55) |
+| `early_detection/reference` | `scripts/early_detection.py reference configs/early_detection_reference.yaml --out results/early_detection/reference` | configs/early_detection_reference.yaml | 39 (started 2026-11-17 09:21:55) |
+| `clustering_readiness` | `scripts/clustering_readiness.py --out results/clustering_readiness` | configs/lc_transcriptomics_blood_v4.yaml, configs/lc_proteomics_affinity_v4.yaml | 273 (started 2026-11-17 09:23:32) |
+| `acute_persistence` | `scripts/acute_persistence.py --out results/acute_persistence` | configs/control_acute_proteomics.yaml, configs/concordance_proteomics_all_v4.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml, configs/mosaic_lc_rna_v4.yaml | 187 (started 2026-11-17 09:25:23) |
+| `concordance_vs_transfer` | `scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer` | the loso_results.csv of lc_transcriptomics_blood_v4, lc_proteomics_affinity_v4, lc_proteomics_ms_v4, lc_metabolomics | 16 (started 2026-11-17 09:26:09) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -142,6 +149,10 @@ selection, 200 bootstrap resamples.
 | lc_transcriptomics_blood_v4_noQCflag | as lc_transcriptomics_blood_v4, GSE224615 without GSM7027478, GSM7027490 and GSM7027501 | PRJNA1149196_QLD |
 | concordance_v4 | no folds; the eight cohorts of lc_transcriptomics_blood_v4 | none |
 | mosaic_programmes_v4/lc_v4 | test cohorts: the RNA and protein cohorts except PRJNA1149196_QLD (5 / 4); Cervia2024_MS as sensitivity | PRJNA1149196_QLD |
+| early_detection/horizontal | Su2022 and Cervia2024_SomaScan (acute samples), each trained on the other | none |
+| early_detection/vertical, early_detection/reference | no folds across cohorts; within Su2022 (paired) and within GSE215865 | none |
+| clustering_readiness | no labels; LC cases of the lc_transcriptomics_blood_v4 and lc_proteomics_affinity_v4 cohorts, each cohort left out in turn | none |
+| acute_persistence | scored: Buggert2025, Fineschi2026 (proteins); the RNA cohorts of mosaic_lc_rna_v4 except PRJNA1149196_QLD (programmes) | the acute cohorts of control_acute_proteomics (and GSE215865 for programmes) |
 
 ## GSE224615 samples flagged at QC
 
@@ -209,6 +220,15 @@ local.
   `lc_transcriptomics_blood_harmonisation`; `concordance_v4/`: as `concordance`; `mosaic_programmes_v4/`:
   `genesets.csv`, `run_info.json` and `lc_v4/` with the files of `mosaic_programmes/lc` (`scores.csv.gz` not
   committed).
+
+- `early_detection/`: `horizontal/` (`cohorts.csv`, the loso files, `permutation_results.csv`,
+  `permutation_summary.csv`, `run_info.json`), `vertical/` (as `paired_<cohort>`, contrast `early`) and `reference/`
+  (`cohorts.csv`, `within_study_cv.csv` with `published_taco_auroc`, `within_study_cv_folds.csv`, `run_info.json`).
+- `concordance_vs_transfer/`: `rows.csv`, `correlation.csv`, `variance.csv`, `run_info.json`.
+- `clustering_readiness/`: `cohorts.csv`, `clusters.csv`, `stability.csv`, `stability_summary.csv`, `composition.csv`,
+  `run_info.json`.
+- `acute_persistence/protein/`, `acute_persistence/rna_programmes/`: `per_cohort.csv`, `meta.csv`, `model.csv`,
+  `sharing.csv`, `scores.csv` (acute score per target sample), `run_info.json`.
 
 ## Column glossary
 
@@ -1429,3 +1449,347 @@ the effects and the all-feature matrices are identical to the previous files in 
   schema had `control_type` and were not rebuilt.
 - **Classifiers.** The `classifier` row of the loso_results.csv glossary now defines all four. `taco` ran without
   TabPFN (`CHORUS_DISABLE_TABPFN=1`) in every real-data run; this is stated wherever a `taco` value is reported (section 3).
+
+## Follow-up analyses (17 November 2026)
+
+Four analyses on data already in the repository; no existing benchmark was rerun. Each wrote to a new folder. The runs
+started between 09:19 and 09:26 and ran at the same time, so their runtimes overlap. "Label free harmonisers" here means
+identity, center_scale, quantile_ref, fsqn and rank: they are fitted without labels and applied to a new cohort in
+addon mode. combat_addon and chorus use the training labels, and combat_pooled is transductive.
+
+### A. Early detection baseline (`early_detection/`)
+
+The later outcome, LC versus COVID_recovered, predicted from a sample drawn in the acute phase. The samples have
+`sample_phase` acute (GSE215865 has no `sample_phase`, and every library there was drawn during the hospital stay)
+and a later `lc_status` of LC or COVID_recovered. Each subject contributes one sample, the earliest. The script writes
+the subjects per group to `cohorts.csv` before fitting anything, and stops when a group has fewer than 10. No group
+did:
+
+| cohort | analysis | LC subjects | COVID_recovered subjects |
+|---|---|---|---|
+| Su2022 (Olink) | horizontal | 75 | 50 |
+| Cervia2024_SomaScan | horizontal | 40 | 73 |
+| Su2022 (Olink and metabolomics, paired) | vertical | 74 | 50 |
+| GSE215865 (timepoint 0) | reference | 241 | 104 |
+
+**1. Horizontal** (`early_detection/horizontal/`, `scripts/early_detection.py horizontal`,
+`configs/early_detection_horizontal.yaml`).
+- **Data:** Su2022 and Cervia2024_SomaScan on the 386 proteins they share, imputed with each cohort's median.
+- **Design:** trained on one cohort and tested on the other, in both directions (`run_loso` with
+  `min_train_studies: 1`). Harmonisers: identity, center_scale, rank, fsqn, combat_addon and chorus. Selectors:
+  differential and invariant, with k = 50. Classifiers: logreg and rf. Intervals come from 1,000 stratified
+  bootstrap resamples.
+- **chorus:** fails in both directions ("invariance anchored harmonisation needs at least two labelled training
+  studies"); its rows are error rows.
+- **invariant selector:** with one training cohort, no protein passes the heterogeneity screen
+  (`n_strict_invariant` 0). The selector then falls back to ranking proteins by effect. The two selectors give the
+  same AUROC in 6 of the 20 harmoniser, classifier and direction combinations.
+- **Label permutation control:** `lc_status` is shuffled within each cohort (class counts kept) and the grid is rerun
+  100 times (`permutation_results.csv`). p = (1 + permutations with AUROC ≥ observed) / 101
+  (`permutation_summary.csv`).
+- **identity with rf, tested on Cervia2024_SomaScan:** the model gives every test sample the same probability, so the
+  AUROC is 0.500 and the interval is 0.50 to 0.50.
+
+| test (train on the other) | harmoniser | selector | classifier | AUROC (95% interval) | permutation mean | p |
+|---|---|---|---|---|---|---|
+| Su2022 | identity | differential | logreg | 0.554 (0.45 to 0.66) | 0.501 | 0.119 |
+| Su2022 | identity | differential | rf | 0.503 (0.44 to 0.57) | 0.494 | 0.426 |
+| Su2022 | center_scale | differential | logreg | 0.564 (0.47 to 0.67) | 0.505 | 0.139 |
+| Su2022 | center_scale | differential | rf | 0.608 (0.51 to 0.71) | 0.504 | 0.040 |
+| Su2022 | rank | differential | logreg | 0.432 (0.33 to 0.54) | 0.506 | 0.891 |
+| Su2022 | rank | differential | rf | 0.439 (0.34 to 0.53) | 0.509 | 0.851 |
+| Su2022 | fsqn | differential | logreg | 0.530 (0.43 to 0.63) | 0.500 | 0.287 |
+| Su2022 | fsqn | differential | rf | 0.580 (0.48 to 0.68) | 0.498 | 0.030 |
+| Su2022 | combat_addon | differential | logreg | 0.566 (0.47 to 0.67) | 0.505 | 0.139 |
+| Su2022 | combat_addon | differential | rf | 0.607 (0.51 to 0.71) | 0.504 | 0.040 |
+| Su2022 | identity | invariant | logreg | 0.529 (0.42 to 0.63) | 0.504 | 0.277 |
+| Su2022 | identity | invariant | rf | 0.491 (0.42 to 0.57) | 0.494 | 0.554 |
+| Su2022 | center_scale | invariant | logreg | 0.574 (0.47 to 0.68) | 0.506 | 0.109 |
+| Su2022 | center_scale | invariant | rf | 0.591 (0.49 to 0.69) | 0.505 | 0.069 |
+| Su2022 | rank | invariant | logreg | 0.430 (0.33 to 0.54) | 0.508 | 0.931 |
+| Su2022 | rank | invariant | rf | 0.471 (0.37 to 0.57) | 0.504 | 0.723 |
+| Su2022 | fsqn | invariant | logreg | 0.507 (0.40 to 0.61) | 0.502 | 0.505 |
+| Su2022 | fsqn | invariant | rf | 0.603 (0.51 to 0.71) | 0.504 | 0.020 |
+| Su2022 | combat_addon | invariant | logreg | 0.578 (0.48 to 0.68) | 0.508 | 0.059 |
+| Su2022 | combat_addon | invariant | rf | 0.603 (0.50 to 0.70) | 0.503 | 0.030 |
+| Cervia2024_SomaScan | identity | differential | logreg | 0.644 (0.52 to 0.75) | 0.492 | 0.010 |
+| Cervia2024_SomaScan | identity | differential | rf | 0.500 (0.50 to 0.50) | 0.499 | 0.723 |
+| Cervia2024_SomaScan | center_scale | differential | logreg | 0.555 (0.43 to 0.67) | 0.495 | 0.119 |
+| Cervia2024_SomaScan | center_scale | differential | rf | 0.448 (0.34 to 0.56) | 0.492 | 0.842 |
+| Cervia2024_SomaScan | rank | differential | logreg | 0.564 (0.46 to 0.67) | 0.500 | 0.119 |
+| Cervia2024_SomaScan | rank | differential | rf | 0.544 (0.43 to 0.65) | 0.493 | 0.178 |
+| Cervia2024_SomaScan | fsqn | differential | logreg | 0.561 (0.45 to 0.67) | 0.493 | 0.079 |
+| Cervia2024_SomaScan | fsqn | differential | rf | 0.484 (0.37 to 0.60) | 0.492 | 0.564 |
+| Cervia2024_SomaScan | combat_addon | differential | logreg | 0.554 (0.43 to 0.66) | 0.495 | 0.129 |
+| Cervia2024_SomaScan | combat_addon | differential | rf | 0.446 (0.33 to 0.56) | 0.491 | 0.832 |
+| Cervia2024_SomaScan | identity | invariant | logreg | 0.644 (0.52 to 0.75) | 0.493 | 0.010 |
+| Cervia2024_SomaScan | identity | invariant | rf | 0.500 (0.50 to 0.50) | 0.495 | 0.723 |
+| Cervia2024_SomaScan | center_scale | invariant | logreg | 0.555 (0.43 to 0.67) | 0.498 | 0.109 |
+| Cervia2024_SomaScan | center_scale | invariant | rf | 0.448 (0.34 to 0.56) | 0.494 | 0.812 |
+| Cervia2024_SomaScan | rank | invariant | logreg | 0.535 (0.43 to 0.64) | 0.499 | 0.257 |
+| Cervia2024_SomaScan | rank | invariant | rf | 0.546 (0.44 to 0.64) | 0.498 | 0.257 |
+| Cervia2024_SomaScan | fsqn | invariant | logreg | 0.537 (0.42 to 0.65) | 0.493 | 0.238 |
+| Cervia2024_SomaScan | fsqn | invariant | rf | 0.501 (0.39 to 0.61) | 0.498 | 0.485 |
+| Cervia2024_SomaScan | combat_addon | invariant | logreg | 0.554 (0.43 to 0.66) | 0.497 | 0.119 |
+| Cervia2024_SomaScan | combat_addon | invariant | rf | 0.446 (0.33 to 0.56) | 0.493 | 0.802 |
+
+**2. Vertical** (`early_detection/vertical/early/`, `scripts/paired_layers.py --cohort Su2022 --contrasts early`).
+- **Contrast:** the new `early` contrast of `paired_layers.py`, LC versus COVID_recovered on acute samples. Each
+  subject contributes its earliest acute draw, T1 before T2.
+- **Data:** 124 subjects measured in both layers. All 441 Olink proteins and all 891 metabolites are used; none was
+  dropped for missingness.
+- **Models and folds:** the Test 2 models (single layers, early_fusion, late_fusion, mofa, diablo) on the same
+  repeated stratified 5-fold CV, 10 repeats, with k = 50 features per layer. Means are over the 50 folds.
+
+| model | AUROC (mean over 50 folds) | SD | AUPRC | Brier | failed folds |
+|---|---|---|---|---|---|
+| layer:olink | 0.481 | 0.107 | 0.616 | 0.359 | 0 |
+| layer:metabolomics | 0.490 | 0.128 | 0.653 | 0.359 | 0 |
+| early_fusion | 0.449 | 0.118 | 0.614 | 0.401 | 0 |
+| late_fusion | 0.516 | 0.109 | 0.649 | 0.244 | 0 |
+| mofa | 0.439 | 0.112 | 0.620 | 0.276 | 0 |
+| diablo | 0.442 | 0.118 | 0.610 | 0.318 | 0 |
+
+**3. Reference** (`early_detection/reference/`, `scripts/early_detection.py reference`,
+`configs/early_detection_reference.yaml`).
+- **Samples:** GSE215865, the earliest library of each subject, kept only when it is the timepoint 0 library. This uses
+  the new `keep_timepoints` preprocessing option.
+- **Genes:** 15,116 genes pass the expression filter on these samples.
+- **Models:** within-cohort repeated stratified 5-fold CV, 10 repeats, with the differential selector (k = 200) and
+  logreg and rf. The invariant selector is not run because within one cohort it is the differential selector.
+- **Published value:** the TACO AUROC (0.675) is in the `published_taco_auroc` column. It is quoted, not recomputed.
+
+| classifier | selector | AUROC (mean over 50 folds) | SD | pooled AUROC (mean over repeats) | published TACO |
+|---|---|---|---|---|---|
+| logreg | differential | 0.512 | 0.068 | 0.514 | 0.675 |
+| rf | differential | 0.569 | 0.060 | 0.567 | 0.675 |
+
+### B. Concordance and transfer (`concordance_vs_transfer/`)
+
+`scripts/concordance_vs_transfer.py` reads the `loso_results.csv` of `lc_transcriptomics_blood_v4`,
+`lc_proteomics_affinity_v4`, `lc_proteomics_ms_v4` and `lc_metabolomics`.
+
+- **Rows:** every held-out cohort with the invariant selector, logreg and a label free harmoniser (no error rows).
+  quantile_ref was run only in the transcriptomic block. This gives 79 rows over 18 held-out cohorts (`rows.csv`).
+- **What is related:** each row's AUROC to its `effect_spearman` and `sign_agreement`. Both are computed from the
+  held-out labels after harmonisation and are diagnostics, not model inputs.
+- **Statistics:** Spearman rho with two 2,000-resample bootstrap intervals. The cohort bootstrap resamples held-out
+  cohorts together with all their rows; the row bootstrap resamples rows. In the pooled analysis both resample within
+  block. The permutation p value comes from 10,000 shuffles of the metric across rows (within block for pooled),
+  two-sided on |rho|, with a smallest possible value of 1/10,001.
+
+| analysis | metric | rows | cohorts | Spearman | cohort bootstrap | row bootstrap | p (permutation) |
+|---|---|---|---|---|---|---|---|
+| transcriptomics | effect_spearman | 35 | 7 | 0.356 | -0.25 to 0.68 | 0.03 to 0.62 | 0.0390 |
+| transcriptomics | sign_agreement | 35 | 7 | 0.266 | -0.27 to 0.50 | -0.06 to 0.55 | 0.1250 |
+| proteomics_affinity | effect_spearman | 16 | 4 | 0.494 | -0.24 to 0.98 | -0.12 to 0.90 | 0.0570 |
+| proteomics_affinity | sign_agreement | 16 | 4 | 0.189 | 0.06 to 0.87 | -0.47 to 0.73 | 0.4823 |
+| proteomics_ms | effect_spearman | 16 | 4 | 0.841 | -0.17 to 0.98 | 0.45 to 0.97 | 0.0002 |
+| proteomics_ms | sign_agreement | 16 | 4 | 0.892 | 0.25 to 0.96 | 0.62 to 0.99 | 0.0001 |
+| metabolomics | effect_spearman | 12 | 3 | -0.015 | -0.45 to 0.77 | -0.64 to 0.71 | 0.9680 |
+| metabolomics | sign_agreement | 12 | 3 | 0.000 | -0.38 to 0.74 | -0.63 to 0.72 | 1.0000 |
+| pooled | effect_spearman | 79 | 18 | 0.511 | 0.25 to 0.68 | 0.35 to 0.66 | 0.0001 |
+| pooled | sign_agreement | 79 | 18 | 0.426 | 0.23 to 0.56 | 0.24 to 0.60 | 0.0004 |
+
+- **Variance shares** (`variance.csv`): a two-way ANOVA of AUROC on held-out cohort and harmoniser, with type II sums
+  of squares divided by the total sum of squares. The pooled design is unbalanced because quantile_ref appears in one
+  block only. The F tests and p values are in the file.
+
+| analysis | held-out cohort | harmoniser | residual |
+|---|---|---|---|
+| transcriptomics | 0.539 | 0.082 | 0.379 |
+| proteomics_affinity | 0.291 | 0.462 | 0.247 |
+| proteomics_ms | 0.766 | 0.125 | 0.109 |
+| metabolomics | 0.495 | 0.213 | 0.292 |
+| pooled | 0.635 | 0.011 | 0.323 |
+
+### C. Clustering readiness (`clustering_readiness/`)
+
+`scripts/clustering_readiness.py` uses LC cases only, and the labels are not used otherwise. No gene list is used,
+including the MRCONTROL list.
+
+- **Blocks:**
+  - RNA: the cohorts of `lc_transcriptomics_blood_v4` on their 10,053 shared genes. 148 LC samples: GSE226260_WB 17,
+    GSE226260_PBMC 28, GSE224615 23, GSE251849 11, GSE270045 19, PRJNA1149196_SA 28, PRJNA1149196_QLD 5,
+    GSE297499 17.
+  - Affinity proteins: the cohorts of `lc_proteomics_affinity_v4` on their 166 shared proteins. 353 LC samples:
+    Buggert2025 146, Cervia2024_SomaScan 40, Su2022 75, Fineschi2026 92.
+- **Steps, per label free harmoniser:**
+  1. The harmoniser is fitted on all LC samples and applied to them.
+  2. RNA keeps the 2,000 genes with the largest variance after harmonisation; proteins keep all features. Features are
+     standardised and reduced to 20 principal components.
+  3. Clustering for k = 2 to 6 with three methods: k-means (50 starts); hierarchical (Ward); and consensus (100 k-means
+     runs on 80% subsamples, then average linkage on 1 − consensus).
+- **Outputs:**
+  - Per configuration (`clusters.csv`): the ARI between cluster and cohort, normalised mutual information, silhouette
+    and the smallest cluster. For consensus clustering it also gives the PAC: the fraction of sample pairs with a
+    consensus value between 0.1 and 0.9.
+  - Stability (`stability.csv`, `stability_summary.csv`): each cohort is left out in turn and harmoniser, features,
+    components and clusters are refitted. Stability is the ARI between these clusters and the full-run clusters on the
+    remaining samples.
+  - Cluster-by-cohort counts: `composition.csv`.
+- **Tables below:** k-means only; the other methods are in the files.
+- **Ranges over all three methods and k:**
+  - RNA, ARI with cohort: center_scale 0.00 to 0.04, fsqn 0.00 to 0.02, identity, quantile_ref and rank 0.24 to 0.89.
+  - RNA, mean stability: identity 0.80 to 0.96, quantile_ref 0.84 to 0.98, rank 0.82 to 0.98, center_scale 0.46 to
+    0.79, fsqn 0.27 to 0.84.
+  - Proteins, ARI with cohort: center_scale −0.02 to 0.07, fsqn −0.02 to 0.03, identity 0.19 to 0.75, quantile_ref 0.17
+    to 0.79, rank 0.08 to 0.87.
+  - Proteins, mean stability: 0.13 to 0.96, with the lowest values from hierarchical clustering after center_scale and
+    fsqn.
+
+RNA, ARI between k-means clusters and cohort:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.27 | 0.44 | 0.53 | 0.71 | 0.89 |
+| center_scale | 0.01 | 0.00 | 0.01 | 0.01 | 0.03 |
+| quantile_ref | 0.24 | 0.48 | 0.59 | 0.77 | 0.89 |
+| fsqn | 0.01 | -0.00 | 0.02 | 0.01 | 0.02 |
+| rank | 0.24 | 0.48 | 0.59 | 0.77 | 0.89 |
+
+RNA, stability (mean ARI with the full run over the eight left-out cohorts), k-means:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.83 | 0.96 | 0.83 | 0.82 | 0.94 |
+| center_scale | 0.51 | 0.60 | 0.79 | 0.67 | 0.47 |
+| quantile_ref | 0.98 | 0.92 | 0.84 | 0.91 | 0.94 |
+| fsqn | 0.83 | 0.65 | 0.56 | 0.59 | 0.53 |
+| rank | 0.89 | 0.95 | 0.87 | 0.95 | 0.94 |
+
+RNA, PAC of consensus clustering:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.25 | 0.00 | 0.21 | 0.22 | 0.14 |
+| center_scale | 0.70 | 0.47 | 0.36 | 0.41 | 0.47 |
+| quantile_ref | 0.00 | 0.00 | 0.00 | 0.07 | 0.09 |
+| fsqn | 0.07 | 0.58 | 0.62 | 0.60 | 0.59 |
+| rank | 0.00 | 0.00 | 0.17 | 0.00 | 0.05 |
+
+Affinity proteins, ARI between k-means clusters and cohort:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.19 | 0.30 | 0.32 | 0.53 | 0.66 |
+| center_scale | 0.01 | 0.04 | 0.01 | 0.04 | 0.04 |
+| quantile_ref | 0.33 | 0.37 | 0.79 | 0.58 | 0.63 |
+| fsqn | -0.02 | 0.02 | 0.03 | 0.01 | 0.01 |
+| rank | 0.14 | 0.35 | 0.78 | 0.60 | 0.64 |
+
+Affinity proteins, stability (mean over the four left-out cohorts), k-means:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.75 | 0.65 | 0.63 | 0.69 | 0.78 |
+| center_scale | 0.92 | 0.71 | 0.68 | 0.56 | 0.72 |
+| quantile_ref | 0.59 | 0.64 | 0.57 | 0.80 | 0.77 |
+| fsqn | 0.57 | 0.71 | 0.70 | 0.63 | 0.61 |
+| rank | 0.51 | 0.62 | 0.58 | 0.82 | 0.80 |
+
+Affinity proteins, PAC of consensus clustering:
+
+| harmoniser | k=2 | k=3 | k=4 | k=5 | k=6 |
+|---|---|---|---|---|---|
+| identity | 0.00 | 0.13 | 0.15 | 0.10 | 0.03 |
+| center_scale | 0.05 | 0.26 | 0.29 | 0.34 | 0.24 |
+| quantile_ref | 0.31 | 0.09 | 0.02 | 0.02 | 0.07 |
+| fsqn | 0.06 | 0.32 | 0.15 | 0.20 | 0.32 |
+| rank | 0.24 | 0.04 | 0.04 | 0.06 | 0.03 |
+
+### D. Persistence of the acute signature (`acute_persistence/`)
+
+`scripts/acute_persistence.py`. The acute score is the logreg log odds of acute. In each cohort it is compared between
+LC and COVID_recovered:
+- Hedges g (LC minus recovered) with a 1,000-resample bootstrap interval, and AUROC with a stratified bootstrap
+  interval.
+- Where `days_since_infection` is recorded with more than one value in a cohort, the OLS coefficient of LC in
+  score ~ LC + days, divided by the pooled within-group SD (`g_adjusted`).
+- A DerSimonian–Laird random effects meta-analysis across the scored cohorts: of g, and of `g_days`, which uses
+  `g_adjusted` where available and g elsewhere.
+
+Subjects in the training samples (same `subject_id`) are removed from the targets. Files: `per_cohort.csv`,
+`meta.csv`, `model.csv`, `sharing.csv`, `scores.csv` and `run_info.json`.
+
+**Proteins** (`acute_persistence/protein/`).
+- **Training:** the samples and 163 shared proteins of `control_acute_proteomics` (Cervia2024_SomaScan, Su2022,
+  Zoodsma2022_Hannover; acute versus never_infected). The model is fitted once per label free harmoniser and never
+  refitted.
+- **Targets:** the post-acute LC and COVID_recovered samples of `configs/concordance_proteomics_all_v4.yaml`.
+- **Removed as training subjects:**
+  - every post-acute subject of Cervia2024_SomaScan (40 LC / 73 recovered) and Su2022 (75 / 50);
+  - Cervia2024_MS (40 / 73), whose subjects are those of Cervia2024_SomaScan.
+- **Sharing the proteins** (measuring at least half of the 163):
+  - Buggert2025 measures 162 and Fineschi2026 84.
+  - The MS cohorts measure 2 to 5: Cervia2024_MS 2, Chowdhury2024 3, Kovarik2023_plasma 2, Chowdhury2026 5.
+- **Model proteins:** the training proteins were restricted to the 84 measured in both Buggert2025 and Fineschi2026.
+  For each harmoniser, the invariant selector (k = 50) chose proteins after harmonisation of those 84. The harmoniser
+  was then refitted on the 50 chosen proteins and logreg was fitted on them.
+- **Scored cohorts:** Buggert2025 (146 LC / 51 recovered) and Fineschi2026 (92 / 73). Neither records
+  `days_since_infection`, so `g_days` equals g.
+
+| harmoniser | cohort | LC / recovered | g (95% interval) | AUROC (95% interval) | g adjusted for days |
+|---|---|---|---|---|---|
+| identity | Buggert2025 | 146 / 51 | -0.82 (-1.10 to -0.56) | 0.282 (0.22 to 0.35) |  |
+| identity | Fineschi2026 | 92 / 73 | 0.36 (0.08 to 0.63) | 0.588 (0.50 to 0.67) |  |
+| center_scale | Buggert2025 | 146 / 51 | -0.77 (-1.07 to -0.47) | 0.296 (0.22 to 0.38) |  |
+| center_scale | Fineschi2026 | 92 / 73 | 0.41 (0.15 to 0.71) | 0.608 (0.53 to 0.69) |  |
+| quantile_ref | Buggert2025 | 146 / 51 | -0.84 (-1.12 to -0.59) | 0.266 (0.20 to 0.34) |  |
+| quantile_ref | Fineschi2026 | 92 / 73 | -0.23 (-0.53 to 0.05) | 0.435 (0.35 to 0.52) |  |
+| fsqn | Buggert2025 | 146 / 51 | -0.67 (-1.04 to -0.33) | 0.321 (0.24 to 0.41) |  |
+| fsqn | Fineschi2026 | 92 / 73 | 0.40 (0.11 to 0.70) | 0.606 (0.52 to 0.69) |  |
+| rank | Buggert2025 | 146 / 51 | -0.61 (-0.96 to -0.30) | 0.337 (0.24 to 0.43) |  |
+| rank | Fineschi2026 | 92 / 73 | -0.07 (-0.35 to 0.23) | 0.478 (0.39 to 0.57) |  |
+
+Meta-analysis (k = 2):
+
+| harmoniser | estimate | k | adjusted | pooled g (95% interval) | p | I2 (%) | tau2 |
+|---|---|---|---|---|---|---|---|
+| identity | g | 2 | 0 | -0.23 (-1.39 to 0.93) | 0.701 | 96.2 | 0.675 |
+| identity | g_days | 2 | 0 | -0.23 (-1.39 to 0.93) | 0.701 | 96.2 | 0.675 |
+| center_scale | g | 2 | 0 | -0.18 (-1.33 to 0.98) | 0.763 | 96.2 | 0.666 |
+| center_scale | g_days | 2 | 0 | -0.18 (-1.33 to 0.98) | 0.763 | 96.2 | 0.666 |
+| quantile_ref | g | 2 | 0 | -0.53 (-1.13 to 0.06) | 0.078 | 85.6 | 0.157 |
+| quantile_ref | g_days | 2 | 0 | -0.53 (-1.13 to 0.06) | 0.078 | 85.6 | 0.157 |
+| fsqn | g | 2 | 0 | -0.14 (-1.19 to 0.91) | 0.798 | 95.4 | 0.550 |
+| fsqn | g_days | 2 | 0 | -0.14 (-1.19 to 0.91) | 0.798 | 95.4 | 0.550 |
+| rank | g | 2 | 0 | -0.34 (-0.87 to 0.19) | 0.212 | 82.2 | 0.120 |
+| rank | g_days | 2 | 0 | -0.34 (-0.87 to 0.19) | 0.212 | 82.2 | 0.120 |
+
+**RNA programmes** (`acute_persistence/rna_programmes/`).
+- **Model:** the mosaic acute model of `scripts/mosaic_programmes.py`. Programme scores of the acute environments are
+  rna:GSE215865, protein:Cervia2024_SomaScan, protein:Su2022 and protein:Zoodsma2022_Hannover (acute versus
+  never_infected). Harmonisers identity and center_scale, logreg on the 123 programmes scored in every training
+  environment and every target cohort, fitted once.
+- **Targets:** the RNA cohorts of `configs/mosaic_lc_rna_v4.yaml`. No subject was removed as a training subject.
+- **Not scored:** PRJNA1149196_QLD (5 / 4, below 5 per group).
+- **Days adjustment:** possible only in GSE226260_WB. GSE224615 records a single value (243) and PRJNA1149196_SA, after
+  one sample per subject, a single value (308).
+
+| harmoniser | cohort | LC / recovered | g (95% interval) | AUROC (95% interval) | g adjusted for days |
+|---|---|---|---|---|---|
+| identity | GSE226260_WB | 17 / 20 | -0.55 (-1.30 to 0.11) | 0.312 (0.15 to 0.50) | -0.68 |
+| identity | GSE226260_PBMC | 28 / 8 | 0.67 (0.06 to 1.48) | 0.714 (0.54 to 0.87) |  |
+| identity | GSE224615 | 23 / 13 | 0.14 (-0.50 to 0.75) | 0.478 (0.27 to 0.69) |  |
+| identity | GSE251849 | 11 / 5 | -0.72 (-1.94 to 0.48) | 0.309 (0.07 to 0.64) |  |
+| identity | GSE270045 | 19 / 17 | -0.13 (-0.75 to 0.59) | 0.480 (0.29 to 0.67) |  |
+| identity | PRJNA1149196_SA | 28 / 11 | -0.05 (-0.91 to 0.84) | 0.494 (0.26 to 0.72) |  |
+| identity | GSE297499 | 17 / 9 | -0.73 (-1.49 to -0.04) | 0.294 (0.12 to 0.52) |  |
+| center_scale | GSE226260_WB | 17 / 20 | -0.17 (-0.83 to 0.42) | 0.444 (0.27 to 0.62) | -0.32 |
+| center_scale | GSE226260_PBMC | 28 / 8 | 0.38 (-0.58 to 1.30) | 0.540 (0.30 to 0.75) |  |
+| center_scale | GSE224615 | 23 / 13 | 0.13 (-0.64 to 0.69) | 0.435 (0.25 to 0.63) |  |
+| center_scale | GSE251849 | 11 / 5 | -0.92 (-2.33 to 0.10) | 0.255 (0.04 to 0.56) |  |
+| center_scale | GSE270045 | 19 / 17 | -0.21 (-0.82 to 0.46) | 0.467 (0.28 to 0.67) |  |
+| center_scale | PRJNA1149196_SA | 28 / 11 | -0.08 (-0.88 to 0.71) | 0.497 (0.27 to 0.73) |  |
+| center_scale | GSE297499 | 17 / 9 | -0.48 (-1.42 to 0.31) | 0.333 (0.14 to 0.57) |  |
+
+Meta-analysis (k = 7):
+
+| harmoniser | estimate | k | adjusted | pooled g (95% interval) | p | I2 (%) | tau2 |
+|---|---|---|---|---|---|---|---|
+| identity | g | 7 | 0 | -0.16 (-0.52 to 0.19) | 0.365 | 35.1 | 0.079 |
+| identity | g_days | 7 | 1 | -0.18 (-0.56 to 0.19) | 0.329 | 41.2 | 0.102 |
+| center_scale | g | 7 | 0 | -0.13 (-0.41 to 0.15) | 0.369 | 0.0 | 0.000 |
+| center_scale | g_days | 7 | 1 | -0.16 (-0.43 to 0.12) | 0.275 | 0.0 | 0.000 |
+

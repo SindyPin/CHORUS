@@ -1,0 +1,6 @@
+{
+ "config": "configs/early_detection_horizontal.yaml",
+ "n_features": 386,
+ "n_permutations": 100,
+ "seed": 0
+}

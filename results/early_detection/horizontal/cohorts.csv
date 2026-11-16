@@ -1,0 +1,5 @@
+study_id,group,n_samples,n_subjects
+Su2022,LC,75,75
+Su2022,COVID_recovered,50,50
+Cervia2024_SomaScan,LC,40,40
+Cervia2024_SomaScan,COVID_recovered,73,73

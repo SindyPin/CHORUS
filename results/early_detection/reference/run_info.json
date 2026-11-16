@@ -1,0 +1,6 @@
+{
+ "config": "configs/early_detection_reference.yaml",
+ "n_features": 15116,
+ "n_repeats": 10,
+ "published_taco_auroc": 0.675
+}

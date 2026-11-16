@@ -1,0 +1,24 @@
+{
+ "training_environments": [
+  "rna:GSE215865",
+  "protein:Cervia2024_SomaScan",
+  "protein:Su2022",
+  "protein:Zoodsma2022_Hannover"
+ ],
+ "targets": "configs/mosaic_lc_rna_v4.yaml",
+ "harmonisers": [
+  "identity",
+  "center_scale"
+ ],
+ "n_programmes": 123,
+ "min_members": 5,
+ "scored": [
+  "rna:GSE226260_WB",
+  "rna:GSE226260_PBMC",
+  "rna:GSE224615",
+  "rna:GSE251849",
+  "rna:GSE270045",
+  "rna:PRJNA1149196_SA",
+  "rna:GSE297499"
+ ]
+}

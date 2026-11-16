@@ -1,0 +1,13 @@
+block,study_id,n_lc
+rna,GSE226260_WB,17
+rna,GSE226260_PBMC,28
+rna,GSE224615,23
+rna,GSE251849,11
+rna,GSE270045,19
+rna,PRJNA1149196_SA,28
+rna,PRJNA1149196_QLD,5
+rna,GSE297499,17
+protein_affinity,Buggert2025,146
+protein_affinity,Cervia2024_SomaScan,40
+protein_affinity,Su2022,75
+protein_affinity,Fineschi2026,92

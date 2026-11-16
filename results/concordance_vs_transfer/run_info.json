@@ -1,0 +1,20 @@
+{
+ "blocks": {
+  "transcriptomics": "results/lc_transcriptomics_blood_v4/loso_results.csv",
+  "proteomics_affinity": "results/lc_proteomics_affinity_v4/loso_results.csv",
+  "proteomics_ms": "results/lc_proteomics_ms_v4/loso_results.csv",
+  "metabolomics": "results/lc_metabolomics/loso_results.csv"
+ },
+ "harmonisers": [
+  "identity",
+  "center_scale",
+  "quantile_ref",
+  "fsqn",
+  "rank"
+ ],
+ "selector": "invariant",
+ "classifier": "logreg",
+ "n_boot": 2000,
+ "n_perm": 10000,
+ "seed": 0
+}

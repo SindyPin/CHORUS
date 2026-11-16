@@ -1,0 +1,3 @@
+study_id,group,n_samples,n_subjects
+GSE215865,LC,241,241
+GSE215865,COVID_recovered,104,104
