@@ -1231,3 +1231,13 @@ def test_schema_accepts_pulmonary_sequelae_case_definition():
     assert validate_metadata(meta, ClinicalSchema(), strict=True) == []
     with pytest.raises(ValueError):
         validate_metadata(meta.assign(case_definition="lung"), ClinicalSchema(), strict=True)
+
+
+def test_nanostring_qc_flags():
+    b = _load_script_path("build_rna_cohorts_2026_11")
+    pos = {k: [v * 100, v * 100] for k, v in b.NANOSTRING_POS_FM.items()}
+    raw = pd.DataFrame({**pos, **{f"NEG_{c}": [10, 10] for c in "ABCDEFGH"}, "HK1": [1000, 1000], "HK2": [500, 500]}, index=["s1", "s2"])
+    raw.loc["s2", "NEG_A"] = 400  # negatives above POS_E (50) in s2
+    q = b.nanostring_qc(raw, ["HK1", "HK2"])
+    assert not q.loc["s1", "flag"] and q.loc["s2", "flag"] and "POS_E" in q.loc["s2", "flag_reason"]
+    assert q["pos_scaling_factor"].round(6).tolist() == [1.0, 1.0] and q["pos_linearity_r2"].min() > 0.99

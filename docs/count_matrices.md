@@ -127,3 +127,65 @@ November 2026"). Configs: `configs/lc_transcriptomics_blood_v4.yaml` and its sen
 - **Role.** A sensitivity cohort. It is in no benchmark config and must not enter the main benchmark.
 - **Builder.** `python scripts/build_rna_cohorts_2026_11.py GSE228320` writes `data/meta/GSE228320_meta.csv`; the
   matrix is read as deposited.
+
+## CORSIP2026 (Espin 2026, Front Cell Infect Microbiol, PMID 42328163, PMC13275656; added 17 November 2026)
+
+- **Source.** GitHub repository estefespin/CORSIP_omics (CC0 1.0), cloned at commit
+  8bbb8421de7c60afff328d1675b978f00f73914b into `data/counts/CORSIP2026/raw/CORSIP_omics` (104 files, 81 MB). Its files:
+  - NanoString: `RawNanoStringData.csv` (raw counts), `NormNoRepNoHK.csv` (nSolver normalised, replicates and
+    housekeeping genes removed) and `PanCancer.xlsx` (the panel gene list).
+  - Metadata: `SubjectsNoRep.csv` (SampleID, StudyID, SexBirth, Age, Race, LCStatus), `CORSIP_Full.csv` (47
+    participants × 336 questionnaire, test and serology columns) and `Joined_BMI.csv`.
+  - Metabolomics: `Metabolomics_CORSIP.csv` and the HILIC, RP and lipid files, positive and negative mode.
+  - Analysis output: differential expression tables, validation tables, figures, R scripts and `.RData`. None of these
+    was run or loaded.
+- **Platform.** The expression data are **NanoString nCounter PanCancer Immune Profiling** counts of whole blood
+  (PAXgene), a targeted panel, not RNA-seq. There are no reads and no RNA-seq matrix. The raw file has 41 samples × 804
+  probes: 750 endogenous genes, 40 housekeeping genes, 6 positive and 8 negative controls. The endogenous probes include
+  SARS-CoV-2 M, N and S, CMV UL83 and EBV LMP2.
+- **Counts before building.**
+  - `SubjectsNoRep.csv`: 37 samples, `LCStatus` Case 8 and Control 29, one per participant.
+  - `CORSIP_Full.csv`: 47 participants, Case 12 and Control 35 (the paper's 12 and 35). 37 of them have a NanoString
+    sample, and their `LCStatus`, sex and age agree with `SubjectsNoRep.csv`.
+  - The 4 other raw samples (PX-02, PX-19, PX-30, PX-43) are not in either metadata file. They correlate at 0.98 with
+    retained samples, fitting the README's "replicate samples removed". They are not used.
+- **Definitions** (paper Methods): CORSIP British Columbia paramedics, not hospitalised.
+  - LC (Case): WHO clinical case definition from the 24-month questionnaire: new symptoms lasting at least 2 months,
+    starting within 3 months of a confirmed infection. `case_definition` WHO_2021.
+  - Control: confirmed SARS-CoV-2 infection (positive PCR or antigen test, nucleocapsid antibodies, or a symptom-based
+    diagnosis) and no LC symptoms during the study: `COVID_recovered`.
+  - Infection evidence per control in `CORSIP_Full.csv`: 27 of the 29 have a positive test or a reactive Roche
+    nucleocapsid result at some collection.
+  - PX-34 and PX-47 have neither, and no symptom date, and answered "I have never had COVID-19". They keep the authors'
+    label but get `control_type` convalescent_unverified (as Chowdhury2024).
+- **Time.**
+  - PAXgene blood was drawn only at the final study visit (January 2023, paper Methods). The repository has no
+    per-sample PAXgene date, so `days_since_infection` is empty.
+  - The first positive test date is kept in `first_positive_test`, for every LC sample and 21 of the 29 controls.
+  - `CORSIP_Full.csv` also has `MonthsSinceInfection1` to `6`, which are months between infection and the serum
+    collections.
+- **Other layers of the same people.** Untargeted serum metabolomics before and after infection, for 12 participants
+  (6 LC, 6 control; subjects S1 to S12, timepoints 0 and 1). The paper says two LC cases are in both assays. The
+  repository does not link the S ids to the PX sample or participant ids, so the layers cannot be paired. The
+  metabolomics is not built.
+- **Matrix and identifiers.** `scripts/build_rna_cohorts_2026_11.py CORSIP2026`:
+  - The raw counts of the 790 endogenous and housekeeping genes are mapped from symbol to Ensembl with the HGNC table,
+    as for GSE297499. 779 map, onto 778 Ensembl genes.
+  - Not mapped: BAGE, TARP, the four KIR group probes and the five viral probes.
+  - Output: `data/counts/CORSIP2026/CORSIP2026_nanostring_counts_ensembl.tsv.gz`, 778 genes × 37 samples, integer.
+  - The loader treats it as counts (log CPM over the panel). All 778 genes pass the expression filter.
+- **QC** (flags, not exclusions; nSolver defaults; `data/counts/CORSIP2026/CORSIP2026_nanostring_qc.tsv`):
+  - Rules: positive control scaling factor 0.3 to 3, housekeeping scaling factor 0.1 to 10, positive control linearity
+    R² at least 0.95, POS_E above the negative control mean plus 2 SD.
+  - Results: positive control factors 0.81 to 1.31, housekeeping factors 0.69 to 1.33, R² 0.974 to 0.993, POS_E 81 to
+    172 against 16 to 32. No sample is flagged.
+  - The RIN ≥ 7 rule of the paper was applied by the authors before profiling.
+- **Gene space.** 495 of the 778 genes are among the 10,053 genes shared by the `lc_transcriptomics_blood_v4` cohorts.
+  A config that intersects genes across cohorts and includes CORSIP2026 therefore keeps at most 495 genes. How it
+  enters the version 5 rerun is a config decision; no config was changed and no benchmark was rerun.
+- **Participant overlap.** None of the cohorts in the benchmark recruited from CORSIP or from British Columbia
+  paramedics:
+  - The Canadian cohorts are Chowdhury2024 and Chowdhury2026 (Sherbrooke, Quebec, BQC19).
+  - The repository's `Validation/` folder uses GSE224615 and GSE275334 as external validation sets, not as the same
+    people.
+  - Ids cannot be linked across deposits, so the check rests on recruitment site and study.

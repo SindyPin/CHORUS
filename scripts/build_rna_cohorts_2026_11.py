@@ -32,8 +32,22 @@ case is a lung function outcome, not a Long COVID definition: lc_status LC with 
 controls COVID_recovered (ARDS survivors with mild or no diffusion impairment, other symptoms not recorded). A
 sensitivity cohort: it is in no main benchmark config.
 
+CORSIP2026 (Espin 2026, Front Cell Infect Microbiol, PMID 42328163, PMC13275656; added 17 November 2026). Whole blood
+(PAXgene, final study visit, January 2023) of British Columbia paramedics of the CORSIP cohort, profiled with the
+NanoString nCounter PanCancer Immune Profiling Panel (a targeted panel, not RNA-seq). Source: the GitHub repository
+estefespin/CORSIP_omics (CC0) at the commit in docs/provenance.md. Values: RawNanoStringData.csv, raw nCounter counts;
+the 14 positive and negative control probes are dropped (they are used for the QC flags), the endogenous and
+housekeeping genes are kept and mapped from symbol to Ensembl as for GSE297499; samples: the 37 of SubjectsNoRep.csv
+(the 4 other raw samples are replicates without a label). Labels: SubjectsNoRep.csv LCStatus (Case = LC, WHO 2021 from
+the 24 month questionnaire; Control = infected without LC symptoms, COVID_recovered), checked against CORSIP_Full.csv.
+A control without any record of infection in CORSIP_Full.csv (positive test, reactive nucleocapsid serology or symptom
+date) gets control_type convalescent_unverified. QC (flags, not exclusions; NanoString nSolver defaults): positive
+control scaling factor outside 0.3 to 3, housekeeping scaling factor outside 0.1 to 10, positive control linearity R2
+below 0.95, POS_E not above the mean plus 2 SD of the negative controls.
+
   python scripts/build_rna_cohorts_2026_11.py            (PRJNA1149196 and GSE297499)
   python scripts/build_rna_cohorts_2026_11.py GSE228320  (one study)
+  python scripts/build_rna_cohorts_2026_11.py CORSIP2026 (one study)
 """
 
 from __future__ import annotations
@@ -56,6 +70,9 @@ QUANT = ROOT / "data" / "quant" / "PRJNA1149196"
 QUANT_FULL = {"PRJNA1149196_QLD": ROOT / "data" / "quant" / "PRJNA1149196_QLD_full"}  # quantified on all reads
 GSE297499 = ROOT / "data" / "counts" / "GSE297499"
 GSE228320 = ROOT / "data" / "counts" / "GSE228320"
+CORSIP = ROOT / "data" / "counts" / "CORSIP2026"
+CORSIP_REPO = CORSIP / "raw" / "CORSIP_omics"
+NANOSTRING_POS_FM = {"POS_A": 128, "POS_B": 32, "POS_C": 8, "POS_D": 2, "POS_E": 0.5, "POS_F": 0.125}
 
 SINCLAIR_STATUS = {"PASC": "LC", "PASC-CVS": "LC", "PASC_CVS": "LC", "Recovered": "COVID_recovered", "Control": "never_infected"}
 SINCLAIR_DAYS = {"44 weeks post infection": 308, "68 weeks post infection": 476}
@@ -159,6 +176,88 @@ def gse228320() -> pd.DataFrame:
     return out
 
 
+def nanostring_qc(raw: pd.DataFrame, housekeeping: list) -> pd.DataFrame:
+    """Per sample nSolver style QC of raw nCounter counts (samples x probes): scaling factors, linearity, detection limit."""
+    pos = raw[list(NANOSTRING_POS_FM)].astype(float)
+    neg = raw[[c for c in raw.columns if c.startswith("NEG_")]].astype(float)
+    gm = lambda d: np.exp(np.log(d.clip(lower=1)).mean(axis=1))  # noqa: E731
+    pos_gm, hk_gm = gm(pos), gm(raw[housekeeping].astype(float))
+    x = np.log2(list(NANOSTRING_POS_FM.values()))
+    r2 = pos.apply(lambda r: np.corrcoef(x, np.log2(r.clip(lower=1)))[0, 1] ** 2, axis=1)
+    lod = neg.mean(axis=1) + 2 * neg.std(axis=1, ddof=1)
+    q = pd.DataFrame({
+        "pos_scaling_factor": pos_gm.mean() / pos_gm,
+        "hk_scaling_factor": hk_gm.mean() / hk_gm,
+        "pos_linearity_r2": r2,
+        "pos_e": pos["POS_E"],
+        "neg_mean_plus_2sd": lod,
+    })
+    reasons = pd.DataFrame({
+        "positive control scaling factor outside 0.3 to 3": ~q["pos_scaling_factor"].between(0.3, 3),
+        "housekeeping scaling factor outside 0.1 to 10": ~q["hk_scaling_factor"].between(0.1, 10),
+        "positive control linearity R2 below 0.95": q["pos_linearity_r2"] < 0.95,
+        "POS_E not above the negative control mean plus 2 SD": q["pos_e"] <= q["neg_mean_plus_2sd"],
+    })
+    q["flag"] = reasons.any(axis=1)
+    q["flag_reason"] = reasons.apply(lambda r: "; ".join(r.index[r.values]), axis=1)
+    return q
+
+
+def corsip2026() -> pd.DataFrame:
+    raw = pd.read_csv(CORSIP_REPO / "RawNanoStringData.csv").set_index("SampleID")
+    subj = pd.read_csv(CORSIP_REPO / "SubjectsNoRep.csv")
+    full = pd.read_csv(CORSIP_REPO / "CORSIP_Full.csv", low_memory=False)
+    norm_genes = set(pd.read_csv(CORSIP_REPO / "NormNoRepNoHK.csv", nrows=0).columns) - {"SampleID"}
+    controls = [c for c in raw.columns if c.startswith(("POS_", "NEG_"))]
+    housekeeping = sorted(set(raw.columns) - set(controls) - norm_genes)  # removed from the normalised file as housekeeping
+    if set(subj["SampleID"]) - set(raw.index):
+        raise ValueError("CORSIP2026: labelled samples without raw counts")
+    J = subj.merge(full, left_on="SampleID", right_on="SAMPLE_ID", how="left", suffixes=("", "_full"))
+    if J["SAMPLE_ID"].isna().any() or not (J["LCStatus"] == J["LCStatus_full"]).all():
+        raise ValueError("CORSIP2026: SubjectsNoRep and CORSIP_Full disagree on a sample or its LCStatus")
+    raw_used = raw.loc[subj["SampleID"]]
+    qc = nanostring_qc(raw_used, housekeeping)
+    qc.rename_axis("sample_id").to_csv(CORSIP / "CORSIP2026_nanostring_qc.tsv", sep="\t", float_format="%.4f")
+    m = symbol_map(pd.read_csv(ROOT / "data" / "ref" / "hgnc_complete_set.txt", sep="\t", dtype=str))
+    genes = [c for c in raw.columns if c not in controls]
+    ens = pd.Series(genes, index=genes).map(m)
+    Y = raw_used[genes].T
+    Y = Y[ens.notna().values].groupby(ens[ens.notna()].values).sum()
+    Y.index.name = "gene_id"
+    Y.to_csv(CORSIP / "CORSIP2026_nanostring_counts_ensembl.tsv.gz", sep="\t")
+    print(f"CORSIP2026: {ens.notna().sum()} of {len(genes)} panel genes mapped ({len(housekeeping)} housekeeping); unmapped {sorted(ens.index[ens.isna()])}; "
+          f"{len(Y)} Ensembl genes x {Y.shape[1]} samples; {int(qc['flag'].sum())} samples flagged at QC")
+    tests = J[[f"CovPosTest{i}" for i in range(1, 9)]].notna().any(axis=1)
+    n_react = J[[c for c in J.columns if c.startswith("CBS_Roche_N")]].apply(lambda r: (r.astype(str) == "Reactive").any(), axis=1)
+    evidence = tests | n_react | J["CovPosSympDate"].notna()
+    lc = J["LCStatus"] == "Case"
+    first_test = pd.to_datetime(J[[f"CovPosTest{i}" for i in range(1, 9)]].stack(), errors="coerce").groupby(level=0).min().reindex(J.index)
+    df = pd.DataFrame({
+        "sample_id": J["SampleID"].values,
+        "subject_id": ("CORSIP2026:" + J["StudyID"]).values,
+        "lc_status": np.where(lc, "LC", "COVID_recovered"),
+        "case_definition": np.where(lc, "WHO_2021", "not_applicable"),
+        "control_type": np.where(lc, "not_applicable", np.where(evidence, "COVID_recovered", "convalescent_unverified")),
+        "sample_phase": "post_acute",
+        "sample_matrix": "whole_blood",
+        "acute_severity": "ambulatory",
+        "age": J["Age"].values,
+        "sex": J["SexBirth"].str.lower().values,
+        "platform": "NanoString nCounter PanCancer Immune Profiling Panel (770 genes), whole blood PAXgene; raw counts",
+        "collection_country": "Canada",
+        "timepoint": "final_visit_2023_01",
+        "notes": np.where(lc, "LC: WHO clinical case definition from the 24 month questionnaire (paper Methods)",
+                          np.where(evidence, "control: infected, no LC symptoms during the study",
+                                   "control: no positive test, reactive nucleocapsid serology or symptom date in CORSIP_Full.csv; the participant answered never having had COVID-19"))
+                 + "; PAXgene blood at the final visit (January 2023); first positive test " + first_test.dt.strftime("%Y-%m-%d").fillna("not recorded").values
+                 + np.where(qc["flag"].values, "; NanoString QC flag: " + qc["flag_reason"].values, ""),
+    })
+    out = finish(df, "CORSIP2026")
+    out["first_positive_test"] = first_test.dt.strftime("%Y-%m-%d").values
+    out["nanostring_qc_flag"] = qc["flag"].values
+    return out
+
+
 def prjna1149196() -> dict:
     bs = pd.read_csv(META / "raw_PRJNA1149196" / "biosamples.csv", dtype=str)
     runs = pd.read_csv(QUANT / "ena_filereport.tsv", sep="\t", dtype=str)
@@ -213,6 +312,8 @@ def split_counts(meta: dict) -> None:
 def main():
     if sys.argv[1:] == ["GSE228320"]:
         built = {"GSE228320": gse228320()}
+    elif sys.argv[1:] == ["CORSIP2026"]:
+        built = {"CORSIP2026": corsip2026()}
     else:
         built = {"GSE297499": gse297499(), **prjna1149196()}
     for sid, df in built.items():

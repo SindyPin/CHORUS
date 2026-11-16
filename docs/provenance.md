@@ -302,3 +302,22 @@ run to the named studies), which logs them in `data/proteomics/downloads.tsv`.
     3 MB of `REC-2349_Russell_v2.sky` were read with an HTTP range request.
   - The Berezhnoy 2023 supplement (Europe PMC, PMC10203989). It and the partial Skyline file were kept in the session
     scratch space only.
+
+### CORSIP2026 (added 17 November 2026)
+
+- **Source.** `git clone https://github.com/estefespin/CORSIP_omics.git` into `data/counts/CORSIP2026/raw/CORSIP_omics`,
+  commit 8bbb8421de7c60afff328d1675b978f00f73914b (2026-09-08, "Update README.md"). Licence CC0 1.0 (`LICENSE`). Paper:
+  Espin 2026 Front Cell Infect Microbiol, doi:10.3389/fcimb.2026.1808564, PMID 42328163, PMC13275656. Nothing in the
+  repository was executed or loaded (`.RData`, `.rds` and `.qmd` files untouched). Definitions: `docs/count_matrices.md`
+  ("CORSIP2026").
+- **SHA-256 of the files used:**
+
+  | file | SHA-256 |
+  |---|---|
+  | `RawNanoStringData.csv` | f31bfabab7ed800451766257021d698062c3d6ed633c0d4f5f1d05b37b7c8d0c |
+  | `NormNoRepNoHK.csv` | 1a5f98e307a96a82393298a12ba8650d3b51d94ddba3210253a26b5d58611581 |
+  | `SubjectsNoRep.csv` | 43580ee0937e9964a03147b4f8abca3db22ef5d333dfe1c1b9c73a0206c9ceed |
+  | `CORSIP_Full.csv` | f284e72a7b0304c367eae8ff74942cb6d2bfdb3ddd97232782767f26dabb9e61 |
+  | `Joined_BMI.csv` (inspected, not used) | ff438bef6e25404d54f8d4b5bf4cb961721985cedff28b8d95ddd204b1a97d5a |
+  | `Metabolomics_CORSIP.csv` (inspected, not used) | e0d16df7e37a0ddc9f86ae1b3416d982869116cff78e7125fbbfb07dc5f88d38 |
+  | `LICENSE` | a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499 |
