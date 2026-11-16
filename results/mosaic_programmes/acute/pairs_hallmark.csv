@@ -1,0 +1,7 @@
+feature_set,cohort_a,cohort_b,n_shared,spearman,p,fewer_than_10_shared
+hallmark,rna:GSE215865,protein:Cervia2024_SomaScan,50,0.1320048019207683,0.3608146906490367,False
+hallmark,rna:GSE215865,protein:Su2022,33,0.30414438502673796,0.08527934797383692,False
+hallmark,rna:GSE215865,protein:Zoodsma2022_Hannover,26,0.33948717948717944,0.08974761847939669,False
+hallmark,protein:Cervia2024_SomaScan,protein:Su2022,33,0.143048128342246,0.427101999751291,False
+hallmark,protein:Cervia2024_SomaScan,protein:Zoodsma2022_Hannover,26,0.3121367521367521,0.1205679604473873,False
+hallmark,protein:Su2022,protein:Zoodsma2022_Hannover,25,0.7038461538461539,8.63967245966885e-05,False

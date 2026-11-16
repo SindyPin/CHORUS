@@ -1,0 +1,5 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,n_values_imputed,matrix,accession
+Cervia2024_MS,proteomics,113,179,40,73,0,842,serum,doi:10.17632/dvf6yvrg4x.1
+Chowdhury2024,proteomics,30,179,21,9,0,56,plasma,PXD047623
+Kovarik2023_plasma,proteomics,26,179,13,13,0,593,plasma,PXD036969
+Chowdhury2026,proteomics,115,179,53,62,0,198,plasma,PXD066724

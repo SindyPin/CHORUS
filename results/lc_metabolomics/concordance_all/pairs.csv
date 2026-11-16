@@ -1,0 +1,13 @@
+feature_set,cohort_a,cohort_b,n_shared,spearman,p,fewer_than_10_shared
+all,Martinez2024,Lopez2023,41,0.15592334494773522,0.33030883977153147,False
+all,Martinez2024,Saito2024,17,-0.286764705882353,0.2644463470710112,False
+all,Martinez2024,Su2022_metabolomics,158,0.058261923849829395,0.46713776390170325,False
+all,Lopez2023,Saito2024,28,0.006568144499178982,0.9735381858531121,False
+all,Lopez2023,Su2022_metabolomics,61,0.21253305129561076,0.10008484426820688,False
+all,Saito2024,Su2022_metabolomics,66,0.10385137250808894,0.4066408255626205,False
+top50,Martinez2024,Lopez2023,1,,,True
+top50,Martinez2024,Saito2024,2,,,True
+top50,Martinez2024,Su2022_metabolomics,2,,,True
+top50,Lopez2023,Saito2024,2,,,True
+top50,Lopez2023,Su2022_metabolomics,2,,,True
+top50,Saito2024,Su2022_metabolomics,4,,,True

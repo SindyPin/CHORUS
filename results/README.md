@@ -28,6 +28,9 @@ changes". The runs of 15 November (from 06:49) ran one after another; see "Prote
 Test 2 runs (from 07:43) ran one after another; see "Test 2: layers on the same people (15 November 2026)". The Test 3
 run (17:24) ran alone; see "Test 3: mosaic programmes (15 November 2026)". The metabolomics runs of 16 November ran one
 after another (the all-cohort concordance was rerun into its final folder at 00:19:51); see "Metabolomics (16 November
+2026)". The version 4 proteomics runs of 16 November (from 07:27) ran one after another while the PRJNA1149196 salmon
+quantification ran in the background, so their runtimes overlap with it. The reporting reruns of 16 November (from
+10:51) ran one after another, also during the quantification; see "Version 4 cohort set and reporting fixes (16 November
 2026)".
 
 | folder | command | config | runtime (s) |
@@ -49,23 +52,30 @@ after another (the all-cohort concordance was rerun into its final folder at 00:
 | `control_sex_label` | `scripts/control_runs.py sex configs/lc_transcriptomics_blood.yaml --out results/control_sex_label` | configs/lc_transcriptomics_blood.yaml, changed by the script | 112 (rerun with `forced_features`, started 2026-11-15 06:57:24; version 3: 113) |
 | `lc_transcriptomics_blood_harmonisation_v1` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` (folder renamed) | configs/lc_transcriptomics_blood.yaml | 100 (started 2026-11-13 09:01:09) |
 | `lc_transcriptomics_blood_harmonisation` | `chorus harmonisation configs/lc_transcriptomics_blood.yaml --out results/lc_transcriptomics_blood_harmonisation` | configs/lc_transcriptomics_blood.yaml | 104 (version 3, started 2026-11-13 15:26:30) |
-| `concordance` | `scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance` | configs/lc_transcriptomics_blood.yaml | 48 (started 2026-11-13 09:03:45) |
+| `concordance` | `scripts/concordance.py configs/lc_transcriptomics_blood.yaml --out results/concordance` | configs/lc_transcriptomics_blood.yaml | 48 (started 2026-11-13 09:03:45); reporting rerun 49 (started 2026-11-16 10:51:30) |
 | `lc_proteomics_affinity` | `chorus run configs/lc_proteomics_affinity.yaml --within` | configs/lc_proteomics_affinity.yaml | 236 (started 2026-11-15 06:49:03) |
 | `lc_proteomics_ms` | `chorus run configs/lc_proteomics_ms.yaml --within` | configs/lc_proteomics_ms.yaml | 226 (started 2026-11-15 06:52:59) |
 | `control_acute_proteomics` | `chorus run configs/control_acute_proteomics.yaml --within` | configs/control_acute_proteomics.yaml | 23 (started 2026-11-15 06:56:45) |
 | `lc_proteomics_affinity/harmonisation` | `chorus harmonisation configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/harmonisation` | configs/lc_proteomics_affinity.yaml | 4 (started 2026-11-15 06:57:08) |
 | `lc_proteomics_ms/harmonisation` | `chorus harmonisation configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/harmonisation` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:12) |
-| `lc_proteomics_affinity/concordance` | `scripts/concordance.py configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/concordance --top 50` | configs/lc_proteomics_affinity.yaml | 2 (started 2026-11-15 06:57:13) |
-| `lc_proteomics_ms/concordance` | `scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:16) |
-| `concordance_proteomics_all` | `scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50` | configs/concordance_proteomics_all.yaml | 7 (started 2026-11-15 06:57:17) |
+| `lc_proteomics_affinity/concordance` | `scripts/concordance.py configs/lc_proteomics_affinity.yaml --out results/lc_proteomics_affinity/concordance --top 50` | configs/lc_proteomics_affinity.yaml | 2 (started 2026-11-15 06:57:13); reporting rerun 3 (started 2026-11-16 10:52:19) |
+| `lc_proteomics_ms/concordance` | `scripts/concordance.py configs/lc_proteomics_ms.yaml --out results/lc_proteomics_ms/concordance --top 50` | configs/lc_proteomics_ms.yaml | 1 (started 2026-11-15 06:57:16); reporting rerun 1 (started 2026-11-16 10:52:22) |
+| `concordance_proteomics_all` | `scripts/concordance.py configs/concordance_proteomics_all.yaml --out results/concordance_proteomics_all --top 50` | configs/concordance_proteomics_all.yaml | 7 (started 2026-11-15 06:57:17); reporting rerun 10 (started 2026-11-16 10:52:23) |
 | `control_acute_transcriptomics` | no run: fewer than three cohorts qualify (`cohorts.csv`) | none | none |
-| `paired_Cervia2024` | `scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024` | built into the script | 2059 (started 2026-11-15 07:43:05) |
+| `paired_Cervia2024` | `scripts/paired_layers.py --cohort Cervia2024 --out results/paired_Cervia2024` | built into the script | 2059 (started 2026-11-15 07:43:05); `effect_correlation.csv` rewritten by `--pairs-only`, 2 (started 2026-11-16 10:53:01) |
 | `paired_Su2022` | `scripts/paired_layers.py --cohort Su2022 --out results/paired_Su2022` | built into the script | 1029 (started 2026-11-15 08:17:24) |
-| `mosaic_programmes` | `scripts/mosaic_programmes.py --out results/mosaic_programmes` | configs/mosaic_lc_rna.yaml, configs/concordance_proteomics_all.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml | 239 (started 2026-11-15 17:24:32; acute 28, lc 209) |
+| `mosaic_programmes` | `scripts/mosaic_programmes.py --out results/mosaic_programmes` | configs/mosaic_lc_rna.yaml, configs/concordance_proteomics_all.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml | 239 (started 2026-11-15 17:24:32; acute 28, lc 209); `pairs_<set>.csv` written by `--contrasts acute,lc --pairs-only`, 1 (started 2026-11-16 10:52:59) |
 | `lc_metabolomics` | `chorus run configs/lc_metabolomics.yaml --within` | configs/lc_metabolomics.yaml | 205 (started 2026-11-16 00:16:10) |
 | `lc_metabolomics/harmonisation` | `chorus harmonisation configs/lc_metabolomics.yaml --out results/lc_metabolomics/harmonisation --n-pcs 10` | configs/lc_metabolomics.yaml | 1 (started 2026-11-16 00:19:35) |
-| `lc_metabolomics/concordance` | `scripts/concordance.py configs/lc_metabolomics.yaml --out results/lc_metabolomics/concordance --top 20` | configs/lc_metabolomics.yaml | 1 (started 2026-11-16 00:19:36) |
-| `lc_metabolomics/concordance_all` | `scripts/concordance.py configs/concordance_metabolomics_all.yaml --out results/lc_metabolomics/concordance_all --top 50` | configs/concordance_metabolomics_all.yaml | 2 (started 2026-11-16 00:19:51) |
+| `lc_metabolomics/concordance` | `scripts/concordance.py configs/lc_metabolomics.yaml --out results/lc_metabolomics/concordance --top 20` | configs/lc_metabolomics.yaml | 1 (started 2026-11-16 00:19:36); reporting rerun 2 (started 2026-11-16 10:52:54) |
+| `lc_metabolomics/concordance_all` | `scripts/concordance.py configs/concordance_metabolomics_all.yaml --out results/lc_metabolomics/concordance_all --top 50` | configs/concordance_metabolomics_all.yaml | 2 (started 2026-11-16 00:19:51); reporting rerun 3 (started 2026-11-16 10:52:56) |
+| `lc_proteomics_affinity_v4` | `chorus run configs/lc_proteomics_affinity_v4.yaml --within` | configs/lc_proteomics_affinity_v4.yaml | 421 (started 2026-11-16 07:27:40) |
+| `lc_proteomics_affinity_v4/harmonisation` | `chorus harmonisation configs/lc_proteomics_affinity_v4.yaml --out results/lc_proteomics_affinity_v4/harmonisation` | configs/lc_proteomics_affinity_v4.yaml | 3 (started 2026-11-16 07:34:58) |
+| `lc_proteomics_affinity_v4/concordance` | `scripts/concordance.py configs/lc_proteomics_affinity_v4.yaml --out results/lc_proteomics_affinity_v4/concordance --top 50` | configs/lc_proteomics_affinity_v4.yaml | 2 (started 2026-11-16 07:35:01); reporting rerun 4 (started 10:52:33) |
+| `lc_proteomics_ms_v4` | `chorus run configs/lc_proteomics_ms_v4.yaml --within` | configs/lc_proteomics_ms_v4.yaml | 403 (started 2026-11-16 07:40:23) |
+| `lc_proteomics_ms_v4/harmonisation` | `chorus harmonisation configs/lc_proteomics_ms_v4.yaml --out results/lc_proteomics_ms_v4/harmonisation` | configs/lc_proteomics_ms_v4.yaml | 3 (started 2026-11-16 07:47:06) |
+| `lc_proteomics_ms_v4/concordance` | `scripts/concordance.py configs/lc_proteomics_ms_v4.yaml --out results/lc_proteomics_ms_v4/concordance --top 50` | configs/lc_proteomics_ms_v4.yaml | 1 (started 2026-11-16 07:47:09); reporting rerun 1 (started 10:52:37) |
+| `concordance_proteomics_all_v4` | `scripts/concordance.py configs/concordance_proteomics_all_v4.yaml --out results/concordance_proteomics_all_v4 --top 50` | configs/concordance_proteomics_all_v4.yaml | 14 (started 2026-11-16 07:47:10); reporting rerun 14 (started 10:52:39) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -119,6 +129,9 @@ selection, 200 bootstrap resamples.
 | lc_proteomics_ms (and its harmonisation and concordance) | Cervia2024_MS, Chowdhury2024, Kovarik2023_plasma | none |
 | control_acute_proteomics | Cervia2024_SomaScan, Su2022, Zoodsma2022_Hannover | none |
 | concordance_proteomics_all | no folds; the six cohorts of the two blocks | none |
+| lc_proteomics_affinity_v4 (and its harmonisation and concordance) | Buggert2025, Cervia2024_SomaScan, Su2022, Fineschi2026 | none |
+| lc_proteomics_ms_v4 (and its harmonisation and concordance) | Cervia2024_MS, Chowdhury2024, Kovarik2023_plasma, Chowdhury2026 | none |
+| concordance_proteomics_all_v4 | no folds; the eight cohorts of the two v4 blocks | none |
 
 ## GSE224615 samples flagged at QC
 
@@ -153,7 +166,9 @@ local.
 - `lc_transcriptomics_blood_harmonisation`: `<held_out>/<harmoniser>.csv` (one table per fold and harmoniser) and
   `all_metrics.csv` (all of them stacked).
 - `concordance`: `effects.csv`, `spearman_all_genes.csv`, `spearman_all_genes_p.csv`, `spearman_top500.csv`,
-  `spearman_top500_p.csv`, `top500_genes.csv`, `cohort_annotation.csv`.
+  `spearman_top500_p.csv`, `top500_genes.csv`, `cohort_annotation.csv`, and since the reporting rerun of 16 November
+  `n_shared.csv`, `n_shared_top500.csv` and `pairs.csv` (see "Version 4 cohort set and reporting fixes"). Every
+  concordance folder has these files, with its own `top<N>`.
 - Proteomics folders (`lc_proteomics_affinity`, `lc_proteomics_ms`, `control_acute_proteomics`): the loso and
   within-study files above, plus `cohorts.csv` (samples, class counts and `n_values_imputed` per cohort) and
   `features_observed_fraction.csv` (per protein and cohort, the fraction of the cohort's samples with a value before
@@ -169,10 +184,13 @@ local.
 - `mosaic_programmes/`: `genesets.csv`, `run_info.json` and, per contrast (`acute`, `lc`), `cohorts.csv`,
   `coverage.csv`, `effects.csv`, `effects_var.csv`, `concordance_<set>.csv` with `_p` and `n_shared_<set>.csv`
   (`all`, `hallmark`, `reactome`), `partition.csv`, `loso.csv`, `loso_predictions.csv`, and for `lc`
-  `bridge_cervia.csv` (see "Test 3"). `scores.csv.gz` is not committed.
+  `bridge_cervia.csv` (see "Test 3"), and `pairs_<set>.csv` (pairs with `n_shared` and `fewer_than_10_shared`).
+  `scores.csv.gz` is not committed.
 - `lc_metabolomics/`: as `lc_proteomics_affinity` (with `harmonisation/` and `concordance/` with `top20` files), plus
   `concordance_all/` (four cohorts, pairwise shared, `top50` files) and `mapping/` (`mapping_summary.csv`,
   `n_shared.csv`, `shared_by_k.csv`); see "Metabolomics".
+- `lc_proteomics_affinity_v4/`, `lc_proteomics_ms_v4/`: as `lc_proteomics_affinity`; `concordance_proteomics_all_v4/`:
+  as `concordance_proteomics_all`.
 - `concordance_epigenomics/`: `cohorts.csv` only (groups and why no effect was computed; see "Metabolomics").
 
 ## Column glossary
@@ -192,7 +210,7 @@ local.
 | n_strict_invariant | genes that passed the strict invariance screen (invariant selector; empty otherwise) |
 | sign_agreement | over the selected genes, the fraction whose Hedges g between LC and COVID_recovered in the held-out study has the same sign as the pooled training effect; uses the held-out labels and is a diagnostic only. Empty when the selector has no effect table (variance, prior_only) or the held-out study has fewer than 3 samples per class |
 | effect_spearman | Spearman correlation between the held-out Hedges g and the pooled training effect over the same genes; empty under the same conditions |
-| classifier | classifier |
+| classifier | `logreg` (L2 logistic regression, C 0.5, balanced class weights), `rf` (random forest), `taco` (soft voting ensemble; in every real-data run **without TabPFN**, `CHORUS_DISABLE_TABPFN=1`, so rf, extratrees, svc and mlp only), `cross_study` (one logreg per training study with at least 3 samples per class, the members' probabilities averaged with weights proportional to each member's mean AUROC on the other training studies minus 0.5, floored at 0; Patil and Parmigiani 2018) |
 | n_train | training samples |
 | n_train_studies | training studies |
 | auroc, auprc | area under the ROC and precision-recall curves on the held-out study |
@@ -208,7 +226,11 @@ local.
 
 **loso_summary.csv**: per harmoniser, selector and classifier, the `mean`, `median`, `std`, `min` and `max` of AUROC
 across held-out studies, `n_studies`, and the mean AUPRC (`auprc_mean`) and Brier score (`brier_mean`). Failed rows are
-excluded.
+excluded from these values. Since 16 November 2026 (commit 4ca16b1) the summary also has `n_errors` (failed held-out
+rows) and `error` (their distinct messages), and a configuration that failed in every held-out study keeps a row
+with `n_studies` 0 and empty metrics (classifier `not_fitted` when the failure came before any classifier). Summaries
+written before then (other folders) drop such configurations; `lc_metabolomics` and `control_acute_proteomics` were
+rewritten with the new rule.
 
 **loso_predictions.csv**: `sample`, `held_out`, `harmoniser`, `selector`, `classifier`, true label `y` (1 = LC) and
 predicted probability `p`.
@@ -636,7 +658,9 @@ affinity cohorts are NPX (Buggert2025) and log2 RFU (Cervia2024_SomaScan). What 
     correlated over the proteins both have.
   - Deduplication is off, because Cervia2024_SomaScan and Cervia2024_MS are the same people.
   - `n_shared.csv` gives the number of proteins per pair. Su2022 shares 4 or 5 proteins with each MS cohort, so those
-    three correlations rest on 4 or 5 values.
+    three correlations rest on 4 or 5 values; they are flagged `fewer_than_10_shared` in `pairs.csv`.
+  - `spearman_top50.csv`: the 50 proteins with the largest mean |g| over the union of proteins; no pair shares 10 of
+    them (0 or 1, `n_shared_top50.csv`), so every off-diagonal value is NaN.
   - Chowdhury2024 has 404 proteins here: one of its 405 has no value in the 30 retained samples.
 
 **4. Positive control in proteomics, acute versus never_infected** (`control_acute_proteomics`).
@@ -659,8 +683,11 @@ affinity cohorts are NPX (Buggert2025) and log2 RFU (Cervia2024_SomaScan). What 
   held out), "only 6" (Su2022) and "only 4" (Zoodsma2022_Hannover). The default null screen of `InvarianceAnchored` was
   not changed.
 - **Why the chorus rows are absent (checked 15 November).** They are present in `loso_results.csv` as error rows
-  (column `error`, no metrics). They are absent from `loso_summary.csv` and `loso_predictions.csv`, which keep only
-  fits that succeeded.
+  (column `error`, no metrics). They were absent from `loso_summary.csv` and `loso_predictions.csv`, which kept only
+  fits that succeeded. Since 16 November `loso_summary.csv` keeps them: one row per selector with classifier
+  `not_fitted`, `n_studies` 0, `n_errors` 3 and the messages in `error` (the summary was rewritten from
+  `loso_results.csv`; the other rows are unchanged). `loso_predictions.csv` still has no chorus rows, as no
+  prediction was made.
   - **The screen.** `InvarianceAnchored` needs at least 20 null proteins. A null protein has a meta-analytic p above
     0.2, an absolute Hedges g below 0.35 in every training cohort, I squared at most 50, and training variance at or
     above the 20th percentile.
@@ -934,6 +961,9 @@ Su2022_metabolomics), one triple shares 30 or more identifiers: Martinez2024, Lo
 
 **chorus.** All 9 chorus rows (3 held-out studies × 3 selectors) carry an error: only 12 or 14 null metabolites
 passed the screen, against the 20 required. As for the acute proteomics control, the thresholds were not relaxed.
+They are error rows in `loso_results.csv` (no metrics, no predictions). Since 16 November `loso_summary.csv` keeps them
+as three rows (one per selector, classifier `not_fitted`, `n_studies` 0, `n_errors` 3, messages in `error`); the other
+rows of the rewritten summary are unchanged.
 The harmonisation diagnostics carry the same message for chorus. `nested` chooses among the other five candidates
 when chorus fails in an inner fold. Choices over the 18 nested rows: rank 8, center_scale 4, combat_addon 2, identity 2, fsqn 2.
 
@@ -983,8 +1013,11 @@ All labelled cohorts, pairwise over shared identifiers (number shared in parenth
 | Su2022_metabolomics | 0.058 (158) | 0.213 (61) | 0.104 (66) |  |
 
 - **`top50` files of `concordance_all`:** the 50 identifiers with the largest mean |g| are taken over the union of
-  the four cohorts. So each pair of cohorts has 1 to 4 of them in common, and the top-50 correlations rest on those
-  1 to 4 values.
+  the four cohorts. Each pair of cohorts has 1 to 4 of them in common (`n_shared_top50.csv`). Before the reporting
+  rerun of 16 November the file gave correlations of plus or minus 1 on 2 to 4 values; it now gives NaN for every
+  off-diagonal pair (fewer than 10 shared).
+- In `concordance_all/pairs.csv` no pair over all identifiers has fewer than 10 shared (the smallest is 17,
+  Martinez2024 and Saito2024).
 
 **Epigenomics** (`concordance_epigenomics/cohorts.csv`, `docs/metabolomics_cohorts.md`). GSE174818, GSE197152 and
 GSE247869 were downloaded (EPIC, whole blood); the groups are documented, but no per-CpG effect was computed.
@@ -1003,3 +1036,117 @@ GSE247869 were downloaded (EPIC, whole blood); the groups are documented, but no
 - xlrd 2.0.2 added to the venv.
 
 **Not committed:** the logs and `selected_features.json`.
+
+## Version 4 cohort set and reporting fixes (16 November 2026)
+
+The results of earlier versions are kept in their folders; the version 4 runs write to new folders with `_v4`.
+
+**1. Cohorts added** (definitions: `docs/proteomics_cohorts.md` and `docs/count_matrices.md`, sections "Cohorts added
+16 November 2026"; provenance and checksums: `docs/provenance.md`).
+
+| study | layer | source | samples used (LC / COVID_recovered) | label |
+|---|---|---|---|---|
+| Fineschi2026 | plasma, Olink Explore 384 Inflammation | SciLifeLab 10.17044/scilifelab.31316779 | 165 (92 / 73) | sample id prefix PA (LC) or KO (recovered) |
+| Chowdhury2026 | plasma, DIA-MS (DIA-NN 1.8.1) | PRIDE PXD066724 | 115 (53 / 62); 35 never_infected not in the contrast | SDRF `characteristics[disease]` |
+| PRJNA1149196_SA | whole blood total RNA | ENA PRJNA1149196, cohort 1 | see section 3 | BioSample `disease` |
+| PRJNA1149196_QLD | whole blood total RNA | ENA PRJNA1149196, cohort 2 | see section 3 (training only) | BioSample `disease` |
+| GSE297499 | PBMC, author TPM | GEO GSE297499, PBMC only | see section 3 | GEO `treatment` |
+
+- **Not added:** NHLBI 10.25444/nhlbi.26383798 (Huapaya2024, SomaScan): the workbook has no per-sample PASC or
+  symptom column.
+- **Participant overlap, SciLifeLab:** all 110 labelled samples of the PBMC RNA-seq set 10.17044/scilifelab.28832492
+  (`SamplesPC.txt`) are Fineschi2026 Olink participants (60 PA, 50 KO); `overlaps_with_study` marks them. The PBMC
+  RNA-seq set is not a cohort of the transcriptomic benchmark.
+- **Other overlaps recorded, not resolvable from the deposits:** Chowdhury2026 and Chowdhury2024 (same laboratory and
+  BQC19 Sherbrooke biobank); PRJNA1149196_SA and GSE169687 (same South Australian participants; GSE169687 is disabled).
+- **Chowdhury2026 label check:** five second-batch runs (samples 226, 227, 231, 232, 233) have file code `Lc` and SDRF
+  disease C; the SDRF is used (`file_group_code` and the notes keep the code).
+
+**2. Test 1 in proteomics, version 4** (`lc_proteomics_affinity_v4`, `lc_proteomics_ms_v4`).
+- **Configs:** `configs/lc_proteomics_affinity_v4.yaml` (Fineschi2026 added) and `configs/lc_proteomics_ms_v4.yaml`
+  (Chowdhury2026 added). Grid, preprocessing, imputation and selector sizes as in "Proteomics (15 November 2026)".
+- **Failed fits:** none, in 168 rows per block.
+- **chorus factors** (`n_factors`, the same for every selector and classifier of a fold): affinity Buggert2025 1,
+  Cervia2024_SomaScan 5, Fineschi2026 1, Su2022 1; MS Cervia2024_MS 1, Chowdhury2024 2, Chowdhury2026 1,
+  Kovarik2023_plasma 1.
+- **Nested choices** (24 rows per block): affinity identity 10, chorus 6, rank 2, combat_addon 2, center_scale 2, fsqn 2;
+  MS rank 8, identity 6, chorus 4, combat_addon 2, center_scale 2, fsqn 2.
+
+| block | cohort | samples (LC / COVID_recovered) | proteins used | values imputed |
+|---|---|---|---|---|
+| affinity | Buggert2025 | 197 (146 / 51) | 166 | 88 (median) |
+| affinity | Cervia2024_SomaScan | 113 (40 / 73) | 166 | 0 |
+| affinity | Su2022 | 125 (75 / 50) | 166 | 0 |
+| affinity | Fineschi2026 | 165 (92 / 73) | 166 | 0 |
+| MS | Cervia2024_MS | 113 (40 / 73) | 179 | 842 (minimum) |
+| MS | Chowdhury2024 | 30 (21 / 9) | 179 | 56 (minimum) |
+| MS | Kovarik2023_plasma | 26 (13 / 13) | 179 | 593 (minimum) |
+| MS | Chowdhury2026 | 115 (53 / 62) | 179 | 198 (minimum) |
+
+- The proteins shared by all cohorts fall from 376 to 166 (affinity; Fineschi2026 measures 358) and from 182 to 179 (MS).
+- In the MS block 47 (Cervia2024_MS), 11 (Chowdhury2024), 66 (Kovarik2023_plasma) and 21 (Chowdhury2026) of the 179
+  proteins have at least one missing value; the lowest observed fractions are 0.44, 0.20, 0.08 and 0.23. In the affinity
+  block one protein of Buggert2025 has missing values (lowest observed fraction 0.55).
+
+**Mean AUROC across the four held-out studies (minimum to maximum)** (`loso_summary.csv`; per held-out rows with
+bootstrap intervals in `loso_results.csv`).
+
+Affinity block (`lc_proteomics_affinity_v4`):
+
+| harmoniser | differential logreg | differential rf | invariant logreg | invariant rf | variance logreg | variance rf |
+|---|---|---|---|---|---|---|
+| identity | 0.504 (0.416 to 0.577) | 0.486 (0.391 to 0.558) | 0.555 (0.504 to 0.593) | 0.475 (0.267 to 0.574) | 0.523 (0.503 to 0.538) | 0.441 (0.309 to 0.5) |
+| center_scale | 0.467 (0.444 to 0.488) | 0.449 (0.389 to 0.518) | 0.524 (0.466 to 0.584) | 0.461 (0.39 to 0.531) | 0.488 (0.44 to 0.578) | 0.471 (0.45 to 0.493) |
+| rank | 0.540 (0.48 to 0.63) | 0.606 (0.511 to 0.709) | 0.558 (0.527 to 0.593) | 0.582 (0.497 to 0.702) | 0.484 (0.427 to 0.602) | 0.559 (0.474 to 0.696) |
+| fsqn | 0.482 (0.413 to 0.559) | 0.494 (0.401 to 0.591) | 0.452 (0.374 to 0.556) | 0.472 (0.408 to 0.577) | 0.460 (0.437 to 0.512) | 0.516 (0.444 to 0.569) |
+| combat_addon | 0.470 (0.448 to 0.493) | 0.456 (0.386 to 0.514) | 0.524 (0.471 to 0.584) | 0.467 (0.408 to 0.524) | 0.515 (0.465 to 0.583) | 0.506 (0.451 to 0.564) |
+| chorus | 0.509 (0.438 to 0.603) | 0.548 (0.488 to 0.626) | 0.548 (0.472 to 0.629) | 0.551 (0.478 to 0.64) | 0.513 (0.47 to 0.577) | 0.550 (0.507 to 0.615) |
+| nested | 0.494 (0.438 to 0.577) | 0.478 (0.386 to 0.561) | 0.536 (0.472 to 0.593) | 0.483 (0.267 to 0.574) | 0.477 (0.437 to 0.538) | 0.555 (0.459 to 0.696) |
+
+MS block (`lc_proteomics_ms_v4`):
+
+| harmoniser | differential logreg | differential rf | invariant logreg | invariant rf | variance logreg | variance rf |
+|---|---|---|---|---|---|---|
+| identity | 0.498 (0.272 to 0.683) | 0.507 (0.257 to 0.765) | 0.472 (0.213 to 0.624) | 0.561 (0.499 to 0.659) | 0.537 (0.479 to 0.56) | 0.514 (0.423 to 0.635) |
+| center_scale | 0.494 (0.385 to 0.635) | 0.423 (0.246 to 0.548) | 0.509 (0.396 to 0.619) | 0.396 (0.192 to 0.576) | 0.495 (0.365 to 0.582) | 0.454 (0.34 to 0.574) |
+| rank | 0.546 (0.433 to 0.746) | 0.538 (0.459 to 0.624) | 0.566 (0.385 to 0.751) | 0.546 (0.467 to 0.728) | 0.490 (0.361 to 0.539) | 0.401 (0.272 to 0.487) |
+| fsqn | 0.416 (0.278 to 0.519) | 0.452 (0.287 to 0.586) | 0.414 (0.112 to 0.565) | 0.369 (0.0769 to 0.595) | 0.406 (0.302 to 0.507) | 0.463 (0.302 to 0.566) |
+| combat_addon | 0.485 (0.391 to 0.608) | 0.402 (0.186 to 0.566) | 0.511 (0.396 to 0.624) | 0.394 (0.172 to 0.561) | 0.482 (0.397 to 0.592) | 0.459 (0.257 to 0.571) |
+| chorus | 0.480 (0.401 to 0.561) | 0.412 (0.272 to 0.517) | 0.504 (0.379 to 0.64) | 0.457 (0.337 to 0.524) | 0.403 (0.26 to 0.524) | 0.420 (0.225 to 0.529) |
+| nested | 0.468 (0.278 to 0.608) | 0.447 (0.287 to 0.597) | 0.532 (0.379 to 0.619) | 0.439 (0.337 to 0.495) | 0.513 (0.479 to 0.55) | 0.464 (0.423 to 0.545) |
+
+**Diagnostics and concordance.**
+- `lc_proteomics_affinity_v4/harmonisation`, `lc_proteomics_ms_v4/harmonisation`: as for the three-cohort blocks
+  (n_pcs 50, no sex rows, marker rows empty); 432 rows each, no failed fit.
+- `lc_proteomics_affinity_v4/concordance`, `lc_proteomics_ms_v4/concordance`: on the 166 and 179 shared proteins,
+  `--top 50`.
+- `concordance_proteomics_all_v4`: the eight cohorts of both blocks, each on its own proteins (`features: union`), from
+  `configs/concordance_proteomics_all_v4.yaml`. Proteins shared by the new cohorts (`n_shared.csv`): Fineschi2026 with
+  Buggert2025 358, Cervia2024_SomaScan 307, Su2022 186, and with the four MS cohorts 2 to 5; Chowdhury2026 with
+  Chowdhury2024 334, Kovarik2023_plasma 260, Cervia2024_MS 224, Cervia2024_SomaScan 286, Buggert2025 197, Su2022 10,
+  Fineschi2026 5. Chowdhury2026 has 472 proteins here: one of its 473 has no value in the 115 retained samples.
+
+**4. Reporting fixes.** All concordance outputs listed in "Runs" were recomputed with the new code ("reporting rerun");
+the effects and the all-feature matrices are identical to the previous files in every folder.
+- **`spearman_top<N>.csv` minimum.** A pair of cohorts that shares fewer than 10 of the `top<N>` features is now NaN
+  (correlation and p value). `n_shared_top<N>.csv` gives those counts. Changed cells: only in
+  `lc_metabolomics/concordance_all` (the six pairs that had 1 to 4 shared identifiers, before plus or minus 1 or a value
+  on 2 to 4 points). In `concordance_proteomics_all` and `concordance_proteomics_all_v4` the off-diagonal top-50 values
+  were already NaN (0 or 1 shared) and stay NaN. The other concordance folders have no pair below 10.
+- **Pairs with fewer than 10 shared features flagged.** Every consumer of the shared counts writes a per-pair table
+  with the column `fewer_than_10_shared`: `pairs.csv` in every concordance folder (feature sets `all` and `top<N>`),
+  `pairs_<set>.csv` in `mosaic_programmes/<contrast>/` and `mosaic_programmes_v4/lc_v4/`, and the column in
+  `paired_Cervia2024/lc/effect_correlation.csv`. The all-feature matrices keep every pair. Flagged pairs over all
+  features:
+  - `concordance_proteomics_all`: Su2022 with Cervia2024_MS (4), Chowdhury2024 (5), Kovarik2023_plasma (4).
+  - `concordance_proteomics_all_v4`: the same three, and Fineschi2026 with Cervia2024_MS (5), Chowdhury2024 (4),
+    Kovarik2023_plasma (2) and Chowdhury2026 (5).
+  - None in the other concordance folders, in `mosaic_programmes` (smallest 16 programmes, Hallmark, `lc`) or in
+    `paired_Cervia2024` (173).
+- **`cohort_annotation.csv`.** The column `control_type` (which held the `lc_status` of the negative class) is renamed
+  `negative_class_lc_status`. A new column `control_type` gives the schema `control_type` of the negative class from
+  the metadata: `convalescent_unverified` for Chowdhury2024 and `COVID_recovered` for the other proteomic and
+  metabolomic cohorts. The five transcriptomic cohorts of `concordance` show `missing`: their metadata files were built
+  before the schema had `control_type` and were not rebuilt.
+- **Classifiers.** The `classifier` row of the loso_results.csv glossary now defines all four. `taco` ran without
+  TabPFN (`CHORUS_DISABLE_TABPFN=1`) in every real-data run; this is stated wherever a `taco` value is reported below.
