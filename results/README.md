@@ -2512,3 +2512,13 @@ controls' curve.**
 | LC and controls | sign_agreement | 0.473 | -0.040 / +0.175 | 2.26 → 1.13 | 0.0005 | 70 of 87 (-0.043) |
 | LC and controls no xy | effect_spearman | 0.512 | -0.030 / +0.130 | 1.85 → 1.14 | 0.0005 | 58 of 87 (-0.046) |
 | LC and controls no xy | sign_agreement | 0.482 | -0.035 / +0.151 | 1.96 → 1.11 | 0.0005 | 77 of 87 (-0.035) |
+
+## Synthesis: transfer as a function of reliability and agreement (18 November 2026)
+
+**Bar, stated before the analysis was run** (`transfer_model/`): the two-factor account (held-out AUROC explained by
+the held-out cohort's split-half reliability and its agreement with the training cohorts) holds if both:
+
+- (a) the model with both reliability and agreement explains at least 0.15 more variance (R²) than agreement alone;
+- (b) the gap between the LC and the control residuals is no longer significant (permutation p above 0.05).
+
+The reliability-stratified noise ceiling (part 1) is post hoc.
