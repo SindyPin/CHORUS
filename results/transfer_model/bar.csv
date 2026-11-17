@@ -1,0 +1,4 @@
+criterion,value,met
+(a) R2(agreement + reliability) - R2(agreement) >= 0.15,0.018015959257049574,False
+(b) LC minus control gap not significant in the agreement + reliability model (p > 0.05),0.0004997501249375312,False
+two factor account holds: (a) and (b),,False

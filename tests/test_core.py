@@ -1308,3 +1308,22 @@ def test_full_range_monotone_detects_offset_curves():
     off = same.assign(auroc=np.r_[0.4 + 0.3 * x, 0.7 + 0.3 * x])
     r, _ = fr.monotone(off, "effect_spearman", 200, 0)
     assert r["mean_residual_LC"] < 0 < r["mean_residual_control"] and r["p_permutation_separate"] < 0.01
+
+
+def test_transfer_model_stratified_and_models():
+    tm = _load_script_path("transfer_model")
+    pairs = pd.DataFrame({"layer": ["L"] * 4, "reliability_a_shared": [0.9, 0.9, 0.1, 0.5], "reliability_b_shared": [0.8, 0.6, 0.9, 0.35],
+                          "below_2p5": [True, True, False, np.nan]})
+    S = tm.stratified(pairs).set_index(["threshold", "stratum"])
+    assert S.loc[(0.3, "both_above"), "n_pairs"] == 2 and S.loc[(0.3, "both_above"), "fraction_below"] == 1.0
+    assert S.loc[(0.3, "rest"), "n_pairs"] == 1 and S.loc[(0.4, "both_above"), "n_pairs"] == 2
+    rng = np.random.default_rng(0)
+    n = 60
+    P = pd.DataFrame({"effect_spearman": rng.uniform(-0.5, 0.8, n), "reliability": rng.uniform(0, 1, n), "mean_abs_g": rng.uniform(0, 1, n),
+                      "group": ["LC"] * 40 + ["control"] * 20, "contrast": ["LC"] * 40 + ["ctl"] * 20, "block": "b", "held_out": [f"c{i % 10}" for i in range(n)]})
+    P["auroc"] = 0.5 + 0.2 * P["effect_spearman"] + 0.2 * P["reliability"] + rng.normal(0, 0.01, n)
+    M, G = tm.models(P, n_boot=50, n_perm=100, seed=0)
+    r2 = M.set_index("model")["r2"]
+    assert r2["agreement+reliability"] > r2["agreement"] + 0.15 and r2["agreement+reliability"] > 0.9
+    assert G.set_index("model").loc["agreement+reliability", "p_permutation"] > 0.05  # no group gap in the simulation
+    assert tm.design(P, ["effect_spearman*reliability"]).ravel() == pytest.approx((P["effect_spearman"] * P["reliability"]).to_numpy())

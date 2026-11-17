@@ -92,3 +92,4 @@ panel495_random_genes	scripts/panel_transfer_checks.py random --n-sets 20 (four 
 concordance_noise_ceiling	scripts/concordance_noise_ceiling.py --out results/concordance_noise_ceiling	~/.venvs/chorus-arm64	2026-11-17 22:21:00	2026-11-17 22:24:52	232	0
 concordance_guided	scripts/concordance_guided.py all --out results/concordance_guided --workers 10	~/.venvs/chorus-arm64	2026-11-18 07:07:55	2026-11-18 07:24:25	990	0
 concordance_vs_transfer_full	scripts/concordance_vs_transfer_full.py --out results/concordance_vs_transfer_full	~/.venvs/chorus-arm64	2026-11-18 07:08:31	2026-11-18 07:08:45	14	0
+transfer_model	scripts/transfer_model.py --out results/transfer_model	~/.venvs/chorus-arm64	2026-11-18 07:53:00	2026-11-18 07:55:13	133	0

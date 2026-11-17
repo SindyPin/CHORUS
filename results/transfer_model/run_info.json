@@ -1,0 +1,38 @@
+{
+ "point_sources": {
+  "transcriptomics": [
+   "configs/lc_transcriptomics_blood_v4.yaml",
+   "lc"
+  ],
+  "proteomics_affinity": [
+   "configs/lc_proteomics_affinity_v5.yaml",
+   "lc"
+  ],
+  "proteomics_ms": [
+   "configs/lc_proteomics_ms_v4.yaml",
+   "lc"
+  ],
+  "metabolomics": [
+   "configs/lc_metabolomics.yaml",
+   "lc"
+  ],
+  "sex_transcriptomics": [
+   "configs/lc_transcriptomics_blood.yaml",
+   "sex"
+  ],
+  "acute_proteomics": [
+   "configs/control_acute_proteomics.yaml",
+   "acute"
+  ]
+ },
+ "n_splits": 200,
+ "n_boot": 2000,
+ "n_perm": 2000,
+ "seed": 0,
+ "thresholds": [
+  0.2,
+  0.3,
+  0.4,
+  0.5
+ ]
+}

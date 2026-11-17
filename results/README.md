@@ -110,6 +110,7 @@ guided training units in 10 parallel workers); see "Further analyses: noise ceil
 | `concordance_noise_ceiling` | `scripts/concordance_noise_ceiling.py --out results/concordance_noise_ceiling` | configs/concordance_rna_v5.yaml, configs/concordance_proteomics_all_v5.yaml, configs/concordance_metabolomics_all.yaml | 232 (started 2026-11-17 22:21:00) |
 | `concordance_guided` | `scripts/concordance_guided.py all --out results/concordance_guided --workers 10` | the configs of the six v4 and v5 blocks (grid set in the script) | 990 (started 2026-11-18 07:07:55); summaries rewritten with `summarise` after a fix of the bar check |
 | `concordance_vs_transfer_full` | `scripts/concordance_vs_transfer_full.py --out results/concordance_vs_transfer_full` | the loso_results.csv of the LC blocks and of control_acute_proteomics and control_sex_label | 14 (started 2026-11-18 07:08:31) |
+| `transfer_model` | `scripts/transfer_model.py --out results/transfer_model` | the outputs of concordance_noise_ceiling, concordance_vs_transfer_full, concordance_guided and the LC and control configs | 133 (started 2026-11-18 07:53:00) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -278,6 +279,9 @@ local.
   `concordance_guided/`: `arms.csv`, `differences.csv`, `bars.csv`, `empty.csv`, `skipped.csv`, `per_cohort.csv`,
   `per_split.csv`, `agreement.csv`, `run_info.json`, `units/`, `blocks/<block>/`. `concordance_vs_transfer_full/`:
   `points.csv`, `correlation.csv`, `monotone.csv`, `curve.csv`, `run_info.json`.
+
+- `transfer_model/`: `stratified.csv`, `reliability.csv`, `points.csv`, `models.csv`, `gap.csv`, `bar.csv`,
+  `cohorts.csv`, `cohort_spearman.csv`, `run_info.json`.
 
 ## Column glossary
 
@@ -2522,3 +2526,165 @@ the held-out cohort's split-half reliability and its agreement with the training
 - (b) the gap between the LC and the control residuals is no longer significant (permutation p above 0.05).
 
 The reliability-stratified noise ceiling (part 1) is post hoc.
+
+### Results against the bar
+
+**The two-factor account does not hold: neither criterion is met.**
+
+| criterion | value | met |
+|---|---|---|
+| (a) R² gain of agreement + reliability over agreement alone, at least 0.15 | 0.018 | no |
+| (b) LC minus control gap not significant in the agreement + reliability model | p 0.0005 | no |
+
+- **(a):** reliability adds 0.018 to the R² of agreement alone (0.364 to 0.382). Its coefficient interval includes zero.
+- **Interaction:** with an agreement × reliability interaction, R² is 0.455, and agreement matters mainly where
+  reliability is high (interaction 0.50, 0.16 to 1.09). Mean absolute g in place of reliability gives 0.408 additive
+  and 0.503 with interaction.
+- **(b):** at the same agreement and reliability, the LC points stay 0.31 to 0.42 AUROC below the control points,
+  depending on the model (0.335 in the agreement + reliability model). p is 0.0005 in every model, the smallest possible
+  with 2,000 permutations.
+- **Across the 20 LC held-out cohorts:** reliability is unrelated to the held-out AUROC (Spearman −0.15, p 0.54) and to
+  agreement (−0.11). It goes with:
+  - within-cohort AUROC (0.73, p 0.0003);
+  - local AUROC (arm 5; 0.78);
+  - mean absolute g (0.66);
+  - guided gain (0.48, p 0.04).
+
+  A cohort whose own LC signal is reproducible can be learnt from itself, not from the others.
+
+**Post hoc: reliability-stratified noise ceiling** (`stratified.csv`).
+- Among pairs in which both cohorts have reliability above 0.3 on the shared features, more than half fall below the
+  one-population 2.5th percentile:
+  - transcriptomics 11 of 14 (0.79);
+  - proteomics 11 of 19 (0.58);
+  - metabolomics 1 of 4.
+- Among the other pairs the fraction is 0.23, 0.33 and 0.00.
+- The transcriptomic and proteomic pattern holds at thresholds 0.2, 0.4 and 0.5.
+- In A the bar was not met over all pairs. Among reliable cohorts, the disagreement in RNA and proteins does exceed the
+  one-population expectation. This split was chosen after seeing A.
+
+| layer | threshold | both reliable: below / pairs | fraction | rest: below / pairs | fraction  |
+|---|---|---|---|---|---|
+| metabolomics | 0.2 | 1 / 4 | 0.25 | 0 / 2 | 0.00 |
+| metabolomics | 0.3 | 1 / 4 | 0.25 | 0 / 2 | 0.00 |
+| metabolomics | 0.4 | 1 / 2 | 0.50 | 0 / 4 | 0.00 |
+| metabolomics | 0.5 | 1 / 1 | 1.00 | 0 / 5 | 0.00 |
+| proteomics | 0.2 | 18 / 32 | 0.56 | 0 / 8 | 0.00 |
+| proteomics | 0.3 | 11 / 19 | 0.58 | 7 / 21 | 0.33 |
+| proteomics | 0.4 | 9 / 17 | 0.53 | 9 / 23 | 0.39 |
+| proteomics | 0.5 | 7 / 12 | 0.58 | 11 / 28 | 0.39 |
+| transcriptomics | 0.2 | 12 / 15 | 0.80 | 6 / 30 | 0.20 |
+| transcriptomics | 0.3 | 11 / 14 | 0.79 | 7 / 31 | 0.23 |
+| transcriptomics | 0.4 | 4 / 5 | 0.80 | 14 / 40 | 0.35 |
+| transcriptomics | 0.5 | 3 / 4 | 0.75 | 15 / 41 | 0.37 |
+
+**Reliability of the contrasts** (`reliability.csv`; 200 half splits, Spearman-Brown, on the features of the
+leave-one-study-out run behind each point: the LC blocks as in `concordance_vs_transfer_full`, sex on all genes of
+`configs/lc_transcriptomics_blood.yaml`, acute on the 163 proteins of `configs/control_acute_proteomics.yaml`).
+- Acute versus never infected: 0.82 to 0.98.
+- Inferred sex: 0.36 to 0.46.
+- LC: −0.61 to 0.91.
+
+These values use each block's shared features. They therefore differ from the own-feature values of
+`concordance_noise_ceiling/cohorts.csv`; for example GSE224615 is −0.61 here and −0.44 there.
+
+| contrast / block | cohort | positive / negative | features | split-half r | reliability | mean abs g |
+|---|---|---|---|---|---|---|
+| transcriptomics | GSE226260_WB | 17 / 20 | 10053 | 0.550 | 0.709 | 0.516 |
+| transcriptomics | GSE226260_PBMC | 28 / 8 | 10053 | 0.209 | 0.346 | 0.518 |
+| transcriptomics | GSE224615 | 23 / 13 | 10053 | -0.234 | -0.609 | 0.202 |
+| transcriptomics | GSE251849 | 11 / 5 | 10053 | 0.233 | 0.379 | 0.494 |
+| transcriptomics | GSE270045 | 19 / 17 | 10053 | 0.834 | 0.910 | 0.905 |
+| transcriptomics | PRJNA1149196_SA | 28 / 11 | 10053 | -0.083 | -0.181 | 0.239 |
+| transcriptomics | PRJNA1149196_QLD | 5 / 4 | 10053 | -0.029 | -0.060 | 0.518 |
+| transcriptomics | GSE297499 | 17 / 9 | 10053 | 0.373 | 0.543 | 0.480 |
+| proteomics_affinity | Buggert2025 | 146 / 51 | 55 | 0.688 | 0.815 | 0.383 |
+| proteomics_affinity | Cervia2024_SomaScan | 40 / 73 | 55 | 0.151 | 0.263 | 0.207 |
+| proteomics_affinity | Su2022 | 75 / 50 | 55 | 0.033 | 0.064 | 0.153 |
+| proteomics_affinity | Fineschi2026 | 92 / 73 | 55 | 0.408 | 0.580 | 0.204 |
+| proteomics_affinity | Woodruff2023 | 93 / 27 | 55 | 0.541 | 0.702 | 0.366 |
+| proteomics_affinity | Bansal2025 | 12 / 20 | 55 | 0.051 | 0.098 | 0.317 |
+| proteomics_ms | Cervia2024_MS | 40 / 73 | 179 | 0.455 | 0.625 | 0.244 |
+| proteomics_ms | Chowdhury2024 | 21 / 9 | 179 | 0.272 | 0.428 | 0.426 |
+| proteomics_ms | Kovarik2023_plasma | 13 / 13 | 179 | 0.591 | 0.743 | 0.626 |
+| proteomics_ms | Chowdhury2026 | 53 / 62 | 179 | 0.124 | 0.221 | 0.166 |
+| metabolomics | Martinez2024 | 40 / 40 | 38 | 0.456 | 0.626 | 0.302 |
+| metabolomics | Lopez2023 | 30 / 18 | 38 | 0.319 | 0.483 | 0.336 |
+| metabolomics | Su2022_metabolomics | 68 / 45 | 38 | 0.138 | 0.242 | 0.154 |
+| sex_transcriptomics | GSE226260_WB | 24 / 13 | 10442 | 0.225 | 0.367 | 0.331 |
+| sex_transcriptomics | GSE226260_PBMC | 29 / 6 | 10442 | 0.220 | 0.361 | 0.450 |
+| sex_transcriptomics | GSE224615 | 20 / 16 | 10442 | 0.294 | 0.455 | 0.318 |
+| sex_transcriptomics | GSE251849 | 12 / 4 | 10442 | 0.260 | 0.413 | 0.523 |
+| sex_transcriptomics | GSE270045 | 28 / 8 | 10442 | 0.266 | 0.420 | 0.432 |
+| acute_proteomics | Cervia2024_SomaScan | 113 / 34 | 163 | 0.698 | 0.822 | 0.362 |
+| acute_proteomics | Su2022 | 204 / 289 | 163 | 0.954 | 0.977 | 1.024 |
+| acute_proteomics | Zoodsma2022_Hannover | 12 / 62 | 163 | 0.882 | 0.937 | 1.457 |
+
+**Models** (`models.csv`, `gap.csv`): 107 points (87 LC, 20 control), ordinary least squares of held-out AUROC.
+Intervals are 2,000-resample bootstraps of held-out cohorts within contrast. The gap is the coefficient of an LC
+indicator added to the model, with a permutation p.
+
+| model | R2 (cohort bootstrap) | LC minus control gap | gap p |
+|---|---|---|---|
+| agreement | 0.364 (0.20 to 0.55) | -0.323 | 0.0005 |
+| reliability | 0.031 (0.00 to 0.23) | -0.412 | 0.0005 |
+| agreement+reliability | 0.382 (0.24 to 0.57) | -0.335 | 0.0005 |
+| agreement*reliability | 0.455 (0.31 to 0.64) | -0.313 | 0.0005 |
+| mean_abs_g | 0.078 (0.00 to 0.42) | -0.422 | 0.0005 |
+| agreement+mean_abs_g | 0.408 (0.26 to 0.62) | -0.341 | 0.0005 |
+| agreement*mean_abs_g | 0.503 (0.34 to 0.67) | -0.312 | 0.0005 |
+
+| model | term | coefficient (95%) |
+|---|---|---|
+| agreement+reliability | effect_spearman | 0.382 (0.21 to 0.56) |
+| agreement+reliability | reliability | 0.072 (-0.08 to 0.18) |
+| agreement*reliability | effect_spearman | 0.124 (-0.29 to 0.34) |
+| agreement*reliability | reliability | -0.007 (-0.15 to 0.17) |
+| agreement*reliability | effect_spearman*reliability | 0.496 (0.16 to 1.09) |
+| agreement*mean_abs_g | effect_spearman | 0.042 (-0.18 to 0.30) |
+| agreement*mean_abs_g | mean_abs_g | -0.031 (-0.14 to 0.29) |
+| agreement*mean_abs_g | effect_spearman*mean_abs_g | 0.668 (0.06 to 1.09) |
+
+**Per cohort** (`cohorts.csv`, `cohort_spearman.csv`).
+- **Held-out AUROC:** the mean over the reduced-grid rows of the block's `loso_results.csv`.
+- **Within-cohort AUROC:** the mean of the block's `within_study_cv.csv` rows.
+- **Agreement:** the mean effect_spearman of the cohort's points.
+- **Guided gain and local AUROC:** from `concordance_guided/per_cohort.csv`. They are empty for GSE251849 (skipped
+  there) and for Kovarik2023_plasma's gain (guided selection always empty).
+
+| block | cohort | LC / recovered | reliability | within-cohort AUROC | held-out AUROC | agreement | guided gain (2 − 1) | local AUROC (arm 5) |
+|---|---|---|---|---|---|---|---|---|
+| transcriptomics | GSE224615 | 23 / 13 | -0.609 | 0.397 | 0.570 | 0.376 | -0.089 | 0.433 |
+| transcriptomics | GSE226260_PBMC | 28 / 8 | 0.346 | 0.843 | 0.384 | -0.480 | +0.293 | 0.812 |
+| transcriptomics | GSE226260_WB | 17 / 20 | 0.709 | 0.764 | 0.606 | 0.272 | -0.009 | 0.690 |
+| transcriptomics | GSE251849 | 11 / 5 | 0.379 | 0.847 | 0.316 | 0.023 |  |  |
+| transcriptomics | GSE270045 | 19 / 17 | 0.910 | 1.000 | 0.281 | -0.221 | +0.445 | 1.000 |
+| transcriptomics | GSE297499 | 17 / 9 | 0.543 | 0.822 | 0.475 | -0.008 | +0.147 | 0.778 |
+| transcriptomics | PRJNA1149196_SA | 28 / 11 | -0.181 | 0.334 | 0.394 | -0.164 | -0.033 | 0.411 |
+| proteomics_affinity | Bansal2025 | 12 / 20 | 0.098 | 0.482 | 0.562 | 0.020 | -0.043 | 0.571 |
+| proteomics_affinity | Buggert2025 | 146 / 51 | 0.815 | 0.748 | 0.349 | -0.351 | +0.106 | 0.746 |
+| proteomics_affinity | Cervia2024_SomaScan | 40 / 73 | 0.263 | 0.633 | 0.526 | 0.136 | +0.045 | 0.638 |
+| proteomics_affinity | Fineschi2026 | 92 / 73 | 0.580 | 0.666 | 0.523 | 0.293 | +0.024 | 0.646 |
+| proteomics_affinity | Su2022 | 75 / 50 | 0.064 | 0.461 | 0.465 | -0.162 | +0.040 | 0.456 |
+| proteomics_affinity | Woodruff2023 | 93 / 27 | 0.702 | 0.743 | 0.515 | -0.023 | +0.149 | 0.734 |
+| proteomics_ms | Cervia2024_MS | 40 / 73 | 0.625 | 0.585 | 0.548 | 0.263 | +0.038 | 0.598 |
+| proteomics_ms | Chowdhury2024 | 21 / 9 | 0.428 | 0.785 | 0.540 | 0.209 | -0.035 | 0.756 |
+| proteomics_ms | Chowdhury2026 | 53 / 62 | 0.221 | 0.561 | 0.452 | -0.164 | +0.058 | 0.545 |
+| proteomics_ms | Kovarik2023_plasma | 13 / 13 | 0.743 | 0.970 | 0.341 | -0.438 |  | 0.967 |
+| metabolomics | Lopez2023 | 30 / 18 | 0.483 | 0.608 | 0.560 | -0.175 | -0.031 | 0.567 |
+| metabolomics | Martinez2024 | 40 / 40 | 0.626 | 0.790 | 0.588 | 0.500 | -0.007 | 0.762 |
+| metabolomics | Su2022_metabolomics | 68 / 45 | 0.242 | 0.512 | 0.506 | -0.025 | -0.001 | 0.514 |
+
+| reliability with | cohorts | Spearman | p |
+|---|---|---|---|
+| n_LC | 20 | 0.028 | 0.907 |
+| n_COVID_recovered | 20 | 0.092 | 0.700 |
+| mean_abs_g | 20 | 0.656 | 0.002 |
+| within_cohort_auroc | 20 | 0.729 | 0.000 |
+| held_out_auroc | 20 | -0.147 | 0.535 |
+| agreement | 20 | -0.110 | 0.645 |
+| guided_gain | 18 | 0.484 | 0.042 |
+| local_auroc | 19 | 0.775 | 0.000 |
+
+`scripts/transfer_model.py`, run once (133 s, started 2026-11-18 07:53:00). Files: `stratified.csv`, `reliability.csv`,
+`points.csv`, `models.csv`, `gap.csv`, `bar.csv`, `cohorts.csv`, `cohort_spearman.csv`, `run_info.json`.
