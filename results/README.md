@@ -2688,3 +2688,54 @@ indicator added to the model, with a permutation p.
 
 `scripts/transfer_model.py`, run once (133 s, started 2026-11-18 07:53:00). Files: `stratified.csv`, `reliability.csv`,
 `points.csv`, `models.csv`, `gap.csv`, `bar.csv`, `cohorts.csv`, `cohort_spearman.csv`, `run_info.json`.
+
+## Go or no go: adaptive borrowing (18 November 2026)
+
+**Bar, stated before the analysis was run** (`adaptive_borrowing/`, copied from the request). Go if all three hold:
+
+- (a) in both control tasks, arm 8 beats arm 5 by at least 0.03 AUROC at 8 per class, with the paired interval
+  above zero;
+- (b) in at least 5 of the 6 LC blocks, arm 8 is not more than 0.01 below arm 5;
+- (c) arm 8 is at least as good as arm 6 in every task.
+
+Arms (`scripts/concordance_guided.py borrow`):
+
+- 1 all: all training cohorts pooled.
+- 5 local: the calibration part alone.
+- 6 local plus all: the calibration part, as its own study, plus all training cohorts pooled.
+- 8 stacked: one expert per training cohort and one on the calibration part, combined by stacking. The weights are
+  non-negative, sum to one and are learned on the calibration part only.
+- 9 AUROC weighted: the experts of arm 8, with weights proportional to max(0, calibration AUROC minus 0.5).
+
+Tasks:
+
+- The six LC blocks of `concordance_guided`.
+- Inferred sex (female against male), on all genes and without the chrX and chrY genes. The cohorts and labels are
+  those of `control_sex_label`, built on `configs/lc_transcriptomics_blood.yaml`.
+- Acute against never infected, from `configs/control_acute_proteomics.yaml`.
+
+Calibration sizes are 4, 8 and 16 per class, and 50 percent. Each size has 20 splits. The test part is the rest of
+the held-out cohort.
+
+Implementation choices, fixed before running:
+
+- **One configuration for every arm.** All arms use center_scale (fitted without labels), the invariant selector
+  (with the k of the task config) and logreg, so that the arms differ only in how they borrow. The calibration part
+  and the test part are each standardised as their own new study. An external expert is fitted on its cohort alone.
+  A training cohort with fewer than 2 samples of a class gives no expert.
+- **Calibration expert.** Its calibration predictions are cross validated: stratified k fold, with k the smaller of 5
+  and the smaller class count. Its test predictions come from a fit on the whole calibration part. The standardisation
+  of the calibration part is label free, so it is done once on the whole part.
+- **Arm 8 weights** minimise the log loss of the weighted mean of the experts' probabilities on the calibration part
+  (SLSQP, starting from equal weights).
+- **Arm 9 weights.** Each external expert uses its AUROC on the calibration part, and the calibration expert uses its
+  cross-validated AUROC. When every weight is zero, the weights are equal.
+- **Which sizes run.** A fixed size n is run for a held-out cohort when each class has at least n + 4 samples (at
+  least 4 per class left to test). The 50 percent size needs at least 4 per class in the calibration part.
+- **Paired difference.** For each cohort, the difference is averaged over the splits, then averaged over cohorts. The
+  interval is a 2,000-resample cohort bootstrap, as in `concordance_guided`. With two cohorts, the interval is above
+  zero only when both cohort differences are positive. With one cohort there is no interval, which counts as not
+  above zero.
+- **Reading the bar.** For (a), the control tasks are sex on all genes and acute. Sex without chrX and chrY is
+  reported but is not part of (a). Parts (b) and (c) are read at 8 per class, and (c) covers all nine tasks.
+  A task or block with no cohort that can be evaluated at 8 per class does not meet (b) or (c).
