@@ -2292,3 +2292,27 @@ Median over configurations of the mean AUROC across held-out cohorts: all genes 
 | PRJNA1149196_SA | 0.122 (0.007) | 0.545 | 0.849 | 0.845 | 0.845 | 0.756 | 0.862 | 0.711 | -0.043 |
 | PRJNA1149196_QLD | -0.073 (0.106) | 0.493 | 0.888 | 0.931 | 0.815 | 0.843 | 0.892 | 0.728 | -0.005 |
 | GSE297499 | 0.032 (0.477) | 0.511 | 0.806 | 0.821 | 0.823 | 0.761 | 0.823 | 0.659 | -0.072 |
+
+## Cohort export and manifest (17 November 2026)
+
+`scripts/export_cohorts.py` writes the analysis-ready LC versus COVID_recovered cohorts to `data/exports/` (not
+committed) and the manifest to `exports/manifest.csv` (committed).
+- **Files:** each cohort is written on its own features, as `<layer>/<cohort>_matrix.csv.gz` (features × samples) with
+  `<layer>/<cohort>_meta.csv`.
+- **Layers and configs:**
+  - RNA: `configs/concordance_rna_v5.yaml`, the eight v4 cohorts plus CORSIP2026 and GSE228320. log2 CPM on each
+    cohort's expressed genes; GSE297499 is log2(TPM + 1).
+  - Proteomics: `configs/concordance_proteomics_all_v5.yaml`, the ten version 5 cohorts including Woodruff2023 and
+    Bansal2025, imputed per cohort.
+  - Metabolomics: `configs/concordance_metabolomics_all.yaml`.
+- **Manifest:** one row per cohort with role, flags, sample and feature counts, value type, platform, accession,
+  overlaps, source config and the SHA-256 of both files.
+- **Roles:**
+  - `train_test`: 20 cohorts.
+  - `train_only`: PRJNA1149196_QLD.
+  - `test_only`: CORSIP2026 and GSE228320.
+  - `concordance_only`: Saito2024, which is in no leave-one-study-out benchmark.
+- **Flags:** GSE270045 is `label_confounded_with_collection`: group is completely confounded with sample collection
+  (`docs/gse270045_check.md`). No other cohort is flagged.
+- **Run:** 2026-11-17, about 170 s. It was run twice; the second run only added the `concordance_only` role for Saito2024
+  and wrote the same files.

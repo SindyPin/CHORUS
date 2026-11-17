@@ -1253,3 +1253,10 @@ def test_panel_checks_configs_and_permutation():
     y = pd.Series([1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0])
     yp = pc.permuted_labels(y, s, np.random.default_rng(0))
     assert yp[s == "A"].sum() == 2 and yp[s == "B"].sum() == 1 and yp[s == pc.TEST].tolist() == y[s == pc.TEST].tolist()
+
+
+def test_export_roles_and_flags():
+    ex = _load_script_path("export_cohorts")
+    assert ex.ROLES["CORSIP2026"] == ex.ROLES["GSE228320"] == "test_only" and ex.ROLES["PRJNA1149196_QLD"] == "train_only"
+    assert "label_confounded_with_collection" in ex.FLAGS["GSE270045"]
+    assert set(ex.LAYERS) == {"rna", "proteomics", "metabolomics"} and ex.LAYERS["proteomics"].endswith("_v5.yaml")
