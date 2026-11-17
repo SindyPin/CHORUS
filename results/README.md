@@ -2316,3 +2316,20 @@ committed) and the manifest to `exports/manifest.csv` (committed).
   (`docs/gse270045_check.md`). No other cohort is flagged.
 - **Run:** 2026-11-17, about 170 s. It was run twice; the second run only added the `concordance_only` role for Saito2024
   and wrote the same files.
+
+## Further analyses: noise ceiling, guided training, full range (17 November 2026)
+
+**Bars, stated before the analyses were run** (copied from the request; the results below are reported against them):
+
+- **A. Noise ceiling of concordance** (`concordance_noise_ceiling/`). Disagreement between cohorts counts as real in a
+  layer if more than half of the cohort pairs of that layer have an observed correlation below the 2.5th percentile
+  of the correlation expected if both cohorts came from one population.
+- **B. Concordance-guided training** (`concordance_guided/`).
+  - Guided training is useful if guided selection (arm 2) beats both all training cohorts (arm 1) and random selection
+    of the same number of cohorts (arm 4), with the interval of the paired difference above zero, in at least two
+    blocks.
+  - It adds value over local data if calibration plus guided selection (arm 7) beats calibration alone (arm 5) in at
+    least two blocks.
+- **C. Full range of concordance against transfer** (`concordance_vs_transfer_full/`). No numerical bar was given.
+  Reported: the pooled Spearman with and without the positive-control points, and whether the LC points lie on the
+  same monotone curve as the controls.
