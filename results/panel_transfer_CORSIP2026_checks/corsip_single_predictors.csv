@@ -1,0 +1,3 @@
+predictor,auroc,test,p
+sex (female = 1),0.6228448275862069,Fisher exact,0.25404566201530143
+age,0.6918103448275862,Mann-Whitney,0.103839715373506

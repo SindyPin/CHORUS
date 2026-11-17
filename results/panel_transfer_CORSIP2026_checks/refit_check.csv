@@ -1,0 +1,7 @@
+role,harmoniser,selector,classifier,auroc_stored,auroc_refit,harmoniser_chosen
+top1,center_scale,variance,rf,0.9030172413793103,0.9030172413793103,center_scale
+top2,combat_addon,differential,rf,0.8836206896551725,0.8836206896551725,combat_addon
+top3,nested,differential,rf,0.8836206896551725,0.8836206896551725,combat_addon
+top4,fsqn,invariant,rf,0.853448275862069,0.853448275862069,fsqn
+top5,center_scale,differential,rf,0.8426724137931034,0.8426724137931034,center_scale
+median,fsqn,invariant,logreg,0.7586206896551725,0.7586206896551725,fsqn

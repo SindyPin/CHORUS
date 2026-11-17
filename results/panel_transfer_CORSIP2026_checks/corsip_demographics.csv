@@ -1,0 +1,3 @@
+group,n,female,male,age_mean,age_sd,age_min,age_max
+LC,8,5,3,43.125,7.510706643566522,31.0,52.0
+COVID_recovered,29,11,18,37.689655172413794,8.367041840612583,24.0,59.0

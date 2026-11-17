@@ -34,7 +34,9 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 2026)". The version 4 transcriptomic runs of 17 November (from 00:36) ran one after another; the runtime of
 `lc_transcriptomics_blood_v4` includes time the laptop was asleep. The six follow-up runs of 17 November (from
 09:19) ran at the same time, so their runtimes overlap; see "Follow-up analyses (17 November 2026)". The version 5 runs of
-17 November (from 10:17) ran one after another; see "Version 5 (17 November 2026)".
+17 November (from 10:17) ran one after another; see "Version 5 (17 November 2026)". The CORSIP2026 checks of
+17 November (from 11:36) overlapped: the panel495 benchmark, then the permutation, random gene and concordance chunks in
+parallel; see "CORSIP2026 panel transfer: verification".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -101,6 +103,9 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 | `concordance_vs_transfer_v5` | `scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer_v5 --blocks transcriptomics=results/lc_transcriptomics_blood_v4/loso_results.csv,proteomics_affinity=results/lc_proteomics_affinity_v5/loso_results.csv,proteomics_ms=results/lc_proteomics_ms_v4/loso_results.csv,metabolomics=results/lc_metabolomics/loso_results.csv,proteomics_explore=results/lc_proteomics_explore_v5/loso_results.csv --not-pooled proteomics_explore` | the loso_results.csv of lc_transcriptomics_blood_v4, lc_proteomics_affinity_v5, lc_proteomics_ms_v4, lc_metabolomics, lc_proteomics_explore_v5 | 15 (started 2026-11-17 10:40:03) |
 | `clustering_readiness_v5` | `scripts/clustering_readiness.py --out results/clustering_readiness_v5 --blocks rna=configs/lc_transcriptomics_blood_v4.yaml,protein_affinity=configs/lc_proteomics_affinity_v5.yaml,protein_explore=configs/lc_proteomics_explore_v5.yaml` | configs/lc_transcriptomics_blood_v4.yaml, configs/lc_proteomics_affinity_v5.yaml, configs/lc_proteomics_explore_v5.yaml | 328 (started 2026-11-17 10:40:18) |
 | `acute_persistence_v5` | `scripts/acute_persistence.py --out results/acute_persistence_v5 --target-protein configs/concordance_proteomics_all_v5.yaml --acute-check Woodruff2023` | configs/control_acute_proteomics.yaml, configs/concordance_proteomics_all_v5.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml, configs/mosaic_lc_rna_v4.yaml | 180 (started 2026-11-17 10:45:46) |
+| `lc_transcriptomics_blood_v4_panel495` | `chorus run configs/lc_transcriptomics_blood_v4_panel495.yaml` | configs/lc_transcriptomics_blood_v4_panel495.yaml | 301 (started 2026-11-17 11:36:16) |
+| `panel_transfer_CORSIP2026_checks` | `scripts/panel_transfer_checks.py confounding`; `permute --n-perm 200` in four chunks of 50; `concordance`; `permutation_summary` | configs/panel_transfer_CORSIP2026.yaml | confounding 87; permutation chunks 311 to 314 and concordance 146, in parallel (started 2026-11-17 11:39:41); summary 1 |
+| `lc_transcriptomics_blood_v4_panel495/random_genes` | `scripts/panel_transfer_checks.py random --n-sets 20` in four chunks of 5 | configs/lc_transcriptomics_blood_v4.yaml, configs/lc_transcriptomics_blood_v4_panel495.yaml (grid) | 1157 to 1167 per chunk, in parallel (started 2026-11-17 11:47:01; a first attempt at 11:39:41 failed in every fit because the gene ids were numpy strings, and was deleted) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -256,6 +261,14 @@ local.
   `loso_results.csv`, `loso_summary.csv`, `loso_predictions.csv`; `concordance_vs_transfer_v5/`,
   `clustering_readiness_v5/`, `acute_persistence_v5/` as their version 4 folders, plus `acute_check.csv` in
   `acute_persistence_v5/protein/`.
+
+- `panel_transfer_CORSIP2026_checks/`: `corsip_demographics.csv`, `corsip_single_predictors.csv`,
+  `within_sex_auroc.csv`, `adjusted_association.csv`, `refit_check.csv`, `top_weights.csv`,
+  `corsip_sex_difference.csv`, `permutation_null.csv` (and its four chunks `permutation_null_NNN.csv`),
+  `permutation_summary.csv`, `effects_495.csv`, `concordance_with_corsip.csv`, `concordance_summary.json`,
+  `leave_one_training_cohort_out.csv`. `lc_transcriptomics_blood_v4_panel495/`: the loso files, `cohorts.csv` is not
+  written (RNA), `comparison_by_held_out.csv`, `median_of_mean_auroc.csv`, and `random_genes/` (`setNN/genes.txt`,
+  `setNN/loso_results.csv`, `summary_by_set.csv`).
 
 ## Column glossary
 
@@ -2123,3 +2136,159 @@ Meta-analysis (k = 4):
 | fsqn | 29 / 120 | 4.77 | 0.69 | -1.43 | 1.36 | 0.798 (0.68 to 0.90) |
 | rank | 29 / 120 | 2.48 | -3.53 | -4.25 | 2.13 | 0.943 (0.89 to 0.98) |
 
+
+## CORSIP2026 panel transfer: verification (17 November 2026)
+
+Checks of `panel_transfer_CORSIP2026`; the existing results are read, not changed.
+- **Script:** `scripts/panel_transfer_checks.py`. Outputs: `panel_transfer_CORSIP2026_checks/` and
+  `lc_transcriptomics_blood_v4_panel495/`.
+- **Configurations checked:** the five with the highest CORSIP2026 AUROC (top1 to top5) and the median configuration
+  (the lower middle of the 36 that ran).
+- **Refits:** each configuration is refitted exactly as the benchmark fits it. The refits reproduce the stored AUROCs
+  (0.903 / 0.884 / 0.884 / 0.853 / 0.843 / 0.759; `refit_check.csv`).
+
+**Does the result survive?**
+- **Sex and age do not explain it.**
+  - Neither differs significantly between LC and recovered in CORSIP2026.
+  - Within each sex the five best configurations keep AUROC 0.76 to 0.96.
+  - Adjusted for sex and age, the score of each of them stays associated with LC: odds ratio per SD 11.7 to 27.8, all
+    intervals above 1, but very wide.
+  - Their largest weights are autosomal immune genes, none sex-differential at FDR 0.05.
+- **It beats the label permutation control:** p 0.010 to 0.025 for the five best and 0.030 for the median
+  configuration. These configurations were chosen after the fact out of 36, and the p values are not corrected for
+  that.
+- **It is not a general property of the panel genes.** On the same 495 genes, the version 4 leave-one-study-out
+  benchmark is within the range of 20 random sets of 495 expressed genes: median of mean AUROC 0.452, against
+  0.382 to 0.496 for the random sets (17 of
+  20 below the panel) and 0.424 on all genes.
+- **It rests on one training cohort.**
+  - Without GSE270045, the training cohort whose LC effects agree most with CORSIP2026 (Spearman 0.534 over the 495
+    genes), the CORSIP2026 AUROC of the six configurations falls to 0.39 to 0.55.
+  - Without any other single cohort it stays at 0.55 to 0.93.
+- **It rests on 8 LC cases:** the interval of the best configuration is 0.77 to 0.99.
+
+The transfer is real in these checks, but it should be reported as driven by GSE270045 and based on 8 cases, not as
+evidence that the panel genes carry a signal that generalises across cohorts.
+
+### 1. Confounding in CORSIP2026
+
+| group | n | female / male | age mean (SD) | age range |
+|---|---|---|---|---|
+| LC | 8 | 5 / 3 | 43.1 (7.5) | 31 to 52 |
+| COVID_recovered | 29 | 11 / 18 | 37.7 (8.4) | 24 to 59 |
+
+Sex alone and age alone, as scores for LC (`corsip_single_predictors.csv`):
+
+| predictor | AUROC for LC | test | p |
+|---|---|---|---|
+| sex (female = 1) | 0.623 | Fisher exact | 0.254 |
+| age | 0.692 | Mann-Whitney | 0.104 |
+
+Transfer AUROC within each sex (both classes have at least 3 samples in each sex; every configuration in
+`within_sex_auroc.csv`):
+
+| role | configuration | AUROC all (8 / 29) | female (5 LC / 11) | male (3 LC / 18) |
+|---|---|---|---|---|
+| top1 | center_scale / variance / rf | 0.903 | 0.882 | 0.917 |
+| top2 | combat_addon / differential / rf | 0.884 | 0.818 | 0.963 |
+| top3 | nested / differential / rf | 0.884 | 0.818 | 0.963 |
+| top4 | fsqn / invariant / rf | 0.853 | 0.764 | 0.944 |
+| top5 | center_scale / differential / rf | 0.843 | 0.800 | 0.907 |
+| median | fsqn / invariant / logreg | 0.759 | 0.855 | 0.574 |
+
+Logistic regression of LC on the standardised model score, sex and standardised age (`adjusted_association.csv`, every
+configuration; Wald interval). With 8 events the estimates are unstable; 11 of the 36 configurations have p below 0.05.
+
+| role | configuration | odds ratio per SD of score (95% interval) | p |
+|---|---|---|---|
+| top1 | center_scale / variance / rf | 18.38 (1.90 to 177.73) | 0.012 |
+| top2 | combat_addon / differential / rf | 27.78 (1.84 to 420.41) | 0.016 |
+| top3 | nested / differential / rf | 27.78 (1.84 to 420.41) | 0.016 |
+| top4 | fsqn / invariant / rf | 11.66 (1.76 to 77.15) | 0.011 |
+| top5 | center_scale / differential / rf | 15.67 (1.63 to 150.54) | 0.017 |
+| median | fsqn / invariant / logreg | 3.38 (0.86 to 13.30) | 0.081 |
+
+**Largest model weights** (`top_weights.csv`, 20 per configuration):
+- No chrY gene is on the panel; 18 panel genes are on chrX.
+- In the top 20 of the five best configurations there is no chrX or chrY gene. The median configuration has one, IL2RG
+  (chrX).
+- Sex difference in CORSIP2026: a Welch t test of log CPM, female minus male, Benjamini-Hochberg over the 495 genes
+  (`corsip_sex_difference.csv`).
+  - Two panel genes are sex-differential at FDR 0.05, NFKB2 and RELB. Neither is in any top 20.
+  - Nominally (p below 0.05, FDR 0.39 to 0.61) the top 20 include PTGS2, CD274, NFKBIA, IFI35, IL1B, OAS3 and TNFAIP3
+    in the best configurations, and SERPING1, PTGS2, IL2RG, LYN and IFIH1 in the median one.
+
+| role | configuration | weight | 10 largest (symbol, chromosome) |
+|---|---|---|---|
+| top1 | center_scale / variance / rf | impurity importance | REL (chr2), PTGS2 (chr1), CD274 (chr9), CXCL8 (chr4), CCL4 (chr17), PSMB10 (chr16), ITGB2 (chr21), NUP107 (chr12), LAMP1 (chr13), TANK (chr2) |
+| top2 | combat_addon / differential / rf | impurity importance | ITGB2 (chr21), REL (chr2), PTGS2 (chr1), LAMP1 (chr13), CCL4 (chr17), CD274 (chr9), USP8 (chr15), RIPK2 (chr8), GPI (chr19), IFI35 (chr17) |
+| top3 | nested / differential / rf | impurity importance | ITGB2 (chr21), REL (chr2), PTGS2 (chr1), LAMP1 (chr13), CCL4 (chr17), CD274 (chr9), USP8 (chr15), RIPK2 (chr8), GPI (chr19), IFI35 (chr17) |
+| top4 | fsqn / invariant / rf | impurity importance | NFKBIA (chr14), CXCL8 (chr4), CCL4 (chr17), PTGS2 (chr1), OAS3 (chr12), RIPK2 (chr8), IFI35 (chr17), CST3 (chr20), PSMB10 (chr16), MICB (chr6) |
+| top5 | center_scale / differential / rf | impurity importance | CCL4 (chr17), ITGB2 (chr21), REL (chr2), IFI35 (chr17), RIPK2 (chr8), CD274 (chr9), GPI (chr19), LAMP1 (chr13), USP8 (chr15), PSMB10 (chr16) |
+| median | fsqn / invariant / logreg | coefficient | CD96 (chr3), C3 (chr19), NKG7 (chr19), SLAMF1 (chr1), SERPING1 (chr11), PTGS2 (chr1), IL2RG (chrX), CCL5 (chr17), NFATC2 (chr20), SELL (chr1) |
+
+### 2. Permutation control
+
+`lc_status` is permuted within each training cohort (class counts kept; CORSIP2026 labels unchanged) 200 times, and the
+checked configurations are refitted and score CORSIP2026 (`permutation_null.csv`, `permutation_summary.csv`).
+- p = (1 + permutations with AUROC at or above the observed) / (1 + permutations).
+- Permutation i uses the seed (0, i); the 200 ran as four parallel chunks.
+- In 26 permutations nested chose chorus in its inner leave-one-study-out, and the outer chorus fit then failed ("only 4
+  null genes passed the screen"). Those permutations have no nested value, so top3 has 174.
+
+| role | configuration | observed AUROC | permutations with a result | null mean (SD) | null 5% / 50% / 95% | null max | p |
+|---|---|---|---|---|---|---|---|
+| top1 | center_scale / variance / rf | 0.903 | 200 | 0.497 (0.182) | 0.23 / 0.47 / 0.78 | 0.922 | 0.010 |
+| top2 | combat_addon / differential / rf | 0.884 | 200 | 0.500 (0.192) | 0.22 / 0.48 / 0.80 | 0.927 | 0.015 |
+| top3 | nested / differential / rf | 0.884 | 174 | 0.493 (0.167) | 0.22 / 0.50 / 0.75 | 0.948 | 0.011 |
+| top4 | fsqn / invariant / rf | 0.853 | 200 | 0.495 (0.177) | 0.23 / 0.47 / 0.77 | 0.886 | 0.020 |
+| top5 | center_scale / differential / rf | 0.843 | 200 | 0.497 (0.189) | 0.22 / 0.48 / 0.80 | 0.948 | 0.025 |
+| median | fsqn / invariant / logreg | 0.759 | 200 | 0.501 (0.138) | 0.27 / 0.51 / 0.72 | 0.815 | 0.030 |
+
+### 3. Panel-restricted benchmark (`lc_transcriptomics_blood_v4_panel495`)
+
+- **Design:** the version 4 transcriptomic leave-one-study-out (`configs/lc_transcriptomics_blood_v4_panel495.yaml`) on
+  the 495 genes, reduced version 5 grid, without within-study CV.
+  - The 495 genes are listed in `configs/gene_lists/corsip2026_panel495.txt`, applied with the new `restrict_features`
+    preprocessing option.
+  - Log CPM uses each cohort's library size over all genes, so the values equal those of `lc_transcriptomics_blood_v4`.
+- **chorus and chorus_protected** fail in every fold ("only 0 to 3 null genes passed the screen").
+- **Random gene control:** 20 random sets of 495 genes drawn from the 10,053 genes expressed in every v4 cohort (set i
+  with the seed (0, i); `random_genes/setNN/genes.txt` and `loso_results.csv`), same grid.
+- **Comparison:** with `lc_transcriptomics_blood_v4` restricted to the same reduced grid. Values are medians over the
+  configurations of each held-out cohort's AUROC (`comparison_by_held_out.csv`; median of mean AUROC per set in
+  `random_genes/summary_by_set.csv`).
+
+| held out | all genes: median (max) | panel 495: median (max) | 20 random sets: median, mean (range) | random sets below the panel |
+|---|---|---|---|---|
+| GSE224615 | 0.569 (0.689) | 0.603 (0.706) | 0.556 (0.491 to 0.617) | 18 |
+| GSE226260_PBMC | 0.373 (0.683) | 0.485 (0.683) | 0.332 (0.267 to 0.410) | 20 |
+| GSE226260_WB | 0.612 (0.737) | 0.605 (0.776) | 0.580 (0.452 to 0.712) | 12 |
+| GSE251849 | 0.327 (0.536) | 0.436 (0.727) | 0.341 (0.245 to 0.436) | 18 |
+| GSE270045 | 0.272 (0.686) | 0.217 (0.564) | 0.256 (0.057 to 0.397) | 6 |
+| GSE297499 | 0.471 (0.650) | 0.343 (0.611) | 0.484 (0.382 to 0.582) | 0 |
+| PRJNA1149196_SA | 0.385 (0.575) | 0.352 (0.497) | 0.425 (0.382 to 0.555) | 0 |
+
+Median over configurations of the mean AUROC across held-out cohorts: all genes 0.424, panel 0.452, random sets
+0.430 on average (0.382 to 0.496).
+
+### 4. Concordance and leave one training cohort out
+
+- **Concordance:** Hedges g of LC versus COVID_recovered per cohort on the 495 genes (`effects_495.csv`); Spearman
+  correlation and sign agreement of CORSIP2026 with each training cohort (`concordance_with_corsip.csv`).
+- **Leave one training cohort out:** the six checked configurations refitted without that cohort and CORSIP2026 scored
+  (`leave_one_training_cohort_out.csv`).
+- **Full-data AUROC** (top1 to top5, median): 0.903 / 0.884 / 0.884 / 0.853 / 0.843 / 0.759.
+- Across the eight training cohorts, the Spearman correlation between concordance with CORSIP2026 and the mean AUROC
+  change when the cohort is left out is -0.619 (p 0.102).
+
+| training cohort left out | Spearman with CORSIP2026 (p) | sign agreement | AUROC without, top1 | AUROC without, top2 | AUROC without, top3 | AUROC without, top4 | AUROC without, top5 | AUROC without, median | mean change |
+|---|---|---|---|---|---|---|---|---|---|
+| GSE226260_WB | 0.090 (0.046) | 0.525 | 0.795 | 0.890 | 0.817 | 0.806 | 0.806 | 0.789 | -0.037 |
+| GSE226260_PBMC | -0.086 (0.057) | 0.483 | 0.871 | 0.897 | 0.838 | 0.808 | 0.838 | 0.642 | -0.038 |
+| GSE224615 | -0.011 (0.813) | 0.459 | 0.808 | 0.838 | 0.554 | 0.832 | 0.838 | 0.772 | -0.080 |
+| GSE251849 | -0.249 (0.000) | 0.406 | 0.853 | 0.836 | 0.765 | 0.836 | 0.849 | 0.853 | -0.022 |
+| GSE270045 | 0.534 (0.000) | 0.701 | 0.552 | 0.494 | 0.489 | 0.386 | 0.489 | 0.483 | -0.372 |
+| PRJNA1149196_SA | 0.122 (0.007) | 0.545 | 0.849 | 0.845 | 0.845 | 0.756 | 0.862 | 0.711 | -0.043 |
+| PRJNA1149196_QLD | -0.073 (0.106) | 0.493 | 0.888 | 0.931 | 0.815 | 0.843 | 0.892 | 0.728 | -0.005 |
+| GSE297499 | 0.032 (0.477) | 0.511 | 0.806 | 0.821 | 0.823 | 0.761 | 0.823 | 0.659 | -0.072 |
