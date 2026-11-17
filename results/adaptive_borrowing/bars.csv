@@ -1,0 +1,5 @@
+bar,tasks_meeting,n_tasks,n_required,met
+"a: in both control tasks (sex_all_genes, acute_proteomics) arm 8 beats arm 5 by at least 0.03 at 8 per class, paired interval above zero",sex_all_genes,1.0,2.0,False
+b: in at least 5 of the 6 LC blocks arm 8 is not more than 0.01 below arm 5 at 8 per class,proteomics_affinity_v4;metabolomics,2.0,5.0,False
+c: arm 8 at least as good as arm 6 at 8 per class in every task (nine),transcriptomics_v4;proteomics_affinity_v4;proteomics_ms_v4;proteomics_affinity_v5;proteomics_explore_v5;acute_proteomics,6.0,9.0,False
+"go: a, b and c",,,,False

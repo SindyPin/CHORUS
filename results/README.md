@@ -2739,3 +2739,65 @@ Implementation choices, fixed before running:
 - **Reading the bar.** For (a), the control tasks are sex on all genes and acute. Sex without chrX and chrY is
   reported but is not part of (a). Parts (b) and (c) are read at 8 per class, and (c) covers all nine tasks.
   A task or block with no cohort that can be evaluated at 8 per class does not meet (b) or (c).
+
+### Result against the bar
+
+**No go: none of (a), (b) or (c) is met** (`bars.csv`). All figures below are at 8 per class.
+
+- **(a) not met.**
+  - Sex on all genes meets it: arm 8 minus arm 5 is +0.198, interval 0.192 to 0.204, 2 cohorts.
+  - Acute against never infected does not: +0.000, interval 0.000 to 0.001, 3 cohorts.
+- **(b) not met.** Arm 8 is no more than 0.01 below arm 5 in 2 of the 6 LC blocks (affinity v4 −0.001, metabolomics
+  −0.004). It is more than 0.01 below in the other four: transcriptomics −0.012, MS v4 −0.014, affinity v5 −0.013 and
+  explore v5 −0.028.
+- **(c) not met.** Arm 8 is at least as good as arm 6 in 6 of the 9 tasks. It is below arm 6 in metabolomics (−0.014),
+  sex on all genes (−0.031) and sex without chrX and chrY (−0.059).
+
+Mean held-out AUROC over cohorts at 8 per class (`arms.csv`):
+
+| task | cohorts | 1 all | 5 local | 6 local plus all | 8 stacked | 9 AUROC weighted | 8 minus 5 | 8 minus 6 |
+|---|---|---|---|---|---|---|---|---|
+| transcriptomics_v4 | 3 | 0.468 | 0.705 | 0.590 | 0.693 | 0.681 | −0.012 | +0.102 |
+| proteomics_affinity_v4 | 4 | 0.524 | 0.619 | 0.556 | 0.618 | 0.611 | −0.001 | +0.062 |
+| proteomics_ms_v4 | 3 | 0.482 | 0.692 | 0.585 | 0.678 | 0.686 | −0.014 | +0.093 |
+| metabolomics | 3 | 0.610 | 0.594 | 0.604 | 0.590 | 0.587 | −0.004 | −0.014 |
+| proteomics_affinity_v5 | 6 | 0.463 | 0.607 | 0.482 | 0.594 | 0.581 | −0.013 | +0.112 |
+| proteomics_explore_v5 | 3 | 0.405 | 0.722 | 0.547 | 0.694 | 0.695 | −0.028 | +0.147 |
+| sex_all_genes | 2 | 0.916 | 0.734 | 0.963 | 0.932 | 0.908 | +0.198 | −0.031 |
+| sex_no_xy (not in a) | 2 | 0.788 | 0.667 | 0.859 | 0.800 | 0.772 | +0.134 | −0.059 |
+| acute_proteomics | 3 | 0.889 | 0.939 | 0.935 | 0.939 | 0.948 | +0.000 | +0.004 |
+
+Arm 8 minus arm 5 at the other sizes (`differences.csv`). An empty cell means no cohort can be evaluated at that size.
+
+| task | 4 per class | 16 per class | 50 percent |
+|---|---|---|---|
+| transcriptomics_v4 | −0.031 | | −0.034 |
+| proteomics_affinity_v4 | −0.020 | −0.005 | −0.002 |
+| proteomics_ms_v4 | −0.069 | −0.011 | −0.018 |
+| metabolomics | −0.004 | +0.025 | −0.012 |
+| proteomics_affinity_v5 | −0.032 | −0.016 | −0.007 |
+| proteomics_explore_v5 | −0.058 | −0.017 | −0.018 |
+| sex_all_genes | +0.228 | | +0.152 |
+| sex_no_xy | +0.123 | | +0.072 |
+| acute_proteomics | +0.006 | −0.004 | +0.001 |
+
+Weights and cohorts:
+
+- **Weight on the calibration expert.** The mean stacking weight on the calibration expert at 8 per class is 0.30 to
+  0.66 in the LC blocks, 0.07 in sex on all genes and 0.50 in acute (`calibration_weight.csv`).
+- **Cohorts not evaluable.** Cohorts with too few samples of a class for a size are listed in `skipped.csv`.
+  PRJNA1149196_QLD (5 against 4) cannot be evaluated at any size. Every training cohort had an expert
+  (`no_expert.csv` is empty).
+
+Arms 1, 5 and 6 here use the single configuration of this test, so they are not the grid means of
+`concordance_guided`.
+
+`scripts/concordance_guided.py borrow --out results/adaptive_borrowing --workers 6`, 41 units. The run lasted
+867 s (started 2026-11-18 09:47:02). The units finished, but the summary step stopped on the empty unit files of the
+cohorts with no size to run. After a fix to the reader, `borrow-summarise` produced the summary; no unit was rerun.
+
+Files:
+
+- Summaries: `per_cohort.csv`, `arms.csv`, `differences.csv`, `bars.csv` and `calibration_weight.csv`.
+- Per unit and per expert: `weights.csv`, `skipped.csv`, `no_expert.csv` and `units/`.
+- `run_info.json`.

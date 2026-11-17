@@ -1,0 +1,3 @@
+task,held_out,size,n_pos,n_neg,reason
+proteomics_ms_v4,Chowdhury2024,8,21,9,fewer than n + 4 samples in a class
+proteomics_ms_v4,Chowdhury2024,16,21,9,fewer than n + 4 samples in a class

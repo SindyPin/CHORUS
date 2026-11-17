@@ -1,0 +1,2 @@
+task,held_out,size,n_pos,n_neg,reason
+proteomics_affinity_v5,Bansal2025,16,12,20,fewer than n + 4 samples in a class

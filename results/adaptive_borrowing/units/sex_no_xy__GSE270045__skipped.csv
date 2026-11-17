@@ -1,0 +1,3 @@
+task,held_out,size,n_pos,n_neg,reason
+sex_no_xy,GSE270045,8,28,8,fewer than n + 4 samples in a class
+sex_no_xy,GSE270045,16,28,8,fewer than n + 4 samples in a class

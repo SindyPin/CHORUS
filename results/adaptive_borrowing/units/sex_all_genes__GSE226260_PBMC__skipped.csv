@@ -1,0 +1,5 @@
+task,held_out,size,n_pos,n_neg,reason
+sex_all_genes,GSE226260_PBMC,4,29,6,fewer than n + 4 samples in a class
+sex_all_genes,GSE226260_PBMC,8,29,6,fewer than n + 4 samples in a class
+sex_all_genes,GSE226260_PBMC,16,29,6,fewer than n + 4 samples in a class
+sex_all_genes,GSE226260_PBMC,half,29,6,calibration part has fewer than 4 samples per class

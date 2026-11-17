@@ -1,0 +1,2 @@
+task,held_out,size,n_pos,n_neg,reason
+transcriptomics_v4,GSE226260_WB,16,17,20,fewer than n + 4 samples in a class

@@ -1,0 +1,5 @@
+task,held_out,size,n_pos,n_neg,reason
+sex_no_xy,GSE251849,4,12,4,fewer than n + 4 samples in a class
+sex_no_xy,GSE251849,8,12,4,fewer than n + 4 samples in a class
+sex_no_xy,GSE251849,16,12,4,fewer than n + 4 samples in a class
+sex_no_xy,GSE251849,half,12,4,calibration part has fewer than 4 samples per class

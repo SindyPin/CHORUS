@@ -1298,6 +1298,38 @@ def test_concordance_guided_agreement_and_bootstrap():
     assert m == pytest.approx(0.2) and lo <= m <= hi
 
 
+def test_adaptive_borrowing_weights_splits_and_bars():
+    cg = _load_script_path("concordance_guided")
+    rng = np.random.default_rng(0)
+    y = np.r_[np.ones(30), np.zeros(30)]
+    good = np.clip(0.5 + 0.4 * (y - 0.5) + rng.normal(0, 0.1, 60), 0.01, 0.99)
+    noise = rng.uniform(0.01, 0.99, 60)
+    w = cg.stack_weights(np.column_stack([noise, good]), y)
+    assert (w >= 0).all() and w.sum() == pytest.approx(1) and w[1] > 0.8
+    assert cg.auroc_weights(np.array([0.4, 0.7, 0.6])) == pytest.approx([0, 2 / 3, 1 / 3])
+    assert cg.auroc_weights(np.array([0.4, 0.5])) == pytest.approx([0.5, 0.5])  # all zero: equal weights
+    ys = pd.Series(np.r_[np.ones(12), np.zeros(20)].astype(int), index=[f"s{i}" for i in range(32)])
+    cal, test = cg.borrow_splits(ys, "8", 3)
+    assert ys.loc[cal].value_counts().tolist() == [8, 8] and len(test) == 16 and not set(cal) & set(test)
+    assert cg.borrow_splits(ys, "16", 0) is None  # 12 in a class: fewer than 16 + 4
+    assert cg.borrow_splits(ys, "8", 3)[0].equals(cal)  # reproducible
+    rows = []
+    for t in cg.TASKS:
+        good_c = t in cg.CONTROL_TASKS
+        rows += [{"task": t, "size": "8", "comparison": "stacked - calib", "mean_difference": 0.05 if good_c else -0.005, "interval_above_zero": True if good_c else None},
+                 {"task": t, "size": "8", "comparison": "stacked - calib_all", "mean_difference": 0.0, "interval_above_zero": None}]
+    B = cg.borrow_bars(pd.DataFrame(rows)).set_index("bar")["met"]
+    assert B.iloc[0] and B.iloc[1] and B.iloc[2] and B.iloc[3]
+    rows[0]["mean_difference"] = -0.02  # two LC blocks more than 0.01 below arm 5: 4 of 6, b not met, no go
+    rows[2]["mean_difference"] = -0.02
+    B = cg.borrow_bars(pd.DataFrame(rows))["met"].tolist()
+    assert not B[1] and not B[3]
+    U = pd.DataFrame([{"task": "acute_proteomics", "size": "8", "held_out": h, "split": s, "arm": a, "auroc": v + (0.1 if a == "stacked" else 0)}
+                      for h, v in (("A", 0.6), ("B", 0.7)) for s in range(3) for a in cg.BORROW_ARMS])
+    d = cg.borrow_differences(U).set_index("comparison")
+    assert d.loc["stacked - calib", "mean_difference"] == pytest.approx(0.1) and d.loc["stacked - calib", "interval_above_zero"]
+
+
 def test_full_range_monotone_detects_offset_curves():
     fr = _load_script_path("concordance_vs_transfer_full")
     x = np.linspace(-0.5, 0.8, 40)
