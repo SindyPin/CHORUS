@@ -1,0 +1,28 @@
+# Release v1 development set (scripts/build_release.py): configs/early_detection_reference.yaml without keep_timepoints (the
+# earliest library of every subject, timepoint 0 or later), no expression filter (min_cpm 0), restricted to the 15,116 genes
+# of the reference run, so that the timepoint 0 samples have the values of the reference run. Header of the reference config:
+# CHORUS early detection, reference (scripts/early_detection.py reference): GSE215865 (Thompson 2023, Mount Sinai), whole
+# blood drawn during the acute hospital stay, the later outcome LC versus COVID_recovered (labels as in
+# configs/lc_acute_transfer.yaml). One library per subject, the earliest, kept only when it is the timepoint 0 library.
+# Within cohort repeated stratified 5 fold CV with the selectors and classifiers of the horizontal analysis.
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE215865, matrix: data/counts/GSE215865/GSE215865_rnaseq_raw_count_matrix.csv.gz, meta: data/meta/GSE215865_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE215865}
+preprocessing:
+  matrices: [whole_blood]
+  min_cpm: 0.0
+  min_fraction_samples: 0.5
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  acute_timepoints: []
+  restrict_features: configs/gene_lists/gse215865_t0_expressed.txt
+  deduplicate: true
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  selectors:
+    - {name: differential, k: 200}  # the invariant selector is not run: within one cohort it falls back to differential
+  classifiers: [logreg, rf]
+  covariates: []
+  random_state: 0
+out: release/early_detection
