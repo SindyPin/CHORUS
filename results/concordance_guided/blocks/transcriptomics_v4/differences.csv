@@ -1,0 +1,4 @@
+block,comparison,n_cohorts,mean_difference,ci_lo,ci_hi,interval_above_zero
+transcriptomics_v4,guided - all,6,0.12701125493804893,-0.01778693432339266,0.2919356031378601,False
+transcriptomics_v4,guided - random,6,0.11383811536328896,-0.024587181337181352,0.2653270753166582,False
+transcriptomics_v4,calib_guided - calib,6,-0.027599486097749995,-0.05122221721180056,-0.005276550224466895,False

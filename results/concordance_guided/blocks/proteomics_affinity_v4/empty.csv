@@ -1,0 +1,5 @@
+block,held_out,n_splits,n_empty_guided,fraction_empty
+proteomics_affinity_v4,Buggert2025,20,0,0.0
+proteomics_affinity_v4,Cervia2024_SomaScan,20,0,0.0
+proteomics_affinity_v4,Fineschi2026,20,0,0.0
+proteomics_affinity_v4,Su2022,20,5,0.25

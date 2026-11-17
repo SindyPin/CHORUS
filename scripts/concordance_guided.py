@@ -191,6 +191,11 @@ def boot_ci(v: np.ndarray, n_boot: int = 2000, seed: int = 0) -> tuple:
     return float(v.mean()), float(np.percentile(b, 2.5)), float(np.percentile(b, 97.5))
 
 
+def _true(v) -> bool:
+    """True only for a true boolean (numpy or Python); None and NaN (one cohort, no interval) are not true."""
+    return isinstance(v, (bool, np.bool_)) and bool(v)
+
+
 def summarise(out: Path, block: str = None) -> None:
     """Summary files of every finished unit (or of one block, into --out/blocks/<block>/)."""
     pat = f"{block}__*" if block else "*"
@@ -237,9 +242,9 @@ def summarise(out: Path, block: str = None) -> None:
     piv = Dd.set_index(["block", "comparison"])
     bars = []
     blocks = sorted(Dd["block"].unique())
-    useful = [b for b in blocks if all(piv.loc[(b, c), "interval_above_zero"] is True for c in ("guided - all", "guided - random") if (b, c) in piv.index) and all((b, c) in piv.index for c in ("guided - all", "guided - random"))]
+    useful = [b for b in blocks if all(_true(piv.loc[(b, c), "interval_above_zero"]) for c in ("guided - all", "guided - random") if (b, c) in piv.index) and all((b, c) in piv.index for c in ("guided - all", "guided - random"))]
     local = [b for b in blocks if (b, "calib_guided - calib") in piv.index and piv.loc[(b, "calib_guided - calib"), "mean_difference"] > 0]
-    local_ci = [b for b in blocks if (b, "calib_guided - calib") in piv.index and piv.loc[(b, "calib_guided - calib"), "interval_above_zero"] is True]
+    local_ci = [b for b in blocks if (b, "calib_guided - calib") in piv.index and _true(piv.loc[(b, "calib_guided - calib"), "interval_above_zero"])]
     bars.append({"bar": "guided useful: arm 2 beats arms 1 and 4 with the paired interval above zero, in at least two blocks", "blocks_meeting": ";".join(useful), "n_blocks": len(useful), "met": len(useful) >= 2})
     bars.append({"bar": "adds value over local data: arm 7 beats arm 5 (mean difference above zero), in at least two blocks", "blocks_meeting": ";".join(local), "n_blocks": len(local), "met": len(local) >= 2})
     bars.append({"bar": "same, with the paired interval above zero", "blocks_meeting": ";".join(local_ci), "n_blocks": len(local_ci), "met": len(local_ci) >= 2})

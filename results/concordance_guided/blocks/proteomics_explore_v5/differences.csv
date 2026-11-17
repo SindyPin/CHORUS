@@ -1,0 +1,4 @@
+block,comparison,n_cohorts,mean_difference,ci_lo,ci_hi,interval_above_zero
+proteomics_explore_v5,guided - all,3,0.06112796764558832,-0.006656384645515076,0.12269307999534641,False
+proteomics_explore_v5,guided - random,3,0.05148766855990317,-5.5816686251466964e-05,0.09513965130870776,False
+proteomics_explore_v5,calib_guided - calib,3,-0.08624038196609417,-0.09675014688601646,-0.07653567235262425,False

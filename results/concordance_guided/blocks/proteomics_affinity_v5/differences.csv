@@ -1,0 +1,4 @@
+block,comparison,n_cohorts,mean_difference,ci_lo,ci_hi,interval_above_zero
+proteomics_affinity_v5,guided - all,6,0.05592564895500984,0.007670451916447339,0.10767130231148953,True
+proteomics_affinity_v5,guided - random,6,0.039703192328906234,0.009096132550957701,0.08776570065825914,True
+proteomics_affinity_v5,calib_guided - calib,6,-0.02222957775340967,-0.04421281372995404,-0.0039535897165496,False

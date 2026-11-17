@@ -1,0 +1,146 @@
+{
+ "blocks": {
+  "metabolomics": "configs/lc_metabolomics.yaml",
+  "proteomics_ms_v4": "configs/lc_proteomics_ms_v4.yaml",
+  "proteomics_affinity_v5": "configs/lc_proteomics_affinity_v5.yaml",
+  "proteomics_affinity_v4": "configs/lc_proteomics_affinity_v4.yaml",
+  "proteomics_explore_v5": "configs/lc_proteomics_explore_v5.yaml",
+  "transcriptomics_v4": "configs/lc_transcriptomics_blood_v4.yaml"
+ },
+ "harmonisers": [
+  "identity",
+  "center_scale",
+  "combat_addon"
+ ],
+ "nested": false,
+ "selectors": [
+  "invariant",
+  "differential"
+ ],
+ "classifiers": [
+  "logreg",
+  "rf"
+ ],
+ "rf": {
+  "n_estimators": 200,
+  "n_jobs": 1
+ },
+ "n_splits": 20,
+ "n_random_draws": 5,
+ "min_calibration_per_class": 4,
+ "units": [
+  [
+   "metabolomics",
+   "Martinez2024"
+  ],
+  [
+   "metabolomics",
+   "Lopez2023"
+  ],
+  [
+   "metabolomics",
+   "Su2022_metabolomics"
+  ],
+  [
+   "proteomics_ms_v4",
+   "Cervia2024_MS"
+  ],
+  [
+   "proteomics_ms_v4",
+   "Chowdhury2024"
+  ],
+  [
+   "proteomics_ms_v4",
+   "Kovarik2023_plasma"
+  ],
+  [
+   "proteomics_ms_v4",
+   "Chowdhury2026"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Buggert2025"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Cervia2024_SomaScan"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Su2022"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Fineschi2026"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Woodruff2023"
+  ],
+  [
+   "proteomics_affinity_v5",
+   "Bansal2025"
+  ],
+  [
+   "proteomics_affinity_v4",
+   "Buggert2025"
+  ],
+  [
+   "proteomics_affinity_v4",
+   "Cervia2024_SomaScan"
+  ],
+  [
+   "proteomics_affinity_v4",
+   "Su2022"
+  ],
+  [
+   "proteomics_affinity_v4",
+   "Fineschi2026"
+  ],
+  [
+   "proteomics_explore_v5",
+   "Buggert2025"
+  ],
+  [
+   "proteomics_explore_v5",
+   "Fineschi2026"
+  ],
+  [
+   "proteomics_explore_v5",
+   "Woodruff2023"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE226260_WB"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE226260_PBMC"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE224615"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE251849"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE270045"
+  ],
+  [
+   "transcriptomics_v4",
+   "PRJNA1149196_SA"
+  ],
+  [
+   "transcriptomics_v4",
+   "PRJNA1149196_QLD"
+  ],
+  [
+   "transcriptomics_v4",
+   "GSE297499"
+  ]
+ ],
+ "workers": 10
+}

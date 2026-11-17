@@ -1,0 +1,5 @@
+block,held_out,n_splits,n_empty_guided,fraction_empty
+proteomics_ms_v4,Cervia2024_MS,20,0,0.0
+proteomics_ms_v4,Chowdhury2024,20,0,0.0
+proteomics_ms_v4,Chowdhury2026,20,5,0.25
+proteomics_ms_v4,Kovarik2023_plasma,20,20,1.0

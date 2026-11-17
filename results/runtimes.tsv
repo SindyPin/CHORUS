@@ -89,3 +89,6 @@ lc_transcriptomics_blood_v4_panel495	chorus run configs/lc_transcriptomics_blood
 panel_transfer_CORSIP2026_checks_permute	scripts/panel_transfer_checks.py permute --n-perm 200 (four parallel chunks of 50, longest)	~/.venvs/chorus-arm64	2026-11-17 11:39:41	2026-11-17 11:44:55	314	0
 panel_transfer_CORSIP2026_checks_concordance	scripts/panel_transfer_checks.py concordance (parallel with the permutation chunks)	~/.venvs/chorus-arm64	2026-11-17 11:39:41	2026-11-17 11:42:07	146	0
 panel495_random_genes	scripts/panel_transfer_checks.py random --n-sets 20 (four parallel chunks of 5, longest)	~/.venvs/chorus-arm64	2026-11-17 11:47:01	2026-11-17 12:06:28	1167	0
+concordance_noise_ceiling	scripts/concordance_noise_ceiling.py --out results/concordance_noise_ceiling	~/.venvs/chorus-arm64	2026-11-17 22:21:00	2026-11-17 22:24:52	232	0
+concordance_guided	scripts/concordance_guided.py all --out results/concordance_guided --workers 10	~/.venvs/chorus-arm64	2026-11-18 07:07:55	2026-11-18 07:24:25	990	0
+concordance_vs_transfer_full	scripts/concordance_vs_transfer_full.py --out results/concordance_vs_transfer_full	~/.venvs/chorus-arm64	2026-11-18 07:08:31	2026-11-18 07:08:45	14	0

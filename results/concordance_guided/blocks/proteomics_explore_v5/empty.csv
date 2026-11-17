@@ -1,0 +1,4 @@
+block,held_out,n_splits,n_empty_guided,fraction_empty
+proteomics_explore_v5,Buggert2025,20,0,0.0
+proteomics_explore_v5,Fineschi2026,20,0,0.0
+proteomics_explore_v5,Woodruff2023,20,8,0.4

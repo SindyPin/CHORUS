@@ -1,0 +1,9 @@
+{
+ "layers": {
+  "transcriptomics": "configs/concordance_rna_v5.yaml",
+  "proteomics": "configs/concordance_proteomics_all_v5.yaml",
+  "metabolomics": "configs/concordance_metabolomics_all.yaml"
+ },
+ "n_splits": 200,
+ "seed": 0
+}

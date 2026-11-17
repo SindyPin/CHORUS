@@ -1,0 +1,3 @@
+block,held_out,n_cal_LC,n_cal_recovered,reason
+transcriptomics_v4,GSE251849,6,2,calibration part has fewer than 4 samples per class
+transcriptomics_v4,PRJNA1149196_QLD,2,2,calibration part has fewer than 4 samples per class
