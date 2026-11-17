@@ -1,0 +1,50 @@
+set,test,trained_on,model,auroc,auroc_lo,auroc_hi,p_permutation,evaluation,auroc_sd
+acute_proteins_386,Su2022,Cervia2024_SomaScan,identity / differential / logreg,0.5544,0.45332,0.6557467,0.1188119,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,identity / differential / rf,0.5029333,0.4394267,0.57228,0.4257426,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,center_scale / differential / logreg,0.5642667,0.4650333,0.6664133,0.1386139,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,center_scale / differential / rf,0.6084,0.51092,0.7102733,0.03960396,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,rank / differential / logreg,0.4324,0.3296,0.5418733,0.8910891,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,rank / differential / rf,0.4388,0.3363933,0.5328067,0.8514851,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,fsqn / differential / logreg,0.5296,0.4266667,0.6317733,0.2871287,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,fsqn / differential / rf,0.5802667,0.4815967,0.68244,0.02970297,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,combat_addon / differential / logreg,0.5656,0.46558,0.6680067,0.1386139,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,combat_addon / differential / rf,0.6070667,0.5116967,0.7068433,0.03960396,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,identity / invariant / logreg,0.5290667,0.4245267,0.6320267,0.2772277,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,identity / invariant / rf,0.4913333,0.42346,0.56747,0.5544554,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,center_scale / invariant / logreg,0.5744,0.4714533,0.67654,0.1089109,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,center_scale / invariant / rf,0.5909333,0.4912,0.69123,0.06930693,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,rank / invariant / logreg,0.4298667,0.3293333,0.5392133,0.9306931,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,rank / invariant / rf,0.4714667,0.3705,0.5701533,0.7227723,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,fsqn / invariant / logreg,0.5072,0.3983867,0.61498,0.5049505,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,fsqn / invariant / rf,0.6032,0.50653,0.7058867,0.01980198,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,combat_addon / invariant / logreg,0.5778667,0.4794533,0.67792,0.05940594,"train on one cohort, test on the other",
+acute_proteins_386,Su2022,Cervia2024_SomaScan,combat_addon / invariant / rf,0.6026667,0.5016,0.7005367,0.02970297,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,identity / differential / logreg,0.6441781,0.5225942,0.751387,0.00990099,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,identity / differential / rf,0.5,0.5,0.5,0.7227723,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,center_scale / differential / logreg,0.5547945,0.4335616,0.6650942,0.1188119,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,center_scale / differential / rf,0.4479452,0.3371276,0.560625,0.8415842,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,rank / differential / logreg,0.5636986,0.4567979,0.6695548,0.1188119,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,rank / differential / rf,0.5438356,0.4326926,0.6500171,0.1782178,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,fsqn / differential / logreg,0.5613014,0.4458818,0.6684932,0.07920792,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,fsqn / differential / rf,0.4842466,0.3732705,0.5953853,0.5643564,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,combat_addon / differential / logreg,0.5537671,0.4328596,0.6626969,0.1287129,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,combat_addon / differential / rf,0.4462329,0.3348673,0.5584418,0.8316832,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,identity / invariant / logreg,0.6441781,0.5225942,0.751387,0.00990099,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,identity / invariant / rf,0.5,0.5,0.5,0.7227723,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,center_scale / invariant / logreg,0.5547945,0.4335616,0.6650942,0.1089109,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,center_scale / invariant / rf,0.4479452,0.3371276,0.560625,0.8118812,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,rank / invariant / logreg,0.5349315,0.4253425,0.6421404,0.2574257,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,rank / invariant / rf,0.5464041,0.4404024,0.6440411,0.2574257,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,fsqn / invariant / logreg,0.5366438,0.419512,0.6480565,0.2376238,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,fsqn / invariant / rf,0.5008562,0.3926284,0.6128467,0.4851485,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,combat_addon / invariant / logreg,0.5537671,0.4328596,0.6626969,0.1188119,"train on one cohort, test on the other",
+acute_proteins_386,Cervia2024_SomaScan,Su2022,combat_addon / invariant / rf,0.4462329,0.3348673,0.5584418,0.8019802,"train on one cohort, test on the other",
+su2022_paired,Su2022,Su2022,layer:olink,0.481419,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.1070671
+su2022_paired,Su2022,Su2022,layer:metabolomics,0.4901619,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.1280107
+su2022_paired,Su2022,Su2022,early_fusion,0.4494762,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.11764
+su2022_paired,Su2022,Su2022,late_fusion,0.5156,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.1086961
+su2022_paired,Su2022,Su2022,mofa,0.4389429,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.1121384
+su2022_paired,Su2022,Su2022,diablo,0.4418,,,,"repeated stratified 5 fold CV, 10 repeats, mean over 50 folds (su2022_paired_splits.csv)",0.1180167
+gse215865_development,GSE215865 timepoint 0,GSE215865,differential / logreg,0.5122151,,,,"repeated stratified 5 fold CV on the timepoint 0 samples, mean over 50 folds (gse215865_development_splits.csv)",0.06803859
+gse215865_development,GSE215865 timepoint 0,GSE215865,differential / rf,0.5688557,,,,"repeated stratified 5 fold CV on the timepoint 0 samples, mean over 50 folds (gse215865_development_splits.csv)",0.05963099
+gse215865_development,GSE215865,GSE215865,"TACO (published, Thompson 2023)",0.675,,,,"published value, not recomputed",
