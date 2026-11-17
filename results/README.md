@@ -33,7 +33,8 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 10:51) ran one after another, also during the quantification; see "Version 4 cohort set and reporting fixes (16 November
 2026)". The version 4 transcriptomic runs of 17 November (from 00:36) ran one after another; the runtime of
 `lc_transcriptomics_blood_v4` includes time the laptop was asleep. The six follow-up runs of 17 November (from
-09:19) ran at the same time, so their runtimes overlap; see "Follow-up analyses (17 November 2026)".
+09:19) ran at the same time, so their runtimes overlap; see "Follow-up analyses (17 November 2026)". The version 5 runs of
+17 November (from 10:17) ran one after another; see "Version 5 (17 November 2026)".
 
 | folder | command | config | runtime (s) |
 |---|---|---|---|
@@ -89,6 +90,17 @@ quantification ran in the background, so their runtimes overlap with it. The rep
 | `clustering_readiness` | `scripts/clustering_readiness.py --out results/clustering_readiness` | configs/lc_transcriptomics_blood_v4.yaml, configs/lc_proteomics_affinity_v4.yaml | 273 (started 2026-11-17 09:23:32) |
 | `acute_persistence` | `scripts/acute_persistence.py --out results/acute_persistence` | configs/control_acute_proteomics.yaml, configs/concordance_proteomics_all_v4.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml, configs/mosaic_lc_rna_v4.yaml | 187 (started 2026-11-17 09:25:23) |
 | `concordance_vs_transfer` | `scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer` | the loso_results.csv of lc_transcriptomics_blood_v4, lc_proteomics_affinity_v4, lc_proteomics_ms_v4, lc_metabolomics | 16 (started 2026-11-17 09:26:09) |
+| `lc_proteomics_affinity_v5` | `chorus run configs/lc_proteomics_affinity_v5.yaml --within` | configs/lc_proteomics_affinity_v5.yaml | 466 (started 2026-11-17 10:17:01) |
+| `lc_proteomics_explore_v5` | `chorus run configs/lc_proteomics_explore_v5.yaml --within` | configs/lc_proteomics_explore_v5.yaml | 236 (started 2026-11-17 10:24:47) |
+| `concordance_proteomics_all_v5` | `scripts/concordance.py configs/concordance_proteomics_all_v5.yaml --out results/concordance_proteomics_all_v5 --top 50` | configs/concordance_proteomics_all_v5.yaml | 12 (started 2026-11-17 10:28:43) |
+| `concordance_v5` | `scripts/concordance.py configs/concordance_rna_v5.yaml --out results/concordance_v5` | configs/concordance_rna_v5.yaml | 145 (started 2026-11-17 10:28:55) |
+| `mosaic_programmes_v5` | `scripts/mosaic_programmes.py --out results/mosaic_programmes_v5 --contrasts lc_v5` | configs/mosaic_lc_rna_v4.yaml, configs/concordance_proteomics_all_v5.yaml | 174 (started 2026-11-17 10:31:20) |
+| `panel_transfer_CORSIP2026` | `chorus run configs/panel_transfer_CORSIP2026.yaml` | configs/panel_transfer_CORSIP2026.yaml | 104 (started 2026-11-17 10:34:14) |
+| `panel_transfer_CORSIP2026_noUnverified` | `chorus run configs/panel_transfer_CORSIP2026_noUnverified.yaml` | configs/panel_transfer_CORSIP2026_noUnverified.yaml | 104 (started 2026-11-17 10:35:58) |
+| `lc_transcriptomics_blood_v4_GSE228320` | `chorus run configs/lc_transcriptomics_blood_v4_GSE228320.yaml` | configs/lc_transcriptomics_blood_v4_GSE228320.yaml | 141 (started 2026-11-17 10:37:42) |
+| `concordance_vs_transfer_v5` | `scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer_v5 --blocks transcriptomics=results/lc_transcriptomics_blood_v4/loso_results.csv,proteomics_affinity=results/lc_proteomics_affinity_v5/loso_results.csv,proteomics_ms=results/lc_proteomics_ms_v4/loso_results.csv,metabolomics=results/lc_metabolomics/loso_results.csv,proteomics_explore=results/lc_proteomics_explore_v5/loso_results.csv --not-pooled proteomics_explore` | the loso_results.csv of lc_transcriptomics_blood_v4, lc_proteomics_affinity_v5, lc_proteomics_ms_v4, lc_metabolomics, lc_proteomics_explore_v5 | 15 (started 2026-11-17 10:40:03) |
+| `clustering_readiness_v5` | `scripts/clustering_readiness.py --out results/clustering_readiness_v5 --blocks rna=configs/lc_transcriptomics_blood_v4.yaml,protein_affinity=configs/lc_proteomics_affinity_v5.yaml,protein_explore=configs/lc_proteomics_explore_v5.yaml` | configs/lc_transcriptomics_blood_v4.yaml, configs/lc_proteomics_affinity_v5.yaml, configs/lc_proteomics_explore_v5.yaml | 328 (started 2026-11-17 10:40:18) |
+| `acute_persistence_v5` | `scripts/acute_persistence.py --out results/acute_persistence_v5 --target-protein configs/concordance_proteomics_all_v5.yaml --acute-check Woodruff2023` | configs/control_acute_proteomics.yaml, configs/concordance_proteomics_all_v5.yaml, configs/mosaic_acute_rna.yaml, configs/mosaic_acute_protein.yaml, configs/mosaic_lc_rna_v4.yaml | 180 (started 2026-11-17 10:45:46) |
 | `enrichment.csv` | `scripts/enrichment.py configs/lc_transcriptomics_blood.yaml results/lc_transcriptomics_blood/selected_features.json --out results/enrichment.csv` | configs/lc_transcriptomics_blood.yaml (expressed universe) | 42 (version 3, started 2026-11-13 15:45:48) |
 
 - `lc_transcriptomics_blood`: primary leave-one-study-out benchmark, full grid (9 harmonisers, among them `chorus_protected` since version 3, plus nested selection,
@@ -152,6 +164,13 @@ selection, 200 bootstrap resamples.
 | early_detection/horizontal | Su2022 and Cervia2024_SomaScan (acute samples), each trained on the other | none |
 | early_detection/vertical, early_detection/reference | no folds across cohorts; within Su2022 (paired) and within GSE215865 | none |
 | clustering_readiness | no labels; LC cases of the lc_transcriptomics_blood_v4 and lc_proteomics_affinity_v4 cohorts, each cohort left out in turn | none |
+| lc_proteomics_affinity_v5 | Buggert2025, Cervia2024_SomaScan, Su2022, Fineschi2026, Woodruff2023, Bansal2025 | none |
+| lc_proteomics_explore_v5 | Buggert2025, Fineschi2026, Woodruff2023 | none |
+| concordance_proteomics_all_v5, concordance_v5 | no folds; the ten protein cohorts, and the eight v4 RNA cohorts with CORSIP2026 and GSE228320 | none |
+| mosaic_programmes_v5/lc_v5 | as mosaic_programmes_v4/lc_v4, with Woodruff2023 and Bansal2025 | PRJNA1149196_QLD |
+| panel_transfer_CORSIP2026 (and _noUnverified) | CORSIP2026 | the eight lc_transcriptomics_blood_v4 cohorts |
+| lc_transcriptomics_blood_v4_GSE228320 | GSE228320 | the eight lc_transcriptomics_blood_v4 cohorts |
+| acute_persistence_v5 | scored: Buggert2025, Fineschi2026, Woodruff2023, Bansal2025 (proteins); as acute_persistence (programmes) | as acute_persistence |
 | acute_persistence | scored: Buggert2025, Fineschi2026 (proteins); the RNA cohorts of mosaic_lc_rna_v4 except PRJNA1149196_QLD (programmes) | the acute cohorts of control_acute_proteomics (and GSE215865 for programmes) |
 
 ## GSE224615 samples flagged at QC
@@ -229,6 +248,14 @@ local.
   `run_info.json`.
 - `acute_persistence/protein/`, `acute_persistence/rna_programmes/`: `per_cohort.csv`, `meta.csv`, `model.csv`,
   `sharing.csv`, `scores.csv` (acute score per target sample), `run_info.json`.
+
+- Version 5: `lc_proteomics_affinity_v5/`, `lc_proteomics_explore_v5/` as `lc_proteomics_affinity_v4`
+  (without `harmonisation/` and `concordance/`); `concordance_proteomics_all_v5/`, `concordance_v5/` as
+  `concordance_proteomics_all`; `mosaic_programmes_v5/` with `lc_v5/` as `mosaic_programmes_v4/lc_v4`;
+  `panel_transfer_CORSIP2026/`, `panel_transfer_CORSIP2026_noUnverified/`, `lc_transcriptomics_blood_v4_GSE228320/`:
+  `loso_results.csv`, `loso_summary.csv`, `loso_predictions.csv`; `concordance_vs_transfer_v5/`,
+  `clustering_readiness_v5/`, `acute_persistence_v5/` as their version 4 folders, plus `acute_check.csv` in
+  `acute_persistence_v5/protein/`.
 
 ## Column glossary
 
@@ -1792,4 +1819,307 @@ Meta-analysis (k = 7):
 | identity | g_days | 7 | 1 | -0.18 (-0.56 to 0.19) | 0.329 | 41.2 | 0.102 |
 | center_scale | g | 7 | 0 | -0.13 (-0.41 to 0.15) | 0.369 | 0.0 | 0.000 |
 | center_scale | g_days | 7 | 1 | -0.16 (-0.43 to 0.12) | 0.275 | 0.0 | 0.000 |
+
+
+## Version 5 (17 November 2026)
+
+The cohorts added on 17 November (`docs/proteomics_cohorts.md`, `docs/count_matrices.md`) enter version 5.
+- **Proteins:** Woodruff2023 (Olink Explore 3072) and Bansal2025 (Olink Target 96). Bansal2025 keeps the QC rule as
+  built, 56 participants.
+- **RNA:** CORSIP2026 (NanoString panel) is a test cohort only. GSE228320 (DLCO below 60% of predicted) is a
+  sensitivity cohort only.
+- **Grid:** all the v5 runs use a reduced grid.
+  - Harmonisers: identity, center_scale, rank, fsqn, combat_addon, chorus, chorus_protected and nested (nested chooses
+    among the first six).
+  - Selectors: variance (k 100 for proteins, 500 for RNA), differential and invariant (k 50 for proteins, 200 for RNA).
+  - Classifiers: logreg and rf; 1,000 bootstrap resamples.
+- **Not rerun:** the main transcriptomic (`lc_transcriptomics_blood_v4`), MS (`lc_proteomics_ms_v4`) and metabolomics
+  (`lc_metabolomics`) benchmarks have no new main cohort, so their version 4 results stand as version 5.
+- **Run order:** the runs went one after another from 10:17 (`results/runtimes.tsv`).
+
+### 1. Comparison of version 4 and version 5 per block
+
+Leave-one-study-out results restricted to the reduced grid:
+- The v4 affinity block has no chorus_protected, so it has 42 configurations rather than 48.
+- "Median of mean AUROC" is the median over the configurations that have a result in every fold of their mean AUROC
+  across held-out cohorts.
+- The best configuration is harmoniser / selector / classifier.
+
+| block | version | cohorts | held-out cohorts | shared features | configurations (reduced grid) | with a result in every fold | median of mean AUROC | best configuration | best mean AUROC (min to max) |
+|---|---|---|---|---|---|---|---|---|---|
+| affinity | v4 | 4 cohorts | 4 | 166 | 42 | 42 | 0.499 | rank / differential / rf | 0.606 (0.51 to 0.71) |
+| affinity | v5 | + Woodruff2023, Bansal2025 | 6 | 55 | 48 | 36 | 0.479 | rank / variance / rf | 0.563 (0.50 to 0.70) |
+| Olink Explore | v5 | new block | 3 | 358 | 48 | 42 | 0.429 | identity / variance / rf | 0.593 (0.47 to 0.67) |
+| MS | v4 = v5 | no new cohort; not rerun | 4 | 179 | 42 | 42 | 0.470 | rank / invariant / logreg | 0.566 (0.38 to 0.75) |
+| transcriptomics | v4 = v5 | no new main cohort; not rerun | 7 | 10053 | 48 | 34 | 0.436 | rank / variance / rf | 0.523 (0.39 to 0.65) |
+| metabolomics | v4 = v5 | no new cohort; not rerun | 3 | 38 | 42 | 36 | 0.555 | center_scale / differential / logreg | 0.621 (0.58 to 0.67) |
+
+Affinity block: median AUROC over the reduced-grid configurations, per held-out cohort.
+
+| held_out | v4 | v5 |
+|---|---|---|
+| Bansal2025 |  | 0.566 |
+| Buggert2025 | 0.484 | 0.328 |
+| Cervia2024_SomaScan | 0.483 | 0.529 |
+| Fineschi2026 | 0.556 | 0.501 |
+| Su2022 | 0.477 | 0.460 |
+| Woodruff2023 |  | 0.502 |
+
+- **Affinity v5** (`lc_proteomics_affinity_v5`):
+  - Samples: Buggert2025 146 LC / 51 recovered, Cervia2024_SomaScan 40 / 73, Su2022 75 / 50, Fineschi2026 92 / 73,
+    Woodruff2023 93 / 27, Bansal2025 12 / 20.
+  - Proteins: the six cohorts share 55, against 166 in v4, because Bansal2025 measures 182 (Target 96). The variance
+    selector (k 100) therefore keeps all 55.
+  - Imputation: Bansal2025's 165 vendor-masked values are filled with its median.
+  - chorus fails in every fold ("only 4 to 10 null genes passed the screen").
+  - chorus_protected fails in every fold ("no genes of the protected scores"): its neutrophil and lymphocyte scores are
+    gene lists that do not exist in UniProt space. The same holds in the Explore block.
+  - Nested choices: fsqn in the Su2022 and Woodruff2023 folds; rank in the Cervia2024_SomaScan and Fineschi2026 folds;
+    center_scale or fsqn in the Buggert2025 fold; identity or fsqn in the Bansal2025 fold.
+  - Within-study CV is in `within_study_cv.csv`.
+- **Olink Explore v5** (`lc_proteomics_explore_v5`): Buggert2025, Fineschi2026 and Woodruff2023 on their 358 shared
+  proteins, with Buggert2025's 197 vendor-masked values filled with its median.
+  - chorus runs in every fold; chorus_protected fails in every fold.
+  - Nested chooses fsqn or identity in the Buggert2025 fold, rank in the Fineschi2026 fold, and rank or fsqn in the
+    Woodruff2023 fold.
+
+### 2. Concordance and mosaic programmes
+
+- **`concordance_proteomics_all_v5`** (`configs/concordance_proteomics_all_v5.yaml`): the eight v4 protein cohorts plus
+  Woodruff2023 and Bansal2025, each on its own proteins.
+  - 45 pairs. 11 share fewer than 10 proteins over all features: the 7 of v4, plus Bansal2025 with Cervia2024_MS (0),
+    Chowdhury2024 (1), Kovarik2023_plasma (0) and Chowdhury2026 (0).
+  - Among the top 50, 44 of the 45 pairs are below 10 and are NaN.
+  - The new pairs over all shared proteins (Spearman of the per-protein Hedges g, n_shared):
+
+    | pair | n_shared | Spearman |
+    |---|---|---|
+    | Buggert2025, Woodruff2023 | 2,903 | −0.295 |
+    | Cervia2024_SomaScan, Woodruff2023 | 2,163 | 0.171 |
+    | Su2022, Woodruff2023 | 433 | 0.115 |
+    | Fineschi2026, Woodruff2023 | 358 | 0.103 |
+    | Chowdhury2026, Woodruff2023 | 198 | 0.154 |
+    | Chowdhury2024, Woodruff2023 | 160 | 0.198 |
+    | Kovarik2023_plasma, Woodruff2023 | 129 | −0.156 |
+    | Cervia2024_MS, Woodruff2023 | 127 | 0.300 |
+    | Buggert2025, Bansal2025 | 179 | −0.181 |
+    | Woodruff2023, Bansal2025 | 179 | 0.017 |
+    | Cervia2024_SomaScan, Bansal2025 | 174 | 0.182 |
+    | Su2022, Bansal2025 | 89 | 0.292 |
+    | Fineschi2026, Bansal2025 | 76 | −0.053 |
+
+    All pairs and their p values are in `pairs.csv`.
+- **`concordance_v5`** (`configs/concordance_rna_v5.yaml`, `features: per_cohort`): the eight v4 RNA cohorts plus
+  CORSIP2026 and GSE228320, each pair on the genes both cohorts express.
+  - No pair has fewer than 10 shared genes over all features. CORSIP2026 shares 553 to 704 genes per pair; GSE228320
+    shares 11,187 to 12,723.
+  - Among the top 500, the 9 CORSIP2026 pairs share 0 or 1 gene and are NaN.
+  - CORSIP2026 with the v4 cohorts: Spearman −0.237 (GSE251849) to 0.502 (GSE270045). GSE228320 with the v4 cohorts:
+    −0.171 to 0.154. CORSIP2026 with GSE228320: 0.230.
+- **`mosaic_programmes_v5/lc_v5`** (`--contrasts lc_v5`): the protein side of lc_v4 plus Woodruff2023 (50 Hallmark, 983
+  Reactome programmes scored) and Bansal2025 (16 and 53). The RNA side is unchanged.
+  - Two Hallmark pairs share fewer than 10 programmes: Bansal2025 with Kovarik2023_plasma (8) and with Cervia2024_MS (9).
+  - Partition: 36 programmes are scored in every environment (63 in lc_v4), and all 36 are unstable.
+  - Test AUROC (identity / center_scale):
+    - Woodruff2023: rna_to_protein 0.745 / 0.771 on 972 programmes; leave-one-cohort-out 0.449 / 0.513 on 36.
+    - Bansal2025: rna_to_protein 0.700 / 0.675 on 69 programmes; leave-one-cohort-out 0.462 / 0.508 on 36.
+  - Medians over test cohorts (identity / center_scale): leave_one_cohort_out 0.545 / 0.554, protein_to_rna 0.616 /
+    0.549, rna_to_protein 0.510 / 0.538.
+
+### 3. Panel transfer to CORSIP2026 (`panel_transfer_CORSIP2026`, `panel_transfer_CORSIP2026_noUnverified`)
+
+- **Design:** training on the eight v4 transcriptomic cohorts, all `train_only`, on the 495 genes that pass the
+  expression filter in every cohort including CORSIP2026 (the genes CORSIP2026 measures). Tested on CORSIP2026 only,
+  which is never used for training. Covariate and protected variable: sample_matrix, as in v4. The 202 and 497 features
+  include the two sample_matrix columns.
+- **chorus and chorus_protected** fail ("only 0 null genes passed the screen").
+- **Nested choices:** combat_addon (differential), identity (invariant), identity (variance).
+- **Second run:** without the two `convalescent_unverified` controls PX-34 and PX-47.
+
+| harmoniser | selector | classifier | CORSIP2026, 8 LC / 29 recovered | CORSIP2026 without PX-34 and PX-47, 8 / 27 |
+|---|---|---|---|---|
+| identity | variance | logreg | 0.724 (0.51 to 0.89) | 0.736 (0.54 to 0.91) |
+| identity | variance | rf | 0.631 (0.44 to 0.80) | 0.632 (0.46 to 0.80) |
+| center_scale | variance | logreg | 0.828 (0.65 to 0.96) | 0.819 (0.63 to 0.95) |
+| center_scale | variance | rf | 0.903 (0.77 to 0.99) | 0.928 (0.82 to 1.00) |
+| rank | variance | logreg | 0.655 (0.45 to 0.84) | 0.667 (0.47 to 0.85) |
+| rank | variance | rf | 0.534 (0.23 to 0.80) | 0.530 (0.24 to 0.79) |
+| fsqn | variance | logreg | 0.724 (0.51 to 0.91) | 0.713 (0.51 to 0.88) |
+| fsqn | variance | rf | 0.776 (0.55 to 0.94) | 0.785 (0.58 to 0.95) |
+| combat_addon | variance | logreg | 0.810 (0.62 to 0.94) | 0.810 (0.64 to 0.94) |
+| combat_addon | variance | rf | 0.838 (0.63 to 0.97) | 0.870 (0.70 to 0.99) |
+| nested | variance | logreg | 0.724 (0.51 to 0.89) | 0.736 (0.54 to 0.91) |
+| nested | variance | rf | 0.631 (0.44 to 0.80) | 0.632 (0.46 to 0.80) |
+| identity | differential | logreg | 0.789 (0.58 to 0.94) | 0.801 (0.58 to 0.96) |
+| identity | differential | rf | 0.769 (0.62 to 0.90) | 0.752 (0.61 to 0.89) |
+| center_scale | differential | logreg | 0.802 (0.63 to 0.94) | 0.796 (0.62 to 0.94) |
+| center_scale | differential | rf | 0.843 (0.65 to 0.97) | 0.863 (0.69 to 0.99) |
+| rank | differential | logreg | 0.793 (0.62 to 0.94) | 0.787 (0.61 to 0.94) |
+| rank | differential | rf | 0.300 (0.13 to 0.50) | 0.289 (0.12 to 0.48) |
+| fsqn | differential | logreg | 0.595 (0.38 to 0.81) | 0.588 (0.37 to 0.81) |
+| fsqn | differential | rf | 0.832 (0.65 to 0.97) | 0.866 (0.71 to 0.98) |
+| combat_addon | differential | logreg | 0.797 (0.62 to 0.93) | 0.792 (0.61 to 0.94) |
+| combat_addon | differential | rf | 0.884 (0.71 to 0.99) | 0.884 (0.71 to 1.00) |
+| nested | differential | logreg | 0.797 (0.62 to 0.93) | 0.792 (0.61 to 0.94) |
+| nested | differential | rf | 0.884 (0.71 to 0.99) | 0.884 (0.71 to 1.00) |
+| identity | invariant | logreg | 0.690 (0.46 to 0.88) | 0.690 (0.47 to 0.89) |
+| identity | invariant | rf | 0.625 (0.34 to 0.87) | 0.637 (0.36 to 0.89) |
+| center_scale | invariant | logreg | 0.621 (0.39 to 0.83) | 0.616 (0.40 to 0.82) |
+| center_scale | invariant | rf | 0.774 (0.57 to 0.94) | 0.794 (0.61 to 0.94) |
+| rank | invariant | logreg | 0.547 (0.31 to 0.78) | 0.542 (0.31 to 0.77) |
+| rank | invariant | rf | 0.543 (0.37 to 0.72) | 0.549 (0.37 to 0.75) |
+| fsqn | invariant | logreg | 0.759 (0.53 to 0.96) | 0.759 (0.53 to 0.94) |
+| fsqn | invariant | rf | 0.853 (0.70 to 0.97) | 0.882 (0.75 to 0.99) |
+| combat_addon | invariant | logreg | 0.642 (0.41 to 0.83) | 0.639 (0.43 to 0.83) |
+| combat_addon | invariant | rf | 0.797 (0.60 to 0.95) | 0.819 (0.64 to 0.97) |
+| nested | invariant | logreg | 0.690 (0.46 to 0.88) | 0.690 (0.47 to 0.89) |
+| nested | invariant | rf | 0.625 (0.34 to 0.87) | 0.637 (0.36 to 0.89) |
+
+### 4. Sensitivity: GSE228320 as an extra held-out cohort (`lc_transcriptomics_blood_v4_GSE228320`)
+
+- **Design:** training on the eight v4 transcriptomic cohorts, all `train_only`, on the 9,556 genes they share with
+  GSE228320. Tested on GSE228320 only: LC means DLCO below 60% of predicted (`case_definition` pulmonary_sequelae), not
+  a Long COVID definition.
+- **Scope:** the v4 folds are not changed, and GSE228320 never trains a model. This is reported apart from the main
+  benchmark.
+- **chorus and chorus_protected** fail ("only 12 null genes passed the screen").
+- **Nested choices:** identity (differential), fsqn (invariant), center_scale (variance).
+
+| harmoniser | selector | classifier | GSE228320 AUROC (95% interval), 18 DLCO below 60 / 32 at 60 or above |
+|---|---|---|---|
+| identity | variance | logreg | 0.595 (0.42 to 0.77) |
+| identity | variance | rf | 0.351 (0.19 to 0.52) |
+| center_scale | variance | logreg | 0.564 (0.40 to 0.72) |
+| center_scale | variance | rf | 0.470 (0.30 to 0.64) |
+| rank | variance | logreg | 0.595 (0.44 to 0.74) |
+| rank | variance | rf | 0.486 (0.30 to 0.66) |
+| fsqn | variance | logreg | 0.458 (0.29 to 0.64) |
+| fsqn | variance | rf | 0.576 (0.40 to 0.74) |
+| combat_addon | variance | logreg | 0.488 (0.32 to 0.65) |
+| combat_addon | variance | rf | 0.575 (0.40 to 0.74) |
+| nested | variance | logreg | 0.564 (0.40 to 0.72) |
+| nested | variance | rf | 0.470 (0.30 to 0.64) |
+| identity | differential | logreg | 0.523 (0.37 to 0.68) |
+| identity | differential | rf | 0.253 (0.12 to 0.40) |
+| center_scale | differential | logreg | 0.564 (0.39 to 0.74) |
+| center_scale | differential | rf | 0.550 (0.39 to 0.72) |
+| rank | differential | logreg | 0.479 (0.29 to 0.67) |
+| rank | differential | rf | 0.453 (0.28 to 0.61) |
+| fsqn | differential | logreg | 0.517 (0.36 to 0.67) |
+| fsqn | differential | rf | 0.543 (0.37 to 0.71) |
+| combat_addon | differential | logreg | 0.573 (0.39 to 0.74) |
+| combat_addon | differential | rf | 0.514 (0.36 to 0.67) |
+| nested | differential | logreg | 0.523 (0.37 to 0.68) |
+| nested | differential | rf | 0.253 (0.12 to 0.40) |
+| identity | invariant | logreg | 0.495 (0.32 to 0.68) |
+| identity | invariant | rf | 0.598 (0.42 to 0.78) |
+| center_scale | invariant | logreg | 0.514 (0.36 to 0.68) |
+| center_scale | invariant | rf | 0.562 (0.39 to 0.72) |
+| rank | invariant | logreg | 0.465 (0.29 to 0.64) |
+| rank | invariant | rf | 0.576 (0.42 to 0.73) |
+| fsqn | invariant | logreg | 0.549 (0.38 to 0.71) |
+| fsqn | invariant | rf | 0.648 (0.50 to 0.79) |
+| combat_addon | invariant | logreg | 0.523 (0.37 to 0.69) |
+| combat_addon | invariant | rf | 0.604 (0.42 to 0.76) |
+| nested | invariant | logreg | 0.549 (0.38 to 0.71) |
+| nested | invariant | rf | 0.648 (0.50 to 0.79) |
+
+### 5. Follow-up analyses on the version 5 cohorts
+
+- **B** (`concordance_vs_transfer_v5`): the blocks are transcriptomics v4, affinity v5, MS v4, metabolomics, and the
+  new Explore v5 block.
+  - The Explore block is analysed alone and left out of the pooled analysis (`--not-pooled`), because its three
+    held-out cohorts are also held out in affinity v5.
+  - Affinity v5 (24 rows, 6 cohorts): Spearman with effect_spearman 0.577 (cohort bootstrap −0.12 to 0.87, permutation
+    p 0.005), with sign_agreement 0.669 (0.13 to 0.90, p 0.0006). In v4 these were 0.494 and 0.189.
+  - Explore v5 (12 rows, 3 cohorts): 0.664 (0.21 to 0.95, p 0.022) and 0.931 (0.32 to 0.95, p 0.0002).
+  - Pooled (87 rows, 20 cohorts): 0.503 (0.27 to 0.66) and 0.512 (0.33 to 0.64), both p 0.0001. In v4 these were 0.511
+    and 0.426.
+  - Variance share of the held-out cohort (and of the harmoniser):
+
+    | analysis | held-out cohort | harmoniser |
+    |---|---|---|
+    | affinity v5 | 0.615 | 0.064 |
+    | Explore v5 | 0.380 | 0.192 |
+    | pooled | 0.645 | 0.012 |
+
+    Transcriptomics, MS and metabolomics are unchanged from v4.
+- **C** (`clustering_readiness_v5`): RNA (the v4 cohorts, as before), affinity v5 and Explore v5.
+  - Why the RNA block is v4: CORSIP2026 and GSE228320 are test-only or sensitivity cohorts, and CORSIP2026 would cut
+    the shared genes to 495.
+  - The RNA results are identical to `clustering_readiness`.
+  - LC samples: affinity v5 has 458 (Buggert2025 146, Cervia2024_SomaScan 40, Su2022 75, Fineschi2026 92, Woodruff2023
+    93, Bansal2025 12); Explore v5 has 331.
+  - ARI between cluster and cohort, range over the three methods and k = 2 to 6:
+
+    | block | center_scale | fsqn | identity | quantile_ref | rank |
+    |---|---|---|---|---|---|
+    | affinity v5 | 0.00 to 0.02 | 0.00 to 0.01 | 0.13 to 0.96 | 0.34 to 0.91 | 0.33 to 0.87 |
+    | Explore v5 | 0.01 to 0.07 | 0.00 to 0.02 | 0.01 to 0.79 | 0.13 to 0.90 | 0.12 to 0.90 |
+
+  - Mean leave-one-cohort-out stability: 0.30 to 0.94 in affinity v5 and 0.31 to 0.91 in Explore v5.
+- **D** (`acute_persistence_v5`): the protein targets are `configs/concordance_proteomics_all_v5.yaml`.
+  - Cohorts that share the proteins and keep subjects: Buggert2025, Fineschi2026, Woodruff2023 (163 of the 163 training
+    proteins) and Bansal2025 (82 of 163).
+  - The model proteins were therefore restricted to the 55 measured in all four, against 84 in v4. The invariant
+    selector picks 50 of them.
+  - Every post-acute subject of Cervia2024 and Su2022 is still removed as a training subject. The MS cohorts measure 2
+    to 5 of the proteins.
+  - Woodruff2023 records `days_since_infection` (days after symptom onset) for all 120 scored samples, so `g_days` uses
+    its adjusted g. Its g adjusted for days (identity / center_scale / quantile_ref / fsqn / rank) is 0.86 / 0.62 / 0.76
+    / 0.80 / 0.29.
+  - The RNA programme part is unchanged; its targets are the v4 RNA cohorts, and its output equals
+    `acute_persistence/rna_programmes`.
+
+| harmoniser | cohort | LC / recovered | g (95% interval) | AUROC (95% interval) | g adjusted for days |
+|---|---|---|---|---|---|
+| identity | Buggert2025 | 146 / 51 | -0.21 (-0.51 to 0.06) | 0.440 (0.35 to 0.52) |  |
+| identity | Fineschi2026 | 92 / 73 | 0.10 (-0.18 to 0.41) | 0.517 (0.43 to 0.61) |  |
+| identity | Woodruff2023 | 93 / 27 | 0.78 (0.50 to 1.11) | 0.712 (0.62 to 0.81) | 0.86 |
+| identity | Bansal2025 | 12 / 20 | 0.15 (-0.62 to 0.80) | 0.500 (0.28 to 0.71) |  |
+| center_scale | Buggert2025 | 146 / 51 | -0.62 (-0.92 to -0.35) | 0.318 (0.24 to 0.40) |  |
+| center_scale | Fineschi2026 | 92 / 73 | 0.33 (0.06 to 0.61) | 0.593 (0.51 to 0.68) |  |
+| center_scale | Woodruff2023 | 93 / 27 | 0.55 (0.20 to 0.94) | 0.661 (0.55 to 0.76) | 0.62 |
+| center_scale | Bansal2025 | 12 / 20 | 0.39 (-0.28 to 1.06) | 0.583 (0.38 to 0.78) |  |
+| quantile_ref | Buggert2025 | 146 / 51 | -0.37 (-0.61 to -0.14) | 0.406 (0.33 to 0.48) |  |
+| quantile_ref | Fineschi2026 | 92 / 73 | -0.09 (-0.38 to 0.21) | 0.481 (0.39 to 0.57) |  |
+| quantile_ref | Woodruff2023 | 93 / 27 | 0.69 (0.26 to 1.16) | 0.681 (0.56 to 0.79) | 0.76 |
+| quantile_ref | Bansal2025 | 12 / 20 | -0.26 (-0.99 to 0.62) | 0.475 (0.27 to 0.70) |  |
+| fsqn | Buggert2025 | 146 / 51 | -0.49 (-0.84 to -0.18) | 0.361 (0.28 to 0.44) |  |
+| fsqn | Fineschi2026 | 92 / 73 | 0.41 (0.14 to 0.69) | 0.597 (0.52 to 0.68) |  |
+| fsqn | Woodruff2023 | 93 / 27 | 0.72 (0.38 to 1.09) | 0.700 (0.59 to 0.80) | 0.79 |
+| fsqn | Bansal2025 | 12 / 20 | 0.67 (-0.05 to 1.50) | 0.629 (0.40 to 0.83) |  |
+| rank | Buggert2025 | 146 / 51 | -0.25 (-0.52 to 0.02) | 0.419 (0.34 to 0.50) |  |
+| rank | Fineschi2026 | 92 / 73 | 0.01 (-0.29 to 0.31) | 0.504 (0.42 to 0.59) |  |
+| rank | Woodruff2023 | 93 / 27 | 0.24 (-0.21 to 0.71) | 0.562 (0.43 to 0.70) | 0.28 |
+| rank | Bansal2025 | 12 / 20 | -0.15 (-0.90 to 0.73) | 0.508 (0.30 to 0.75) |  |
+
+Meta-analysis (k = 4):
+
+| harmoniser | estimate | k | adjusted | pooled g (95% interval) | p | I2 (%) | tau2 |
+|---|---|---|---|---|---|---|---|
+| identity | g | 4 | 0 | 0.19 (-0.23 to 0.61) | 0.382 | 76.6 | 0.136 |
+| identity | g_days | 4 | 1 | 0.22 (-0.25 to 0.69) | 0.365 | 81.5 | 0.178 |
+| center_scale | g | 4 | 0 | 0.14 (-0.45 to 0.74) | 0.636 | 88.1 | 0.311 |
+| center_scale | g_days | 4 | 1 | 0.16 (-0.45 to 0.77) | 0.600 | 88.9 | 0.332 |
+| quantile_ref | g | 4 | 0 | -0.00 (-0.47 to 0.46) | 0.984 | 80.3 | 0.169 |
+| quantile_ref | g_days | 4 | 1 | 0.02 (-0.48 to 0.51) | 0.952 | 83.5 | 0.207 |
+| fsqn | g | 4 | 0 | 0.30 (-0.31 to 0.90) | 0.336 | 88.6 | 0.327 |
+| fsqn | g_days | 4 | 1 | 0.32 (-0.31 to 0.94) | 0.318 | 89.5 | 0.351 |
+| rank | g | 4 | 0 | -0.05 (-0.25 to 0.16) | 0.666 | 11.2 | 0.005 |
+| rank | g_days | 4 | 1 | -0.03 (-0.26 to 0.20) | 0.785 | 24.5 | 0.013 |
+
+**Acute check** (`acute_check.csv`):
+- The protein model scores Woodruff2023's 29 ICU acute samples together with its 120 post-acute LC and COVID_recovered
+  samples, harmonised as one cohort. The scores therefore differ from those in `per_cohort.csv`, where the 120 were
+  harmonised alone.
+- The acute samples are used only here.
+
+| harmoniser | acute / post-acute | mean score acute | post-acute LC | post-acute recovered | g acute minus post-acute | AUROC acute vs post-acute (95% interval) |
+|---|---|---|---|---|---|---|
+| identity | 29 / 120 | 2.13 | -0.89 | -1.97 | 2.15 | 0.917 (0.84 to 0.97) |
+| center_scale | 29 / 120 | 8.51 | 0.45 | -1.25 | 2.24 | 0.915 (0.82 to 0.97) |
+| quantile_ref | 29 / 120 | 3.08 | -2.51 | -4.40 | 2.18 | 0.945 (0.90 to 0.98) |
+| fsqn | 29 / 120 | 4.77 | 0.69 | -1.43 | 1.36 | 0.798 (0.68 to 0.90) |
+| rank | 29 / 120 | 2.48 | -3.53 | -4.25 | 2.13 | 0.943 (0.89 to 0.98) |
 

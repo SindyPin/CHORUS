@@ -1,0 +1,4 @@
+study_id,layer,n_samples,n_features,LC,COVID_recovered,never_infected,n_values_imputed,matrix,accession
+Buggert2025,proteomics,197,358,146,51,0,197,plasma,doi:10.5281/zenodo.14772494
+Fineschi2026,proteomics,165,358,92,73,0,0,plasma,doi:10.17044/scilifelab.31316779
+Woodruff2023,proteomics,120,358,93,27,0,0,plasma,doi:10.5281/zenodo.8092298

@@ -1,0 +1,11 @@
+cohort,n_lc_before,n_recovered_before,n_lc_removed_training_subject,n_recovered_removed_training_subject,n_lc,n_recovered,n_training_features,n_training_features_measured,shares,eligible,n_model_features_pool,scored
+Buggert2025,146,51,0,0,146,51,163,162,True,True,55,True
+Cervia2024_SomaScan,40,73,40,73,0,0,163,163,True,False,55,False
+Su2022,75,50,75,50,0,0,163,163,True,False,55,False
+Cervia2024_MS,40,73,40,73,0,0,163,2,False,False,55,False
+Chowdhury2024,21,9,0,0,21,9,163,3,False,False,55,False
+Kovarik2023_plasma,13,13,0,0,13,13,163,2,False,False,55,False
+Fineschi2026,92,73,0,0,92,73,163,84,True,True,55,True
+Chowdhury2026,53,62,0,0,53,62,163,5,False,False,55,False
+Woodruff2023,93,27,0,0,93,27,163,163,True,True,55,True
+Bansal2025,12,20,0,0,12,20,163,82,True,True,55,True

@@ -1,0 +1,11 @@
+study_id,case_definition,negative_class_lc_status,control_type,control_case_definition,time_anchor,sample_matrix,n_LC,n_control,other_lc_status,days_LC_median,days_LC_min,days_LC_max,days_control_median,days_control_min,days_control_max
+Buggert2025,NICE_NG188;study_specific,COVID_recovered,COVID_recovered,not_applicable,missing,plasma,146,51,missing,,,,,,
+Cervia2024_SomaScan,study_specific,COVID_recovered,COVID_recovered,not_applicable,positive_test;symptom_onset,serum,40,73,missing,210.5,109.0,293.0,195.0,105.0,255.0
+Su2022,study_specific,COVID_recovered,COVID_recovered,study_specific,symptom_onset,plasma,75,50,missing,63.625,32.96,347.25,64.58,24.919999999999998,325.7
+Cervia2024_MS,study_specific,COVID_recovered,COVID_recovered,not_applicable,positive_test;symptom_onset,serum,40,73,missing,210.5,109.0,293.0,195.0,105.0,255.0
+Chowdhury2024,study_specific,COVID_recovered,convalescent_unverified,study_specific,unknown,plasma,21,9,missing,,,,,,
+Kovarik2023_plasma,study_specific,COVID_recovered,COVID_recovered,study_specific,unknown,plasma,13,13,missing,,,,,,
+Fineschi2026,WHO_2021,COVID_recovered,COVID_recovered,not_applicable,unknown,plasma,92,73,missing,,,,,,
+Chowdhury2026,WHO_2021,COVID_recovered,COVID_recovered,not_applicable,positive_test,plasma,53,62,missing,90.0,90.0,90.0,90.0,90.0,90.0
+Woodruff2023,study_specific,COVID_recovered,COVID_recovered,not_applicable,symptom_onset,plasma,93,27,missing,111.0,22.0,446.0,99.0,18.0,304.0
+Bansal2025,WHO_2021,COVID_recovered,COVID_recovered,not_applicable,positive_test,plasma,12,20,missing,,,,,,

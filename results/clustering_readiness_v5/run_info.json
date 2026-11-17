@@ -1,0 +1,31 @@
+{
+ "blocks": {
+  "rna": "configs/lc_transcriptomics_blood_v4.yaml",
+  "protein_affinity": "configs/lc_proteomics_affinity_v5.yaml",
+  "protein_explore": "configs/lc_proteomics_explore_v5.yaml"
+ },
+ "harmonisers": [
+  "identity",
+  "center_scale",
+  "quantile_ref",
+  "fsqn",
+  "rank"
+ ],
+ "k": [
+  2,
+  3,
+  4,
+  5,
+  6
+ ],
+ "methods": [
+  "kmeans",
+  "hierarchical",
+  "consensus"
+ ],
+ "top_var_rna": 2000,
+ "n_pcs": 20,
+ "n_resample": 100,
+ "subsample_fraction": 0.8,
+ "seed": 0
+}

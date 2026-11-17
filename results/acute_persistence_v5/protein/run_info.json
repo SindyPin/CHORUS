@@ -1,0 +1,31 @@
+{
+ "training": "configs/control_acute_proteomics.yaml",
+ "targets": "configs/concordance_proteomics_all_v5.yaml",
+ "acute_check": "Woodruff2023",
+ "harmonisers": [
+  "identity",
+  "center_scale",
+  "quantile_ref",
+  "fsqn",
+  "rank"
+ ],
+ "selector": {
+  "name": "invariant",
+  "k": 50
+ },
+ "n_training_features": 163,
+ "n_features_pool": 55,
+ "eligible": [
+  "Buggert2025",
+  "Fineschi2026",
+  "Woodruff2023",
+  "Bansal2025"
+ ],
+ "scored": [
+  "Buggert2025",
+  "Fineschi2026",
+  "Woodruff2023",
+  "Bansal2025"
+ ],
+ "min_shared": 0.5
+}

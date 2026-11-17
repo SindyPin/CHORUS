@@ -1,0 +1,9 @@
+cohort,n_lc_before,n_recovered_before,n_lc_removed_training_subject,n_recovered_removed_training_subject,n_lc,n_recovered,eligible,n_programmes,scored
+rna:GSE226260_WB,17,20,0,0,17,20,True,123,True
+rna:GSE226260_PBMC,28,8,0,0,28,8,True,123,True
+rna:GSE224615,23,13,0,0,23,13,True,123,True
+rna:GSE251849,11,5,0,0,11,5,True,123,True
+rna:GSE270045,19,17,0,0,19,17,True,123,True
+rna:PRJNA1149196_SA,28,11,0,0,28,11,True,123,True
+rna:PRJNA1149196_QLD,5,4,0,0,5,4,False,123,False
+rna:GSE297499,17,9,0,0,17,9,True,123,True

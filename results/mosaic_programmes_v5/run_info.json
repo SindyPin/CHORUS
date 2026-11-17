@@ -1,0 +1,51 @@
+{
+ "genesets": {
+  "hallmark": "data/ref/msigdb/h.all.v2026.2.Hs.entrez.gmt",
+  "reactome": "data/ref/msigdb/c2.cp.reactome.v2026.2.Hs.entrez.gmt"
+ },
+ "harmonisers": [
+  "identity",
+  "center_scale"
+ ],
+ "classifier": "logreg",
+ "contrasts": {
+  "lc_v5": {
+   "contrast": "lc_v5",
+   "positive": "LC",
+   "negative": "COVID_recovered",
+   "configs": {
+    "rna": "configs/mosaic_lc_rna_v4.yaml",
+    "protein": "configs/concordance_proteomics_all_v5.yaml"
+   },
+   "environments": [
+    "rna:GSE226260_WB",
+    "rna:GSE226260_PBMC",
+    "rna:GSE224615",
+    "rna:GSE251849",
+    "rna:GSE270045",
+    "rna:PRJNA1149196_SA",
+    "rna:PRJNA1149196_QLD",
+    "rna:GSE297499",
+    "protein:Buggert2025",
+    "protein:Cervia2024_SomaScan",
+    "protein:Su2022",
+    "protein:Chowdhury2024",
+    "protein:Kovarik2023_plasma",
+    "protein:Fineschi2026",
+    "protein:Chowdhury2026",
+    "protein:Woodruff2023",
+    "protein:Bansal2025",
+    "protein:Cervia2024_MS"
+   ],
+   "sensitivity": {
+    "protein:Cervia2024_MS": "protein:Cervia2024_SomaScan"
+   },
+   "min_members": 5,
+   "bridge_n_programmes": {
+    "own": 132,
+    "shared": 100
+   },
+   "seconds": 172.5
+  }
+ }
+}
