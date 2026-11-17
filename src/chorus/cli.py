@@ -107,6 +107,8 @@ def load_config(path: str, extra_features=()) -> tuple:
         cs = cs.deduplicate_subjects()
     feats = filter_low_counts(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5), combine="union" if pre.get("features") in ("union", "per_cohort") else "intersection")
     expressed = expressed_per_cohort(cs, pre.get("min_cpm", 1.0), pre.get("min_fraction_samples", 0.5)) if pre.get("features") == "per_cohort" else None
+    if pre.get("restrict_features"):  # keep only the listed features (a gene panel or a random gene set), after the expression filter
+        feats = feats[feats.isin(set(load_gene_list(pre["restrict_features"])))]
     cfg["filtered_features"] = list(feats)
     extra = [g for g in dict.fromkeys(extra_features) if g not in set(feats) and any(g in c.features for c in cs.cohorts)]
     cs = to_continuous(cs, feats.append(pd.Index(extra)))

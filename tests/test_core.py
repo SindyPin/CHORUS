@@ -1241,3 +1241,15 @@ def test_nanostring_qc_flags():
     q = b.nanostring_qc(raw, ["HK1", "HK2"])
     assert not q.loc["s1", "flag"] and q.loc["s2", "flag"] and "POS_E" in q.loc["s2", "flag_reason"]
     assert q["pos_scaling_factor"].round(6).tolist() == [1.0, 1.0] and q["pos_linearity_r2"].min() > 0.99
+
+
+def test_panel_checks_configs_and_permutation():
+    pc = _load_script_path("panel_transfer_checks")
+    res = pd.DataFrame({"harmoniser": list("abcdefg"), "selector": "s", "classifier": "rf", "auroc": [0.9, 0.5, 0.7, np.nan, 0.6, 0.8, 0.4], "harmoniser_chosen": list("abcdefg")})
+    C = pc.checked_configs(res)
+    assert C["role"].tolist() == ["top1", "top2", "top3", "top4", "top5", "median"]
+    assert C["auroc"].tolist()[:5] == [0.9, 0.8, 0.7, 0.6, 0.5] and C["auroc"].iloc[5] == 0.6  # lower middle of 6 values
+    s = pd.Series(["A"] * 6 + ["B"] * 4 + [pc.TEST] * 4)
+    y = pd.Series([1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0])
+    yp = pc.permuted_labels(y, s, np.random.default_rng(0))
+    assert yp[s == "A"].sum() == 2 and yp[s == "B"].sum() == 1 and yp[s == pc.TEST].tolist() == y[s == pc.TEST].tolist()
