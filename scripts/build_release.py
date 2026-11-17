@@ -7,7 +7,8 @@ the split files and manifest.csv). Existing results are only read.
                     metabolomics on the same participants; split files; baselines from results/early_detection
   clustering/       LC samples per layer, without harmonisation and with center_scale and fsqn fitted on the LC samples of
                     all cohorts of the layer without labels; sample metadata (cohort, sex, age, days since infection)
-  signature/        per layer, per cohort Hedges g of LC versus COVID_recovered on each cohort's own features, the random
+  signature/        per layer, per cohort Hedges g of LC versus COVID_recovered on each cohort's own features (test_only cohorts
+                    and Cervia2024_MS, the same sera as Cervia2024_SomaScan, have a column but are not pooled), the random
                     effects pooled estimate (DerSimonian and Laird) with 95% interval, Q, I2, tau2, the number of cohorts
                     and the number agreeing in sign, and direction_inconsistent
 
@@ -107,6 +108,7 @@ def harmonise(name: str, X: pd.DataFrame, s: pd.Series) -> pd.DataFrame:
 
 def sample_table(M: pd.DataFrame, y: pd.Series = None, extra=()) -> pd.DataFrame:
     cols = ["study_id", "sample_id", "subject_id", "lc_status", "sex", "age", "days_since_infection", "time_anchor", "sample_matrix", "sample_phase", "timepoint", *extra]
+    M = M.assign(sample_id=[i.split("::", 1)[-1] for i in M.index])
     t = M.reindex(columns=[c for c in cols if c in M.columns or c in ("sex", "age", "days_since_infection")]).rename(columns={"study_id": "cohort"})
     if y is not None:
         t.insert(3, "y_LC", y.loc[t.index].values)
@@ -206,7 +208,7 @@ def signature(R: Release) -> None:
         X, M = cs.pooled(cfg["filtered_features"])
         y = binary_label(M, lc.positive, lc.negative)
         s = M["study_id"].astype(str)
-        keep = y.notna() & ~s.map(lambda c: ROLE.get(c) == "test_only")
+        keep = y.notna()  # test_only cohorts get their own g column but are never pooled
         X, M, y, s = X[keep], M[keep], y[keep].astype(int), s[keep]
         eff = per_study_effects(X, y, s)
         G = pd.DataFrame({c: e["g"] for c, e in eff.items()})
@@ -224,7 +226,8 @@ def signature(R: Release) -> None:
             out[f"{prefix}direction_inconsistent"] = (out[f"{prefix}n_agree_sign"] < out[f"{prefix}n_cohorts"]).where(out[f"{prefix}n_cohorts"].notna())
             return out
 
-        pooled_cohorts = [c for c in cohorts if c not in NOT_POOLED]
+        excluded = [c for c in cohorts if c in NOT_POOLED or ROLE.get(c) == "test_only"]
+        pooled_cohorts = [c for c in cohorts if c not in excluded]
         T = pd.concat([G.add_prefix("g_"), pool(pooled_cohorts, "pooled_")], axis=1)
         flagged = [c for c in pooled_cohorts if c in FLAGS]
         if flagged:
@@ -233,7 +236,7 @@ def signature(R: Release) -> None:
         T.insert(0, "symbol", sym.reindex(T.index).values)
         T = T.rename_axis("feature")
         R.write(f"signature/{layer}_signature.csv", T, kind="signature", layer=layer, cohorts=cohorts, config=config, n_features=len(T), y=y, index_label="feature",
-                source={"pooled": pooled_cohorts, "not_pooled": [c for c in cohorts if c in NOT_POOLED], "unflagged_pool_excludes": flagged})
+                source={"pooled": pooled_cohorts, "not_pooled": excluded, "unflagged_pool_excludes": flagged})
 
 
 def main():
