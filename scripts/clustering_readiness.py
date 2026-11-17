@@ -27,6 +27,9 @@ cohorts without labels and applied to them):
   cohorts.csv     per block and cohort: LC samples used
 
   python scripts/clustering_readiness.py --out results/clustering_readiness
+  python scripts/clustering_readiness.py --out results/clustering_readiness_v5 --blocks rna=configs/lc_transcriptomics_blood_v4.yaml,protein_affinity=configs/lc_proteomics_affinity_v5.yaml,protein_explore=configs/lc_proteomics_explore_v5.yaml
+
+--blocks replaces the blocks (name=config, comma separated); the --top-var gene filter applies to the block named rna.
 """
 
 from __future__ import annotations
@@ -147,11 +150,13 @@ def main():
     ap.add_argument("--n-pcs", type=int, default=20)
     ap.add_argument("--n-resample", type=int, default=100)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--blocks", help="name=config,... (default: the version 4 blocks)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    blocks = dict(b.split("=", 1) for b in a.blocks.split(",")) if a.blocks else BLOCKS
     R, S, C, N = [], [], [], []
-    for block, config in BLOCKS.items():
+    for block, config in blocks.items():
         r, st, cp, n = run_block(block, config, a.top_var, a.n_pcs, a.n_resample, a.seed)
         R += r
         S += st
@@ -164,7 +169,7 @@ def main():
     S.groupby(keys, sort=False)["ari_full"].agg(ari_full_mean="mean", ari_full_min="min", ari_full_max="max", n_left_out="count").reset_index().to_csv(out / "stability_summary.csv", index=False)
     pd.concat(C, ignore_index=True)[[*keys, "cluster", "cohort", "n"]].to_csv(out / "composition.csv", index=False)
     pd.concat(N, ignore_index=True)[["block", "study_id", "n_lc"]].to_csv(out / "cohorts.csv", index=False)
-    (out / "run_info.json").write_text(json.dumps({"blocks": BLOCKS, "harmonisers": LABEL_FREE, "k": list(KS), "methods": METHODS, "top_var_rna": a.top_var, "n_pcs": a.n_pcs, "n_resample": a.n_resample, "subsample_fraction": 0.8, "seed": a.seed}, indent=1))
+    (out / "run_info.json").write_text(json.dumps({"blocks": blocks, "harmonisers": LABEL_FREE, "k": list(KS), "methods": METHODS, "top_var_rna": a.top_var, "n_pcs": a.n_pcs, "n_resample": a.n_resample, "subsample_fraction": 0.8, "seed": a.seed}, indent=1))
     print(R.round(3).to_string(index=False))
 
 

@@ -34,6 +34,7 @@ Programme membership: --out/genesets.csv (per programme, genes, mapped to Ensemb
 
   python scripts/mosaic_programmes.py --out results/mosaic_programmes
   python scripts/mosaic_programmes.py --out results/mosaic_programmes_v4 --contrasts lc_v4
+  python scripts/mosaic_programmes.py --out results/mosaic_programmes_v5 --contrasts lc_v5
   python scripts/mosaic_programmes.py --out results/mosaic_programmes --contrasts acute,lc --pairs-only
 (--pairs-only rewrites only pairs_<set>.csv from the effects.csv already in --out/<contrast>.)
 """
@@ -85,6 +86,12 @@ CONTRASTS = {
     # Fineschi2026 and Chowdhury2026 added; run with --contrasts lc_v4
     "lc_v4": {
         "configs": {"rna": "configs/mosaic_lc_rna_v4.yaml", "protein": "configs/concordance_proteomics_all_v4.yaml"},
+        "sensitivity": {"protein:Cervia2024_MS": "protein:Cervia2024_SomaScan"},
+    },
+    # version 5 (17 November 2026): the lc_v4 contrast with Woodruff2023 and Bansal2025 added on the protein side; the RNA
+    # side is that of lc_v4 (CORSIP2026 and GSE228320 are test or sensitivity cohorts only); run with --contrasts lc_v5
+    "lc_v5": {
+        "configs": {"rna": "configs/mosaic_lc_rna_v4.yaml", "protein": "configs/concordance_proteomics_all_v5.yaml"},
         "sensitivity": {"protein:Cervia2024_MS": "protein:Cervia2024_SomaScan"},
     },
 }
@@ -239,7 +246,7 @@ def run_contrast(contrast: str, out: Path, T: pd.DataFrame, min_members: int = 5
         pd.concat(prs, ignore_index=True)[["scheme", "test", "harmoniser", "classifier", "sample", "y", "p"]].to_csv(d / "loso_predictions.csv", index=False)
     info = {"contrast": contrast, "positive": L["rna"]["positive"], "negative": L["rna"]["negative"], "configs": spec["configs"], "environments": order, "sensitivity": sens, "min_members": min_members}
 
-    if contrast in ("lc", "lc_v4") and {"protein:Cervia2024_SomaScan", "protein:Cervia2024_MS"} <= set(order):
+    if contrast in ("lc", "lc_v4", "lc_v5") and {"protein:Cervia2024_SomaScan", "protein:Cervia2024_MS"} <= set(order):
         B = bridge_cervia(L["protein"], collection, min_members)
         B.to_csv(d / "bridge_cervia.csv", index=False)
         info["bridge_n_programmes"] = B.groupby("member_set")["programme"].size().to_dict()

@@ -18,6 +18,10 @@ effect sign); both use the held-out labels and are diagnostics, not inputs of th
                    squares); share = sum of squares / total sum of squares, with the residual
 
   python scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer
+  python scripts/concordance_vs_transfer.py --out results/concordance_vs_transfer_v5 --blocks transcriptomics=results/lc_transcriptomics_blood_v4/loso_results.csv,proteomics_affinity=results/lc_proteomics_affinity_v5/loso_results.csv,proteomics_ms=results/lc_proteomics_ms_v4/loso_results.csv,metabolomics=results/lc_metabolomics/loso_results.csv,proteomics_explore=results/lc_proteomics_explore_v5/loso_results.csv --not-pooled proteomics_explore
+
+--blocks replaces the blocks (name=path, comma separated); a block named in --not-pooled is analysed alone but left out of
+the pooled analysis (its held-out cohorts are also held out in another block).
 """
 
 from __future__ import annotations
@@ -119,13 +123,17 @@ def main():
     ap.add_argument("--n-boot", type=int, default=2000)
     ap.add_argument("--n-perm", type=int, default=10000)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--blocks", help="name=loso_results.csv,... (default: the version 4 blocks)")
+    ap.add_argument("--not-pooled", default="", help="comma separated block names left out of the pooled analysis")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    rows = load_rows()
+    blocks = dict(b.split("=", 1) for b in a.blocks.split(",")) if a.blocks else BLOCKS
+    not_pooled = [b for b in a.not_pooled.split(",") if b]
+    rows = load_rows(blocks)
     rows.to_csv(out / "rows.csv", index=False)
     corr, var = [], []
-    analyses = {**{b: rows[rows["block"] == b] for b in BLOCKS}, "pooled": rows}
+    analyses = {**{b: rows[rows["block"] == b] for b in blocks}, "pooled": rows[~rows["block"].isin(not_pooled)]}
     for name, df in analyses.items():
         for metric in METRICS:
             corr.append({"analysis": name, **correlation(df, metric, a.n_boot, a.n_perm, a.seed)})
@@ -135,7 +143,7 @@ def main():
     V = V[["analysis", *[c for c in V.columns if c != "analysis"]]]
     C.to_csv(out / "correlation.csv", index=False)
     V.to_csv(out / "variance.csv", index=False)
-    (out / "run_info.json").write_text(json.dumps({"blocks": BLOCKS, "harmonisers": LABEL_FREE, "selector": "invariant", "classifier": "logreg", "n_boot": a.n_boot, "n_perm": a.n_perm, "seed": a.seed}, indent=1))
+    (out / "run_info.json").write_text(json.dumps({"blocks": blocks, "not_pooled": not_pooled, "harmonisers": LABEL_FREE, "selector": "invariant", "classifier": "logreg", "n_boot": a.n_boot, "n_perm": a.n_perm, "seed": a.seed}, indent=1))
     print(C.round(3).to_string(index=False))
     print(V.round(3).to_string(index=False))
 

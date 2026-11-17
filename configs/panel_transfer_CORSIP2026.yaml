@@ -1,0 +1,37 @@
+# Version 5 (17 November 2026), panel transfer: training on the eight cohorts of configs/lc_transcriptomics_blood_v4.yaml, all
+# train_only, on the genes that pass the expression filter in every cohort including CORSIP2026, so the genes CORSIP2026
+# measures (NanoString PanCancer Immune Profiling panel); test: CORSIP2026 only. CORSIP2026 is never used for training.
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE226260_WB,  matrix: data/counts/GSE226260/GSE226260_wholeblood_counts.csv.gz, meta: data/meta/GSE226260_WB_meta.csv,  is_counts: true, provenance: author_matrix, accession: GSE226260, train_only: true}
+  - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,     meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260, train_only: true}
+  - {study_id: GSE224615,     matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv, meta: data/meta/GSE224615_meta.csv, is_counts: true, provenance: requantify, accession: GSE224615, train_only: true}
+  - {study_id: GSE251849,     matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,      meta: data/meta/GSE251849_meta.csv,     is_counts: true, provenance: author_estimated_counts, accession: GSE251849, train_only: true}
+  - {study_id: GSE270045,     matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz, meta: data/meta/GSE270045_meta.csv, is_counts: true, provenance: author_estimated_counts, accession: GSE270045, train_only: true}
+  - {study_id: PRJNA1149196_SA,  matrix: data/quant/PRJNA1149196/PRJNA1149196_SA_gene_counts.tsv.gz,  meta: data/meta/PRJNA1149196_SA_meta.csv,  is_counts: true, provenance: requantify, accession: PRJNA1149196, train_only: true}
+  - {study_id: PRJNA1149196_QLD, matrix: data/quant/PRJNA1149196/PRJNA1149196_QLD_gene_counts.tsv.gz, meta: data/meta/PRJNA1149196_QLD_meta.csv, is_counts: true, provenance: requantify, accession: PRJNA1149196, train_only: true}
+  - {study_id: GSE297499,        matrix: data/counts/GSE297499/GSE297499_pbmc_tpm_ensembl.tsv.gz,        meta: data/meta/GSE297499_meta.csv,        is_counts: false, provenance: author_normalised, accession: GSE297499, train_only: true}
+  - {study_id: CORSIP2026,       matrix: data/counts/CORSIP2026/CORSIP2026_nanostring_counts_ensembl.tsv.gz, meta: data/meta/CORSIP2026_meta.csv, is_counts: true, provenance: author_matrix, accession: "github:estefespin/CORSIP_omics@8bbb842"}
+preprocessing:
+  matrices: [whole_blood, PBMC]
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  one_sample_per_subject: true
+  deduplicate: true
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+  harmonisers: [identity, center_scale, rank, fsqn, combat_addon, chorus, chorus_protected]
+  nested_candidates: [identity, center_scale, rank, fsqn, combat_addon, chorus]   # chorus_protected is a comparison variant, not a nested candidate
+  selectors:
+    - {name: variance, k: 500}
+    - {name: differential, k: 200}
+    - {name: invariant, k: 200}
+  classifiers: [logreg, rf]
+  covariates: [sample_matrix]
+  protect: [sample_matrix]
+  nested_select_harmoniser: true
+  min_test_per_class: 5
+  n_boot: 1000
+  random_state: 0
+out: results/panel_transfer_CORSIP2026

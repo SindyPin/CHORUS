@@ -1,0 +1,27 @@
+# Version 5 (17 November 2026) RNA concordance: the eight cohorts of configs/lc_transcriptomics_blood_v4.yaml plus CORSIP2026
+# (NanoString panel) and GSE228320 (DLCO below 60 versus 60 or above). features: per_cohort, so every cohort keeps the genes
+# that pass its own expression filter and each pair is correlated over the genes both have (scripts/concordance.py).
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE226260_WB,   matrix: data/counts/GSE226260/GSE226260_wholeblood_counts.csv.gz, meta: data/meta/GSE226260_WB_meta.csv,   is_counts: true, provenance: author_matrix, accession: GSE226260}
+  - {study_id: GSE226260_PBMC, matrix: data/counts/GSE226260/GSE226260_PBMC_counts.csv.gz,       meta: data/meta/GSE226260_PBMC_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE226260}
+  - {study_id: GSE224615,      matrix: data/quant/GSE224615/salmon.merged.gene_counts.tsv,       meta: data/meta/GSE224615_meta.csv,      is_counts: true, provenance: requantify, accession: GSE224615}
+  - {study_id: GSE251849,      matrix: data/counts/GSE251849/GSE251849_Counts.txt.gz,            meta: data/meta/GSE251849_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE251849}
+  - {study_id: GSE270045,      matrix: data/counts/GSE270045/GSE270045_counts_ensembl.tsv.gz,    meta: data/meta/GSE270045_meta.csv,      is_counts: true, provenance: author_estimated_counts, accession: GSE270045}
+  - {study_id: PRJNA1149196_SA,  matrix: data/quant/PRJNA1149196/PRJNA1149196_SA_gene_counts.tsv.gz,  meta: data/meta/PRJNA1149196_SA_meta.csv,  is_counts: true, provenance: requantify, accession: PRJNA1149196}
+  - {study_id: PRJNA1149196_QLD, matrix: data/quant/PRJNA1149196/PRJNA1149196_QLD_gene_counts.tsv.gz, meta: data/meta/PRJNA1149196_QLD_meta.csv, is_counts: true, provenance: requantify, accession: PRJNA1149196}
+  - {study_id: GSE297499,        matrix: data/counts/GSE297499/GSE297499_pbmc_tpm_ensembl.tsv.gz,        meta: data/meta/GSE297499_meta.csv,        is_counts: false, provenance: author_normalised, accession: GSE297499}
+  - {study_id: CORSIP2026,       matrix: data/counts/CORSIP2026/CORSIP2026_nanostring_counts_ensembl.tsv.gz, meta: data/meta/CORSIP2026_meta.csv, is_counts: true, provenance: author_matrix, accession: "github:estefespin/CORSIP_omics@8bbb842"}
+  - {study_id: GSE228320,        matrix: data/counts/GSE228320/GSE228320_Raw_counts.txt.gz, meta: data/meta/GSE228320_meta.csv, is_counts: true, provenance: author_matrix, accession: GSE228320}
+preprocessing:
+  matrices: [whole_blood, PBMC]
+  min_cpm: 1.0
+  min_fraction_samples: 0.5
+  keep_lc_status: [LC, COVID_recovered]
+  one_sample_per_subject: true
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  positive: LC
+  negative: COVID_recovered
+out: results/concordance_v5

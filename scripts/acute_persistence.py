@@ -33,7 +33,13 @@ Laird) across the scored cohorts of g, and of g_adjusted where available with g 
                    training features measured, shares, scored
   scores.csv       per harmoniser and target sample: cohort, group, score
 
+Acute check (--acute-check COHORT, version 5: Woodruff2023): the protein model scores the cohort's acute samples
+(sample_phase acute) together with its post acute LC and COVID_recovered samples, harmonised as one cohort (addon);
+acute_check.csv gives per harmoniser the mean score of each group, Hedges g (acute minus post acute) and the AUROC of the
+score for acute versus post acute. The acute samples are used only here.
+
   python scripts/acute_persistence.py --out results/acute_persistence
+  python scripts/acute_persistence.py --out results/acute_persistence_v5 --target-protein configs/concordance_proteomics_all_v5.yaml --acute-check Woodruff2023
 """
 
 from __future__ import annotations
@@ -154,7 +160,36 @@ def sharing_row(c: str, M: pd.DataFrame, y: pd.Series, keep: pd.Series) -> dict:
     }
 
 
-def protein(out: Path, min_shared: float, min_per_class: int, n_boot: int, seed: int) -> dict:
+def acute_check(models: dict, config: str, cohort: str, n_boot: int, seed: int) -> pd.DataFrame:
+    """Score ``cohort``'s acute and post acute (LC, COVID_recovered) samples with each protein model, harmonised together."""
+    import yaml
+
+    from chorus.io import Cohort
+
+    entry = next(c for c in yaml.safe_load((ROOT / config).read_text())["cohorts"] if c["study_id"] == cohort)
+    c = Cohort.from_files(cohort, "proteomics", str(ROOT / entry["matrix"]), str(ROOT / entry["meta"]), feature_space="uniprot")
+    phase, st = c.meta["sample_phase"].astype(str), c.meta["lc_status"].astype(str)
+    acute = phase == "acute"
+    post = (phase == "post_acute") & st.isin(["LC", "COVID_recovered"])
+    keep = (acute | post).to_numpy()
+    X = c.X.loc[keep]
+    X = X.fillna(X.median(axis=0))
+    y = pd.Series(acute[keep].astype(int).to_numpy(), index=X.index)
+    rows = []
+    for h, (H, clf, feats) in models.items():
+        Z = H.transform(X[feats], pd.Series(cohort, index=X.index))
+        sc = log_odds(clf, Z)
+        a, b = sc[y == 1], sc[y == 0]
+        g, v = (x[0] for x in _hedges_g(a[:, None], b[:, None]))
+        auc, lo, hi = bootstrap_ci(y.to_numpy(), sc, roc_auc_score, n_boot=n_boot, seed=seed)
+        rows.append({"harmoniser": h, "cohort": cohort, "n_acute": len(a), "n_post_acute": len(b), "mean_acute": a.mean(), "mean_post_acute": b.mean(),
+                     "mean_post_acute_lc": sc[(y == 0).to_numpy() & (st[keep] == "LC").to_numpy()].mean(),
+                     "mean_post_acute_recovered": sc[(y == 0).to_numpy() & (st[keep] == "COVID_recovered").to_numpy()].mean(),
+                     "g_acute_minus_post": g, "var_g": v, "auroc_acute_vs_post": auc, "auroc_lo": lo, "auroc_hi": hi})
+    return pd.DataFrame(rows)
+
+
+def protein(out: Path, min_shared: float, min_per_class: int, n_boot: int, seed: int, target: str = TARGET_PROTEIN, check: str = "") -> dict:
     cs, lc, cfg = load_config(str(ROOT / TRAIN_PROTEIN))
     Xtr, Mtr = cs.pooled(cfg["filtered_features"])
     ytr = binary_label(Mtr, lc.positive, lc.negative)
@@ -163,7 +198,7 @@ def protein(out: Path, min_shared: float, min_per_class: int, n_boot: int, seed:
     train_subjects = set(Mtr["subject_id"].astype(str))
     train_feats = pd.Index(cfg["filtered_features"])
 
-    ct, lt, ccfg = load_config(str(ROOT / TARGET_PROTEIN))
+    ct, lt, ccfg = load_config(str(ROOT / target))
     X, M = ct.pooled(ccfg["filtered_features"])
     y = binary_label(M, lt.positive, lt.negative)
     X, M, y = X[y.notna()], M[y.notna()], y[y.notna()].astype(int)
@@ -195,7 +230,12 @@ def protein(out: Path, min_shared: float, min_per_class: int, n_boot: int, seed:
     share["n_model_features_pool"] = len(feats)
     share["scored"] = share["cohort"].isin(scored)
     rows, scores = score_targets(models, X, M, y, scored, n_boot, seed)
-    return write(out, rows, scores, share, pd.concat(coef, ignore_index=True), {"training": TRAIN_PROTEIN, "targets": TARGET_PROTEIN, "harmonisers": LABEL_FREE, "selector": {"name": "invariant", "k": 50}, "n_training_features": len(train_feats), "n_features_pool": len(feats), "eligible": eligible, "scored": scored, "min_shared": min_shared})
+    if check:
+        out.mkdir(parents=True, exist_ok=True)
+        A = acute_check(models, target, check, n_boot, seed)
+        A.to_csv(out / "acute_check.csv", index=False)
+        print(A.round(3).to_string(index=False))
+    return write(out, rows, scores, share, pd.concat(coef, ignore_index=True), {"training": TRAIN_PROTEIN, "targets": target, "acute_check": check or None, "harmonisers": LABEL_FREE, "selector": {"name": "invariant", "k": 50}, "n_training_features": len(train_feats), "n_features_pool": len(feats), "eligible": eligible, "scored": scored, "min_shared": min_shared})
 
 
 def rna_programmes(out: Path, min_members: int, min_per_class: int, n_boot: int, seed: int) -> dict:
@@ -252,11 +292,13 @@ def main():
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--parts", default="protein,rna_programmes")
+    ap.add_argument("--target-protein", default=TARGET_PROTEIN, help="config of the post acute protein cohorts to score")
+    ap.add_argument("--acute-check", default="", help="protein cohort whose acute samples are scored as a check")
     a = ap.parse_args()
     out = Path(a.out)
     parts = a.parts.split(",")
     if "protein" in parts:
-        protein(out / "protein", a.min_shared, a.min_per_class, a.n_boot, a.seed)
+        protein(out / "protein", a.min_shared, a.min_per_class, a.n_boot, a.seed, a.target_protein, a.acute_check)
     if "rna_programmes" in parts:
         rna_programmes(out / "rna_programmes", a.min_members, a.min_per_class, a.n_boot, a.seed)
 
