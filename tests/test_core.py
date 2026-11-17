@@ -1260,3 +1260,51 @@ def test_export_roles_and_flags():
     assert ex.ROLES["CORSIP2026"] == ex.ROLES["GSE228320"] == "test_only" and ex.ROLES["PRJNA1149196_QLD"] == "train_only"
     assert "label_confounded_with_collection" in ex.FLAGS["GSE270045"]
     assert set(ex.LAYERS) == {"rna", "proteomics", "metabolomics"} and ex.LAYERS["proteomics"].endswith("_v5.yaml")
+
+
+def test_noise_ceiling_splits_and_reliability():
+    nc = _load_script_path("concordance_noise_ceiling")
+    rng = np.random.default_rng(0)
+    y = np.array([1] * 9 + [0] * 7)
+    a, b = nc.half_split(y, rng)
+    assert len(set(a) & set(b)) == 0 and len(a) + len(b) == 16 and (y[a] == 1).sum() == 4 and (y[a] == 0).sum() == 3
+    p, q = nc.sub_split(y, {0: 5, 1: 2}, rng)
+    assert (y[p] == 1).sum() == 2 and (y[p] == 0).sum() == 3 and len(set(p) & set(q)) == 0  # 5 capped at half of 7
+    assert nc.sb(0.5) == pytest.approx(2 / 3) and np.isnan(nc.sb(np.nan))
+    X = rng.normal(size=(16, 50))
+    X[y == 1, :10] += 2.0
+    g = nc.g_of(X, y, np.arange(16))
+    assert g[:10].mean() > 1 and abs(g[10:].mean()) < 1
+    assert np.isnan(nc.g_of(X, y, np.array([0, 9, 10]))).all()  # fewer than 2 per class
+
+
+def test_concordance_guided_agreement_and_bootstrap():
+    cg = _load_script_path("concordance_guided")
+    rng = np.random.default_rng(1)
+    n, p = 40, 30
+    eff = np.r_[np.full(10, 1.5), np.zeros(20)]
+    rows, ys, ss = [], [], []
+    for c, sign in (("A", 1), ("B", 1), ("C", -1), ("T", 1)):
+        y = np.r_[np.ones(n // 2), np.zeros(n // 2)]
+        rows.append(rng.normal(size=(n, p)) + np.outer(y, sign * eff))
+        ys.append(y)
+        ss += [c] * n
+    X = pd.DataFrame(np.vstack(rows), columns=[f"f{i}" for i in range(p)])
+    D = {"X": X, "y": pd.Series(np.concatenate(ys).astype(int)), "s": pd.Series(ss)}
+    cal = D["s"].index[D["s"] == "T"]
+    ag = cg.agreement(D, cal, ["A", "B", "C"])
+    assert ag["A"] > 0.3 and ag["B"] > 0.3 and ag["C"] < -0.3
+    m, lo, hi = cg.boot_ci(np.array([0.1, 0.2, 0.3]))
+    assert m == pytest.approx(0.2) and lo <= m <= hi
+
+
+def test_full_range_monotone_detects_offset_curves():
+    fr = _load_script_path("concordance_vs_transfer_full")
+    x = np.linspace(-0.5, 0.8, 40)
+    same = pd.DataFrame({"effect_spearman": np.r_[x, x], "auroc": np.r_[0.5 + 0.3 * x, 0.5 + 0.3 * x], "group": ["LC"] * 40 + ["control"] * 40,
+                         "contrast": "c", "block": "b", "held_out": "h", "harmoniser": "identity"})
+    r, _ = fr.monotone(same, "effect_spearman", 200, 0)
+    assert r["sse_reduction_separate"] == pytest.approx(0, abs=1e-12) and r["p_permutation_separate"] > 0.5
+    off = same.assign(auroc=np.r_[0.4 + 0.3 * x, 0.7 + 0.3 * x])
+    r, _ = fr.monotone(off, "effect_spearman", 200, 0)
+    assert r["mean_residual_LC"] < 0 < r["mean_residual_control"] and r["p_permutation_separate"] < 0.01

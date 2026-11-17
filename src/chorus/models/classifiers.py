@@ -70,7 +70,7 @@ def make_classifier(name: str, random_state: int = 0, **kwargs):
             lr_kwargs["penalty"] = "elasticnet"
         return _pipe(LogisticRegression(**lr_kwargs))
     if name == "rf":
-        return _pipe(RandomForestClassifier(n_estimators=kwargs.get("n_estimators", 500), class_weight="balanced_subsample", random_state=rs, n_jobs=-1), scale=False)
+        return _pipe(RandomForestClassifier(n_estimators=kwargs.get("n_estimators", 500), class_weight="balanced_subsample", random_state=rs, n_jobs=kwargs.get("n_jobs", -1)), scale=False)
     if name == "extratrees":
         return _pipe(ExtraTreesClassifier(n_estimators=kwargs.get("n_estimators", 500), class_weight="balanced_subsample", random_state=rs, n_jobs=-1), scale=False)
     if name == "svc":
