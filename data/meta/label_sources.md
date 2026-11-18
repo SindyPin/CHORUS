@@ -18,7 +18,7 @@ tables are `data/meta/<GSE>_geo_samples.csv`.
 | GSE169687 | paper: referral to a long COVID clinic | no | 21 / 48 subjects (14 never infected) | **request from authors** |
 | GSE267625 | paper supplement / P4O2 data committee | no | 77 / 18 (config) | **request** |
 | GSE222253 | paper / BQC19 biobank | no | 10 / 14 patients | **request** |
-| PRJNA1184005 | authors (no label in BioSample or paper) | no; 3 of 7 recovered inferable by age | 7 / 7 | **request** |
+| PRJNA1184005 | author (S. Annesley, personal communication, 18 November 2026) | yes (from the author) | 7 / 7 | **received**; control definition pending confirmation |
 
 ## Per cohort
 
@@ -101,3 +101,6 @@ Contact: Shokrollah Elahi, elahi@ualberta.ca.
   cannot be assigned.
 - Request: the LC / recovered key for the 14 isolates (`SG22`, `vacSG21` … `vacSG117`). Contact: Sarah Annesley,
   S.Annesley@latrobe.edu.au.
+- Received 18 November 2026 (S. Annesley, personal communication): LC = SG22, vacSG60, vacSG116, vacSG117, vacSG47,
+  vacSG55, vacSG61; Post COVID (COVID_recovered) = vacSG102, vacSG105, vacSG111, vacSG21, vacSG34, vacSG70, vacSG112.
+  Consistent with the age deduction above. Control definition pending confirmation.
