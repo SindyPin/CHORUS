@@ -2892,3 +2892,115 @@ separately.
 - (c) Each layer separately, as a fraction of all pairs over the 50 repeats. The rate among evaluable pairs is
   reported alongside.
 - (d) and (e) At 8 per class. Half is reported, but is not part of the bar.
+
+### Results against the bars
+
+| bar | met | numbers (Spearman, reliability threshold 0.3) |
+|---|---|---|
+| (a) calibration | **yes** | "truly differ" in 1.3% of LC splits at n 10, 1.1% at n 20; acute 0.5% at n 10, 0% at n 20 and 40 |
+| (b) positive controls | **no** | sex on all genes 9 of 10 evaluable pairs agree (90%); acute 0 of 3 agree |
+| (c) negative control | **yes** | "truly differ" in 2.7% of shuffled metabolomics pairs, 0.3% of proteomics and 0.6% of transcriptomics |
+| (d) usefulness | **no** | at 8 per class over all tasks: (i) 0.384 (−0.293 to 0.703), (ii) 0.466 (−0.027 to 0.808) |
+| (e) added value | **met as a point estimate, descriptive** | (ii) − (iii) +0.041 (−0.179 to 0.299); (i) − (iii) −0.041 (−0.887 to 0.683) |
+
+**(a) Pseudo cohorts** (`pseudo_cohorts.csv`). Each row covers 200 splits per cohort and size.
+
+| contrast | n per class | splits | agree | truly differ | too small to tell |
+|---|---|---|---|---|---|
+| LC | 10 | 1,000 (5 cohorts) | 17.8% | 1.3% | 80.9% |
+| LC | 20 | 800 (4 cohorts) | 27.4% | 1.1% | 71.5% |
+| acute (Su2022) | 10 | 200 | 99.5% | 0.5% | 0% |
+| acute (Su2022) | 20 | 200 | 100% | 0% | 0% |
+| acute (Su2022) | 40 | 200 | 100% | 0% | 0% |
+
+- **By cohort.** The "truly differ" rate is 0% to 2.0% in every cohort and size. Most LC pseudo pairs are "too small
+  to tell": Su2022 199 of 200 at both sizes, Cervia2024_SomaScan 196 and 195, Fineschi2026 191 and 177, and
+  Woodruff2023 177 at n 10. The exception is Buggert2025: 46 of 200 at n 10 and 1 at n 20.
+- **Other thresholds.** "Truly differ" in the LC pseudo pairs is 2.0% and 1.9% at threshold 0.2, and 0.1% and 0.2%
+  at 0.5.
+- **Pearson.** The rates are 1.0% and 1.1% at 0.3.
+
+**(b) Positive controls** (`controls.csv`, `controls_pairs.csv`). All sex pairs are on the same platform.
+
+- **Sex on all genes.**
+  - 9 agree and 1 truly differs: GSE226260_PBMC against GSE224615, observed −0.449 with a 2.5th percentile of −0.115.
+  - The reliabilities are 0.346 to 0.456.
+  - The observed correlations of the 9 agreeing pairs range from −0.283 to 0.563, with 2.5th percentiles from
+    −0.380 to −0.069.
+- **Sex without chrX and chrY.** The same 9 and 1.
+- **Acute against never infected.** All 3 pairs truly differ:
+
+| pair | observed | 2.5th percentile | reliabilities |
+|---|---|---|---|
+| Cervia2024_SomaScan, Su2022 | 0.317 | 0.889 | 0.823 and 0.977 |
+| Cervia2024_SomaScan, Zoodsma2022_Hannover | 0.363 | 0.416 | 0.823 and 0.937 |
+| Su2022, Zoodsma2022_Hannover (same platform, Olink Target 96) | 0.541 | 0.826 | 0.977 and 0.937 |
+
+- **Pearson.** Sex on all genes gives 8 of 10 agree (GSE251849 against GSE270045 also differs); acute gives 0 of 3.
+- **Other thresholds.** Sex on all genes gives 90% agree at 0.2 and 100% at 0.4. At 0.5 no sex pair is evaluable.
+  Acute gives 0% at every threshold.
+
+**(c) Shuffled labels** (`shuffled.csv`). There are 50 repeats per layer.
+
+| layer | pairs | agree | truly differ | too small to tell | not evaluable | truly differ among evaluable |
+|---|---|---|---|---|---|---|
+| transcriptomics | 2,250 | 19 | 13 (0.6%) | 2,218 | 0 | 13 of 32 |
+| proteomics | 2,250 | 34 | 6 (0.3%) | 1,960 | 250 | 6 of 40 |
+| metabolomics | 300 | 5 | 8 (2.7%) | 287 | 0 | 8 of 13 |
+
+The 250 not evaluable proteomics pairs are the 5 pairs with fewer than 3 shared features, in every repeat.
+
+**(5) Long COVID pairs** (`lc_verdicts.csv`, `lc_verdicts_summary.csv`). This is the verdict on
+`concordance_noise_ceiling/pairs.csv`. The recomputation reproduces its observed correlations and 2.5th percentiles
+exactly (largest difference 0).
+
+| layer | pairs | agree | truly differ | too small to tell | not evaluable |
+|---|---|---|---|---|---|
+| transcriptomics | 45 | 3 | 11 | 31 | 0 |
+| proteomics | 45 | 8 | 11 | 21 | 5 |
+| metabolomics | 6 | 3 | 1 | 2 | 0 |
+
+By platform:
+
+| layer | platform group | agree | truly differ | too small to tell | not evaluable |
+|---|---|---|---|---|---|
+| transcriptomics | same (36 pairs) | 2 | 7 | 27 | 0 |
+| transcriptomics | different (9 pairs) | 1 | 4 | 4 | 0 |
+| proteomics | same (10 pairs) | 2 | 4 | 4 | 0 |
+| proteomics | different (35 pairs) | 6 | 7 | 17 | 5 |
+
+All 6 metabolomics pairs are on different platforms. The shares of agree among evaluable pairs by threshold, and the
+Pearson verdicts, are in `lc_verdicts_summary.csv`. With Pearson at 0.3, the share of agree among evaluable pairs is
+0.30 in transcriptomics, 0.40 in proteomics and 0.50 in metabolomics.
+
+**(d, e) Benefit of combining** (`benefit.csv`, `benefit_correlation.csv`, `benefit_by_verdict.csv`). The benefit is
+arm 6 minus arm 5. Spearman with the benefit, with the cohort bootstrap interval:
+
+| size | scope | units (cohorts) | (i) share agree | (ii) observed / expected | (iii) raw mean | (ii) − (iii) |
+|---|---|---|---|---|---|---|
+| 8 per class | all tasks | 29 (16) | 0.384 (−0.293 to 0.703) | 0.466 (−0.027 to 0.808) | 0.425 (−0.089 to 0.720) | +0.041 (−0.179 to 0.299) |
+| 8 per class | LC | 22 (15) | −0.053 (−0.409 to 0.341) | 0.575 (0.106 to 0.849) | 0.544 (0.088 to 0.824) | +0.032 (−0.251 to 0.336) |
+| half | all tasks | 35 (20) | 0.331 (−0.192 to 0.625) | 0.417 (0.028 to 0.704) | 0.328 (−0.033 to 0.633) | +0.089 (−0.086 to 0.264) |
+| half | LC | 26 (19) | −0.156 (−0.457 to 0.183) | 0.551 (0.143 to 0.827) | 0.406 (−0.062 to 0.744) | +0.145 (−0.169 to 0.434) |
+
+- **Mean benefit of the held out cohort over its pairs, by the pair's verdict, at 8 per class and over all tasks:**
+  - agree: +0.143 (18 pairs);
+  - too small to tell: −0.075 (56);
+  - truly differ: −0.122 (32).
+- **The same, LC alone:** agree −0.099 (4), too small to tell −0.075 (56), truly differ −0.179 (24).
+- **Half** is not part of the bar. There, predictor (ii) over all tasks has an interval above zero (0.028 to 0.704).
+
+**Run.** `scripts/noise_ceiling_validation.py --out results/noise_ceiling_validation --workers 10`, run once:
+1,053 s, started 2026-11-18 11:44:50, with 164 s of data loading.
+
+- The bar detail column of the first `bars.csv` printed the row length instead of the pseudo cohort size ("n=16").
+- After the label was fixed, `--bars-only` rewrote `bars.csv` from the saved summaries. The met column did not
+  change, and no pair was recomputed.
+
+**Files.**
+
+- Bar files: `verdicts.csv` (every pair of every set), `pseudo_cohorts.csv`, `controls.csv`, `shuffled.csv`,
+  `lc_verdicts.csv`, `benefit.csv`, `bars.csv` and `run_info.json`.
+- Supporting files:
+  - pair level: `pseudo_cohorts_splits.csv`, `controls_pairs.csv`, `shuffled_pairs.csv`;
+  - summaries: `lc_verdicts_summary.csv`, `benefit_correlation.csv`, `benefit_by_verdict.csv`.

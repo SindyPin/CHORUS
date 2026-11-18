@@ -144,6 +144,22 @@ def run_layer(layer: str, config: str, n_splits: int, seed: int) -> tuple:
     return pd.DataFrame(coh_rows), pd.DataFrame(pair_rows)
 
 
+VERDICTS = ("agree", "truly differ", "too small to tell", "not evaluable")
+
+
+def verdict(reliability_a: float, reliability_b: float, observed: float, expected_p2_5: float, threshold: float = 0.3) -> str:
+    """One verdict per cohort pair (thresholds fixed before the validation of 18 November 2026):
+    "too small to tell" when either cohort's Spearman-Brown reliability on the shared features is at or below
+    ``threshold`` (or undefined); otherwise "agree" when the observed correlation is at or above the 2.5th percentile
+    of the one population expectation, else "truly differ". "not evaluable" when the observed correlation or the
+    expectation is undefined (fewer than 3 shared features, or no valid draw)."""
+    if not (np.isfinite(observed) and np.isfinite(expected_p2_5)):
+        return "not evaluable"
+    if not (np.isfinite(reliability_a) and np.isfinite(reliability_b)) or min(reliability_a, reliability_b) <= threshold:
+        return "too small to tell"
+    return "agree" if observed >= expected_p2_5 else "truly differ"
+
+
 def summary(P: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for layer, d in P.groupby("layer", sort=False):

@@ -1,0 +1,6 @@
+bar,met,detail
+"a: pseudo cohorts, truly differ in at most 5% of splits at every size (each contrast and size)",True,LC n=10: 0.013; LC n=20: 0.011; acute n=10: 0.005; acute n=20: 0.000; acute n=40: 0.000
+"b: positive controls, at least 80% agree among pairs not too small to tell (sex on all genes, acute)",False,sex_all_genes: 0.900; acute_proteomics: 0.000
+"c: shuffled labels, truly differ in at most 5% of pairs (each layer)",True,metabolomics: 0.027; proteomics: 0.003; transcriptomics: 0.006
+"d: predictor i or ii has a positive Spearman with the benefit of combining, interval above zero, all tasks, 8 per class",False,i share agree: 0.384 (-0.293 to 0.703); ii mean observed / expected: 0.466 (-0.027 to 0.808); iii mean observed (no ceiling): 0.425 (-0.089 to 0.720)
+"e: predictor i or ii has a higher Spearman than iii, all tasks, 8 per class (descriptive if the interval includes zero)",True,i - iii: -0.041 (-0.887 to 0.683); ii - iii: 0.041 (-0.179 to 0.299)

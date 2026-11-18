@@ -1,0 +1,17 @@
+size,group,verdict,mean,count
+8,LC,agree,-0.09867230046820794,4
+8,LC,too small to tell,-0.07470256406373642,56
+8,LC,truly differ,-0.17913600805664578,24
+8,control,agree,0.21191964285714288,14
+8,control,truly differ,0.04749797390497858,8
+half,LC,agree,-0.13354807384328662,6
+half,LC,too small to tell,-0.08855488213440034,70
+half,LC,truly differ,-0.194174935864853,32
+half,control,agree,0.1372943722943723,22
+half,control,truly differ,0.031733676536594355,8
+8,all tasks,agree,0.14289921100706493,18
+8,all tasks,too small to tell,-0.07470256406373642,56
+8,all tasks,truly differ,-0.12247751256623969,32
+half,all tasks,agree,0.07925670526487395,28
+half,all tasks,too small to tell,-0.08855488213440034,70
+half,all tasks,truly differ,-0.14899321338456353,40

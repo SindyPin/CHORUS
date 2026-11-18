@@ -1,0 +1,57 @@
+set,agree,truly differ,too small to tell,not evaluable,n,evaluable,fraction_agree,fraction_truly differ,fraction_too small to tell,fraction_agree_of_evaluable,fraction_differ_of_evaluable,measure,threshold,platform_group
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,spearman,0.2,all
+task:sex_all_genes,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.2,all
+task:sex_no_xy,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.2,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,spearman,0.2,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,spearman,0.2,same platform
+task:sex_all_genes,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.2,same platform
+task:sex_no_xy,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.2,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,spearman,0.3,all
+task:sex_all_genes,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.3,all
+task:sex_no_xy,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.3,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,spearman,0.3,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,spearman,0.3,same platform
+task:sex_all_genes,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.3,same platform
+task:sex_no_xy,9,1,0,0,10,10,0.9,0.1,0.0,0.9,0.1,spearman,0.3,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,spearman,0.4,all
+task:sex_all_genes,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,spearman,0.4,all
+task:sex_no_xy,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,spearman,0.4,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,spearman,0.4,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,spearman,0.4,same platform
+task:sex_all_genes,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,spearman,0.4,same platform
+task:sex_no_xy,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,spearman,0.4,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,spearman,0.5,all
+task:sex_all_genes,0,0,10,0,10,0,0.0,0.0,1.0,,,spearman,0.5,all
+task:sex_no_xy,0,0,10,0,10,0,0.0,0.0,1.0,,,spearman,0.5,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,spearman,0.5,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,spearman,0.5,same platform
+task:sex_all_genes,0,0,10,0,10,0,0.0,0.0,1.0,,,spearman,0.5,same platform
+task:sex_no_xy,0,0,10,0,10,0,0.0,0.0,1.0,,,spearman,0.5,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,pearson,0.2,all
+task:sex_all_genes,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.2,all
+task:sex_no_xy,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.2,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,pearson,0.2,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,pearson,0.2,same platform
+task:sex_all_genes,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.2,same platform
+task:sex_no_xy,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.2,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,pearson,0.3,all
+task:sex_all_genes,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.3,all
+task:sex_no_xy,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.3,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,pearson,0.3,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,pearson,0.3,same platform
+task:sex_all_genes,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.3,same platform
+task:sex_no_xy,8,2,0,0,10,10,0.8,0.2,0.0,0.8,0.2,pearson,0.3,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,pearson,0.4,all
+task:sex_all_genes,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,pearson,0.4,all
+task:sex_no_xy,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,pearson,0.4,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,pearson,0.4,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,pearson,0.4,same platform
+task:sex_all_genes,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,pearson,0.4,same platform
+task:sex_no_xy,1,0,9,0,10,1,0.1,0.0,0.9,1.0,0.0,pearson,0.4,same platform
+task:acute_proteomics,0,3,0,0,3,3,0.0,1.0,0.0,0.0,1.0,pearson,0.5,all
+task:sex_all_genes,0,0,10,0,10,0,0.0,0.0,1.0,,,pearson,0.5,all
+task:sex_no_xy,0,0,10,0,10,0,0.0,0.0,1.0,,,pearson,0.5,all
+task:acute_proteomics,0,2,0,0,2,2,0.0,1.0,0.0,0.0,1.0,pearson,0.5,different platform
+task:acute_proteomics,0,1,0,0,1,1,0.0,1.0,0.0,0.0,1.0,pearson,0.5,same platform
+task:sex_all_genes,0,0,10,0,10,0,0.0,0.0,1.0,,,pearson,0.5,same platform
+task:sex_no_xy,0,0,10,0,10,0,0.0,0.0,1.0,,,pearson,0.5,same platform

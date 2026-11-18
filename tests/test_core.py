@@ -1298,6 +1298,39 @@ def test_concordance_guided_agreement_and_bootstrap():
     assert m == pytest.approx(0.2) and lo <= m <= hi
 
 
+def test_noise_ceiling_verdict():
+    nc = _load_script_path("concordance_noise_ceiling")
+    assert nc.verdict(0.6, 0.5, 0.40, 0.20) == "agree"
+    assert nc.verdict(0.6, 0.5, 0.20, 0.20) == "agree"  # at the 2.5th percentile counts as agree
+    assert nc.verdict(0.6, 0.5, 0.10, 0.20) == "truly differ"
+    assert nc.verdict(0.6, 0.3, 0.10, 0.20) == "too small to tell"  # reliability at the threshold
+    assert nc.verdict(np.nan, 0.6, 0.10, 0.20) == "too small to tell"
+    assert nc.verdict(0.6, 0.6, np.nan, 0.20) == "not evaluable"
+    assert nc.verdict(0.45, 0.6, 0.10, 0.20, threshold=0.5) == "too small to tell"
+    assert nc.verdict(0.45, 0.6, 0.10, 0.20, threshold=0.4) == "truly differ"
+
+
+def test_noise_ceiling_pseudo_split_and_engine():
+    v = _load_script_path("noise_ceiling_validation")
+    y = np.r_[np.ones(45), np.zeros(30)].astype(int)
+    a, b = v.pseudo_split(y, 10, np.random.default_rng(1))
+    assert len(a) == len(b) == 20 and not set(a) & set(b)
+    assert (y[a] == 1).sum() == 10 and (y[b] == 0).sum() == 10
+    assert v.pseudo_split(y, 16, np.random.default_rng(1)) is None  # 30 in a class: fewer than 2 x 16
+    a2, _ = v.pseudo_split(y, 10, np.random.default_rng(1))
+    assert np.array_equal(a, a2)
+    # one population: two halves of a cohort with a strong effect agree, and the verdict uses the shared features
+    rng = np.random.default_rng(0)
+    n, p = 120, 60
+    yy = np.r_[np.ones(n // 2), np.zeros(n // 2)].astype(int)
+    X = pd.DataFrame(rng.normal(size=(n, p)) + np.outer(yy, np.linspace(-1.5, 1.5, p)), columns=[f"f{i}" for i in range(p)])
+    a, b = v.pseudo_split(yy, 30, np.random.default_rng(2))
+    P = v.run_set({"A": (X.iloc[a], yy[a]), "B": (X.iloc[b].iloc[:, :40], yy[b])}, n_splits=30)
+    assert P.loc[0, "n_shared"] == 40 and P.loc[0, "verdict"] == "agree" and P.loc[0, "reliability_a_spearman"] > 0.3
+    Pf = v.run_set({"A": (X.iloc[a], yy[a]), "B": (-X.iloc[b], yy[b])}, n_splits=30)  # reversed effect: differ
+    assert Pf.loc[0, "verdict"] == "truly differ"
+
+
 def test_adaptive_borrowing_weights_splits_and_bars():
     cg = _load_script_path("concordance_guided")
     rng = np.random.default_rng(0)
