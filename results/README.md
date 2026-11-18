@@ -2801,3 +2801,94 @@ Files:
 - Summaries: `per_cohort.csv`, `arms.csv`, `differences.csv`, `bars.csv` and `calibration_weight.csv`.
 - Per unit and per expert: `weights.csv`, `skipped.csv`, `no_expert.csv` and `units/`.
 - `run_info.json`.
+
+## Noise ceiling: validation (18 November 2026)
+
+**Bars, stated before the analysis was run** (`noise_ceiling_validation/`, copied from the request). The analysis set
+is frozen at version 5: PRJNA1184005 is not used.
+
+- **(a) Calibration.** On pseudo cohorts, the verdict "truly differ" occurs in at most 5 percent of splits at every
+  size.
+- **(b) Positive controls.** Among pairs that are not "too small to tell", at least 80 percent are "agree" in each
+  control (sex on all genes, acute against never infected).
+- **(c) Negative control.** With shuffled labels, "truly differ" occurs in at most 5 percent of pairs.
+- **(d) Usefulness.** Predictor (i) or (ii) has a positive Spearman with the benefit of combining, with the interval
+  above zero, over all tasks together.
+- **(e) Added value of the ceiling.** Predictor (i) or (ii) has a higher Spearman with the benefit than the raw
+  correlation (iii). The difference is reported with its interval, and this part is descriptive if the interval
+  includes zero.
+
+**Verdict.** It is given per cohort pair, with thresholds fixed in advance:
+
+- "too small to tell": either cohort has Spearman-Brown reliability on the shared features of 0.3 or less, or an
+  undefined reliability;
+- otherwise "agree": the observed correlation is at or above the 2.5th percentile of the one population expectation;
+- otherwise "truly differ".
+
+The function is `concordance_noise_ceiling.verdict`. A pair whose correlation or expectation is undefined (fewer than
+3 shared features) is "not evaluable" and is counted apart.
+
+**Measures and thresholds.**
+
+- Primary: Spearman of Hedges g over all shared features. Secondary: Pearson, on the same splits.
+- Sensitivity thresholds: 0.2, 0.4 and 0.5.
+- Bars (a) to (e) use Spearman at 0.3.
+
+**Pair procedure.** It is that of `scripts/concordance_noise_ceiling.py`, with the same random streams, so its
+Spearman results are reproduced.
+
+- Reliability comes from 200 stratified half splits.
+- The expectation comes from 200 draws. In each, the larger cohort is split into a part with the smaller cohort's
+  class counts (capped at half of each class) and the rest.
+- When the two cohorts have equal sizes, as the pseudo cohorts do, the expectation therefore comes from half splits
+  of one of them. This is the method as it stands, and it is not changed for the validation.
+
+**Platform.** This is the technology that measured the cohort:
+
+| platform | cohorts |
+|---|---|
+| bulk RNA-seq | all RNA cohorts except CORSIP2026 |
+| NanoString | CORSIP2026 |
+| Olink Explore (NGS readout) | Buggert2025, Fineschi2026, Woodruff2023 |
+| Olink Target 96 (qPCR readout) | Su2022, Bansal2025, Zoodsma2022_Hannover |
+| SomaScan | Cervia2024_SomaScan |
+| MS proteomics | Cervia2024_MS, Chowdhury2024, Chowdhury2026, Kovarik2023_plasma |
+
+Each metabolomics cohort is a platform of its own. Same platform and different platform pairs are reported
+separately.
+
+**Sets.**
+
+- **Pseudo cohorts** (2). A cohort is split at random into two disjoint stratified pseudo cohorts of n per class each.
+  These cohorts have one sample per participant, so no participant is shared.
+  - n is 10, 20 and 40, run when each class has at least 2n samples, with 200 repeats.
+  - LC uses the samples and features of `concordance_proteomics_all_v5`. That gives n 10 for all five cohorts, and
+    n 20 for all except Woodruff2023 (27 in a class). No cohort reaches n 40.
+  - Acute uses Su2022 from `control_acute_proteomics`, at n 10, 20 and 40.
+- **Positive controls** (3). These use the cohorts, samples and features of the `adaptive_borrowing` tasks
+  (`concordance_guided.load_task`):
+  - sex on all genes and sex without chrX and chrY: the cohorts and inferred sex of `control_sex_label`;
+  - acute: `control_acute_proteomics`.
+- **Shuffled** (4). LC labels are permuted within each cohort, keeping class counts, with 50 repeats per layer. The
+  layers are those of `concordance_noise_ceiling`.
+- **LC** (5). The verdict is applied to `concordance_noise_ceiling/pairs.csv`. The Pearson columns come from the
+  recomputation.
+- **Benefit** (6).
+  - The benefit is arm 6 minus arm 5 from `adaptive_borrowing/per_cohort.csv`, for each task and held out cohort, at
+    8 per class and at half.
+  - The predictors come from the pairs of that task, on its cohorts and features (the data the arms used). They are
+    computed over all other cohorts of the task:
+    - (i) the share with verdict "agree";
+    - (ii) the mean of observed over expected mean;
+    - (iii) the mean observed Spearman.
+  - The Spearman is taken over the (task, held out cohort) units. The interval is a 2,000-resample cohort bootstrap:
+    held out cohorts are resampled with all their units. The differences (i) − (iii) and (ii) − (iii) use the same
+    resamples.
+
+**Reading of the bars, fixed before running.**
+
+- (a) Each contrast (LC, acute) and size separately, as a fraction of all splits.
+- (b) Each control separately.
+- (c) Each layer separately, as a fraction of all pairs over the 50 repeats. The rate among evaluable pairs is
+  reported alongside.
+- (d) and (e) At 8 per class. Half is reported, but is not part of the bar.
