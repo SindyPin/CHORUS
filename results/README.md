@@ -3004,3 +3004,26 @@ arm 6 minus arm 5. Spearman with the benefit, with the cohort bootstrap interval
 - Supporting files:
   - pair level: `pseudo_cohorts_splits.csv`, `controls_pairs.csv`, `shuffled_pairs.csv`;
   - summaries: `lc_verdicts_summary.csv`, `benefit_correlation.csv`, `benefit_by_verdict.csv`.
+
+## Acute COVID validation: rule and bars
+
+Fixed on 18 November 2026, before any acute COVID cohort was searched or downloaded.
+
+Revised rule (version 2), per pair of cohorts and per contrast:
+- Reliability: Spearman-Brown split half reliability of each cohort on the shared features, as in scripts/concordance_noise_ceiling.py.
+- Ceiling ratio: the observed correlation of effects divided by the mean correlation expected from one population.
+- Verdict: "too small to tell" if either reliability is 0.3 or less. Otherwise "shared signal" if the ratio is 0.5 or more, "different signal" if the ratio is 0.2 or less (including negative), and "partly shared" in between.
+- Sensitivity: ratio thresholds (0.4, 0.1) and (0.6, 0.3). The version 1 verdict is kept in the output for comparison.
+
+Why the rule was revised: in the validation of 18 November 2026 (results/noise_ceiling_validation), version 1 called all three acute infection pairs "truly differ" although the acute signature transfers well. Version 1 tests whether two cohorts are identical, which is too strict when the signal is strong. The thresholds of version 2 were chosen after seeing those results, so version 2 is validated only on cohorts not used so far.
+
+Contrasts:
+- Infection: acute COVID against never infected controls.
+- Severity: severe or critical against mild or moderate.
+
+Bars, all on the new cohorts only:
+(a) Infection contrast: among pairs that are not "too small to tell", at least 80 percent are "shared signal" or "partly shared", and at most 10 percent are "different signal".
+(b) Transfer goes with the verdict: for the infection contrast, the median held out AUROC of models trained on the other cohorts only is at least 0.80.
+(c) Prediction: over all held out cohorts and both contrasts, the mean ceiling ratio of a cohort with its training cohorts has a positive Spearman correlation with its held out AUROC from external cohorts only, with the cohort bootstrap interval above zero.
+(d) Added value, descriptive: the same correlation for the plain mean correlation without the ceiling, and the difference with its interval.
+(e) Benefit of combining, descriptive: Spearman of the mean ceiling ratio with arm 6 minus arm 5 (local plus all external, against local alone) at 4 and at 8 samples per class.
