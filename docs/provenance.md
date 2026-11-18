@@ -321,3 +321,58 @@ run to the named studies), which logs them in `data/proteomics/downloads.tsv`.
   | `Joined_BMI.csv` (inspected, not used) | ff438bef6e25404d54f8d4b5bf4cb961721985cedff28b8d95ddd204b1a97d5a |
   | `Metabolomics_CORSIP.csv` (inspected, not used) | e0d16df7e37a0ddc9f86ae1b3416d982869116cff78e7125fbbfb07dc5f88d38 |
   | `LICENSE` | a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499 |
+
+## PRJNA1184005 (Missailidis 2024, PBMC): salmon on all reads (18 November 2026)
+
+**Command.**
+- `scripts/salmon_quant_ena.py PRJNA1184005 data/ref/gencode_v47/salmon_index_v47_k31 data/quant/PRJNA1184005
+  --threads 8 --segments 16`, with salmon 1.10.3 from the conda env `chorus-salmon`.
+- Started 2026-11-18 08:13:12; the 14 runs were quantified by 10:35:10. The log is
+  `data/quant/PRJNA1184005/quant.log`.
+
+**Runs.**
+- The ENA file report is `data/quant/PRJNA1184005/ena_filereport.tsv`. It lists SRR31535847 to SRR31535860: 13
+  paired-end runs and 1 single-end run (SRR31535858, vacSG112), 42.1 GB of gzipped FASTQ in all.
+- Each file was downloaded whole and checked against the ENA `fastq_md5`.
+- One mate file, SRR31535850_2 (vacSG70), failed the md5 check on the first download. It was downloaded again and
+  passed. FASTQ files are deleted after quantification.
+- 14 of 14 runs were quantified on the first pass.
+
+**Index and options.** As for GSE224615: GENCODE v47 transcripts with k 31, and `salmon quant -l A --validateMappings
+--gcBias`. The single-end run uses `-r`.
+
+**Aggregation.**
+- `--aggregate --gtf data/ref/gencode_v47/gencode.v47.annotation.gtf.gz` (log `aggregate.log`).
+- Output: 78,277 genes x 14 samples in `salmon.merged.gene_counts.tsv`, and QC in `salmon_qc.tsv`.
+- The matrix columns are the ENA `sample_alias`, which equals the BioSample isolate.
+
+**QC.**
+
+| runs | fragments | library type | mapping rate median (range) | mitochondrial fraction median (range) | flagged |
+|---|---|---|---|---|---|
+| 14 | 20.1 M to 26.4 M | IU (13 paired-end), U (vacSG112, single-end) | 86.18% (79.03 to 90.01) | 0.240 (0.143 to 0.424) | 1 |
+
+- The rule is the one used for GSE224615: a sample is flagged below 40%, or more than 2.5 MAD below the median of
+  the aggregation. Here the median is 86.18%, the MAD 2.49 and the lower bound 79.96%.
+- vacSG21 (79.03%) is flagged. As for GSE224615, the flag is not an exclusion. It is carried into the meta as
+  `salmon_qc_flag`, and the mapping rate as `salmon_mapping_rate`.
+
+**Metadata.**
+- `scripts/build_rna_cohorts_2026_11.py PRJNA1184005` writes `data/meta/PRJNA1184005_meta.csv`.
+- Labels come from the author (S. Annesley, personal communication, 18 November 2026). The control definition is
+  pending confirmation.
+- Age and sex come from `data/meta/PRJNA1184005_biosamples.csv`.
+- The builder checks that the isolates equal the labelled samples and the matrix columns.
+- Read with `load_config` together with GSE224615 (a scratch config, not committed), the cohort gives 14 samples,
+  7 LC and 7 COVID_recovered, on the 13,889 genes that pass the filter.
+
+**Checksums (SHA-256).**
+
+| file | SHA-256 |
+|---|---|
+| `data/quant/PRJNA1184005/salmon.merged.gene_counts.tsv` | d0283fbac2f8c1b0ac1320bc67d88d33b046b499c255483fbb0a225fb16bd7cb |
+| `data/quant/PRJNA1184005/salmon_qc.tsv` | cfad461d2404f15ea83751ac1fbb7cb5f9bc2b5422fca60db3679cea691fbeef |
+| `data/quant/PRJNA1184005/tx2gene_gencode_v47.tsv` (identical to the GSE224615 table) | 09e64b5dbf018226c70a8a8cab3e4bfd565b302b4a0a7fb79c0dc6d2fa24b160 |
+| `data/quant/PRJNA1184005/ena_filereport.tsv` | 8e8c7669badc958c3c67c6a13eaa8590fb56835f9432142f9e581868010e8d24 |
+| `data/meta/PRJNA1184005_biosamples.csv` | be3e84ff2aa91cba1b81ec6f4664469a9d5673504e7a8a5ea8ae33ef2da387b7 |
+| `data/meta/PRJNA1184005_meta.csv` | f069be6dae52223bc99933197ce012cf3ba6ae56a17697058f5002dea3fc0059 |

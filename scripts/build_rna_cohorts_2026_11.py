@@ -47,7 +47,18 @@ below 0.95, POS_E not above the mean plus 2 SD of the negative controls.
 
   python scripts/build_rna_cohorts_2026_11.py            (PRJNA1149196 and GSE297499)
   python scripts/build_rna_cohorts_2026_11.py GSE228320  (one study)
+PRJNA1184005 (Missailidis 2024, Front Immunol 15:1450853, PMID 39691709, PMC11649547; added 18 November 2026). PBMC
+RNA-seq (NovaSeq 6000; 13 paired-end runs and one single-end run, vacSG112), La Trobe University, Australia. Counts:
+salmon 1.10.3 on all reads with the GENCODE v47 index of GSE224615 (scripts/salmon_quant_ena.py, data/quant/PRJNA1184005).
+Matrix columns are the ENA sample_alias, which equals the BioSample isolate. Labels: from the author (S. Annesley,
+personal communication, 18 November 2026; PRJNA1184005_LABELS below); the deposit and the paper have no per sample label.
+LC: WHO description (paper Methods), case_definition WHO_2021. COVID_recovered ("Post COVID"): age and sex matched
+participants who recovered (paper Methods); the author's control definition is pending confirmation and is recorded in
+control_definition_status. Sex and age: BioSample attributes (data/meta/PRJNA1184005_biosamples.csv). Per sample time
+since infection is not deposited (paper Table 1: mean 6.1 months LC, 5.5 months recovered).
+
   python scripts/build_rna_cohorts_2026_11.py CORSIP2026 (one study)
+  python scripts/build_rna_cohorts_2026_11.py PRJNA1184005 (one study)
 """
 
 from __future__ import annotations
@@ -72,6 +83,14 @@ GSE297499 = ROOT / "data" / "counts" / "GSE297499"
 GSE228320 = ROOT / "data" / "counts" / "GSE228320"
 CORSIP = ROOT / "data" / "counts" / "CORSIP2026"
 CORSIP_REPO = CORSIP / "raw" / "CORSIP_omics"
+PRJNA1184005_BIOSAMPLES = META / "PRJNA1184005_biosamples.csv"
+PRJNA1184005_COUNTS = ROOT / "data" / "quant" / "PRJNA1184005" / "salmon.merged.gene_counts.tsv"
+PRJNA1184005_QC = ROOT / "data" / "quant" / "PRJNA1184005" / "salmon_qc.tsv"
+# S. Annesley, personal communication, 18 November 2026 (LC; "Post COVID" = COVID_recovered)
+PRJNA1184005_LABELS = {
+    **{s: "LC" for s in ["SG22", "vacSG60", "vacSG116", "vacSG117", "vacSG47", "vacSG55", "vacSG61"]},
+    **{s: "COVID_recovered" for s in ["vacSG102", "vacSG105", "vacSG111", "vacSG21", "vacSG34", "vacSG70", "vacSG112"]},
+}
 NANOSTRING_POS_FM = {"POS_A": 128, "POS_B": 32, "POS_C": 8, "POS_D": 2, "POS_E": 0.5, "POS_F": 0.125}
 
 SINCLAIR_STATUS = {"PASC": "LC", "PASC-CVS": "LC", "PASC_CVS": "LC", "Recovered": "COVID_recovered", "Control": "never_infected"}
@@ -258,6 +277,47 @@ def corsip2026() -> pd.DataFrame:
     return out
 
 
+def prjna1184005() -> pd.DataFrame:
+    bs = pd.read_csv(PRJNA1184005_BIOSAMPLES, dtype=str)
+    if set(bs["isolate"]) != set(PRJNA1184005_LABELS):
+        raise ValueError(f"PRJNA1184005: isolates and author labels differ: {sorted(set(bs['isolate']) ^ set(PRJNA1184005_LABELS))}")
+    if PRJNA1184005_COUNTS.exists():
+        cols = set(pd.read_csv(PRJNA1184005_COUNTS, sep="\t", nrows=0).columns) - {"gene_id"}
+        if cols != set(bs["isolate"]):
+            raise ValueError(f"PRJNA1184005: count matrix columns and isolates differ: {sorted(cols ^ set(bs['isolate']))}")
+    st = bs["isolate"].map(PRJNA1184005_LABELS)
+    lc = (st == "LC").to_numpy()
+    df = pd.DataFrame({
+        "sample_id": bs["isolate"].values,
+        "subject_id": ("PRJNA1184005:" + bs["isolate"]).values,
+        "lc_status": st.values,
+        "case_definition": np.where(lc, "WHO_2021", "not_applicable"),
+        "control_type": np.where(lc, "not_applicable", "COVID_recovered"),
+        "sample_phase": "post_acute",
+        "sample_matrix": "PBMC",
+        "age": pd.to_numeric(bs["age"]).values,
+        "sex": bs["sex"].str.lower().values,
+        "platform": "Illumina NovaSeq 6000, PBMC RNA-seq" + np.where(bs["isolate"] == "vacSG112", " (single-end run)", " (paired-end)"),
+        "collection_country": "Australia",
+        "timepoint": "single_visit",
+        "notes": np.where(lc, "LC (WHO description, paper Methods); label from the author (S. Annesley, personal communication, 18 November 2026)",
+                          "Post COVID (COVID_recovered): age and sex matched, recovered (paper Methods); label from the author (S. Annesley, personal "
+                          "communication, 18 November 2026); control definition pending confirmation")
+                 + "; BioSample " + bs["biosample"] + ", collected " + bs["collection_date"],
+    })
+    out = finish(df, "PRJNA1184005")
+    out["label_source"] = "author: S. Annesley, personal communication, 2026-11-18"
+    out["control_definition_status"] = np.where(lc, "not_applicable", "pending_confirmation")
+    out["collection_date"] = bs["collection_date"].values
+    out["biosample"] = bs["biosample"].values
+    if PRJNA1184005_QC.exists():  # GSE224615 rule (below 40%, or more than 2.5 MAD below the median): a flag, not an exclusion
+        qc = pd.read_csv(PRJNA1184005_QC, sep="\t", dtype={"sample": str}).set_index("sample").reindex(bs["isolate"])
+        out["salmon_mapping_rate"] = qc["mapping_rate"].values
+        out["salmon_qc_flag"] = qc["flag"].astype(str).str.lower().eq("true").values
+        out["notes"] = out["notes"] + np.where(out["salmon_qc_flag"], "; salmon QC flag: " + qc["flag_reason"].fillna("").values, "")
+    return out
+
+
 def prjna1149196() -> dict:
     bs = pd.read_csv(META / "raw_PRJNA1149196" / "biosamples.csv", dtype=str)
     runs = pd.read_csv(QUANT / "ena_filereport.tsv", sep="\t", dtype=str)
@@ -314,6 +374,8 @@ def main():
         built = {"GSE228320": gse228320()}
     elif sys.argv[1:] == ["CORSIP2026"]:
         built = {"CORSIP2026": corsip2026()}
+    elif sys.argv[1:] == ["PRJNA1184005"]:
+        built = {"PRJNA1184005": prjna1184005()}
     else:
         built = {"GSE297499": gse297499(), **prjna1149196()}
     for sid, df in built.items():

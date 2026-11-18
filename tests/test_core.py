@@ -1359,3 +1359,27 @@ def test_transfer_model_stratified_and_models():
     assert r2["agreement+reliability"] > r2["agreement"] + 0.15 and r2["agreement+reliability"] > 0.9
     assert G.set_index("model").loc["agreement+reliability", "p_permutation"] > 0.05  # no group gap in the simulation
     assert tm.design(P, ["effect_spearman*reliability"]).ravel() == pytest.approx((P["effect_spearman"] * P["reliability"]).to_numpy())
+
+
+def test_prjna1184005_labels_and_metadata(tmp_path, monkeypatch):
+    b = _load_script_path("build_rna_cohorts_2026_11")
+    lab = b.PRJNA1184005_LABELS
+    assert len(lab) == 14 and sum(v == "LC" for v in lab.values()) == 7 and sum(v == "COVID_recovered" for v in lab.values()) == 7
+    iso = sorted(lab)
+    bs = pd.DataFrame({"biosample": [f"SAMN{i}" for i in range(14)], "isolate": iso, "age": [str(30 + i) for i in range(14)],
+                       "sex": ["female"] * 10 + ["male"] * 4, "collection_date": "2022-08-04"})
+    bs.to_csv(tmp_path / "bs.csv", index=False)
+    monkeypatch.setattr(b, "PRJNA1184005_BIOSAMPLES", tmp_path / "bs.csv")
+    monkeypatch.setattr(b, "PRJNA1184005_COUNTS", tmp_path / "missing.tsv")
+    pd.DataFrame({"sample": iso, "mapping_rate": 85.0, "flag": [s == "vacSG21" for s in iso], "flag_reason": ["more than 2.5 MAD below median" if s == "vacSG21" else "" for s in iso]}).to_csv(tmp_path / "qc.tsv", sep="\t", index=False)
+    monkeypatch.setattr(b, "PRJNA1184005_QC", tmp_path / "qc.tsv")
+    m = b.prjna1184005().set_index("sample_id")
+    assert m["salmon_qc_flag"].sum() == 1 and m.loc["vacSG21", "salmon_qc_flag"] and "salmon QC flag" in m.loc["vacSG21", "notes"]
+    assert len(m) == 14  # a flag, not an exclusion
+    assert m.loc["SG22", "lc_status"] == "LC" and m.loc["vacSG112", "lc_status"] == "COVID_recovered"
+    assert (m.loc[m["lc_status"] == "COVID_recovered", "control_definition_status"] == "pending_confirmation").all()
+    assert (m.loc[m["lc_status"] == "LC", "case_definition"] == "WHO_2021").all() and set(m["sample_matrix"]) == {"PBMC"}
+    pd.DataFrame({"gene_id": ["G1"], **{s: [1.0] for s in iso[:13]}}).to_csv(tmp_path / "counts.tsv", sep="\t", index=False)
+    monkeypatch.setattr(b, "PRJNA1184005_COUNTS", tmp_path / "counts.tsv")
+    with pytest.raises(ValueError, match="count matrix columns"):
+        b.prjna1184005()

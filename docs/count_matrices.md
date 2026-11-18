@@ -42,6 +42,32 @@ with a different annotation, so the subsets must be harmonised (or re-quantified
   only to PRJNA1184005, and the article has no supplementary files. Table 1 gives only group summaries (7 LC aged
   23–53, 7 recovered aged 23–63). The paper's tables are a group summary and a 70-gene DE list.
 - Consequence: re-quantify from SRA (`requantify`). Labels must come from the authors (see `data/meta/label_sources.md`).
+- **Built 18 November 2026** (`scripts/build_rna_cohorts_2026_11.py PRJNA1184005`).
+  - **Labels from the author** (S. Annesley, personal communication, 18 November 2026):
+    - LC: SG22, vacSG60, vacSG116, vacSG117, vacSG47, vacSG55 and vacSG61.
+    - COVID_recovered ("Post COVID"): vacSG102, vacSG105, vacSG111, vacSG21, vacSG34, vacSG70 and vacSG112.
+    - The labels agree with the deduction from age: vacSG34, vacSG102 and vacSG112 are recovered.
+  - **Control definition pending confirmation.** The paper describes the recovered group as age and sex matched and
+    recovered. Until the author confirms the definition, the metadata carries `control_definition_status`
+    `pending_confirmation` for the 7 recovered samples, and `label_source` names the communication.
+  - **Case definition.** LC is `WHO_2021`: the paper's Methods use the WHO description.
+  - **Metadata.** `sample_phase` is post_acute, `sample_matrix` PBMC and `timepoint` single_visit. Age and sex come
+    from the BioSample attributes (`data/meta/PRJNA1184005_biosamples.csv`), and the meta also has `collection_date`
+    and `biosample`. The output is `data/meta/PRJNA1184005_meta.csv`.
+  - **Groups.**
+    - LC: 7 samples, mean age 41.4 (25 to 53), 85.7% female.
+    - Recovered: 7 samples, mean age 45.4 (23 to 63), 71.4% female.
+    - Paper Table 1: LC mean 41 (23 to 53), recovered mean 45 (23 to 63), 85.7% and 71.4% female. **The lower end of
+      the LC age range differs:** 25 from the BioSample ages with the author labels, 23 in Table 1. The youngest
+      sample, vacSG21 (23), is labelled recovered.
+  - **Matrix.** Salmon on all reads, with the GSE224615 index and options, aggregated to genes:
+    `data/quant/PRJNA1184005/salmon.merged.gene_counts.tsv`, 78,277 genes x 14 samples. Matrix columns are the
+    isolates, which equal the ENA `sample_alias`. Procedure, QC and checksums are in `docs/provenance.md`.
+  - **QC.** Mapping rate median 86.2% (79.0 to 90.0). Applying the GSE224615 rule within this aggregation flags one
+    sample: vacSG21, 79.0%, more than 2.5 MAD below the median, against a lower bound of 80.0%. This is a flag, not an
+    exclusion: it is recorded in `salmon_qc_flag` and `salmon_mapping_rate`.
+  - **Configs.** The entries in the transcriptomic configs are unchanged (`train_only: true`, `enabled: false`), and
+    no benchmark has been rerun with this cohort.
 
 ## Cohorts added 16 November 2026
 

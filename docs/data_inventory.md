@@ -18,7 +18,7 @@ built: `requantify` (public reads, nf-core/rnaseq), `author_matrix` (reads not p
 | GSE270045 | whole blood | 36 | 19 LC / 17 **healthy** controls | yes | counts tsv | requantify | check controls were infected |
 | GSE226260 | PBMC + whole blood | 331 | WB: 52 PASC / 51 recovered; PBMC: 72 PASC / 14 NOPASC; 142 acute | yes | raw counts | requantify | include; WB subset fits primary |
 | GSE251849 | PBMC | 23 | 11 LC / 5 convalescent / 7 healthy | yes | counts txt | requantify | include (PBMC set) |
-| PRJNA1184005 | PBMC | 14 runs | not in GEO (BioSample) | yes | none | requantify | include (PBMC set) |
+| PRJNA1184005 | PBMC | 14 runs | 7 LC / 7 COVID_recovered (author, 18 Nov 2026; control definition pending confirmation) | yes | none | requantify (done 18 Nov 2026) | include (PBMC set); configs not yet enabled |
 | GSE224615 | PBMC | 36 | 23 LC / 13 non-LC | yes | **none** (DEG table only) | requantify | include; must requantify |
 | GSE222253 (new) | whole blood | 35 | endotype only; symptom labels at BQC19 | yes | RAW.tar | requantify | conditional candidate |
 | GSE286325 (new) | PBMC scRNA | 8 runs | 44 post-COVID / 44 convalescent (multiplexed) | **no** (0-read runs) | RAW.tar | author_matrix | pseudobulk only |
@@ -51,8 +51,8 @@ ProteomeXchange but not PRIDE (another member repository, likely iProX); PXD0528
 2. **Liew2024 EGAD00001009745 is an unrelated EGA dataset.** The PHOSP-COVID proteomics accession and access route
    must be identified before applying for access.
 3. **Labels are missing from GEO for several core cohorts:** GSE215865 (Synapse syn35874390), GSE267625 (P4O2 data
-   committee), GSE169687 (LC status of convalescents), GSE222253 (BQC19), PRJNA1184005 (BioSample attributes, not yet
-   checked). Metadata curation (CC3) depends on these.
+   committee), GSE169687 (LC status of convalescents), GSE222253 (BQC19), PRJNA1184005 (no label in the BioSample
+   attributes; received from the author on 18 November 2026, control definition pending confirmation). Metadata curation (CC3) depends on these.
 4. **Control definitions disagree with the config:** GSE270045 controls are labelled healthy, not COVID recovered,
    and GSE169687 has only never-infected controls. Several config sample counts (GSE226260, GSE224615, GSE215865)
    do not match GEO.
