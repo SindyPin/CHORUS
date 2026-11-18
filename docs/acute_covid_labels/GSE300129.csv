@@ -1,0 +1,4 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+status=Healthy_Control,never_infected,,,55
+status=Non_Thrombotic,acute_covid,mechanically ventilated (series summary),severe_critical,21
+status=Thrombotic,acute_covid,mechanically ventilated (series summary),severe_critical,36

@@ -1,0 +1,8 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+cohort=COVID-19; time_since_onset=early,acute_covid,hospitalized=No,,13
+cohort=COVID-19; time_since_onset=early,acute_covid,hospitalized=Yes,,6
+cohort=COVID-19; time_since_onset=late,acute_covid,hospitalized=No,,22
+cohort=COVID-19; time_since_onset=middle,acute_covid,hospitalized=No,,30
+cohort=COVID-19; time_since_onset=middle,acute_covid,hospitalized=Yes,,6
+,never_infected,,,19
+,other_disease,,,102

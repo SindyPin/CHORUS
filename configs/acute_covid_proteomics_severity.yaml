@@ -1,0 +1,21 @@
+# Acute COVID validation (Part B, 18 November 2026): proteins, severity contrast. Built by scripts/acute_covid_sweep.py; cohorts
+# verified or verified with flags (docs/acute_covid_cohorts.md). Every cohort is enabled: false; nothing has been run on them.
+# One sample per participant: the meta column one_sample_per_participant marks the sample to keep (the first acute
+# sample, otherwise the first sample). The classes are in infection_class and severity_class.
+layer: proteomics
+cohorts:
+  - {study_id: Filbin2021_MGH, matrix: data/proteomics/Filbin2021_MGH/Filbin2021_MGH_matrix.csv, meta: data/meta/Filbin2021_MGH_meta.csv, feature_space: uniprot, accession: "10.17632/nf853r8xsj", enabled: false}
+    # verified with flags; flags: a integrity; b counts; f outliers
+  - {study_id: Gisby2021_plasma, matrix: data/proteomics/Gisby2021_plasma/Gisby2021_plasma_matrix.csv, meta: data/meta/Gisby2021_plasma_meta.csv, feature_space: uniprot, accession: "zenodo.4287557", enabled: false}
+    # verified with flags; flags: b counts; f outliers; j timing
+  - {study_id: GSE207015, matrix: data/proteomics/GSE207015/GSE207015_matrix.csv, meta: data/meta/GSE207015_meta.csv, feature_space: uniprot, accession: "GSE207015", enabled: false}
+    # verified with flags; flags: b counts; e duplicates (within); f outliers
+preprocessing:
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  # the severity label is the meta column severity_class; the chorus loader reads lc_status only, so Part C maps it
+  label_column: severity_class
+  positive: severe_critical
+  negative: mild_moderate
+out: results/acute_covid_proteomics_severity

@@ -1,0 +1,4 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+disease_state=COVID-19,acute_covid,,,35
+disease_state=Sepsis,other_disease,,,22
+disease_state=healthy donor,never_infected,,,15

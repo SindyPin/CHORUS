@@ -1,0 +1,3 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+status=Healthy,never_infected,,,10
+status=Severe Covid-19,acute_covid,Severe Covid-19,severe_critical,44

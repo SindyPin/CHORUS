@@ -1,0 +1,35 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+group=Asymptomatic; pcr=Detected,acute_covid,group=Asymptomatic,,1
+group=Asymptomatic; pcr=Not,excluded,group=Asymptomatic,,37
+group=Control; pcr=Not,excluded,group=Control,,259
+group=Control; pcr=Not,never_infected,group=Control,,126
+group=Control; pcr=Problems:Inconclusive,excluded,group=Control,,3
+group=Control; pcr=Problems:Inconclusive ran twice. New sample required,excluded,group=Control,,1
+group=Exposed; pcr=Not,excluded,group=Exposed,,17
+group=False Negative; pcr=Not,excluded,group=False Negative,,2
+group=First; pcr=Detected,acute_covid,group=First,,121
+group=Immune +; pcr=Not,excluded,group=Immune +,,12
+group=Immune; pcr=Not,excluded,group=Immune,,10
+group=Mid; pcr=Detected,acute_covid,group=Mid,,449
+group=Mid; pcr=Not,excluded,group=Mid,,66
+group=Mid; pcr=Problems:Inconclusive,excluded,group=Mid,,5
+group=Mid; pcr=Problems:Inconclusive ran twice. New sample required,excluded,group=Mid,,1
+group=Mid; pcr=Problems:New Sample Required,excluded,group=Mid,,1
+group=Mild; pcr=Not,excluded,group=Mild,,27
+group=Moderate; pcr=Not,excluded,group=Moderate,,20
+group=Post; pcr=Not,excluded,group=Post,,441
+group=Post; pcr=Problems:Inconclusive,excluded,group=Post,,1
+group=Post; pcr=Problems:Inconclusive ran twice. New sample required,excluded,group=Post,,2
+group=Post; pcr=Problems:Invalid,excluded,group=Post,,2
+group=Post; pcr=Problems:QNS/Leaked in Transit,excluded,group=Post,,2
+group=Pre; pcr=Not,excluded,group=Pre,,59
+group=Pre; pcr=Problems:Inconclusive ran twice. New sample required,excluded,group=Pre,,2
+group=Reinfection; pcr=Detected,acute_covid,group=Reinfection,,6
+,excluded,group=Asymptomatic,,40
+,excluded,group=Control,,15
+,excluded,group=Exposed,,38
+,excluded,group=Immune +,,8
+,excluded,group=Mid,,12
+,excluded,group=Mild,,36
+,excluded,group=Moderate,,33
+,excluded,group=Post,,3

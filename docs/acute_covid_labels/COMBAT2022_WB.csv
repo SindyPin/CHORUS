@@ -1,0 +1,10 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+Source=COVID_CRIT,acute_covid,Source=COVID_CRIT; Death28=0,severe_critical,16
+Source=COVID_CRIT,acute_covid,Source=COVID_CRIT; Death28=1,severe_critical,3
+Source=COVID_HCW_MILD,acute_covid,Source=COVID_HCW_MILD; Death28=0,mild_moderate,13
+Source=COVID_MILD,acute_covid,Source=COVID_MILD; Death28=0,mild_moderate,18
+Source=COVID_SEV,acute_covid,Source=COVID_SEV; Death28=0,,34
+Source=COVID_SEV,acute_covid,Source=COVID_SEV; Death28=1,severe_critical,7
+Source=HV,never_infected,Source=HV; Death28=0,,10
+Source=Sepsis,other_disease,Source=Sepsis; Death28=0,,32
+Source=Sepsis,other_disease,Source=Sepsis; Death28=1,,11

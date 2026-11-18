@@ -1,0 +1,3 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+disease=COVID19,acute_covid,,,62
+disease=Healthy control,never_infected,,,24

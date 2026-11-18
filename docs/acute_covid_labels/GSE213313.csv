@@ -1,0 +1,8 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+disease_state=COVID-19; time=T1,acute_covid,severity=Critical,severe_critical,19
+disease_state=COVID-19; time=T1,acute_covid,severity=Non-critical,mild_moderate,15
+disease_state=COVID-19; time=T2,acute_covid,severity=Critical,severe_critical,18
+disease_state=COVID-19; time=T2,acute_covid,severity=Non-critical,mild_moderate,11
+disease_state=COVID-19; time=T3,acute_covid,severity=Critical,severe_critical,13
+disease_state=COVID-19; time=T3,acute_covid,severity=Non-critical,mild_moderate,7
+disease_state=Healthy; time=T0,never_infected,severity=Healthy,,11

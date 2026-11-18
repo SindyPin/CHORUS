@@ -1,0 +1,7 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+Case_Control=NEGATIVE,never_infected,WHO_Severity_Peak=NEGATIVE; Fatal_Disease=False,,51
+Case_Control=POSITIVE,acute_covid,WHO_Severity_Peak=critical; Fatal_Disease=False,severe_critical,27
+Case_Control=POSITIVE,acute_covid,WHO_Severity_Peak=critical; Fatal_Disease=True,severe_critical,20
+Case_Control=POSITIVE,acute_covid,WHO_Severity_Peak=mild; Fatal_Disease=False,mild_moderate,73
+Case_Control=POSITIVE,acute_covid,WHO_Severity_Peak=moderate; Fatal_Disease=False,mild_moderate,62
+Case_Control=POSITIVE,acute_covid,WHO_Severity_Peak=severe; Fatal_Disease=False,,74

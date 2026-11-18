@@ -1,0 +1,7 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+group=Cases,acute_covid,NIH=Asymptomatic,mild_moderate,6
+group=Cases,acute_covid,NIH=Critical,severe_critical,56
+group=Cases,acute_covid,NIH=Mild,mild_moderate,21
+group=Cases,acute_covid,NIH=Moderate,mild_moderate,17
+group=Cases,acute_covid,NIH=Severe,,24
+group=Controls,never_infected,,,70

@@ -376,3 +376,62 @@ run to the named studies), which logs them in `data/proteomics/downloads.tsv`.
 | `data/quant/PRJNA1184005/ena_filereport.tsv` | 8e8c7669badc958c3c67c6a13eaa8590fb56835f9432142f9e581868010e8d24 |
 | `data/meta/PRJNA1184005_biosamples.csv` | be3e84ff2aa91cba1b81ec6f4664469a9d5673504e7a8a5ea8ae33ef2da387b7 |
 | `data/meta/PRJNA1184005_meta.csv` | f069be6dae52223bc99933197ce012cf3ba6ae56a17697058f5002dea3fc0059 |
+
+## Acute COVID cohorts (Part B of the acute COVID validation, 18 November 2026)
+
+Built by `scripts/acute_covid_sweep.py` (search, screen, fetch, build, verify, report; log `logs/acute_covid_sweep.log`).
+The rule and bars were committed first (results/README.md, "Acute COVID validation: rule and bars", commit 51a66f0).
+Decisions, verification and flags: `docs/acute_covid_cohorts.md`; every candidate: `docs/acute_covid_candidates.csv`;
+label mapping tables: `docs/acute_covid_labels/`; manifest (not committed, under data/): `data/meta/acute_covid_manifest.csv`.
+
+**Search** (cached responses under `data/acute_covid/cache/`): GEO E-utilities (expression by sequencing, arrays and protein
+series, 2020 onwards), BioProject, ArrayExpress (BioStudies API), PRIDE and ProteomeXchange (PROXI), Metabolomics Workbench,
+Zenodo, Mendeley Data (DataCite, prefix 10.17632) and Europe PMC (open access papers that deposit data; accessions taken from
+their full text). Three full texts returned server errors after three tries (PMC8801973, PMC10107240, PMC8566993).
+
+**Downloads.** Deposited matrices only; no raw reads were needed (every included cohort has a processed matrix). Zenodo
+(md5) and Mendeley Data (SHA-256) checksums were verified; GEO gives none. Size and SHA-256 of every file:
+
+| file | bytes | SHA-256 | repository checksum |
+|---|---|---|---|
+| `data/counts/GSE198449/raw/GSE198449_featureCounts.txt.gz` | 80849082 | 7706c5b91df50af02c75836e547b8d35a620a8a69c53f52b7af07e7fa5712a9b |  |
+| `data/counts/COMBAT2022_WB/raw/CBD-KEY-RNASEQ-WB.tar.gz` | 31439650 | ec34bd8b257392067641e5a4002a5d268e1e70c9f161151ba0f68e74b02eb486 | md5:d2b3a1f1a170eecb527c594149e39909 |
+| `data/counts/COMBAT2022_WB/raw/CBD-KEY-CLINVAR.tar.gz` | 39725 | 950636ec18430a6a360cb5e3886183512a1c1157066712f1516f4557b35bfab8 | md5:c5516db86341dcb1e74000e5a5d218a0 |
+| `data/counts/GSE161731/raw/GSE161731_counts.csv.gz` | 8347405 | 185e342ad8b476d31444a81524bcce55e9d2e3c23c66a59f103cc78152f891bc |  |
+| `data/counts/GSE161731/raw/GSE161731_counts_key.csv.gz` | 2443 | b43d4b253255deae6d83361c890f287b882eaebf8e858c06f12dda4631e029b8 |  |
+| `data/counts/GSE161731/raw/GSE161731_key.csv.gz` | 2398 | abe2b18841e28cdfda8f185bef139be6aaaf61260e29fb7aee36590362bed678 |  |
+| `data/counts/GSE152641/raw/GSE152641_Inflammatix_COVID19_counts_entrez.csv.gz` | 2363702 | e5a5498eebd164d3b41108be6fea1d1b9675ad250e3d73109f1c38030d31eb3b |  |
+| `data/counts/GSE300129/raw/GSE300129_series_matrix.txt.gz` | 11491822 | 14ae498b099aa161bb21e47c9cd0331a0d26a0e0a5b9be6098a71dfa2a45c06c |  |
+| `data/counts/GSE243219/raw/GSE243219_RAW.tar` | 9666560 | d9e89e7c27ac4e4e35636805339bcae7693a247f97c047059363e8636262649e |  |
+| `data/counts/GSE172114/raw/GSE172114_rsem_gene_count_matrix_TMM_69samples.csv.gz` | 2688370 | 0e299e1d576e100db4e47da37ab1bafeb923aa8ca6a788ea9221eb5369d91c00 |  |
+| `data/counts/GSE171110/raw/GSE171110_Data_RNAseq_raw_counts_geo.txt.gz` | 4645091 | f14c464b854d31e631dc96a0a76b0f6377f82782822bf4690dcb2e2ab4f17120 |  |
+| `data/counts/GSE213313/raw/GSE213313_series_matrix.txt.gz` | 12231578 | 3ba542a117f35341b2c07e895209064787e71d5387652e887422c4a5b544a2ad |  |
+| `data/counts/GSE152418/raw/GSE152418_p20047_Study1_RawCounts.txt.gz` | 1726020 | 7ef898d66607fa1e911370549dcb229a90d99857584018ab62b7bb8c3560481b |  |
+| `data/proteomics/Filbin2021_MGH/raw/Olink Proteomics.xlsx` | 9839547 | 2bc99110e86067647ef62e47b1c36e0006fc37f9029d8eb6cb7b377f45deb3e5 | sha256:2bc99110e86067647ef62e47b1c36e0006fc37f9029d8eb6cb7b377f45deb3e5 |
+| `data/proteomics/Filbin2021_MGH/raw/Clinical Metadata.xlsx` | 173045 | 345055012aec785288ec8023ab7333c587ce327b0fa39942cb0ef4eda0ce61fa | sha256:345055012aec785288ec8023ab7333c587ce327b0fa39942cb0ef4eda0ce61fa |
+| `data/proteomics/Gisby2021_plasma/raw/plasma_npx_level.csv` | 7994187 | e75e65ba7f493ab2f3a12cf046f72bb2180ea7b47dd9f2c98627bf5cff25d61d | md5:0c52ca0d1079ee4e83cebaf604afb01a |
+| `data/proteomics/Gisby2021_plasma/raw/plasma_sample_level.csv` | 41051 | 6bcd97aca48f833ee1c2ba179193fb9fe377f2e4a16bef5b42799dcdf2db0375 | md5:d63c2b75a520c86a85f3a060b7eaba35 |
+| `data/proteomics/Gisby2021_plasma/raw/README.pdf` | 4829289 | 1877b59b4f06705067165688ade618dd671859a2daec88ecb9a17bf79a241c2d | md5:4e28a6ac3915c464c6050ecb4a20f048 |
+| `data/proteomics/GSE207015/raw/GSE207015_series_matrix.txt.gz` | 7035271 | 0b5934acc5e94b57f4fc84698136ecbfc9557c1507e6ecf595997de00bd3496d |  |
+| `data/counts/GSE300129/raw/GPL34133_family.soft.gz` | 22294537 | 8b1e7a19bf5368168a8281a48404b3aa1dbf7ecdec64dbf89ed2b345db60aff5 |  |
+| `data/counts/GSE213313/raw/GPL21185_family.soft.gz` | 2594972276 | eaf7e0cd967fc7ecf1fb373311472a93778cb933c4cd05bc8a9909748c0b4576 |  |
+| `data/proteomics/Filbin2021_MGH/raw/Supplemental-Table-2-Olink-Assays-NPX-values_v2.xlsx` | 1863123 | 25cd29b49f6656899047f75f8af9519d769f640427eb87b1f6d3b94a87f5665a | sha256:25cd29b49f6656899047f75f8af9519d769f640427eb87b1f6d3b94a87f5665a |
+| `data/proteomics/GSE207015/raw/GPL32354_family.soft.gz` | 64954914 | 6204723541e7e846e4d4497f9aadd31af84a0f09a6da4e6aa9f4d7607ebcff4d |  |
+
+**Built matrices** (features in rows; RNA as Ensembl gene ids, proteins as UniProt accessions):
+
+| cohort | matrix | SHA-256 | meta SHA-256 |
+|---|---|---|---|
+| GSE198449 | `data/counts/GSE198449/GSE198449_matrix.csv.gz` | f45a151042c35e85c8de996df2ff17e809b04a60a495b7fa008cad5d5c379d85 | cef67a0e3e33817463bbed3d3c029cc3ee8564ecf9fa4261610d5d7d9a298cad |
+| COMBAT2022_WB | `data/counts/COMBAT2022_WB/COMBAT2022_WB_matrix.csv.gz` | 7849e4335acecb680761cc12b50f7cb3a15199231db2f4bfc80f5fb664d3934c | 13a78a224157168217873f949bc7582c4b267909bbbf539100bc93a7dd36f03b |
+| GSE161731 | `data/counts/GSE161731/GSE161731_matrix.csv.gz` | fe57a2334e836d41e36f4448401028a389ede400c061d9d00ae58cbd57f37f35 | bdc72f23660d8fe6daad587e9ba66dafc9cf358a43790e39e54881d19f89a606 |
+| GSE152641 | `data/counts/GSE152641/GSE152641_matrix.csv.gz` | b0bdb6b855fade8b636143920fffd77a980fa338ab3f439c9e0cdfa8b494b03a | 1f5c966acc4a3c6b5817c7aa08f40597746df749075ac50f0b31057a12ab77c5 |
+| GSE300129 | `data/counts/GSE300129/GSE300129_matrix.csv.gz` | d216d346af4ccb8cb38fa759ad859e2445c236b95c0dd3b8d7d7557620831a67 | 54bf05289c80a51b2e2e9d7adf37f3c21eee780b048395c11a27932bab72e0c1 |
+| GSE243219 | `data/counts/GSE243219/GSE243219_matrix.csv.gz` | 82d255f9c5a25fbf9fad40054d8e873a5de821b44c6bf937eecc789e22b3a53d | 0b5dea9fe2da6c8ea8d72c9b3d79a6b97aaeb84d69e553a8d0bf893ba5ac2388 |
+| GSE172114 | `data/counts/GSE172114/GSE172114_matrix.csv.gz` | a7dde9dfbbf65162fe466e9c7cd4d0cc78dc20d8068e55dd9e6def8244d395ff | 6c968dfd5a0d893cce72cd89b7d666bf322f12aea430c7abd743b653374d8288 |
+| GSE171110 | `data/counts/GSE171110/GSE171110_matrix.csv.gz` | 8b5d67922e28a1260d138732174720062048c3b24b170df79f640f535b70ab11 | 56eac6b4704746c6c94d8031032efedc3f2c369254872a584f8c753a3ceb0f1d |
+| GSE213313 | `data/counts/GSE213313/GSE213313_matrix.csv.gz` | ff7009c3d5bd2accaa25fd41091dd84841bf86fbb05b3b6c4196933427800c2a | d175b4602f4da5a8db7ce58ac70ef7e0212e459e98ddd8328a57720965f58304 |
+| GSE152418 | `data/counts/GSE152418/GSE152418_matrix.csv.gz` | 5e8054d16bc98cea761d409ed4e4a1ff5f482679d5676b07eb7b574baa948327 | d3964a77ee883b7d640fccdfa986d5ff2b5a1042a01d3f393c789a8ecec6d771 |
+| Filbin2021_MGH | `data/proteomics/Filbin2021_MGH/Filbin2021_MGH_matrix.csv` | b26be8fceb32eec3870450e65ece37847b36853947999213586ecaa8a889eec9 | dc37a5dab64f4aae7246644154ed8155172f9c967d472ee78fe5b36a7e99f38e |
+| Gisby2021_plasma | `data/proteomics/Gisby2021_plasma/Gisby2021_plasma_matrix.csv` | 73447abdb9300d83587e137dde06d0e57aed4d9e89a6e7de2cabe02da097e4f1 | 07847546cacf9778d80208d7cb6a20328114994a9f6888ca9e4a0dd0efdecd3b |
+| GSE207015 | `data/proteomics/GSE207015/GSE207015_matrix.csv` | 012baa4351f8aa7890247505d28a61943be5e2c7dc488d7e4c014020dfc86905 | 24524081a5ee9cf123f778180d89f8bd680b7e67a4adbfacf0a50d94a2e6b2fa |

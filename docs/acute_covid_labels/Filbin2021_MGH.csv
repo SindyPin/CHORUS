@@ -1,0 +1,11 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+COVID=0,other_disease,Acuity max=1,,7
+COVID=0,other_disease,Acuity max=2,,16
+COVID=0,other_disease,Acuity max=3,,35
+COVID=0,other_disease,Acuity max=4,,11
+COVID=0,other_disease,Acuity max=5,,8
+COVID=1,acute_covid,Acuity max=1,severe_critical,42
+COVID=1,acute_covid,Acuity max=2,severe_critical,67
+COVID=1,acute_covid,Acuity max=3,,133
+COVID=1,acute_covid,Acuity max=4,mild_moderate,41
+COVID=1,acute_covid,Acuity max=5,mild_moderate,23

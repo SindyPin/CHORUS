@@ -1,0 +1,6 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+disease_state=COVID-19,acute_covid,severity=ICU,severe_critical,4
+disease_state=COVID-19,acute_covid,severity=Moderate,mild_moderate,4
+disease_state=COVID-19,acute_covid,severity=Severe,,8
+disease_state=Convalescent,excluded,severity=Convalescent,,1
+disease_state=Healthy,never_infected,severity=Healthy,,17

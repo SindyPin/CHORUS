@@ -1,0 +1,3 @@
+label_original,infection_class,severity_original,severity_class,n_samples
+disease=COVID-19,acute_covid,disease_state=Critical,severe_critical,46
+disease=COVID-19,acute_covid,disease_state=Non-critical,mild_moderate,23

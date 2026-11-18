@@ -1,0 +1,21 @@
+# Acute COVID validation (Part B, 18 November 2026): RNA, severity contrast. Built by scripts/acute_covid_sweep.py; cohorts
+# verified or verified with flags (docs/acute_covid_cohorts.md). Every cohort is enabled: false; nothing has been run on them.
+# One sample per participant: the meta column one_sample_per_participant marks the sample to keep (the first acute
+# sample, otherwise the first sample). The classes are in infection_class and severity_class.
+layer: bulk_rna
+cohorts:
+  - {study_id: COMBAT2022_WB, matrix: data/counts/COMBAT2022_WB/COMBAT2022_WB_matrix.csv.gz, meta: data/meta/COMBAT2022_WB_meta.csv, is_counts: true, provenance: author_matrix, accession: "zenodo.6120249", enabled: false}
+    # verified with flags; flags: a integrity; f outliers
+  - {study_id: GSE172114, matrix: data/counts/GSE172114/GSE172114_matrix.csv.gz, meta: data/meta/GSE172114_meta.csv, is_counts: false, provenance: author_matrix, accession: "GSE172114", enabled: false}
+    # verified with flags; flags: b counts; f outliers
+  - {study_id: GSE213313, matrix: data/counts/GSE213313/GSE213313_matrix.csv.gz, meta: data/meta/GSE213313_meta.csv, is_counts: false, provenance: author_matrix, accession: "GSE213313", enabled: false}
+    # verified with flags; flags: b counts; f outliers
+preprocessing:
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  # the severity label is the meta column severity_class; the chorus loader reads lc_status only, so Part C maps it
+  label_column: severity_class
+  positive: severe_critical
+  negative: mild_moderate
+out: results/acute_covid_rna_severity

@@ -1,0 +1,31 @@
+# Acute COVID validation (Part B, 18 November 2026): RNA, infection contrast. Built by scripts/acute_covid_sweep.py; cohorts
+# verified or verified with flags (docs/acute_covid_cohorts.md). Every cohort is enabled: false; nothing has been run on them.
+# One sample per participant: the meta column one_sample_per_participant marks the sample to keep (the first acute
+# sample, otherwise the first sample). The classes are in infection_class and severity_class.
+layer: bulk_rna
+cohorts:
+  - {study_id: GSE198449, matrix: data/counts/GSE198449/GSE198449_matrix.csv.gz, meta: data/meta/GSE198449_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE198449", enabled: false}
+    # verified with flags; flags: b counts; c value type; f outliers
+  - {study_id: COMBAT2022_WB, matrix: data/counts/COMBAT2022_WB/COMBAT2022_WB_matrix.csv.gz, meta: data/meta/COMBAT2022_WB_meta.csv, is_counts: true, provenance: author_matrix, accession: "zenodo.6120249", enabled: false}
+    # verified with flags; flags: a integrity; f outliers
+  - {study_id: GSE161731, matrix: data/counts/GSE161731/GSE161731_matrix.csv.gz, meta: data/meta/GSE161731_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE161731", enabled: false}
+    # verified with flags; flags: a integrity; e duplicates (within); f outliers
+  - {study_id: GSE152641, matrix: data/counts/GSE152641/GSE152641_matrix.csv.gz, meta: data/meta/GSE152641_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE152641", enabled: false}
+    # verified with flags; flags: f outliers
+  - {study_id: GSE243219, matrix: data/counts/GSE243219/GSE243219_matrix.csv.gz, meta: data/meta/GSE243219_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE243219", enabled: false}
+    # verified with flags; flags: f outliers
+  - {study_id: GSE171110, matrix: data/counts/GSE171110/GSE171110_matrix.csv.gz, meta: data/meta/GSE171110_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE171110", enabled: false}
+    # verified with flags; flags: b counts; f outliers
+  - {study_id: GSE213313, matrix: data/counts/GSE213313/GSE213313_matrix.csv.gz, meta: data/meta/GSE213313_meta.csv, is_counts: false, provenance: author_matrix, accession: "GSE213313", enabled: false}
+    # verified with flags; flags: b counts; f outliers
+  - {study_id: GSE152418, matrix: data/counts/GSE152418/GSE152418_matrix.csv.gz, meta: data/meta/GSE152418_meta.csv, is_counts: true, provenance: author_matrix, accession: "GSE152418", enabled: false}
+    # verified with flags; flags: b counts; f outliers
+preprocessing:
+  relabel_acute: true            # sample_phase acute -> lc_status acute
+  keep_lc_status: [acute, never_infected]
+  deduplicate: true
+  features: per_cohort
+benchmark:
+  positive: acute
+  negative: never_infected
+out: results/acute_covid_rna_infection
