@@ -13,6 +13,17 @@ Buggert2025,hospitalised,severity,False,data/meta/Buggert2025_meta.csv,102,102,1
 Buggert2025,borg_cr10,score,True,data/meta/Buggert2025_meta.csv,95,95,197
 Buggert2025,dyspnoea12,score,True,data/meta/Buggert2025_meta.csv,82,82,197
 Buggert2025,nijmegen,score,True,data/meta/Buggert2025_meta.csv,78,78,197
+Buggert2025_UK,age,demographic,False,data/meta/Buggert2025_meta.csv,102,102,102
+Buggert2025_UK,sex,demographic,False,data/meta/Buggert2025_meta.csv,102,102,102
+Buggert2025_UK,bmi,demographic,False,data/meta/Buggert2025_meta.csv,101,101,102
+Buggert2025_UK,acute_severity,severity,False,data/meta/Buggert2025_meta.csv,102,102,102
+Buggert2025_UK,hospitalised,severity,False,data/meta/Buggert2025_meta.csv,102,102,102
+Buggert2025_UK,dyspnoea12,score,True,data/meta/Buggert2025_meta.csv,82,82,102
+Buggert2025_UK,nijmegen,score,True,data/meta/Buggert2025_meta.csv,78,78,102
+Buggert2025_SE,age,demographic,False,data/meta/Buggert2025_meta.csv,95,95,95
+Buggert2025_SE,sex,demographic,False,data/meta/Buggert2025_meta.csv,95,95,95
+Buggert2025_SE,bmi,demographic,False,data/meta/Buggert2025_meta.csv,94,94,95
+Buggert2025_SE,borg_cr10,score,True,data/meta/Buggert2025_meta.csv,95,95,95
 COMBAT2022_WB,sex,demographic,False,data/meta/COMBAT2022_WB_meta.csv,123,0,0
 COMBAT2022_WB,age_band,demographic,False,data/meta/COMBAT2022_WB_meta.csv,123,0,0
 COMBAT2022_WB,acute_severity,severity,False,data/meta/COMBAT2022_WB_meta.csv,23,0,0

@@ -75,16 +75,26 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
 3. **Eligibility per task:**
    - 3_Detection: post-acute LC against recovered.
    - 2_EarlyDetection: acute samples with the later outcome.
-   - 1_Subtyping: post-acute LC participants. The anchor is ranked by LC count, and features come from LC against
-     recovered. If no cohort of the layer has 10 recovered, the anchor is ranked on LC participants alone and the
-     200 most variable features are used.
+   - 1_Subtyping: post-acute LC participants.
+     - The anchor is ranked by LC count, and features come from LC against recovered.
+     - Since Amendment 1 (item 2), the anchor and partner also need at least 10 recovered. Cohorts with cases only
+       are listed, not used.
+     - An anchor with fewer than 50 LC is marked "too small to interpret".
 4. **Anchor and partner.**
    - **Layer.** Layers are grouped as transcriptomics, proteomics (Olink, SomaScan and MS together), metabolomics and
      methylation.
-   - **Anchor.** The largest cohort of the layer with at least 10 participants per class. GSE270045, GSE228320 and
-     CORSIP2026 are excluded.
+   - **Anchor.** The largest cohort of the layer with at least 10 participants per class. Excluded:
+     - GSE270045, GSE228320 and CORSIP2026;
+     - since Amendment 1 (item 1), the full Buggert2025. It is split by `collection_country` into Buggert2025_UK
+       (51 / 51) and Buggert2025_SE (95 LC, cases only), which share the Buggert2025 matrix.
    - **Partner.** The next largest cohort under the same rule. **Interpretation:** the partner must also have 10 per
      class.
+   - **Anchor sensitivity (Amendment 1, item 3).** The three largest eligible cohorts (two if only two are eligible) are
+     listed in `sensitivity_anchors` when their sizes span fewer than five participants. **Interpretation:** "differ by
+     fewer than five" is read as the range of the three sizes.
+   - **Different platforms or scales (Amendment 1, item 5).** `different_platform_or_scale` is true when the anchor's
+     and partner's platform descriptions differ. It is true for every pair here, so B_naive is run and reported but
+     only B_scaled is interpretable.
    - **Shared features.** Feature keys present in both matrices as the Round1 loader reads them:
      - transcriptomics: Ensembl genes, before any expression filter;
      - proteomics: UniProt keys;
@@ -92,15 +102,20 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
 5. **Vertical cases.** Two kinds are listed:
    - Two omics layers on the same participants: Cervia2024 and Su2022, counted from the shared `subject_id`. The
      others are listed with the reason they are not usable.
-   - Omics plus clinical variables, for every cohort with recorded variables. Variables that define the label
-     (symptom lists, symptom counts and symptom scores) and timing variables are left out of the clinical layer.
+   - Omics plus clinical variables, for every cohort with recorded variables.
+     - **Rule (Amendment 1, item 4).** `clinical_layer` is true when at least three variables are recorded for at
+       least 80 percent of the task's participants.
+     - **Excluded variables:** those that define the label (symptom lists, counts and scores), timing variables and
+       treatment variables.
+     - **Early detection:** only variables known at the acute stage count. These are demographics, comorbidity, acute
+       severity (peak severity of the acute illness included), infection wave and vaccination before infection.
 
 ## Output
 
 | file | content |
 |---|---|
-| `output/labels_audit.csv` | one row per cohort (50): layer, tissue, platform, paper, LC definition, label source, comparison group, time since infection, sample timing, participants per class and phase, clinical variables, label flag, doubts, which tasks it can serve |
-| `output/clinical_variables.csv` | one row per cohort and variable (230 rows, 38 cohorts): kind, whether it defines the label, source file, participants recorded (all and labelled) |
+| `output/labels_audit.csv` | one row per cohort (52, with Buggert2025_UK and Buggert2025_SE): layer, tissue, platform, paper, LC definition, label source, comparison group, time since infection, sample timing, participants per class and phase, clinical variables, label flag, doubts, which tasks it can serve |
+| `output/clinical_variables.csv` | one row per cohort and variable (241 rows, 40 cohorts): kind, whether it defines the label, source file, participants recorded (all and labelled) |
 | `output/anchors_and_partners.csv` | horizontal rows: per task and layer, the anchor, partner, class counts, feature counts, shared features and every candidate with its counts. Vertical rows: two-layer cases and omics plus clinical cases, with participants per class |
 | `output/clinical_links.csv` | each open clinical table: URL, licence, SHA-256, rows, rows linked, label agreement |
 | `output/sample_labels.csv` | per sample: study, subject, sample, label used in Round2, phase, flag. Not committed (`.gitignore`), since it lists every sample id |
@@ -108,28 +123,34 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
 
 ## Result
 
-### Horizontal
+### Horizontal (Amendment 1)
 
-Participants are LC / recovered; "shared" is the number of shared features.
+Participants are LC / recovered; "shared" is the number of shared features. Every pair is measured on different
+platforms or scales, so only B_scaled is interpretable.
 
-| task | layer | anchor | partner | shared |
-|---|---|---|---|---|
-| 3_Detection | transcriptomics | PRJNA1149196_SA 28 / 11 | GSE224615 23 / 13 | 78,277 genes (before filtering) |
-| 3_Detection | proteomics | Buggert2025 146 / 51 | Fineschi2026 92 / 73 | 358 |
-| 3_Detection | metabolomics | Su2022_metabolomics 68 / 45 | Martinez2024 40 / 40 | 158 |
-| 3_Detection | methylation | none (GSE197152 has 15 LC and no recovered) | | |
-| 2_EarlyDetection | transcriptomics | GSE215865 302 / 122 | none | |
-| 2_EarlyDetection | proteomics | Su2022 75 / 50 | Cervia2024_SomaScan 40 / 73 | 386 |
-| 2_EarlyDetection | metabolomics | Su2022_metabolomics 74 / 50 | none (Lopez2023 has 18 / 4) | |
-| 1_Subtyping | transcriptomics | PRJNA1149196_SA (28 LC) | GSE224615 (23 LC) | 78,277 |
-| 1_Subtyping | proteomics | Buggert2025 (146 LC) | Woodruff2023 (93 LC) | 2,903 |
-| 1_Subtyping | metabolomics | Su2022_metabolomics (68 LC) | Martinez2024 (40 LC) | 158 |
-| 1_Subtyping | methylation | GSE197152 (15 LC, no recovered: 200 most variable features) | none | |
+| task | layer | anchor | partner | shared | note |
+|---|---|---|---|---|---|
+| 3_Detection | transcriptomics | PRJNA1149196_SA 28 / 11 | GSE224615 23 / 13 | 78,277 genes (before filtering) | sensitivity anchors: PRJNA1149196_SA, GSE224615 and GSE226260_WB (39, 36 and 35 participants) |
+| 3_Detection | proteomics | Fineschi2026 92 / 73 | Su2022 75 / 50 | 186 | Buggert2025 flagged; Buggert2025_UK 51 / 51 ranks below |
+| 3_Detection | metabolomics | Su2022_metabolomics 68 / 45 | Martinez2024 40 / 40 | 158 | |
+| 3_Detection | methylation | none | | | GSE197152 15 LC, cases only |
+| 2_EarlyDetection | transcriptomics | GSE215865 302 / 122 | none | | |
+| 2_EarlyDetection | proteomics | Su2022 75 / 50 | Cervia2024_SomaScan 40 / 73 | 386 | |
+| 2_EarlyDetection | metabolomics | Su2022_metabolomics 74 / 50 | none | | Lopez2023 18 / 4 |
+| 1_Subtyping | transcriptomics | PRJNA1149196_SA (28 LC) | GSE224615 (23 LC) | 78,277 | too small to interpret (fewer than 50 LC) |
+| 1_Subtyping | proteomics | Woodruff2023 (93 LC, 27 recovered) | Fineschi2026 (92 LC) | 358 | Buggert2025_SE (95 LC, cases only) listed, not used |
+| 1_Subtyping | metabolomics | Su2022_metabolomics (68 LC) | Martinez2024 (40 LC) | 158 | |
+| 1_Subtyping | methylation | none | | | GSE197152 cases only |
 
-Two choices were close:
-- **RNA detection partner.** GSE226260_WB would have been the partner with 17 / 20 (37 participants), against 36 for
-  GSE224615. Two of its participants become unknown (below), which leaves 16 / 19 (35), so GSE224615 is the partner.
-- **Proteomics subtyping partner.** Woodruff2023 has 93 LC and Fineschi2026 has 92.
+Changes from the table before Amendment 1:
+- **Proteomics detection:** Buggert2025 to Fineschi2026 as anchor, and Fineschi2026 to Su2022 as partner.
+- **Proteomics subtyping:** Buggert2025 to Woodruff2023 as anchor, and Woodruff2023 to Fineschi2026 as partner.
+- **Methylation subtyping:** now has no anchor.
+
+Two choices are close:
+- **Proteomics subtyping:** Woodruff2023 (93 LC) and Fineschi2026 (92) differ by one, but the third, Su2022 (75), is
+  further away, so item 3 does not apply under the range reading.
+- **RNA detection:** GSE226260_WB would have had 37 participants (17 / 20) before BI4036 and BI4002 became unknown.
 
 ### Vertical
 
@@ -137,11 +158,15 @@ Two choices were close:
 - **Su2022:** Olink plus metabolomics.
   - Post-acute: 68 / 45.
   - Acute with outcome: 74 / 50.
-- **Omics plus clinical:** 24 rows, of which 18 reach 10 per class. The largest:
-  - GSE215865: sex only, 302 / 122 acute.
-  - Buggert2025: age, sex, BMI and severity, 146 / 51.
-  - Su2022: age, sex, BMI, WHO ordinal scale and encounter location, 75 / 50.
-  - Cervia2024: age, sex, BMI, severity, comorbidity and vaccination, 40 / 73.
+- **Omics plus clinical:** 26 rows. 17 meet the clinical layer rule, and 14 of those also have 10 per class:
+  - 3_Detection: Bansal2025, Buggert2025 (flagged), Buggert2025_UK, Cervia2024_MS, Cervia2024_SomaScan,
+    GSE224615, GSE226260_WB, GSE228320 (flagged), Lopez2023, Su2022 and Su2022_metabolomics.
+  - 2_EarlyDetection: Cervia2024_SomaScan, Su2022 and Su2022_metabolomics.
+
+  The variables recorded for at least 80 percent are in `clinical_variables_80pct`.
+  - **Fails the rule:** GSE215865 (sex only), Woodruff2023 (hospitalisation only; sex missing for 91 of 93 PASC),
+    Chowdhury2026 (sex only), Fineschi2026 and PRJNA1149196_SA.
+  - **Lopez2023:** its sex and comorbidity coding is not documented (below).
 - **Listed, not usable now:**
   - Fineschi2026 / Fineschi2025: 110 shared people, but the PBMC RNA matrix is open and not downloaded.
   - CORSIP2026: flagged, and its metabolomics is not on disk and not keyed to the PX ids.
@@ -157,6 +182,8 @@ Each doubt is also in the `doubts` column of `labels_audit.csv`.
 **Flagged cohorts (listed, not used as anchor or partner):**
 - **GSE270045:** labels confounded with collection; GEO has 19 LC against 18 in the paper.
 - **GSE228320:** a non standard case definition (DLCO after ARDS).
+- **Buggert2025 (full cohort, Amendment 1):** country coincides with LC status. Buggert2025_UK and Buggert2025_SE are
+  used instead.
 - **CORSIP2026:** a gene panel only.
 
 **Changed in Round2:**
@@ -177,8 +204,8 @@ Each doubt is also in the `doubts` column of `labels_audit.csv`.
 - **PRJNA1184005:** the labels come from the author, and the control definition is pending confirmation.
 
 **Comparison groups that mix or overlap:**
-- **Buggert2025:** the 95 Swedish participants are all LC, and the Swedish controls were not profiled. Country
-  therefore overlaps with LC status in the proteomics anchor.
+- **Buggert2025:** the 95 Swedish participants are all LC, and the Swedish controls were not profiled. Since
+  Amendment 1 the cohort is split by country; only Buggert2025_UK has both classes.
 - **Cervia2024:** "recovered" mixes:
   - patients recovered within a month;
   - "recovered Long Covid";

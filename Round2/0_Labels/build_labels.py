@@ -42,7 +42,21 @@ LABEL_FLAGS = {
     "GSE270045": "labels confounded with collection",
     "GSE228320": "non standard case definition (pulmonary sequelae after ARDS)",
     "CORSIP2026": "gene panel only (NanoString, 770 genes)",
+    "Buggert2025": "country coincides with LC status (Amendment 1, item 1): split into Buggert2025_UK and Buggert2025_SE",
 }
+# Amendment 1, item 1: cohorts split by a metadata column into separately used cohorts (same matrix)
+SPLITS = {"Buggert2025": ("collection_country", {"United Kingdom": "Buggert2025_UK", "Sweden": "Buggert2025_SE"})}
+PARENT = {child: parent for parent, (_, kids) in SPLITS.items() for child in kids.values()}
+MIN_LC_SUBTYPING = 50  # Amendment 1, item 2: below this the subtyping anchor is "too small to interpret"
+# Amendment 1, item 4: variables known at the acute stage (early detection clinical layer)
+ACUTE_KINDS = {"demographic", "comorbidity", "severity", "infection"}
+ACUTE_VARIABLES = {"vaccinated_before_infection", "vaccine_product"}
+CLINICAL_LAYER_EXCLUDED_KINDS = {"timing", "treatment"}
+# platform of the older metadata files that leave it empty (Round1/docs/data_inventory.csv)
+PLATFORM_FALLBACK = {"GSE215865": "Illumina NovaSeq 6000 RNA-seq", "GSE224615": "Illumina HiSeq 4000 RNA-seq (salmon re-quantified)",
+                     "GSE226260_WB": "Illumina NovaSeq 6000 / NovaSeq X Plus RNA-seq", "GSE226260_PBMC": "Illumina NovaSeq 6000 / NovaSeq X Plus RNA-seq",
+                     "GSE251849": "Illumina NovaSeq 6000 RNA-seq", "GSE270045": "Illumina NovaSeq X Plus RNA-seq"}
+REC: dict = {}  # (study, variable) -> participants with the variable recorded
 LAYER = {  # broad layer used for "same layer" (anchor and partner)
     "bulk_rna": "transcriptomics", "olink": "proteomics", "somascan": "proteomics", "ms_proteomics": "proteomics",
     "metabolomics": "metabolomics", "methylation": "methylation",
@@ -140,6 +154,10 @@ cur("Woodruff2023", "Woodruff 2023 Nat Commun, PMID 37452024", "Emory PASC clini
 cur("Cervia2024_SomaScan", "Cervia-Hasler 2024 Science", "one or more persisting COVID-19 related symptoms at 6 months, smell or taste only excluded (PACS_6M_woDys)",
     "deposited PACS_6M_woDys", "PACS_6M_woDys = 0: recovered within a month, 'recovered Long Covid' and smell or taste only, mixed",
     "acute samples and 6 months after infection (per sample days)", R1 + "proteomics_cohorts.md", "the recovered group mixes three groups the deposit cannot separate")
+C["Buggert2025_UK"] = dict(C["Buggert2025"], lc_definition="NICE NG188: symptoms at least 12 weeks after diagnosis, one persistent symptom sufficient",
+                           comparison_group="healthy convalescent individuals", doubts="Olink subset selected 'data-driven' (51 of 70 LC, 51 of 70 controls)")
+C["Buggert2025_SE"] = dict(C["Buggert2025"], lc_definition="no case definition given (study_specific)", comparison_group="none: the 30 Swedish controls were not profiled",
+                           doubts="LC cases only; 2 plate samples without metadata are unknown")
 C["Cervia2024_MS"] = dict(C["Cervia2024_SomaScan"], time_since_infection="6 months after infection (per sample days)")
 cur("Su2022", "Su 2022 Cell (INCOV)", "at least one PASC symptom at T3 by interview and chart review (study_specific)", "authors' PASC groups (Mendeley clinical tables)",
     "no PASC at T3", "T1 diagnosis, T2 about a week later, T3 about 2 to 3 months after onset", R1 + "proteomics_cohorts.md",
@@ -275,6 +293,7 @@ def clinical_links(parts: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
                           label_agrees=agree, label_disagrees=disagree, linked_table=str(out.relative_to(CODE)), note=note))
         for v, (col, kind, defines) in variables.items():
             okv = linked[col].notna() & ~linked[col].astype(str).str.strip().isin(["", "nan", "NA"])
+            REC[(cohort, v)] = set(linked.loc[okv, "subject_id"].astype(str))
             var_rows.append(dict(study_id=cohort, variable=v, kind=kind, defines_label=defines, source=path,
                                  n_participants_recorded=int(linked.loc[okv, "subject_id"].nunique()),
                                  n_labelled_participants_recorded=int(linked.loc[okv & linked["subject_id"].isin(labelled), "subject_id"].nunique()),
@@ -399,7 +418,7 @@ def features(study: str, entries: dict, layer: str) -> set:
     metabolites as shared identifiers); before any expression filter."""
     from chorus.io import Cohort
 
-    f, c = entries[study]
+    f, c = entries[PARENT.get(study, study)]
     INPUTS[str(Path(c["matrix"]))] = CODE / c["matrix"]
     co = Cohort.from_files(c["study_id"], layer, str(CODE / c["matrix"]), str(CODE / c["meta"]),
                            features_in_rows=c.get("features_in_rows", True), is_counts=c.get("is_counts", False),
@@ -409,11 +428,17 @@ def features(study: str, entries: dict, layer: str) -> set:
 
 def audit() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     rows, clin, parts = [], [], {}
+    items = []
     for f in sorted(META.glob("*_meta.csv")):
         study = f.name[:-9]
         if study not in C:
             continue
         m = read(f)
+        items.append((study, f, m))
+        if study in SPLITS:
+            col, kids = SPLITS[study]
+            items += [(kid, f, m[m[col].astype(str) == val].reset_index(drop=True)) for val, kid in kids.items()]
+    for study, f, m in items:
         for subj in UNKNOWN_IN_ROUND2.get(study, {}):
             m.loc[m["subject_id"].astype(str) == subj, "lc_status"] = "unknown"
         ph = phase_of(study, m)
@@ -431,6 +456,7 @@ def audit() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
                 ok = m[v].notna() & ~m[v].astype(str).str.strip().isin(["", "unknown", "nan"])
                 n_all = m.loc[ok, "subject_id"].nunique()
                 n_lab = m.loc[ok & m["subject_id"].astype(str).isin(lab_ids), "subject_id"].nunique()
+                REC[(study, v)] = set(m.loc[ok, "subject_id"].astype(str))
                 clin.append(dict(study_id=study, variable=v, kind=kind, defines_label=v in DEFINES_LABEL,
                                  source=f"data/meta/{f.name}", n_participants_recorded=n_all,
                                  n_labelled_participants_recorded=n_lab, n_labelled_participants=len(lab_ids)))
@@ -438,7 +464,7 @@ def audit() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
         layer_raw = str(m["omics_layer"].dropna().iloc[0])
         rows.append(dict(study_id=study, layer=LAYER.get(layer_raw, layer_raw), layer_detail=layer_raw,
                          tissue="; ".join(sorted(m["sample_matrix"].dropna().astype(str).unique())),
-                         platform="; ".join(sorted(m["platform"].dropna().astype(str).unique()))[:300] if "platform" in m else "",
+                         platform=("; ".join(sorted(m["platform"].dropna().astype(str).unique()))[:300] if "platform" in m else "") or PLATFORM_FALLBACK.get(study, ""),
                          **{k: C[study][k] for k in ("paper", "lc_definition", "label_source", "comparison_group", "time_since_infection")},
                          sample_timing="; ".join(f"{k} {v}" for k, v in ph.value_counts().items()),
                          n_LC_post_acute=len(P["LC_post"]), n_recovered_post_acute=len(P["REC_post"]),
@@ -470,40 +496,59 @@ TASKS = {  # task: (class 1 count column, class 0 count column)
 
 
 def anchors(A: pd.DataFrame, entries: dict) -> pd.DataFrame:
+    """Horizontal anchor and partner per task and layer (PROTOCOL.md and Amendment 1, items 1 to 3 and 5)."""
     rows = []
     feats = {}
+    plat = A.set_index("study_id")["platform"].fillna("")
     for task, (c1, c0) in TASKS.items():
         for layer, d in A.groupby("layer", sort=True):
             d = d.assign(size=d[c1] if task == "1_Subtyping" else d[c1] + d[c0])
+            # anchor and partner need 10 per class in every task (subtyping included: Amendment 1, item 2)
             ok = d[(d[c1] >= MIN_PER_CLASS) & (d[c0] >= MIN_PER_CLASS) & (d["label_flag"] == "")].sort_values(["size", "study_id"], ascending=[False, True])
-            note = ""
-            if task == "1_Subtyping" and ok.empty:  # no recovered group: LC participants only, 200 most variable features
-                ok = d[(d[c1] >= MIN_PER_CLASS) & (d["label_flag"] == "")].sort_values(["size", "study_id"], ascending=[False, True])
-                note = "no cohort with 10 recovered: anchor chosen on LC participants; features = 200 most variable" if len(ok) else ""
-            listed = d[(d[c1] > 0) | (d[c0] > 0)].sort_values("size", ascending=False)
+            listed = d[(d[c1] > 0) | (d[c0] > 0)].sort_values(["size", "study_id"], ascending=[False, True])
             if listed.empty:
                 continue
             anchor = ok["study_id"].iloc[0] if len(ok) else ""
             partner = ok["study_id"].iloc[1] if len(ok) > 1 else ""
-            shared = np.nan
-            if anchor and partner:
-                for s in (anchor, partner):
-                    if s not in feats and s in entries:
-                        feats[s] = features(s, entries, A.set_index("study_id").at[s, "layer_detail"])
-                if anchor in feats and partner in feats:
-                    shared = len(feats[anchor] & feats[partner])
+            # Amendment 1, item 3: the three largest eligible cohorts (two when only two) within fewer than 5 participants
+            top = ok.head(3)
+            sens = list(top["study_id"]) if len(top) > 1 and top["size"].max() - top["size"].min() < 5 else []
+            for s in [x for x in (anchor, partner, *sens) if x]:
+                if s not in feats and PARENT.get(s, s) in entries:
+                    feats[s] = features(s, entries, A.set_index("study_id").at[s, "layer_detail"])
+            shared = len(feats[anchor] & feats[partner]) if anchor in feats and partner in feats else np.nan
+            diff = bool(anchor and partner and plat[anchor] != plat[partner])
+
             def counts(s):
                 r = d.set_index("study_id").loc[s]
                 return f"{int(r[c1])} / {int(r[c0])}"
+
+            def why(r):
+                if r.label_flag:
+                    return " (flagged)"
+                if r[c0] == 0:
+                    return " (cases only)"
+                return "" if (r[c1] >= MIN_PER_CLASS and r[c0] >= MIN_PER_CLASS) else " (<10 per class)"
+
+            notes = []
+            if not anchor:
+                notes.append("no anchor: no unflagged cohort of this layer has 10 per class")
+            elif not partner:
+                notes.append("no partner: only one unflagged cohort of this layer has 10 per class")
+            if task == "1_Subtyping" and anchor and d.set_index("study_id").at[anchor, c1] < MIN_LC_SUBTYPING:
+                notes.append(f"too small to interpret (fewer than {MIN_LC_SUBTYPING} LC)")
+            if diff:
+                notes.append("different platforms or scales: B_naive run and reported, only B_scaled interpretable")
             rows.append(dict(kind="horizontal", task=task, layer=layer, anchor=anchor, anchor_LC_vs_recovered=counts(anchor) if anchor else "",
                              anchor_n_features=len(feats.get(anchor, ())) or np.nan, partner=partner,
                              partner_LC_vs_recovered=counts(partner) if partner else "", partner_n_features=len(feats.get(partner, ())) or np.nan,
                              n_shared_features=shared,
-                             candidates="; ".join(f"{r.study_id} {int(r[c1])}/{int(r[c0])}" + (" (flagged)" if r.label_flag else "")
-                                                  + ("" if (r[c1] >= MIN_PER_CLASS and r[c0] >= MIN_PER_CLASS) else " (<10 per class)")
-                                                  for _, r in listed.iterrows()),
-                             note=note or ("no partner: only one cohort of this layer has 10 per class" if anchor and not partner else
-                                           ("no anchor: no cohort of this layer has 10 per class" if not anchor else ""))))
+                             anchor_platform=plat.get(anchor, "") if anchor else "", partner_platform=plat.get(partner, "") if partner else "",
+                             different_platform_or_scale=diff if anchor and partner else np.nan,
+                             sensitivity_anchors="; ".join(f"{x} ({counts(x)})" for x in sens),
+                             too_small_to_interpret=bool(task == "1_Subtyping" and anchor and d.set_index("study_id").at[anchor, c1] < MIN_LC_SUBTYPING),
+                             candidates="; ".join(f"{r.study_id} {int(r[c1])}/{int(r[c0])}" + why(r) for _, r in listed.iterrows()),
+                             note="; ".join(notes)))
     return pd.DataFrame(rows), feats
 
 
@@ -530,20 +575,32 @@ def vertical(parts: dict, A: pd.DataFrame, clin: pd.DataFrame) -> pd.DataFrame:
         ("GSE226260", "whole blood", "PBMC", "different id systems: people who gave both cannot be linked"),
         ("Kovarik2023", "plasma proteomics", "eicosanoids, Biocrates, triglycerides", "supplement column labels do not link the tables per sample (not built)")):
         rows.append(dict(kind="vertical", task="", cohort=cohort, layer_1=l1, layer_2=l2, link="", status=status))
-    # clinical variables as a layer (non-label variables on labelled participants)
+    # clinical variables as a layer (Amendment 1, item 4): at least 3 variables recorded for at least 80 percent of the
+    # task's participants, none defining the label, and for early detection only variables known at the acute stage
     for study, d in clin.groupby("study_id"):
-        d = d[~d["defines_label"] & (d["n_labelled_participants_recorded"] > 0) & (d["kind"] != "timing")]
-        if d.empty:
-            continue
         a = A.set_index("study_id").loc[study]
-        for task, (c1, c0) in (("3_Detection", ("n_LC_post_acute", "n_recovered_post_acute")),
-                               ("2_EarlyDetection", ("n_LC_outcome_acute", "n_recovered_outcome_acute"))):
-            if a[c1] and a[c0]:
-                rows.append(dict(kind="vertical", task=task, cohort=study, layer_1=f"{study} ({a['layer']})", layer_2="clinical",
-                                 link="same participants (metadata)", participants_both_LC=int(a[c1]), participants_both_recovered=int(a[c0]),
-                                 meets_10_per_class=bool(a[c1] >= MIN_PER_CLASS and a[c0] >= MIN_PER_CLASS),
-                                 clinical_variables="; ".join(f"{r.variable} ({r.n_labelled_participants_recorded}/{r.n_labelled_participants})" for r in d.itertuples()),
-                                 status="on disk; variables that define the label (symptoms) excluded"))
+        if study not in parts:
+            continue
+        P = parts[study][2]
+        for task, keys in (("3_Detection", ("LC_post", "REC_post")), ("2_EarlyDetection", ("LC_acute", "REC_acute"))):
+            people = P[keys[0]] | P[keys[1]]
+            if not (P[keys[0]] and P[keys[1]]):
+                continue
+            dd = d[~d["defines_label"] & ~d["kind"].isin(CLINICAL_LAYER_EXCLUDED_KINDS)]
+            if task == "2_EarlyDetection":
+                dd = dd[dd["kind"].isin(ACUTE_KINDS) | dd["variable"].isin(ACUTE_VARIABLES)]
+            cov = {}
+            for v in dd["variable"].unique():
+                cov[v] = max(len(REC.get((study, v), set()) & people) / len(people), cov.get(v, 0))
+            good = sorted(v for v, f in cov.items() if f >= 0.8)
+            n1, n0 = len(P[keys[0]]), len(P[keys[1]])
+            rows.append(dict(kind="vertical", task=task, cohort=study, layer_1=f"{study} ({a['layer']})", layer_2="clinical",
+                             link="same participants (metadata)", participants_both_LC=n1, participants_both_recovered=n0,
+                             meets_10_per_class=bool(n1 >= MIN_PER_CLASS and n0 >= MIN_PER_CLASS),
+                             clinical_variables="; ".join(f"{v} ({cov[v]:.0%})" for v in sorted(cov, key=lambda v: -cov[v])),
+                             clinical_variables_80pct="; ".join(good), clinical_layer=len(good) >= 3,
+                             status=("clinical layer (Amendment 1, item 4)" if len(good) >= 3 else
+                                     f"not a clinical layer: {len(good)} variable(s) recorded for at least 80 percent")))
     return pd.DataFrame(rows)
 
 
