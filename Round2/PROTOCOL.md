@@ -176,3 +176,34 @@ Each step has its own folder containing:
 - One script.
 
 Data files are never committed.
+
+## Amendment 1 (20 November 2026)
+
+Added on 20 November 2026, before any Round2 experiment. The text above is unchanged; where they differ, this
+amendment applies.
+
+1. Buggert2025 is split by country into Buggert2025_UK and Buggert2025_SE, because country coincides with LC status
+   in the full cohort. The full cohort is flagged and not used.
+2. Subtyping: the anchor and the partner need at least 10 recovered participants, so that the same feature selection
+   applies. Cohorts with cases only are listed, not used. An anchor with fewer than 50 LC cases is run but marked
+   "too small to interpret".
+3. Anchor sensitivity: when the three largest cohorts of a layer differ by fewer than five participants, steps 01
+   and 02 are repeated with each of them as anchor.
+4. Clinical variables count as a layer only when:
+   - at least three variables are recorded for at least 80 percent of participants;
+   - none of them defines the label;
+   - for early detection, only variables known at the acute stage are used.
+5. For pairs measured on different platforms or scales, B_naive is run and reported, and the README states that only
+   B_scaled is interpretable.
+6. One more model: the Round1 TACO ensemble (random forest, extra trees, SVC and MLP with soft voting).
+7. Regression tasks (used for the age control):
+   - models: the regression form of every model;
+   - feature selection: absolute Spearman correlation with the outcome on the training fold, top 200;
+   - metrics: mean absolute error (primary), root mean squared error, R squared and Spearman correlation;
+   - "improves" means the paired difference in mean absolute error favours the combined arm, with its interval
+     excluding zero.
+8. Run control:
+   - Every step can resume after interruption.
+   - Before a full run, time one fold of every model and print the estimated total.
+   - If the estimate exceeds 12 hours, stop and report the estimate per model.
+9. New folders: Round2/0_Controls (known answer tasks) and Round2/4_Signature (signature discovery).
