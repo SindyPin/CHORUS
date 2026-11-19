@@ -1,0 +1,6 @@
+item,round1_path,how_reused,copied_into_round2,used_by,why
+chorus package (Cohort.from_files: matrix loading and feature keys),Round1/src/chorus/io.py,imported from the editable install in Code/.venv,no,0_Labels/build_labels.py,"reads each matrix with the Round1 feature mapping (Ensembl genes, UniProt keys, metabolite identifiers), so feature counts match Round1"
+Round1 config cohort entries (matrix path and feature space per cohort),Round1/configs/*.yaml,read in place,no,0_Labels/build_labels.py,locates each cohort's matrix and feature space; not edited
+cohort metadata (ClinicalSchema),data/meta/*_meta.csv (written by Round1 builders),read in place from Code/data,no,0_Labels/build_labels.py,"per participant labels, phase and clinical variables"
+label sources and curation notes,data/meta/label_sources.md; data/meta/curation_notes.md,read; definitions summarised in build_labels.py,no,0_Labels/build_labels.py,where each label comes from
+cohort cards,Round1/docs/proteomics_cohorts.md; metabolomics_cohorts.md; paired_cohorts.md; acute_covid_cohorts.md; dataset_sweep_2026-11.md,read; definitions summarised in build_labels.py,no,0_Labels/build_labels.py,"LC definition, comparison group and timing per cohort"

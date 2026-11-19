@@ -9,3 +9,4 @@ sim/
 data/
 *.log
 .DS_Store
+.venv/

@@ -1,0 +1,231 @@
+study_id,variable,kind,defines_label,source,n_participants_recorded,n_labelled_participants_recorded,n_labelled_participants
+Bansal2025,age,demographic,False,data/meta/Bansal2025_meta.csv,56,32,32
+Bansal2025,sex,demographic,False,data/meta/Bansal2025_meta.csv,56,32,32
+Bansal2025,acute_severity,severity,False,data/meta/Bansal2025_meta.csv,30,30,32
+Bansal2025,disease_status_subgroup,severity,False,data/meta/Bansal2025_meta.csv,32,32,32
+Bansal2025,comorbidity,comorbidity,False,data/meta/Bansal2025_meta.csv,56,32,32
+Bansal2025,vaccinated_before_sampling,vaccination,False,data/meta/Bansal2025_meta.csv,56,32,32
+Buggert2025,age,demographic,False,data/meta/Buggert2025_meta.csv,197,197,197
+Buggert2025,sex,demographic,False,data/meta/Buggert2025_meta.csv,197,197,197
+Buggert2025,bmi,demographic,False,data/meta/Buggert2025_meta.csv,195,195,197
+Buggert2025,acute_severity,severity,False,data/meta/Buggert2025_meta.csv,102,102,197
+Buggert2025,hospitalised,severity,False,data/meta/Buggert2025_meta.csv,102,102,197
+Buggert2025,borg_cr10,score,True,data/meta/Buggert2025_meta.csv,95,95,197
+Buggert2025,dyspnoea12,score,True,data/meta/Buggert2025_meta.csv,82,82,197
+Buggert2025,nijmegen,score,True,data/meta/Buggert2025_meta.csv,78,78,197
+COMBAT2022_WB,sex,demographic,False,data/meta/COMBAT2022_WB_meta.csv,123,0,0
+COMBAT2022_WB,age_band,demographic,False,data/meta/COMBAT2022_WB_meta.csv,123,0,0
+COMBAT2022_WB,acute_severity,severity,False,data/meta/COMBAT2022_WB_meta.csv,23,0,0
+COMBAT2022_WB,severity_original,severity,False,data/meta/COMBAT2022_WB_meta.csv,123,0,0
+CORSIP2026,age,demographic,False,data/meta/CORSIP2026_meta.csv,37,37,37
+CORSIP2026,sex,demographic,False,data/meta/CORSIP2026_meta.csv,37,37,37
+CORSIP2026,acute_severity,severity,False,data/meta/CORSIP2026_meta.csv,37,37,37
+Captur2022,hospitalised,severity,False,data/meta/Captur2022_meta.csv,157,0,0
+Captur2022,vaccinated_before_infection,vaccination,False,data/meta/Captur2022_meta.csv,157,0,0
+Captur2022,variant_era,infection,False,data/meta/Captur2022_meta.csv,157,0,0
+Cervia2024_MS,age,demographic,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,sex,demographic,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,bmi,demographic,False,data/meta/Cervia2024_MS_meta.csv,105,105,113
+Cervia2024_MS,acute_severity,severity,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,hospitalised,severity,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,covid19_severity_max,severity,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,covid19_severity_grade_max,severity,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,comorbidity_count,comorbidity,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,vaccinated_before_infection,vaccination,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,vaccinated_before_sampling,vaccination,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,days_since_infection,timing,False,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,pacs_6m_wodys,symptoms,True,data/meta/Cervia2024_MS_meta.csv,113,113,113
+Cervia2024_MS,pacs_12m,symptoms,True,data/meta/Cervia2024_MS_meta.csv,94,94,113
+Cervia2024_SomaScan,age,demographic,False,data/meta/Cervia2024_SomaScan_meta.csv,147,113,113
+Cervia2024_SomaScan,sex,demographic,False,data/meta/Cervia2024_SomaScan_meta.csv,147,113,113
+Cervia2024_SomaScan,bmi,demographic,False,data/meta/Cervia2024_SomaScan_meta.csv,138,105,113
+Cervia2024_SomaScan,acute_severity,severity,False,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,hospitalised,severity,False,data/meta/Cervia2024_SomaScan_meta.csv,147,113,113
+Cervia2024_SomaScan,covid19_severity_max,severity,False,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,covid19_severity_grade_max,severity,False,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,comorbidity_count,comorbidity,False,data/meta/Cervia2024_SomaScan_meta.csv,147,113,113
+Cervia2024_SomaScan,vaccinated_before_infection,vaccination,False,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,vaccinated_before_sampling,vaccination,False,data/meta/Cervia2024_SomaScan_meta.csv,147,113,113
+Cervia2024_SomaScan,days_since_infection,timing,False,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,pacs_6m_wodys,symptoms,True,data/meta/Cervia2024_SomaScan_meta.csv,113,113,113
+Cervia2024_SomaScan,pacs_12m,symptoms,True,data/meta/Cervia2024_SomaScan_meta.csv,94,94,113
+Chowdhury2024,age,demographic,False,data/meta/Chowdhury2024_meta.csv,30,30,30
+Chowdhury2024,sex,demographic,False,data/meta/Chowdhury2024_meta.csv,30,30,30
+Chowdhury2024,intervention_arm,treatment,False,data/meta/Chowdhury2024_meta.csv,30,30,30
+Chowdhury2026,sex,demographic,False,data/meta/Chowdhury2026_meta.csv,150,115,115
+Chowdhury2026,days_since_infection,timing,False,data/meta/Chowdhury2026_meta.csv,115,115,115
+Filbin2021_MGH,age_category,demographic,False,data/meta/Filbin2021_MGH_meta.csv,382,0,0
+Filbin2021_MGH,acute_severity,severity,False,data/meta/Filbin2021_MGH_meta.csv,109,0,0
+Filbin2021_MGH,severity_original,severity,False,data/meta/Filbin2021_MGH_meta.csv,382,0,0
+Filbin2021_MGH,days_since_infection,timing,False,data/meta/Filbin2021_MGH_meta.csv,382,0,0
+Fineschi2026,acute_severity,severity,False,data/meta/Fineschi2026_meta.csv,165,165,165
+Fineschi2026,hospitalised,severity,False,data/meta/Fineschi2026_meta.csv,165,165,165
+GSE152418,sex,demographic,False,data/meta/GSE152418_meta.csv,34,0,0
+GSE152418,acute_severity,severity,False,data/meta/GSE152418_meta.csv,4,0,0
+GSE152418,severity_original,severity,False,data/meta/GSE152418_meta.csv,34,0,0
+GSE152418,days_since_infection,timing,False,data/meta/GSE152418_meta.csv,17,0,0
+GSE152641,age,demographic,False,data/meta/GSE152641_meta.csv,85,0,0
+GSE152641,sex,demographic,False,data/meta/GSE152641_meta.csv,86,0,0
+GSE161731,age,demographic,False,data/meta/GSE161731_meta.csv,151,0,0
+GSE161731,sex,demographic,False,data/meta/GSE161731_meta.csv,138,0,0
+GSE161731,severity_original,severity,False,data/meta/GSE161731_meta.csv,46,0,0
+GSE171110,acute_severity,severity,False,data/meta/GSE171110_meta.csv,44,0,0
+GSE171110,severity_original,severity,False,data/meta/GSE171110_meta.csv,44,0,0
+GSE172114,acute_severity,severity,False,data/meta/GSE172114_meta.csv,46,0,0
+GSE172114,severity_original,severity,False,data/meta/GSE172114_meta.csv,69,0,0
+GSE198449,age,demographic,False,data/meta/GSE198449_meta.csv,475,0,0
+GSE198449,sex,demographic,False,data/meta/GSE198449_meta.csv,475,0,0
+GSE198449,severity_original,severity,False,data/meta/GSE198449_meta.csv,475,0,0
+GSE198449,days_since_infection,timing,False,data/meta/GSE198449_meta.csv,255,0,0
+GSE207015,age,demographic,False,data/meta/GSE207015_meta.csv,194,0,0
+GSE207015,sex,demographic,False,data/meta/GSE207015_meta.csv,194,0,0
+GSE207015,acute_severity,severity,False,data/meta/GSE207015_meta.csv,56,0,0
+GSE207015,severity_original,severity,False,data/meta/GSE207015_meta.csv,124,0,0
+GSE207015,pregnancy,other,False,data/meta/GSE207015_meta.csv,194,0,0
+GSE213313,acute_severity,severity,False,data/meta/GSE213313_meta.csv,19,0,0
+GSE213313,severity_original,severity,False,data/meta/GSE213313_meta.csv,45,0,0
+GSE215865,sex,demographic,False,data/meta/GSE215865_meta.csv,508,424,424
+GSE224615,sex,demographic,False,data/meta/GSE224615_meta.csv,36,36,36
+GSE224615,days_since_infection,timing,False,data/meta/GSE224615_meta.csv,36,36,36
+GSE226260_PBMC,age,demographic,False,data/meta/GSE226260_PBMC_meta.csv,34,34,36
+GSE226260_PBMC,sex,demographic,False,data/meta/GSE226260_PBMC_meta.csv,36,36,36
+GSE226260_WB,days_since_infection,timing,False,data/meta/GSE226260_WB_meta.csv,38,36,36
+GSE228320,age,demographic,False,data/meta/GSE228320_meta.csv,50,50,50
+GSE228320,sex,demographic,False,data/meta/GSE228320_meta.csv,50,50,50
+GSE228320,acute_severity,severity,False,data/meta/GSE228320_meta.csv,50,50,50
+GSE228320,hospitalised,severity,False,data/meta/GSE228320_meta.csv,50,50,50
+GSE228320,dlco_pct_predicted,score,True,data/meta/GSE228320_meta.csv,50,50,50
+GSE297499,sex,demographic,False,data/meta/GSE297499_meta.csv,26,26,26
+GSE300129,age,demographic,False,data/meta/GSE300129_meta.csv,112,0,0
+GSE300129,sex,demographic,False,data/meta/GSE300129_meta.csv,112,0,0
+GSE300129,acute_severity,severity,False,data/meta/GSE300129_meta.csv,57,0,0
+GSE300129,severity_original,severity,False,data/meta/GSE300129_meta.csv,57,0,0
+Gisby2021_plasma,sex,demographic,False,data/meta/Gisby2021_plasma_meta.csv,105,0,0
+Gisby2021_plasma,age_band,demographic,False,data/meta/Gisby2021_plasma_meta.csv,105,0,0
+Gisby2021_plasma,acute_severity,severity,False,data/meta/Gisby2021_plasma_meta.csv,13,0,0
+Gisby2021_plasma,severity_original,severity,False,data/meta/Gisby2021_plasma_meta.csv,105,0,0
+Gisby2021_plasma,days_since_infection,timing,False,data/meta/Gisby2021_plasma_meta.csv,52,0,0
+Holmes2021,age,demographic,False,data/meta/Holmes2021_meta.csv,27,0,0
+Holmes2021,sex,demographic,False,data/meta/Holmes2021_meta.csv,27,0,0
+Holmes2021,bmi,demographic,False,data/meta/Holmes2021_meta.csv,26,0,0
+Holmes2021,composite_binary,symptoms,True,data/meta/Holmes2021_meta.csv,27,0,0
+Holmes2021,composite_binary_rec,symptoms,True,data/meta/Holmes2021_meta.csv,27,0,0
+Kovarik2023_plasma,acute_severity,severity,False,data/meta/Kovarik2023_plasma_meta.csv,0,0,26
+Kovarik2023_plasma,variant_era,infection,False,data/meta/Kovarik2023_plasma_meta.csv,0,0,26
+Lopez2023,age,demographic,False,data/meta/Lopez2023_meta.csv,85,48,48
+Lopez2023,lc_subgroup,symptoms,True,data/meta/Lopez2023_meta.csv,48,48,48
+PRJNA1149196_SA,sex,demographic,False,data/meta/PRJNA1149196_SA_meta.csv,54,39,39
+PRJNA1149196_SA,days_since_infection,timing,False,data/meta/PRJNA1149196_SA_meta.csv,39,39,39
+PRJNA1184005,age,demographic,False,data/meta/PRJNA1184005_meta.csv,14,14,14
+PRJNA1184005,sex,demographic,False,data/meta/PRJNA1184005_meta.csv,14,14,14
+Su2022,age,demographic,False,data/meta/Su2022_meta.csv,493,125,125
+Su2022,sex,demographic,False,data/meta/Su2022_meta.csv,493,125,125
+Su2022,bmi,demographic,False,data/meta/Su2022_meta.csv,435,72,125
+Su2022,acute_severity,severity,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,hospitalised,severity,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,peak_acute_wos,severity,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,wos_at_draw,severity,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,encounter_location,severity,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,days_since_infection,timing,False,data/meta/Su2022_meta.csv,204,125,125
+Su2022,n_pasc_symptoms,symptoms,True,data/meta/Su2022_meta.csv,125,125,125
+Su2022,pasc_symptoms,symptoms,True,data/meta/Su2022_meta.csv,75,75,125
+Su2022,pasc_groups,symptoms,True,data/meta/Su2022_meta.csv,62,62,125
+Su2022,pasc_count_group,symptoms,True,data/meta/Su2022_meta.csv,125,125,125
+Su2022_metabolomics,age,demographic,False,data/meta/Su2022_metabolomics_meta.csv,377,124,124
+Su2022_metabolomics,sex,demographic,False,data/meta/Su2022_metabolomics_meta.csv,377,124,124
+Su2022_metabolomics,bmi,demographic,False,data/meta/Su2022_metabolomics_meta.csv,319,71,124
+Su2022_metabolomics,acute_severity,severity,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,hospitalised,severity,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,peak_acute_wos,severity,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,wos_at_draw,severity,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,encounter_location,severity,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,days_since_infection,timing,False,data/meta/Su2022_metabolomics_meta.csv,199,124,124
+Su2022_metabolomics,n_pasc_symptoms,symptoms,True,data/meta/Su2022_metabolomics_meta.csv,124,124,124
+Su2022_metabolomics,pasc_symptoms,symptoms,True,data/meta/Su2022_metabolomics_meta.csv,74,74,124
+Su2022_metabolomics,pasc_groups,symptoms,True,data/meta/Su2022_metabolomics_meta.csv,61,61,124
+Su2022_metabolomics,pasc_count_group,symptoms,True,data/meta/Su2022_metabolomics_meta.csv,124,124,124
+Woodruff2023,sex,demographic,False,data/meta/Woodruff2023_meta.csv,58,29,120
+Woodruff2023,race,demographic,False,data/meta/Woodruff2023_meta.csv,58,29,120
+Woodruff2023,acute_severity,severity,False,data/meta/Woodruff2023_meta.csv,107,78,120
+Woodruff2023,hospitalised,severity,False,data/meta/Woodruff2023_meta.csv,149,120,120
+Woodruff2023,days_since_infection,timing,False,data/meta/Woodruff2023_meta.csv,149,120,120
+Woodruff2023,dexamethasone,treatment,False,data/meta/Woodruff2023_meta.csv,29,0,120
+Zoodsma2022_Breda,age,demographic,False,data/meta/Zoodsma2022_Breda_meta.csv,225,0,0
+Zoodsma2022_Breda,sex,demographic,False,data/meta/Zoodsma2022_Breda_meta.csv,225,0,0
+Zoodsma2022_Breda,bmi,demographic,False,data/meta/Zoodsma2022_Breda_meta.csv,205,0,0
+Zoodsma2022_Breda,acute_severity,severity,False,data/meta/Zoodsma2022_Breda_meta.csv,63,0,0
+Zoodsma2022_Breda,hospitalised,severity,False,data/meta/Zoodsma2022_Breda_meta.csv,259,0,0
+Zoodsma2022_Breda,who_score_authors,severity,False,data/meta/Zoodsma2022_Breda_meta.csv,3,0,0
+Zoodsma2022_Breda,disease_severity_score_authors,severity,False,data/meta/Zoodsma2022_Breda_meta.csv,3,0,0
+Zoodsma2022_Breda,days_since_infection,timing,False,data/meta/Zoodsma2022_Breda_meta.csv,209,0,0
+Zoodsma2022_Breda,days_since_symptom_resolution,timing,False,data/meta/Zoodsma2022_Breda_meta.csv,3,0,0
+Zoodsma2022_Breda,variant_era,infection,False,data/meta/Zoodsma2022_Breda_meta.csv,263,0,0
+Zoodsma2022_Breda,antibody_S1_ratio,serology,False,data/meta/Zoodsma2022_Breda_meta.csv,8,0,0
+Zoodsma2022_Breda,antibody_NCP_ratio,serology,False,data/meta/Zoodsma2022_Breda_meta.csv,8,0,0
+Zoodsma2022_Hannover,age,demographic,False,data/meta/Zoodsma2022_Hannover_meta.csv,260,0,0
+Zoodsma2022_Hannover,sex,demographic,False,data/meta/Zoodsma2022_Hannover_meta.csv,260,0,0
+Zoodsma2022_Hannover,bmi,demographic,False,data/meta/Zoodsma2022_Hannover_meta.csv,12,0,0
+Zoodsma2022_Hannover,acute_severity,severity,False,data/meta/Zoodsma2022_Hannover_meta.csv,6,0,0
+Zoodsma2022_Hannover,hospitalised,severity,False,data/meta/Zoodsma2022_Hannover_meta.csv,12,0,0
+Zoodsma2022_Hannover,who_score_authors,severity,False,data/meta/Zoodsma2022_Hannover_meta.csv,177,0,0
+Zoodsma2022_Hannover,disease_severity_score_authors,severity,False,data/meta/Zoodsma2022_Hannover_meta.csv,176,0,0
+Zoodsma2022_Hannover,days_since_symptom_resolution,timing,False,data/meta/Zoodsma2022_Hannover_meta.csv,175,0,0
+Zoodsma2022_Hannover,variant_era,infection,False,data/meta/Zoodsma2022_Hannover_meta.csv,198,0,0
+Zoodsma2022_Hannover,antibody_S1_ratio,serology,False,data/meta/Zoodsma2022_Hannover_meta.csv,236,0,0
+Zoodsma2022_Hannover,antibody_NCP_ratio,serology,False,data/meta/Zoodsma2022_Hannover_meta.csv,236,0,0
+Zoodsma2022_Nijmegen,age,demographic,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,144,0,0
+Zoodsma2022_Nijmegen,sex,demographic,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,144,0,0
+Zoodsma2022_Nijmegen,bmi,demographic,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,139,0,0
+Zoodsma2022_Nijmegen,acute_severity,severity,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,38,0,0
+Zoodsma2022_Nijmegen,hospitalised,severity,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,144,0,0
+Zoodsma2022_Nijmegen,variant_era,infection,False,data/meta/Zoodsma2022_Nijmegen_meta.csv,144,0,0
+GSE224615,age,demographic,False,data/clinical/GSE224615/41590_2023_1724_MOESM1_ESM.pdf,36,36,36
+GSE224615,race,demographic,False,data/clinical/GSE224615/41590_2023_1724_MOESM1_ESM.pdf,34,34,36
+GSE224615,hospitalised,severity,False,data/clinical/GSE224615/41590_2023_1724_MOESM1_ESM.pdf,36,36,36
+GSE224615,acute_severity_who,severity,False,data/clinical/GSE224615/41590_2023_1724_MOESM1_ESM.pdf,36,36,36
+GSE226260_WB,age,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,sex,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,race,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,ethnicity,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,days_since_infection_at_sample,timing,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,preexisting_conditions,comorbidity,False,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,11,9,36
+GSE226260_WB,symptom_count,symptoms,True,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,38,36,36
+GSE226260_WB,symptom_list,symptoms,True,data/clinical/GSE226260/41590_2025_2353_MOESM4_ESM.xlsx,30,28,36
+GSE226260_PBMC,age,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM2_ESM.xlsx,35,35,36
+GSE226260_PBMC,sex,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM2_ESM.xlsx,35,35,36
+GSE226260_PBMC,race,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM2_ESM.xlsx,35,35,36
+GSE226260_PBMC,ethnicity,demographic,False,data/clinical/GSE226260/41590_2025_2353_MOESM2_ESM.xlsx,35,35,36
+GSE226260_PBMC,vaccine_product,vaccination,False,data/clinical/GSE226260/41590_2025_2353_MOESM2_ESM.xlsx,35,35,36
+Lopez2023,age,demographic,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,sex_code,demographic,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,smoking,other,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,t2dm,comorbidity,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,hypertension,comorbidity,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,obesity,comorbidity,False,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_fever,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_arthralgia,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_myalgia,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_cephalea,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_rhinorrhea,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_cough,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_dyspnea,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_thoracic_pain,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_anosmya,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_dysgeusia,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_diarrhea,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,85,48,48
+Lopez2023,symptom_loss_of_concentration,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_fatigue,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_visual_alteration,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_anxiety,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_conjunctivitis,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_depression,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_abdominal_pain,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Lopez2023,symptom_odynophagia,symptoms,True,data/metabolomics/Lopez2023/raw/DATA AVAILABILITY.xls,48,48,48
+Fineschi2026,infection_wave,infection,False,data/counts/Fineschi2025_check/SamplesPC.txt,110,110,165
+Fineschi2026,post_covid_symptom_severity_score,symptoms,True,data/counts/Fineschi2025_check/SamplesPC.txt,110,110,165
+Fineschi2026,dyspnoea_item,symptoms,True,data/counts/Fineschi2025_check/SamplesPC.txt,110,110,165
+CORSIP2026,vaccinated,vaccination,False,data/counts/CORSIP2026/raw/CORSIP_omics/CORSIP_Full.csv,37,37,37
+CORSIP2026,hospitalised_ever_18m,severity,False,data/counts/CORSIP2026/raw/CORSIP_omics/CORSIP_Full.csv,20,20,37
+CORSIP2026,weight,demographic,False,data/counts/CORSIP2026/raw/CORSIP_omics/CORSIP_Full.csv,36,36,37
+CORSIP2026,height,demographic,False,data/counts/CORSIP2026/raw/CORSIP_omics/CORSIP_Full.csv,36,36,37
+CORSIP2026,"symptoms (145 columns, baseline to 18 months)",symptoms,True,data/counts/CORSIP2026/raw/CORSIP_omics/CORSIP_Full.csv,8,8,37
