@@ -1,0 +1,53 @@
+control,layer,study_id,n,excluded,n_female,n_male,eligible,age_min,age_median,age_max
+sex,proteomics,Bansal2025,56,,37.0,19.0,True,,,
+sex,proteomics,Buggert2025,197,"flagged: split by country (Amendment 1, item 1)",156.0,41.0,False,,,
+sex,proteomics,Buggert2025_SE,95,,80.0,15.0,True,,,
+sex,proteomics,Buggert2025_UK,102,,76.0,26.0,True,,,
+sex,transcriptomics,COMBAT2022_WB,123,,53.0,70.0,True,,,
+sex,transcriptomics,CORSIP2026,37,flagged: gene panel only,16.0,21.0,False,,,
+sex,proteomics,Cervia2024_MS,113,,54.0,59.0,True,,,
+sex,proteomics,Cervia2024_SomaScan,147,,73.0,74.0,True,,,
+sex,proteomics,Chowdhury2024,30,,19.0,11.0,True,,,
+sex,proteomics,Chowdhury2026,150,,81.0,69.0,True,,,
+sex,transcriptomics,GSE152418,34,,18.0,16.0,True,,,
+sex,transcriptomics,GSE152641,86,,29.0,57.0,True,,,
+sex,transcriptomics,GSE161731,138,,70.0,68.0,True,,,
+sex,transcriptomics,GSE198449,475,,101.0,374.0,True,,,
+sex,proteomics,GSE207015,194,,150.0,44.0,True,,,
+sex,transcriptomics,GSE215865,508,,217.0,291.0,True,,,
+sex,transcriptomics,GSE224615,36,,20.0,16.0,True,,,
+sex,transcriptomics,GSE226260_PBMC,36,,30.0,6.0,False,,,
+sex,transcriptomics,GSE228320,50,flagged: non standard case definition,15.0,35.0,False,,,
+sex,transcriptomics,GSE297499,26,,26.0,0.0,False,,,
+sex,proteomics,Gisby2021_plasma,105,,30.0,75.0,True,,,
+sex,metabolomics,Holmes2021,27,,16.0,11.0,True,,,
+sex,transcriptomics,PRJNA1149196_SA,54,,26.0,28.0,True,,,
+sex,transcriptomics,PRJNA1184005,14,,11.0,3.0,False,,,
+sex,proteomics,Su2022,493,,273.0,220.0,True,,,
+sex,metabolomics,Su2022_metabolomics,377,,204.0,173.0,True,,,
+sex,proteomics,Woodruff2023,58,,27.0,31.0,True,,,
+sex,proteomics,Zoodsma2022_Breda,225,,85.0,140.0,True,,,
+sex,proteomics,Zoodsma2022_Hannover,260,,118.0,142.0,True,,,
+sex,proteomics,Zoodsma2022_Nijmegen,144,,47.0,97.0,True,,,
+age,proteomics,Bansal2025,56,,,,True,20.0,43.5,68.0
+age,proteomics,Buggert2025,197,"flagged: split by country (Amendment 1, item 1)",,,False,20.0,46.0,79.0
+age,proteomics,Buggert2025_SE,95,,,,True,20.0,47.0,66.0
+age,proteomics,Buggert2025_UK,102,,,,True,20.0,43.5,79.0
+age,transcriptomics,CORSIP2026,37,flagged: gene panel only,,,False,24.0,37.0,59.0
+age,proteomics,Cervia2024_MS,113,,,,True,19.8333333333333,43.6666666666667,98.0
+age,proteomics,Cervia2024_SomaScan,147,,,,True,19.3333333333333,42.0833333333333,97.5
+age,proteomics,Chowdhury2024,30,,,,True,27.0,51.0,81.0
+age,transcriptomics,GSE152641,85,,,,True,20.0,55.0,90.0
+age,transcriptomics,GSE161731,151,,,,True,0.0,23.0,88.0
+age,transcriptomics,GSE198449,475,,,,True,18.0,19.0,34.0
+age,proteomics,GSE207015,194,,,,True,16.0,35.5,85.0
+age,transcriptomics,GSE226260_PBMC,34,,,,True,27.0,43.0,70.0
+age,transcriptomics,GSE228320,50,flagged: non standard case definition,,,False,31.0,60.0,75.0
+age,metabolomics,Holmes2021,27,,,,True,20.0,59.0,80.0
+age,metabolomics,Lopez2023,85,,,,True,28.0,47.0,82.0
+age,transcriptomics,PRJNA1184005,14,,,,False,23.0,39.0,63.0
+age,proteomics,Su2022,493,,,,True,18.0,51.0,89.0
+age,metabolomics,Su2022_metabolomics,377,,,,True,18.0,55.0,89.0
+age,proteomics,Zoodsma2022_Breda,225,,,,True,24.0,70.0,93.0
+age,proteomics,Zoodsma2022_Hannover,260,,,,True,18.0,46.5,77.0
+age,proteomics,Zoodsma2022_Nijmegen,144,,,,True,18.0,67.0,92.0

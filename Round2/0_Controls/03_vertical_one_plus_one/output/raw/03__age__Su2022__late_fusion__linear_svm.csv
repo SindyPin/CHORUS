@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,0,0.0,180,45,8.831570128546964,10.37386202454199,0.6210431326929268,0.7777157742456864
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,1,0.0,180,45,10.496612612512697,12.173487559107972,0.5060499399421483,0.6994398409973045
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,2,0.0,180,45,9.837551449937804,12.717672751481889,0.4854896076897838,0.75017310203216
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,3,0.0,180,45,9.660742521169558,11.54930541091368,0.49249459377034555,0.6761169264911422
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,4,0.0,180,45,8.989505188306595,10.790789142372125,0.5758915185095874,0.7439117732065532
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,5,0.0,180,45,11.20703011745786,13.072906015907636,0.46617862026909485,0.6802888059745009
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,6,0.0,180,45,10.311686374689982,12.38663705686679,0.4670272365843807,0.7278239662167957
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,7,0.0,180,45,8.144948232180916,10.427656450237928,0.6228298265755811,0.8053810017990243
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,8,0.0,180,45,8.355118831553872,10.263625893684967,0.567368561495976,0.7828869010159621
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,9,0.0,180,45,10.40473729940918,12.182085704699073,0.5000607138571519,0.7738365422916684
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,10,0.0,180,45,11.190290520538472,13.616230044500362,0.3909411634441108,0.6205170718283816
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,11,0.0,180,45,9.116571982972125,10.376861690434051,0.6073539288856555,0.7959790786770294
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,12,0.0,180,45,8.695014806046352,11.037810406045242,0.5386777926012702,0.7490276972223502
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,13,0.0,180,45,8.383575084021308,10.1444202290452,0.635211521232649,0.7997496628426238
+03__age__Su2022__late_fusion__linear_svm,03_vertical_one_plus_one,age,Su2022,late_fusion,linear_svm,14,0.0,180,45,9.639405223166673,11.724706388439799,0.5591187285990902,0.7780600185810503

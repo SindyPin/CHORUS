@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,0,1.27,301,76,9.713607988859478,11.461600608593388,0.24011873713615528,0.3332672690038099
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,1,1.62,301,76,9.995908988149543,12.150367233893908,0.3188464466874442,0.48660893295696284
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,2,1.59,302,75,9.866680450439453,12.418712002434182,0.34184937033012464,0.4789576970239184
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,3,1.49,302,75,10.076982676188152,11.884076474274348,0.3355342783697651,0.481044052841612
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,4,1.51,302,75,10.405955149332682,12.524921790252408,0.3823456411299305,0.42129387924373707
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,5,1.52,301,76,9.893594340274209,11.62514623863614,0.21106671962413748,0.45453182412960563
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,6,1.51,301,76,9.598197886818333,11.453184437918074,0.32295037825922,0.4069854454126649
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,7,1.52,302,75,10.350285288492838,13.060338050456583,0.32831678490191674,0.40831695417708536
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,8,1.49,302,75,10.71646977742513,13.062479739412943,0.2635656177523761,0.3843505001796004
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,10,1.5,301,76,9.836325444673237,11.457241765259901,0.3386077256305732,0.46680851351686614
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,9,1.52,302,75,10.283476257324219,12.83854064907333,0.3151772710606263,0.4298218712850519
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,11,1.5,301,76,9.774918004086143,12.114875838687977,0.3212280415572695,0.4638395423688743
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,12,1.51,302,75,10.24418207804362,12.436651951115456,0.2205165044020435,0.4285817140491893
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,14,1.51,302,75,11.033201955159505,13.522236920742895,0.28937277437365416,0.3757295214325427
+02__age__metabolomics__A_shared__tabicl_v2,02_horizontal_one_plus_one,age,metabolomics,A_shared,tabicl_v2,13,1.52,302,75,9.734076639811198,12.083781049459251,0.3376936682441307,0.5097244632782197

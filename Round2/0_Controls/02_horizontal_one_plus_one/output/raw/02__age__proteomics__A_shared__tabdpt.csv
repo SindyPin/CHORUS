@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,0,1.84,394,99,11.869726431490195,14.550974859746946,0.10582049025126794,0.21013067388949824
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,1,1.54,394,99,11.375929283373283,13.69536841862051,0.1276477740171288,0.3073396963542166
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,2,1.58,394,99,11.513404537933042,14.316949467086648,0.1399284071260425,0.3385379201024007
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,3,1.4,395,98,11.50385229928153,14.080110334866188,0.1575202332977924,0.2922767613266142
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,4,1.37,395,98,11.61195116626973,14.25499947369975,0.16032721743860723,0.39319819237260956
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,6,1.44,394,99,11.608545746466126,14.408629786125921,0.1179962751059227,0.24664427478897555
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,5,1.47,394,99,11.407808746954407,13.49480880801543,0.1654359412940859,0.3461414954148588
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,7,1.41,394,99,11.82401949949939,14.42575084797047,0.15777877062630663,0.25492744824722946
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,8,1.41,395,98,11.689520505009865,14.567609983620905,0.11367213242089147,0.2735549919447691
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,10,1.51,394,99,10.810515817969737,13.581812493407496,0.1989399623693856,0.3918068703027476
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,9,1.51,395,98,11.569078562211017,13.918988059230731,0.14746654084485067,0.20839872589250313
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,11,1.41,394,99,11.833875290071122,13.960607127990242,0.13568864256024527,0.1820392323635927
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,12,1.41,394,99,12.112748463948568,15.091411129614366,0.17056164107321758,0.4138033698291198
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,14,1.39,395,98,11.496747425624303,14.118195219737558,0.11861451788082489,0.3298933216705664
+02__age__proteomics__A_shared__tabdpt,02_horizontal_one_plus_one,age,proteomics,A_shared,tabdpt,13,1.41,395,98,11.051026869793327,13.343863128196922,0.14964257064136588,0.31031416965671027

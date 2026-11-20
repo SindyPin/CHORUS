@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,0,0.0,90,23,8.151843361232594,9.779308689701665,0.7051023038235638,0.8482452840585045
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,1,0.0,90,23,7.286052620929228,8.622324673148722,0.7526132384888966,0.8468379446640316
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,2,0.0,90,23,8.191239011460459,9.592287859373501,0.7231374220218001,0.9051383399209486
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,3,0.0,91,22,7.598946918140763,8.69007772591804,0.786182212167019,0.9322416713721063
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,4,0.0,91,22,8.655175281293463,11.322191366605596,0.7034294272038044,0.8317334839073971
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,5,0.0,90,23,8.470227255337479,9.734250394652609,0.7273961755315135,0.8982213438735178
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,6,0.0,90,23,11.181587357451964,12.516552506761759,0.5361066802651231,0.7635285629682883
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,7,0.0,90,23,7.686278813127153,9.325666310582868,0.7892016728391292,0.9090909090909092
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,8,0.0,91,22,6.725160902196721,7.763153512381891,0.8223184954822552,0.89158667419537
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,9,0.0,91,22,5.6241573131445755,6.9989839969232,0.8399142076777604,0.9333709768492378
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,10,0.0,90,23,7.6899957933287695,9.258154994860714,0.7628519718994543,0.8399209486166009
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,11,0.0,90,23,8.624439764713904,11.059410911015886,0.6112020829059015,0.7875494071146245
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,12,0.0,90,23,7.481227695078098,8.73798999477644,0.7293948557483036,0.8586956521739131
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,13,0.0,91,22,6.864625295003254,8.391316531722145,0.8042099122403095,0.9153020892151329
+03__age__Cervia2024__late_fusion__xgboost,03_vertical_one_plus_one,age,Cervia2024,late_fusion,xgboost,14,0.0,91,22,8.211652351148201,10.142822223658019,0.7612728140180723,0.9401468097120271

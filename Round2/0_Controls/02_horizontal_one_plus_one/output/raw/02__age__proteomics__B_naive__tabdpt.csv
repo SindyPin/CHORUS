@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,0,2.92,654,99,12.156468824906783,14.925646610750068,0.05917934697762539,0.21135578131949503
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,1,1.85,654,99,11.137918684217665,13.261447918894637,0.18205081821586522,0.34083452260558966
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,2,1.79,654,99,10.747403578324752,13.629561059118947,0.2205336724692335,0.3573967993945896
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,3,1.77,655,98,11.382085138437699,13.78230134101914,0.19278198455396944,0.3470926067937578
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,4,1.74,655,98,11.215262082158302,13.799466833984946,0.21313490820078074,0.2689292960614855
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,6,1.83,654,99,11.256240844726562,13.853948236648616,0.18459724412507184,0.2838290051592781
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,5,1.86,654,99,11.062328030364682,13.093163516368321,0.2143748300715681,0.37467368566799697
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,8,1.86,655,98,11.773520800532127,14.567756304973548,0.11365432725670466,0.22390179510890926
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,7,1.87,654,99,11.692118596548985,14.541546307895027,0.14420348935681293,0.20182374955391216
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,9,1.74,655,98,11.517069485722756,13.581367058228189,0.1883232951800845,0.25904738483577205
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,10,1.86,654,99,10.378101002086293,12.81650712283184,0.286672491570503,0.3546410839168136
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,11,1.71,654,99,11.668661830401179,14.117203448868612,0.11618990909062943,0.18474284657453918
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,12,1.69,654,99,11.842736523560804,15.102968601452037,0.16929073524459404,0.28645403410473824
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,13,1.71,655,98,10.67539460318429,12.957933724119899,0.19811911359230827,0.35809798515118296
+02__age__proteomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,proteomics,B_naive,tabdpt,14,1.73,655,98,11.53769605986926,13.90196438329631,0.14540593956626746,0.33638007769111833

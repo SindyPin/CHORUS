@@ -1,0 +1,7 @@
+control,layer,anchor,partner,n_anchor,n_partner,n_features_anchor,n_shared,same_scale,interpretable_arms
+age,metabolomics,Su2022_metabolomics,Lopez2023,377,85,679,61,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"
+age,proteomics,Su2022,Zoodsma2022_Hannover,493,260,441,174,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"
+age,transcriptomics,GSE198449,GSE161731,475,151,58884,56939,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"
+sex,metabolomics,Su2022_metabolomics,Holmes2021,377,27,679,35,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"
+sex,proteomics,Su2022,Zoodsma2022_Hannover,493,260,441,174,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"
+sex,transcriptomics,GSE215865,GSE198449,508,475,58884,58884,False,"A_shared, B_scaled (B_naive reported only: Amendment 1, item 5)"

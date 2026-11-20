@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,0,0.0,180,45,7.837983537883199,9.455814999448512,0.6851477652223303,0.8160213748591777
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,1,0.0,180,45,9.440763633092518,10.87018712418954,0.6061534453387708,0.7860867676561579
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,2,0.0,180,45,9.848847277050309,12.362679518199581,0.5138121716996316,0.7650684737646559
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,3,0.0,180,45,9.61500081327258,12.3172242411256,0.4227623672321559,0.6499425315796861
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,4,0.0,180,45,8.56229733912972,10.72651165533274,0.5809290436400301,0.7453617651451149
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,5,0.0,180,45,11.176356821861006,12.831474157697965,0.48571389250306474,0.6887915921357944
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,6,0.0,180,45,9.756300101185529,11.740724611570057,0.5211626774277257,0.7897720401251431
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,7,0.0,180,45,7.777316610814316,10.069369909866053,0.6483031298210767,0.8170522345907737
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,8,0.0,180,45,8.667936456662233,10.36513496513348,0.5587686408380127,0.7724053401148558
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,9,0.0,180,45,10.455431558451194,12.203280568309665,0.498319573131044,0.7396811802511875
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,10,0.0,180,45,10.987420978177456,13.554756846292433,0.3964281855455404,0.6178799402014016
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,11,0.0,180,45,8.612863088316253,9.919252800299377,0.6412209155621097,0.7963086766392146
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,12,0.0,180,45,8.870438154350392,10.826583566625574,0.5561651846442143,0.7607683567948738
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,13,0.0,180,45,8.040402949878684,9.726581763256963,0.6646431865110493,0.8207107106283285
+03__age__Su2022__late_fusion__logistic_regression,03_vertical_one_plus_one,age,Su2022,late_fusion,logistic_regression,14,0.0,180,45,10.153238302213456,12.293795659586758,0.5152814066234293,0.7343510038107371

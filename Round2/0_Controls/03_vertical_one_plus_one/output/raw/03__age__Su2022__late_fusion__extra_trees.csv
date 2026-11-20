@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,0,0.0,180,45,10.7836,12.400944593054192,0.4584751622949793,0.733806084041581
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,1,0.0,180,45,11.609533333333333,13.259085593576117,0.4140235552707989,0.6948898882275475
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,2,0.0,180,45,11.453466666666667,14.026507822294501,0.3741388748762904,0.6402373495994027
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,3,0.0,180,45,9.443755555555555,11.567325142640174,0.49090969403035567,0.7380256338509844
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,4,0.0,180,45,11.172022222222221,13.085590651128015,0.376326622387018,0.6183556530720195
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,5,0.0,180,45,12.520422222222221,14.105117423592521,0.37855156671489587,0.5955905097166544
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,6,0.0,180,45,10.242733333333332,12.401124611188385,0.4657797652347394,0.7581389811081145
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,7,0.0,180,45,10.060977777777778,12.69294516213195,0.4411584094443949,0.7497942829095059
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,8,0.0,180,45,9.835755555555556,11.550331830731098,0.4520948649583223,0.6716768806375579
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,9,0.0,180,45,11.977422222222224,14.01866148944169,0.33795568225903594,0.5683768741099336
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,10,0.0,180,45,11.830133333333336,14.596624666149514,0.3000768309150845,0.5189215758989791
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,11,0.0,180,45,9.5888,11.20473897162367,0.5422032693180343,0.7421886912484204
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,12,0.0,180,45,10.17608888888889,12.05144355760845,0.45005831041485134,0.677330523315984
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,13,0.0,180,45,9.780955555555554,11.287641030003666,0.5483593439045908,0.802781764094644
+03__age__Su2022__late_fusion__extra_trees,03_vertical_one_plus_one,age,Su2022,late_fusion,extra_trees,14,0.0,180,45,12.355111111111114,14.222275540698666,0.3512821091567365,0.6186506705952023

@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,best_params,grid_points_failed
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,0,0.06,180,45,6.947560625752963,8.773393512344592,0.7289533368669199,0.8453604321276865,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,1,0.08,180,45,9.058021716422797,10.92996503415478,0.6018098109628265,0.7045832658674648,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,2,0.08,180,45,8.744318893234258,10.623116287451106,0.6410096858085746,0.8427748599266588,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,3,0.07,180,45,9.31453942921366,11.322365562211303,0.512243252120705,0.6749961085730194,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,4,0.08,180,45,9.244160850661844,11.6500683115613,0.5056580242606836,0.6838030164807293,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,5,0.08,180,45,9.622056149911502,11.589568542649664,0.5804475880081494,0.6986126397174437,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,6,0.07,180,45,9.81466787557233,11.736249734320866,0.5215276174069006,0.7375774927470462,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,7,0.08,180,45,8.307420048424252,10.369590367631202,0.6270186522436751,0.7824341712254153,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,8,0.07,180,45,7.483089588906347,9.25450448066111,0.6482591666604791,0.8160455496527952,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,9,0.07,180,45,9.275193441085055,11.779609103179466,0.5325493989196419,0.7428461558842823,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,11,0.06,180,45,9.07011418820839,10.838727020085344,0.5716233831099471,0.7499012835635518,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,12,0.07,180,45,7.678717862267793,9.649627105637558,0.6474184655443843,0.7967818406521653,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,10,0.08,180,45,10.603449519798826,13.781854178609356,0.3760341959172331,0.592299763419696,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,13,0.07,180,45,7.236838971376271,8.887446278662663,0.7200112202614324,0.8224245069881658,"{""C"": 0.1}",0
+03__age__Su2022__joined__linear_svm,03_vertical_one_plus_one,age,Su2022,joined,linear_svm,14,0.07,180,45,9.671386594992903,11.428149474054923,0.5811393880736944,0.767709618401655,"{""C"": 0.1}",0

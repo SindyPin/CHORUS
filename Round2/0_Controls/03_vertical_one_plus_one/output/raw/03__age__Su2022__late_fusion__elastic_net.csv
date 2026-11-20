@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,0,0.0,180,45,7.748564998207103,9.392747662493242,0.6893336915215935,0.8207683683947566
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,1,0.0,180,45,9.755753602074208,11.241158785734818,0.5788127897550783,0.7634029451518615
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,2,0.0,180,45,10.498904608810962,13.003872532929343,0.46207185505652937,0.7338277383611026
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,3,0.0,180,45,9.71295178149864,12.077741056929073,0.44499056077227317,0.6580519788696334
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,4,0.0,180,45,8.781754999216405,10.884502932998856,0.5684930980596523,0.7333663772897421
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,5,0.0,180,45,11.698183418447115,13.374767301590348,0.44124148420987797,0.6576806226154026
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,6,0.0,180,45,9.116790587655467,11.184010973798532,0.5654964191060494,0.7761302834240495
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,7,0.0,180,45,7.921014615783181,10.261235130132334,0.6347727349080492,0.8319544866299565
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,8,0.0,180,45,9.217248381759088,10.909475188257321,0.5112079137070105,0.7285014435102221
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,9,0.0,180,45,11.044291974435467,12.777101749097634,0.45003041653010056,0.7177900987889487
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,10,0.0,180,45,11.428936715148732,14.017808400624103,0.35448590820258374,0.5826083046905448
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,11,0.0,180,45,8.176562833790996,9.61764910412989,0.6627072116023538,0.8115361024921665
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,12,0.0,180,45,8.438794026584349,10.354989714662024,0.5939889578393149,0.7784453049153026
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,13,0.0,180,45,8.581560823449552,10.279777153372747,0.6254118359851912,0.8209743716067649
+03__age__Su2022__late_fusion__elastic_net,03_vertical_one_plus_one,age,Su2022,late_fusion,elastic_net,14,0.0,180,45,10.246303881639044,12.770116751993518,0.4769930808712337,0.7096287103886144

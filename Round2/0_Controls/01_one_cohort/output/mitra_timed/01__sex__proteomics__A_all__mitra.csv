@@ -1,0 +1,2 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,AUROC,AUPRC,balanced_accuracy,F1,MCC,sensitivity,specificity,Brier,log_loss,ECE
+01__sex__proteomics__A_all__mitra,01_one_cohort,sex,proteomics,A_all,mitra,0,768.95,394,99,0.6167355371900826,0.6027858054591815,0.6681818181818182,0.7727272727272727,0.40203144132156876,0.9272727272727272,0.4090909090909091,0.218762174144167,0.6286910118111412,0.13425163864487347

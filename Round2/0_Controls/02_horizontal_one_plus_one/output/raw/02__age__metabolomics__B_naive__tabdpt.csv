@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,0,1.56,386,76,10.310263483147873,12.006422979037128,0.16616048456724242,0.26697216710520255
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,1,1.4,386,76,10.187115418283563,12.562154204151547,0.27189425413436286,0.4563933564874778
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,2,1.39,387,75,10.380684967041015,12.634634855215992,0.318764015696694,0.4524999559973394
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,4,1.24,387,75,11.035502624511718,13.204336530285014,0.31351882224231087,0.39698572622203915
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,3,1.24,387,75,10.16141118367513,11.964473332517597,0.32651352604459094,0.5418683319329394
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,5,1.31,386,76,10.37077472084447,12.232638286210825,0.12645819225391974,0.3345870658213478
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,6,1.31,386,76,10.106117650082236,11.749395029034034,0.2874768127472055,0.3683376292410027
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,8,1.33,387,75,10.812186431884765,13.268273642514485,0.2401783985471141,0.4047592470231739
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,7,1.34,387,75,10.581880493164062,13.205140187719667,0.3133400913311466,0.40233970971874033
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,9,1.26,387,75,10.739723459879558,13.264850550767735,0.2689424483258369,0.3847063012054646
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,10,1.26,386,76,10.474361168710809,12.319117239197647,0.23535801700948245,0.3762096388161417
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,11,1.27,386,76,9.88695636548494,12.273725561874544,0.3033112881929415,0.39345388876453874
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,12,1.3,387,75,10.55855021158854,12.557877652320808,0.20524648334905415,0.34234435982226574
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,13,1.35,387,75,10.0619704691569,12.47924569507729,0.2936338443611498,0.5085146967238373
+02__age__metabolomics__B_naive__tabdpt,02_horizontal_one_plus_one,age,metabolomics,B_naive,tabdpt,14,1.33,387,75,11.239964497884115,13.564684334990096,0.28490433731108267,0.3954141160283912

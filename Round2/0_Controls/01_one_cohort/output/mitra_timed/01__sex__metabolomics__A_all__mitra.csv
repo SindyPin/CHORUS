@@ -1,0 +1,2 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,AUROC,AUPRC,balanced_accuracy,F1,MCC,sensitivity,specificity,Brier,log_loss,ECE
+01__sex__metabolomics__A_all__mitra,01_one_cohort,sex,metabolomics,A_all,mitra,0,510.16,301,76,0.616376306620209,0.6032710840206154,0.6452961672473868,0.717391304347826,0.30828685837467334,0.8048780487804879,0.4857142857142857,0.2426766827075074,0.6908254457701862,0.19966409982819303

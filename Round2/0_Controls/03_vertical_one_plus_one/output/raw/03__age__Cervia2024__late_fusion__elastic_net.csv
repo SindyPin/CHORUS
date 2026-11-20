@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,0,0.0,90,23,7.003374965528217,8.708448481364794,0.7661503935478291,0.8709837940041288
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,1,0.0,90,23,5.639194415087007,7.0926081699117045,0.8326060926063349,0.9110671936758895
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,2,0.0,90,23,6.255224782863411,7.424474484252926,0.8341363225586262,0.9258893280632412
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,3,0.0,91,22,6.6375798083957385,8.16828954986722,0.8110883424146119,0.9153020892151329
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,4,0.0,91,22,7.606806719997177,9.038839494961117,0.8109866745192166,0.8769057029926597
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,5,0.0,90,23,9.553740463640835,10.595178566955797,0.6770439098723977,0.8675889328063242
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,6,0.0,90,23,9.193957030216716,10.306169423720991,0.685483653202366,0.8337040037071214
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,7,0.0,90,23,7.628926537892003,9.168723259784876,0.7962370844157229,0.9179841897233202
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,8,0.0,91,22,5.965527153058653,7.306354316491307,0.8426135524051361,0.917560700169396
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,9,0.0,91,22,6.780095828223005,8.346281937605958,0.7723493519155579,0.8486730660643705
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,10,0.0,90,23,7.196475529634619,8.836660029478075,0.7839536582111107,0.8675889328063242
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,11,0.0,90,23,8.44126931427321,10.27405205023623,0.6644606462056469,0.8833992094861661
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,12,0.0,90,23,6.723933710140589,7.844529584998373,0.7819044659203511,0.8300395256916996
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,13,0.0,91,22,6.839159380354627,8.385778110145637,0.8044682769894158,0.8949745906267645
+03__age__Cervia2024__late_fusion__elastic_net,03_vertical_one_plus_one,age,Cervia2024,late_fusion,elastic_net,14,0.0,91,22,7.377498452610414,8.951057418380778,0.8140770773561474,0.9198193111236591

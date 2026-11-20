@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,0,0.0,90,23,9.632736313588778,10.752636360067275,0.6434791058224387,0.8299556130152852
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,1,0.0,90,23,7.178270366816741,9.550728008123487,0.6964706685805611,0.8893280632411068
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,2,0.0,90,23,10.376344250773423,12.260123655111633,0.5477177406734967,0.8893280632411068
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,3,0.0,91,22,9.06161235491284,10.0546257759634,0.7137613119985469,0.8927159796725015
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,4,0.0,91,22,9.375168160244716,12.158600097039654,0.6579936079941944,0.9141727837380011
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,5,0.0,90,23,10.699273117982905,12.11458484759194,0.5777749561070598,0.7934782608695652
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,6,0.0,90,23,11.876209507346744,13.274994790980138,0.4781840063467302,0.692364735740176
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,7,0.0,90,23,10.176893875182444,12.75277536208433,0.6057998034496095,0.8982213438735178
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,8,0.0,91,22,8.10525064176487,9.348968433896584,0.7423125538523896,0.8712591756070017
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,9,0.0,91,22,7.700682804103761,9.618772995598539,0.6976415295489967,0.9220779220779223
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,10,0.0,90,23,8.317123998551114,9.77740670807614,0.7355046842948243,0.9130434782608695
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,11,0.0,90,23,9.27665256475901,11.199163636121641,0.6013138753419522,0.7845849802371542
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,12,0.0,90,23,8.686035179529682,9.807729486097271,0.6590820096594542,0.8191699604743082
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,13,0.0,91,22,8.247398950201127,10.534126373993013,0.6914485851794545,0.9107848673066066
+03__age__Cervia2024__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,late_fusion,taco_ensemble,14,0.0,91,22,11.93395910788221,13.978071549821708,0.5466028665149623,0.9322416713721063

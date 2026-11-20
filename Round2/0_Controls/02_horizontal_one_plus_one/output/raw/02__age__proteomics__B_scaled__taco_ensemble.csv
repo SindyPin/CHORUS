@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,0,17.99,654,99,12.236159524704174,14.996703419961687,0.05020005830719376,0.16181317933977674
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,1,15.57,654,99,10.94981794837747,13.50277762406845,0.1520101286381934,0.28999890509672616
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,2,15.57,654,99,11.282747213212312,13.838582165399076,0.19644277025931844,0.30653722335069433
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,4,15.26,655,98,11.786085106329097,13.978973284756584,0.19253033706962186,0.2904880328849521
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,3,15.47,655,98,11.404650659221467,13.808227618380991,0.18974216675908695,0.36024483780996097
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,6,15.37,654,99,11.144519205382343,13.54527175693708,0.2205280362594486,0.3512626784214958
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,5,15.64,654,99,10.722715037689628,12.802254825711302,0.2488976157968048,0.346586924230606
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,7,14.87,654,99,12.643273970139521,15.274499746897918,0.055757984039846775,0.17314997934846885
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,8,15.4,655,98,12.893829417754976,16.06135517160462,-0.07741288495773069,0.11090170669003602
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,9,15.24,655,98,11.184250138711993,13.227526382570533,0.23006620813377565,0.33744724829511735
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,10,15.29,654,99,11.011021090016095,13.536680776655784,0.2042548858423361,0.29023235517836515
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,11,15.24,654,99,12.397258541900051,14.698930444197703,0.04185093899184278,0.13613347161937514
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,12,15.51,654,99,11.535664904850906,14.501451251769188,0.2341435945001109,0.3738818122177797
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,13,15.45,655,98,11.461806054298012,13.710251367537248,0.10230421134257484,0.29184992167799984
+02__age__proteomics__B_scaled__taco_ensemble,02_horizontal_one_plus_one,age,proteomics,B_scaled,taco_ensemble,14,15.71,655,98,11.192689933795176,13.898360512545851,0.1458489629047759,0.2494052447547899

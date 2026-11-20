@@ -1,0 +1,29 @@
+control,layer,question,comparison,metric,models_evaluated,improves,does_not_change,gets_worse,note
+age,metabolomics,adding one cohort,B_naive vs A_shared,MAE,16,1,13,2,"reported only: different platforms or scales (Amendment 1, item 5)"
+age,metabolomics,adding one cohort,B_scaled vs A_shared,MAE,16,0,11,5,
+age,proteomics,adding one cohort,B_naive vs A_shared,MAE,16,0,15,1,"reported only: different platforms or scales (Amendment 1, item 5)"
+age,proteomics,adding one cohort,B_scaled vs A_shared,MAE,16,0,12,4,
+age,transcriptomics,adding one cohort,B_naive vs A_shared,MAE,17,0,10,7,"reported only: different platforms or scales (Amendment 1, item 5)"
+age,transcriptomics,adding one cohort,B_scaled vs A_shared,MAE,17,0,9,8,
+sex,metabolomics,adding one cohort,B_naive vs A_shared,AUROC,18,0,18,0,"reported only: different platforms or scales (Amendment 1, item 5)"
+sex,metabolomics,adding one cohort,B_scaled vs A_shared,AUROC,18,0,18,0,
+sex,proteomics,adding one cohort,B_naive vs A_shared,AUROC,18,0,14,4,"reported only: different platforms or scales (Amendment 1, item 5)"
+sex,proteomics,adding one cohort,B_scaled vs A_shared,AUROC,18,0,7,11,
+sex,transcriptomics,adding one cohort,B_naive vs A_shared,AUROC,19,0,18,1,"reported only: different platforms or scales (Amendment 1, item 5)"
+sex,transcriptomics,adding one cohort,B_scaled vs A_shared,AUROC,19,0,19,0,
+age,Cervia2024,adding one layer,joined vs layer_1,MAE,16,0,16,0,
+age,Cervia2024,adding one layer,joined vs layer_2,MAE,16,14,2,0,
+age,Cervia2024,adding one layer,late_fusion vs layer_1,MAE,16,0,13,3,
+age,Cervia2024,adding one layer,late_fusion vs layer_2,MAE,16,16,0,0,
+age,Su2022,adding one layer,joined vs layer_1,MAE,16,7,9,0,
+age,Su2022,adding one layer,joined vs layer_2,MAE,16,2,14,0,
+age,Su2022,adding one layer,late_fusion vs layer_1,MAE,16,11,5,0,
+age,Su2022,adding one layer,late_fusion vs layer_2,MAE,16,1,15,0,
+sex,Cervia2024,adding one layer,joined vs layer_1,AUROC,18,0,18,0,
+sex,Cervia2024,adding one layer,joined vs layer_2,AUROC,18,16,2,0,
+sex,Cervia2024,adding one layer,late_fusion vs layer_1,AUROC,18,0,18,0,
+sex,Cervia2024,adding one layer,late_fusion vs layer_2,AUROC,18,17,1,0,
+sex,Su2022,adding one layer,joined vs layer_1,AUROC,18,5,13,0,
+sex,Su2022,adding one layer,joined vs layer_2,AUROC,18,7,11,0,
+sex,Su2022,adding one layer,late_fusion vs layer_1,AUROC,18,3,15,0,
+sex,Su2022,adding one layer,late_fusion vs layer_2,AUROC,18,9,9,0,

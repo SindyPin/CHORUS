@@ -1,0 +1,5 @@
+control,cohort,layer_1,layer_2,n_participants,n_features_layer_1,n_features_layer_2,n_female,n_male,age_min,age_median,age_max
+sex,Su2022,Su2022,Su2022_metabolomics,225,441,679,114.0,111.0,,,
+sex,Cervia2024,Cervia2024_SomaScan,Cervia2024_MS,113,6402,308,54.0,59.0,,,
+age,Su2022,Su2022,Su2022_metabolomics,225,441,679,,,18.0,56.0,89.0
+age,Cervia2024,Cervia2024_SomaScan,Cervia2024_MS,113,6402,308,,,19.8333333333333,43.6666666666667,98.0

@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,0,0.0,180,45,10.436973611376509,12.219489535509458,0.47420678893208246,0.7378937729194407
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,1,0.0,180,45,11.40761239474515,12.967006501743166,0.4395556861273977,0.6602706823706996
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,2,0.0,180,45,10.954518719196281,14.02564691452404,0.3742156997249826,0.6789916795936841
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,3,0.0,180,45,10.582223561532492,13.014183814615535,0.35558919475896145,0.57834204575137
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,4,0.0,180,45,10.926445391101428,12.864949357224917,0.39718131247680166,0.6298896798560317
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,5,0.0,180,45,11.525071511743363,13.643325281949622,0.4185770734095251,0.675806717145292
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,6,0.0,180,45,10.546413392039467,12.805843140653597,0.4303415464442122,0.6592197694736153
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,7,0.0,180,45,10.46800219614769,13.653272805784644,0.35339739724820574,0.5671427866770433
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,8,0.0,180,45,9.443237173803363,11.045723279941962,0.49892265677585346,0.763967353980632
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,9,0.0,180,45,11.305250180340222,13.254368173706606,0.4081767470954585,0.669194535422473
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,10,0.0,180,45,12.134390292641843,15.081709239603171,0.2527832206150936,0.46413516634847063
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,11,0.0,180,45,9.611384272589204,11.581645062289564,0.5108864412600049,0.7336191442316075
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,12,0.0,180,45,10.42530673323381,12.301650316031632,0.42698596841346326,0.6102504627246551
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,13,0.0,180,45,9.44781655859475,11.721785941030152,0.512949242671807,0.7776021406539547
+03__age__Su2022__late_fusion__taco_ensemble,03_vertical_one_plus_one,age,Su2022,late_fusion,taco_ensemble,14,0.0,180,45,11.603917405307616,13.781167952847456,0.3908983867020257,0.640538141038255

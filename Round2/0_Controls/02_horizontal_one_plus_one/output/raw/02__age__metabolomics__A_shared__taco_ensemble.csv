@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,0,3.16,301,76,10.260885095270693,12.092746829952914,0.15412709208815722,0.259148606493277
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,1,2.92,301,76,11.188701784228728,13.971897462311718,0.0993065646363187,0.24165621977654705
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,2,2.98,302,75,10.571483838064305,12.981745029225118,0.2808187770775361,0.4393208983369778
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,4,2.56,302,75,11.16208231395294,14.215176072825221,0.20439051502637962,0.3768759954142761
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,3,2.64,302,75,11.438900130181864,13.545801228473701,0.13672114642324085,0.24304095421658634
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,6,2.53,301,76,10.461130883107183,12.81875345109971,0.1518755564448261,0.2765131541457119
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,5,2.59,301,76,11.103645577713843,12.937435211168937,0.0228982233410977,0.235225758055157
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,8,2.56,302,75,11.376177918903972,14.199636317186327,0.12976361104584277,0.2803000481758583
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,7,2.61,302,75,11.252995701208713,14.080564719865935,0.21927910035687181,0.3580227115204397
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,9,2.56,302,75,11.393310759412984,14.04901718451575,0.1799530221891561,0.30008258521391074
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,10,2.57,301,76,10.415019348312018,12.377190369251828,0.22813187947582736,0.44132758000728733
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,11,2.58,301,76,10.94829137390939,13.20650742856154,0.19339312892885807,0.36511361004938464
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,12,2.63,302,75,11.004997340017411,13.598639263662593,0.06805374030762401,0.1708376507225669
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,14,2.53,302,75,11.935454185381206,14.440700313656032,0.18955924790713108,0.30070602315725925
+02__age__metabolomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,metabolomics,A_shared,taco_ensemble,13,2.61,302,75,10.991510026641741,13.735660830702738,0.14423931825576342,0.32464441300542224

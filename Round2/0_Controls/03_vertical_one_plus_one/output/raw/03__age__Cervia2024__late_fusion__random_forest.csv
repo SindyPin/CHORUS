@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,0,0.0,90,23,9.520789855072433,10.761220717142974,0.6429096223520142,0.8566486464297136
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,1,0.0,90,23,7.109949275362318,9.12565786772218,0.722887525740254,0.9229249011857708
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,2,0.0,90,23,10.282170289855037,11.463954333757819,0.6045525796667754,0.9071146245059288
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,3,0.0,91,22,9.036499999999977,10.67029814017642,0.6776337117437319,0.8554488989271599
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,4,0.0,91,22,9.06464772727272,11.556287040860921,0.6910389623596962,0.8712591756070017
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,5,0.0,90,23,9.513184782608679,10.843713827502338,0.6617147880955293,0.91600790513834
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,6,0.0,90,23,11.29945289855072,12.726856937474572,0.5203869495736118,0.7487027656290982
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,7,0.0,90,23,9.749811594202873,11.646535516877673,0.6712233788500213,0.8646245059288538
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,8,0.0,91,22,7.755723484848477,9.165894501172724,0.7523059450128423,0.8938452851496332
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,9,0.0,91,22,7.377890151515135,9.010753736820158,0.7346585915667778,0.9243365330321853
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,10,0.0,90,23,7.796409420289847,9.509889432470482,0.7497802657055894,0.8853754940711462
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,11,0.0,90,23,9.924605072463763,11.980408903113831,0.5437496370096493,0.7865612648221343
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,12,0.0,90,23,8.346876811594202,9.26412724970201,0.6958260722894344,0.8586956521739131
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,13,0.0,91,22,8.147992424242414,9.783607983084082,0.7338487076039846,0.8599661208356861
+03__age__Cervia2024__late_fusion__random_forest,03_vertical_one_plus_one,age,Cervia2024,late_fusion,random_forest,14,0.0,91,22,10.158314393939357,12.193367701515253,0.6549900718015675,0.9401468097120271

@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,0,10.89,380,95,1.7567385442716628,2.4098923028374264,-0.3361907338055765,0.17149413188052035
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,1,9.26,380,95,1.5837506488175674,2.369628885550991,-0.25096637925252097,0.23835953178030933
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,2,10.06,380,95,1.9110240685101754,2.982029209922263,-0.33048402411616573,0.2645051884674297
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,3,9.43,380,95,1.86048279187488,2.52499279813617,-0.3575803933446988,-0.02917594562245781
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,4,9.61,380,95,1.578205531973367,2.316860865812017,-0.24109224139389118,0.1525500984777098
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,5,9.52,380,95,1.9378255897955037,2.978899669539452,-0.24408045564466785,0.060058580053068474
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,6,9.42,380,95,1.6942844992401673,2.2701808262190455,-0.38487262187180993,0.038845772227234836
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,7,9.36,380,95,1.6342040279825494,2.288888612271542,-0.2732825709985929,0.16904202895518958
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,8,9.48,380,95,1.8181713747886346,2.5998609490028097,-0.1211629206249194,0.09917578928358309
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,9,9.89,380,95,1.6968249032541929,2.276436440786387,-0.49823872027758975,0.01486007216945455
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,10,9.44,380,95,1.8081298271548765,3.030898017405739,-0.21760528267035117,0.12294314271780499
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,11,9.48,380,95,1.717736670957647,2.410165114410085,-0.16619845409624046,0.16953094097531865
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,12,9.68,380,95,1.738440893281073,2.2921154604532648,-0.5119733542264404,0.0932410161642491
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,13,9.38,380,95,2.009054521974082,4.125415432574621,-2.5900558324188183,0.2461297097604106
+02__age__transcriptomics__A_shared__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,A_shared,taco_ensemble,14,9.81,380,95,1.5672663842086236,2.2162710528633918,-0.3062680590622311,0.21035729250445856

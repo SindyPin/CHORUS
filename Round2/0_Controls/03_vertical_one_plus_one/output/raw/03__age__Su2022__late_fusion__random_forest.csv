@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,0,0.0,180,45,10.850155555555554,12.540493317427527,0.44621895196882433,0.7165323020093353
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,1,0.0,180,45,11.624222222222222,13.333452026138367,0.407431972031287,0.6861856307549686
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,2,0.0,180,45,11.191933333333331,13.657096497181723,0.40667094493142963,0.6736530729107985
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,3,0.0,180,45,9.657266666666668,11.96306359406133,0.45548009045969184,0.7111260038160371
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,4,0.0,180,45,11.434644444444444,13.27422224128823,0.35821625359279385,0.6023398330233624
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,5,0.0,180,45,12.385155555555553,14.066194466008051,0.38197659837481657,0.5978974672022768
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,6,0.0,180,45,10.18911111111111,12.437364942426958,0.46265285415065593,0.7524054891612781
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,7,0.0,180,45,9.753905434243425,12.444595462603516,0.4628130179696325,0.7706310600970359
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,8,0.0,180,45,9.928644444444446,11.627384644307018,0.4447602791185835,0.6700288364707174
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,9,0.0,180,45,12.137577777777778,14.20303235150078,0.32042699764267857,0.5391667864961633
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,10,0.0,180,45,11.869533333333333,14.644002968982067,0.2955257801691693,0.522481703595402
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,11,0.0,180,45,9.585555555555556,11.311164977824149,0.5334653837676648,0.7547793334038914
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,12,0.0,180,45,10.153133333333333,12.245653270537355,0.43219080871326165,0.6665792451681112
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,13,0.0,180,45,9.873800000000001,11.432645626547785,0.5366809740208589,0.791510257266482
+03__age__Su2022__late_fusion__random_forest,03_vertical_one_plus_one,age,Su2022,late_fusion,random_forest,14,0.0,180,45,12.48051111111111,14.224427964284224,0.3510857381407153,0.6069817480999602

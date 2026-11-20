@@ -1,0 +1,2 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+01__age__transcriptomics__A_all__mitra,01_one_cohort,age,transcriptomics,A_all,mitra,0,712.62,380,95,1.5355263157894736,2.0913748311124256,-0.006321938892571266,0.32958528428579037

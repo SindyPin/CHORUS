@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,0,22.32,531,95,1.7195518539947503,2.7531539457125715,-0.7439506005035976,0.34048353730976755
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,2,18.66,531,95,1.946137447956322,3.2533004256673497,-0.5835588864110979,0.2973732528888222
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,1,18.87,531,95,1.6423687391635198,2.278184371118548,-0.156279174524798,0.16990797241963992
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,3,18.36,531,95,1.672104038020897,2.2474694236976,-0.0755555696574648,0.166908483344404
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,4,19.1,531,95,1.3528131726206258,1.9339104134776979,0.13527730636365087,0.3758633442403806
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,5,18.78,531,95,1.727763799620623,2.7802783089252916,-0.08371044152299545,0.30795671955395537
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,6,19.05,531,95,1.5812723190241125,2.09470800576602,-0.17906001624241696,0.1377562041958354
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,7,18.23,531,95,1.6716850912062768,2.2864152610287327,-0.27053226373222383,0.20186368707859845
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,8,18.79,531,95,1.7203303670435126,2.564958197260549,-0.09126208871694774,0.2686197561455126
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,9,18.24,531,95,1.4213357629240748,2.0428968110048764,-0.20659860674767394,0.28400135001319987
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,10,18.8,531,95,1.7677098449325968,2.787105115401497,-0.02960483465680963,0.23945708226642595
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,11,18.45,531,95,1.519960067698945,2.1627292589191454,0.06096197062220898,0.4163699584564913
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,12,18.82,531,95,1.530673023353801,1.9716303223681828,-0.11872188475564505,0.18087120947522595
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,13,18.68,531,95,1.832216497588423,2.7108569765884707,-0.5501689548979387,0.09351612962576428
+02__age__transcriptomics__B_naive__taco_ensemble,02_horizontal_one_plus_one,age,transcriptomics,B_naive,taco_ensemble,14,19.05,531,95,1.328828771182147,1.8560300554092994,0.08387113129395363,0.47130538001815736

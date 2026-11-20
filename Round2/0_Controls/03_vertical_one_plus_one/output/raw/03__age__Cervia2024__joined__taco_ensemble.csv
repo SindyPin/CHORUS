@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,0,1.8,90,23,9.1591979077419,11.00547759936034,0.6265152635057312,0.8408305525544969
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,1,1.68,90,23,7.073891663409212,8.749722695848433,0.745248770081077,0.8853754940711462
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,2,1.66,90,23,10.437338714181442,12.183745149255106,0.553335471865531,0.8784584980237155
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,3,1.67,91,22,8.248550311242523,9.255409204700713,0.7574575502615174,0.9040090344438172
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,4,1.66,91,22,8.324811661290608,10.834910089383651,0.7284075470527258,0.865612648221344
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,5,1.65,90,23,10.32557524851336,12.123165843148826,0.5771766038843058,0.7697628458498025
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,6,1.63,90,23,10.745725248286803,12.499510707844026,0.5373690398144808,0.7314060020667099
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,7,1.63,90,23,10.090475006218554,12.293970736065178,0.6336537359273042,0.8715415019762847
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,8,1.67,91,22,7.810434237756244,9.069161717699364,0.7575064637547967,0.875776397515528
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,9,1.68,91,22,7.641647182971036,9.737218131638903,0.6901492247950214,0.9548277809147376
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,10,1.66,90,23,7.80354209944582,9.367845491822386,0.7571992289440725,0.900197628458498
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,11,1.65,90,23,9.892881151591286,12.256898306093955,0.5224475183796278,0.7519762845849803
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,12,1.65,90,23,8.391141548082896,9.422581809397496,0.6853318435272528,0.8478260869565217
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,13,1.67,91,22,7.382142027206356,9.326593296472936,0.7581330256446503,0.8893280632411069
+03__age__Cervia2024__joined__taco_ensemble,03_vertical_one_plus_one,age,Cervia2024,joined,taco_ensemble,14,1.68,91,22,10.409744510330972,12.17098306444263,0.6562556504884813,0.9435347261434219

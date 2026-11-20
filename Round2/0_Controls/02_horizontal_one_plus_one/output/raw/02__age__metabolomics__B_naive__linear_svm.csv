@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,best_params,grid_points_failed
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,0,0.11,386,76,10.684454482735802,12.72696032287104,0.06307554607389965,0.22808688245536957,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,2,0.17,387,75,11.486945628777997,14.00208191247668,0.16332379520626605,0.3694121173135479,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,1,0.19,386,76,10.448172268236794,13.224145477142713,0.19313392765470816,0.40526351273784667,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,3,0.19,387,75,10.804254321211365,12.820243501019117,0.22672449387329408,0.4152530743111472,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,4,0.11,387,75,11.98458884245991,14.249615882279816,0.20053072020382012,0.35524344705772987,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,5,0.14,386,76,11.271936506146954,13.765952605607119,-0.10625683530327001,0.2866638693433392,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,6,0.14,386,76,10.768487182567995,13.009808333554453,0.12640570831199605,0.3293751582828102,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,7,0.14,387,75,11.428037404490833,14.049601771482234,0.2227089120022201,0.3773206722002392,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,8,0.15,387,75,11.389011496174682,14.042290208584578,0.1489429273778965,0.3209040612474868,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,9,0.13,387,75,10.992169210610818,13.605063685897715,0.2309616400939999,0.3759962920923077,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,13,0.12,387,75,10.333131152522222,12.783179073232903,0.2588076000509941,0.45316431872392127,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,11,0.16,386,76,10.037077717372345,12.389240425466454,0.29013572674374766,0.5981959891926962,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,10,0.16,386,76,11.276822643140202,13.390101939271789,0.09662778386810578,0.3493609686715884,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,12,0.15,387,75,11.112858900836898,13.46260539691022,0.08660591281624042,0.3115961450434353,"{""C"": 0.1}",0
+02__age__metabolomics__B_naive__linear_svm,02_horizontal_one_plus_one,age,metabolomics,B_naive,linear_svm,14,0.15,387,75,11.919443663447558,14.404510174875426,0.19361628259943287,0.27111508160645026,"{""C"": 0.1}",0

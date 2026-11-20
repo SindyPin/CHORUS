@@ -1,0 +1,2 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+01__age__metabolomics__A_all__mitra,01_one_cohort,age,metabolomics,A_all,mitra,0,588.85,301,76,9.69420744243421,11.141454084462893,0.2819760284659918,0.41547145650339407
