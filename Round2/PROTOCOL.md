@@ -225,3 +225,19 @@ and Amendment 1 are unchanged; where they differ, this amendment applies.
 2. After this removal, the 12 hour limit applies per step. If a step still exceeds it, the step stops and the
    estimate is reported per model, as in Amendment 1, item 8.
 3. Every summary README lists the models that were not run, and why, next to the results.
+
+## Amendment 3 (20 November 2026)
+
+Added on 20 November 2026, to keep each step within the time limit. The text above and Amendments 1 and 2 are
+unchanged; where they differ, this amendment applies.
+
+1. Cross validation is 5 folds and 3 repeats for every task, arm and model. These are the first 3 of the 10 seeded
+   repeats. For steps already run with 10 repeats, the raw files are kept and every summary is computed on the first
+   3 repeats, so that every step uses the same folds.
+2. CatBoost and histogram gradient boosting use a reduced search: at most 4 settings each and at most 300
+   iterations.
+3. The TabPFN 2.5 jobs that failed with a licence error before the licence was accepted are rerun. Their rows are
+   removed from failures.csv once they succeed.
+4. Before each step, the estimated time is printed as before. The 12 hour limit per step stays.
+
+Every summary README states that its results rest on 15 folds.
