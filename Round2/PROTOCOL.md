@@ -318,3 +318,16 @@ TabPFN versions.
 If the full clinical table from Synapse syn35874390 is in data/clinical/GSE215865, it is used after removing any
 variable that defines the label. If it is not there, the report states that the clinical layer was tested with sex
 only.
+
+## Amendment 6 (21 November 2026)
+
+Added on 21 November 2026, before any model of Round2/5_Clinical was run. Amendment 4 is reserved for the size
+matched controls, which are still to come. The text above and the earlier amendments are unchanged; where they
+differ, this amendment applies.
+
+In 5_Clinical step 03 (horizontal, one plus one), the partner is chosen as follows:
+- the unit that shares the most kept variables with the anchor;
+- it must share at least age and sex;
+- ties go to the larger unit.
+
+If no unit qualifies, this is reported and step 03 is skipped for that task.
