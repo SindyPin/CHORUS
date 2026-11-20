@@ -241,3 +241,80 @@ unchanged; where they differ, this amendment applies.
 4. Before each step, the estimated time is printed as before. The 12 hour limit per step stays.
 
 Every summary README states that its results rest on 15 folds.
+
+## Amendment 5 (21 November 2026)
+
+Added on 21 November 2026, before any run under it. The text above and the earlier amendments are unchanged; where
+they differ, this amendment applies.
+
+### A. New foundation models
+
+TabPFN 3, TabPFN 3.5 and TabPFN 3.5 Fast are added for every task.
+- Each is pinned by its explicit version, never the package default.
+- The package version and the checkpoint name are recorded.
+- The versions that the existing tabpfn_v2 and tabpfn_2_5 jobs actually loaded are checked and stated.
+- If a licence has to be accepted, the work stops and reports exactly which one.
+- The time limits still apply. A version too slow on this hardware is written to failures.csv with the measured time.
+
+### B. Clinical variables as predictors of Long COVID
+
+This replaces the clinical layer rule in Amendment 1, item 4.
+
+1. Eligible variables: anything recorded about the participant that does not define the label. This includes:
+   - demographics (age, sex, BMI, ethnicity);
+   - acute illness (severity, hospitalisation, intensive care, WHO scale);
+   - comorbidities;
+   - vaccination before infection;
+   - infection wave or variant;
+   - smoking.
+2. Excluded, because they define the label or come after it:
+   - symptoms, symptom counts and scores;
+   - questionnaire items used to define LC;
+   - LC subgroups or trajectories;
+   - treatment given for LC;
+   - outcome measures used as the case definition (for example DLCO in GSE228320).
+
+   Time since infection is not used as a predictor in the main analysis, because recruitment design often sets it.
+   It is run as a separate sensitivity analysis and marked as such.
+3. Early detection: only variables known at the acute stage.
+4. Missing values and encoding:
+   - A variable is kept in a cohort if it is recorded for at least 50 percent of participants.
+   - Missing values are filled with the training fold median (or most frequent category), and a missing indicator is
+     added.
+   - Categorical variables are one hot encoded inside the training fold.
+   - Severity is mapped to the WHO ordinal scale where possible, and the mapping is recorded.
+5. Feature selection does not apply to the clinical layer, which keeps all eligible variables. Omics keep the protocol
+   rule.
+6. Every variable decision is written to Round2/5_Clinical/variables.csv: kept, or excluded and why, and the missing
+   rate per cohort.
+
+### C. New folder: Round2/5_Clinical
+
+Run for detection and early detection, with the same seed, 15 folds, models and metrics as the protocol, plus the new
+TabPFN versions.
+
+- **01_univariate.** For each cohort and each eligible variable: the AUROC of the variable alone, and the odds ratio
+  with its 95 percent interval. Where a variable is recorded in at least three cohorts, a random effects pooled
+  estimate and heterogeneity (I squared) are added. It answers: which clinical variables separate LC from recovered,
+  and is the effect consistent across cohorts?
+- **02_clinical_alone.** Every model on all eligible clinical variables, per cohort with at least 10 per class. Also
+  run with age and sex only.
+- **03_horizontal_one_plus_one.** The clinical model on the anchor (the largest cohort with clinical data) plus a
+  partner, on shared variables, with arms A_shared, B_naive and B_scaled. Each person is counted once: Cervia SomaScan
+  and mass spectrometry are the same people, and so are the Su2022 layers.
+- **04_vertical.** In every cohort with both omics and clinical data, on the same folds: omics alone, clinical alone,
+  omics plus clinical joined, and late fusion. The key differences are:
+  - omics plus clinical minus clinical alone (does omics add anything beyond clinical data?);
+  - omics plus clinical minus omics alone.
+- **05_summary.** Tables for every model and metric, the number of models that improve per comparison, failures.csv,
+  and a README that answers in plain words:
+  - which clinical variables predict Long COVID;
+  - does a clinical model beat the omics models;
+  - does omics add value beyond clinical data;
+  - does combining cohorts help the clinical model?
+
+### D. GSE215865 (early detection)
+
+If the full clinical table from Synapse syn35874390 is in data/clinical/GSE215865, it is used after removing any
+variable that defines the label. If it is not there, the report states that the clinical layer was tested with sex
+only.
