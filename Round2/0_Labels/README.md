@@ -93,8 +93,13 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
      listed in `sensitivity_anchors` when their sizes span fewer than five participants. **Interpretation:** "differ by
      fewer than five" is read as the range of the three sizes.
    - **Different platforms or scales (Amendment 1, item 5).** `different_platform_or_scale` is true when the anchor's
-     and partner's platform descriptions differ. It is true for every pair here, so B_naive is run and reported but
-     only B_scaled is interpretable.
+     and partner's platform descriptions differ.
+     - **Reading of 20 November 2026:** two cohorts quantified with the same pipeline and the same reference count as
+       the same scale, so B_naive is interpretable for them.
+     - Here these are the Round1 re-quantifications: salmon 1.10.3 against `data/ref/gencode_v47/salmon_index_v47_k31`,
+       per each run's `cmd_info.json`. They cover GSE224615, PRJNA1149196_SA, PRJNA1149196_QLD and PRJNA1184005.
+     - So PRJNA1149196_SA with GSE224615 (RNA detection and subtyping) is the same scale. Every other pair is
+       flagged.
    - **Shared features.** Feature keys present in both matrices as the Round1 loader reads them:
      - transcriptomics: Ensembl genes, before any expression filter;
      - proteomics: UniProt keys;
@@ -125,8 +130,10 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
 
 ### Horizontal (Amendment 1)
 
-Participants are LC / recovered; "shared" is the number of shared features. Every pair is measured on different
-platforms or scales, so only B_scaled is interpretable.
+Participants are LC / recovered; "shared" is the number of shared features. Scale:
+- **Same scale:** the two RNA pairs (PRJNA1149196_SA with GSE224615) share pipeline and reference, so B_naive is
+  interpretable.
+- **Different platforms or scales:** every other pair, so only B_scaled is interpretable there.
 
 | task | layer | anchor | partner | shared | note |
 |---|---|---|---|---|---|

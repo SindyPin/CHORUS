@@ -56,6 +56,10 @@ CLINICAL_LAYER_EXCLUDED_KINDS = {"timing", "treatment"}
 PLATFORM_FALLBACK = {"GSE215865": "Illumina NovaSeq 6000 RNA-seq", "GSE224615": "Illumina HiSeq 4000 RNA-seq (salmon re-quantified)",
                      "GSE226260_WB": "Illumina NovaSeq 6000 / NovaSeq X Plus RNA-seq", "GSE226260_PBMC": "Illumina NovaSeq 6000 / NovaSeq X Plus RNA-seq",
                      "GSE251849": "Illumina NovaSeq 6000 RNA-seq", "GSE270045": "Illumina NovaSeq X Plus RNA-seq"}
+# Amendment 1, item 5, reading of 20 November 2026: cohorts quantified with the same pipeline and the same reference
+# count as the same scale (salmon 1.10.3 against data/ref/gencode_v47/salmon_index_v47_k31; cmd_info.json of each run)
+SAME_PIPELINE = {"salmon 1.10.3, GENCODE v47 index (Round1 re-quantification)":
+                 {"GSE224615", "PRJNA1149196_SA", "PRJNA1149196_QLD", "PRJNA1184005"}}
 REC: dict = {}  # (study, variable) -> participants with the variable recorded
 LAYER = {  # broad layer used for "same layer" (anchor and partner)
     "bulk_rna": "transcriptomics", "olink": "proteomics", "somascan": "proteomics", "ms_proteomics": "proteomics",
@@ -517,7 +521,8 @@ def anchors(A: pd.DataFrame, entries: dict) -> pd.DataFrame:
                 if s not in feats and PARENT.get(s, s) in entries:
                     feats[s] = features(s, entries, A.set_index("study_id").at[s, "layer_detail"])
             shared = len(feats[anchor] & feats[partner]) if anchor in feats and partner in feats else np.nan
-            diff = bool(anchor and partner and plat[anchor] != plat[partner])
+            same = any(anchor in g and partner in g for g in SAME_PIPELINE.values())
+            diff = bool(anchor and partner and plat[anchor] != plat[partner] and not same)
 
             def counts(s):
                 r = d.set_index("study_id").loc[s]
@@ -539,6 +544,8 @@ def anchors(A: pd.DataFrame, entries: dict) -> pd.DataFrame:
                 notes.append(f"too small to interpret (fewer than {MIN_LC_SUBTYPING} LC)")
             if diff:
                 notes.append("different platforms or scales: B_naive run and reported, only B_scaled interpretable")
+            elif anchor and partner and same:
+                notes.append("same pipeline and reference (salmon 1.10.3, GENCODE v47): same scale, B_naive interpretable")
             rows.append(dict(kind="horizontal", task=task, layer=layer, anchor=anchor, anchor_LC_vs_recovered=counts(anchor) if anchor else "",
                              anchor_n_features=len(feats.get(anchor, ())) or np.nan, partner=partner,
                              partner_LC_vs_recovered=counts(partner) if partner else "", partner_n_features=len(feats.get(partner, ())) or np.nan,
