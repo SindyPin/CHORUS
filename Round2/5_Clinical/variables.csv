@@ -1,0 +1,843 @@
+task,unit,variable,status,kind,type,reason,n,n_recorded,missing_rate,kept
+3_Detection,Bansal2025,lc_status,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,case_definition,excluded,design,,"study design or label column, not a participant characteristic",32,12,0.625,False
+3_Detection,Bansal2025,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,32,32,0.0,False
+3_Detection,Bansal2025,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",32,30,0.062,False
+3_Detection,Bansal2025,age,eligible,demographic,numeric,eligible; kept,32,32,0.0,True
+3_Detection,Bansal2025,sex,eligible,demographic,binary,eligible; kept,32,32,0.0,True
+3_Detection,Bansal2025,platform,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,control_type,excluded,design,,"study design or label column, not a participant characteristic",32,20,0.375,False
+3_Detection,Bansal2025,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,32,32,0.0,False
+3_Detection,Bansal2025,collection_country,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,notes,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,study_group,excluded,design,,"study design or label column, not a participant characteristic",32,32,0.0,False
+3_Detection,Bansal2025,disease_status_subgroup,eligible,acute illness,categorical,eligible; kept,32,32,0.0,True
+3_Detection,Bansal2025,comorbidity,eligible,comorbidity,binary,eligible; kept,32,32,0.0,True
+3_Detection,Bansal2025,vaccinated_before_sampling,excluded,vaccination,,includes vaccination after infection: may follow the label,32,32,0.0,False
+3_Detection,Bansal2025,who_severity,eligible,acute illness,numeric,eligible; dropped: constant in this unit,32,30,0.062,False
+3_Detection,Bansal2025,icu,eligible,acute illness,binary,eligible; dropped: constant in this unit,32,30,0.062,False
+3_Detection,Buggert2025_SE,lc_status,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,case_definition,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,95,0,1.0,False
+3_Detection,Buggert2025_SE,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",95,0,1.0,False
+3_Detection,Buggert2025_SE,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),95,0,1.0,False
+3_Detection,Buggert2025_SE,age,eligible,demographic,numeric,eligible; kept,95,95,0.0,True
+3_Detection,Buggert2025_SE,sex,eligible,demographic,binary,eligible; kept,95,95,0.0,True
+3_Detection,Buggert2025_SE,bmi,eligible,demographic,numeric,eligible; kept,95,94,0.011,True
+3_Detection,Buggert2025_SE,platform,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,control_type,excluded,design,,"study design or label column, not a participant characteristic",95,0,1.0,False
+3_Detection,Buggert2025_SE,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,95,95,0.0,False
+3_Detection,Buggert2025_SE,collection_country,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,notes,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,cohort_arm,excluded,design,,"study design or label column, not a participant characteristic",95,95,0.0,False
+3_Detection,Buggert2025_SE,borg_cr10,excluded,score,,questionnaire score used with the LC definition,95,95,0.0,False
+3_Detection,Buggert2025_SE,dyspnoea12,excluded,score,,questionnaire score used with the LC definition,95,0,1.0,False
+3_Detection,Buggert2025_SE,nijmegen,excluded,score,,questionnaire score used with the LC definition,95,0,1.0,False
+3_Detection,Buggert2025_SE,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),95,0,1.0,False
+3_Detection,Buggert2025_SE,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),95,0,1.0,False
+3_Detection,Buggert2025_UK,lc_status,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,case_definition,excluded,design,,"study design or label column, not a participant characteristic",102,51,0.5,False
+3_Detection,Buggert2025_UK,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,102,0,1.0,False
+3_Detection,Buggert2025_UK,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",102,102,0.0,False
+3_Detection,Buggert2025_UK,hospitalised,eligible,acute illness,binary,eligible; dropped: constant in this unit,102,102,0.0,False
+3_Detection,Buggert2025_UK,age,eligible,demographic,numeric,eligible; kept,102,102,0.0,True
+3_Detection,Buggert2025_UK,sex,eligible,demographic,binary,eligible; kept,102,102,0.0,True
+3_Detection,Buggert2025_UK,bmi,eligible,demographic,numeric,eligible; kept,102,101,0.01,True
+3_Detection,Buggert2025_UK,platform,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,control_type,excluded,design,,"study design or label column, not a participant characteristic",102,51,0.5,False
+3_Detection,Buggert2025_UK,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,102,102,0.0,False
+3_Detection,Buggert2025_UK,collection_country,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,notes,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,cohort_arm,excluded,design,,"study design or label column, not a participant characteristic",102,102,0.0,False
+3_Detection,Buggert2025_UK,borg_cr10,excluded,score,,questionnaire score used with the LC definition,102,0,1.0,False
+3_Detection,Buggert2025_UK,dyspnoea12,excluded,score,,questionnaire score used with the LC definition,102,82,0.196,False
+3_Detection,Buggert2025_UK,nijmegen,excluded,score,,questionnaire score used with the LC definition,102,78,0.235,False
+3_Detection,Buggert2025_UK,who_severity,eligible,acute illness,numeric,eligible; dropped: constant in this unit,102,102,0.0,False
+3_Detection,Buggert2025_UK,icu,eligible,acute illness,binary,eligible; dropped: constant in this unit,102,102,0.0,False
+3_Detection,Cervia2024,lc_status,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,case_definition,excluded,design,,"study design or label column, not a participant characteristic",113,40,0.646,False
+3_Detection,Cervia2024,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,113,113,0.0,False
+3_Detection,Cervia2024,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,113,113,0.0,False
+3_Detection,Cervia2024,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",113,113,0.0,False
+3_Detection,Cervia2024,hospitalised,eligible,acute illness,binary,eligible; kept,113,113,0.0,True
+3_Detection,Cervia2024,age,eligible,demographic,numeric,eligible; kept,113,113,0.0,True
+3_Detection,Cervia2024,sex,eligible,demographic,binary,eligible; kept,113,113,0.0,True
+3_Detection,Cervia2024,bmi,eligible,demographic,numeric,eligible; kept,113,105,0.071,True
+3_Detection,Cervia2024,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: constant in this unit,113,113,0.0,False
+3_Detection,Cervia2024,comorbidity_count,eligible,comorbidity,numeric,eligible; kept,113,113,0.0,True
+3_Detection,Cervia2024,platform,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,control_type,excluded,design,,"study design or label column, not a participant characteristic",113,73,0.354,False
+3_Detection,Cervia2024,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,113,113,0.0,False
+3_Detection,Cervia2024,collection_country,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,notes,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,sampling_month,excluded,timing,categorical,follow up visit of the draw (one or six months): set by the study design,113,113,0.0,False
+3_Detection,Cervia2024,vaccinated_before_sampling,excluded,vaccination,,includes vaccination after infection: may follow the label,113,113,0.0,False
+3_Detection,Cervia2024,covid19_severity_max,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),113,113,0.0,False
+3_Detection,Cervia2024,covid19_severity_grade_max,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),113,113,0.0,False
+3_Detection,Cervia2024,pacs_6m_wodys,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",113,113,0.0,False
+3_Detection,Cervia2024,pacs_12m,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",113,94,0.168,False
+3_Detection,Cervia2024,max_follow_up_attended,excluded,other,,follow up attendance: comes after the label,113,113,0.0,False
+3_Detection,Cervia2024,in_somascan,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+3_Detection,Cervia2024,linked_healthy_subject_id,excluded,design,,"study design or label column, not a participant characteristic",113,5,0.956,False
+3_Detection,Cervia2024,who_severity,eligible,acute illness,numeric,eligible; kept,113,113,0.0,True
+3_Detection,Cervia2024,icu,eligible,acute illness,binary,eligible; kept,113,113,0.0,True
+3_Detection,Chowdhury2024,lc_status,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,case_definition,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,30,0,1.0,False
+3_Detection,Chowdhury2024,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",30,0,1.0,False
+3_Detection,Chowdhury2024,age,eligible,demographic,numeric,eligible; kept,30,30,0.0,True
+3_Detection,Chowdhury2024,sex,eligible,demographic,binary,eligible; kept,30,30,0.0,True
+3_Detection,Chowdhury2024,platform,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,control_type,excluded,design,,"study design or label column, not a participant characteristic",30,9,0.7,False
+3_Detection,Chowdhury2024,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,30,30,0.0,False
+3_Detection,Chowdhury2024,collection_country,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,notes,excluded,design,,"study design or label column, not a participant characteristic",30,30,0.0,False
+3_Detection,Chowdhury2024,intervention_arm,excluded,treatment,,treatment given for LC (exercise trial),30,21,0.3,False
+3_Detection,Chowdhury2024,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),30,0,1.0,False
+3_Detection,Chowdhury2024,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),30,0,1.0,False
+3_Detection,Chowdhury2026,lc_status,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,case_definition,excluded,design,,"study design or label column, not a participant characteristic",115,53,0.539,False
+3_Detection,Chowdhury2026,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: constant,115,115,0.0,False
+3_Detection,Chowdhury2026,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,115,115,0.0,False
+3_Detection,Chowdhury2026,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",115,0,1.0,False
+3_Detection,Chowdhury2026,sex,eligible,demographic,binary,eligible; kept,115,115,0.0,True
+3_Detection,Chowdhury2026,platform,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,control_type,excluded,design,,"study design or label column, not a participant characteristic",115,62,0.461,False
+3_Detection,Chowdhury2026,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,115,115,0.0,False
+3_Detection,Chowdhury2026,collection_country,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,notes,excluded,design,,"study design or label column, not a participant characteristic",115,115,0.0,False
+3_Detection,Chowdhury2026,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),115,0,1.0,False
+3_Detection,Chowdhury2026,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),115,0,1.0,False
+3_Detection,Fineschi2026,lc_status,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,case_definition,excluded,design,,"study design or label column, not a participant characteristic",165,92,0.442,False
+3_Detection,Fineschi2026,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,165,0,1.0,False
+3_Detection,Fineschi2026,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",165,165,0.0,False
+3_Detection,Fineschi2026,hospitalised,eligible,acute illness,binary,eligible; dropped: constant in this unit,165,165,0.0,False
+3_Detection,Fineschi2026,platform,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,control_type,excluded,design,,"study design or label column, not a participant characteristic",165,73,0.558,False
+3_Detection,Fineschi2026,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,165,165,0.0,False
+3_Detection,Fineschi2026,collection_country,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",165,110,0.333,False
+3_Detection,Fineschi2026,notes,excluded,design,,"study design or label column, not a participant characteristic",165,165,0.0,False
+3_Detection,Fineschi2026,infection_wave,eligible,infection,categorical,eligible; kept,165,110,0.333,True
+3_Detection,Fineschi2026,post_covid_symptom_severity_score,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",165,110,0.333,False
+3_Detection,Fineschi2026,dyspnoea_item,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",165,110,0.333,False
+3_Detection,Fineschi2026,who_severity,eligible,acute illness,numeric,eligible; dropped: constant in this unit,165,165,0.0,False
+3_Detection,Fineschi2026,icu,eligible,acute illness,binary,eligible; dropped: constant in this unit,165,165,0.0,False
+3_Detection,GSE224615,lc_status,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE224615,case_definition,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE224615,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE224615,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE224615,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: constant,36,36,0.0,False
+3_Detection,GSE224615,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,36,0,1.0,False
+3_Detection,GSE224615,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",36,0,1.0,False
+3_Detection,GSE224615,hospitalised,eligible,acute illness,binary,eligible; kept,36,36,0.0,True
+3_Detection,GSE224615,age,eligible,demographic,numeric,eligible; kept,36,36,0.0,True
+3_Detection,GSE224615,sex,eligible,demographic,binary,eligible; kept,36,36,0.0,True
+3_Detection,GSE224615,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE224615,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE224615,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE224615,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE224615,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",36,0,1.0,False
+3_Detection,GSE224615,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,36,0,1.0,False
+3_Detection,GSE224615,platform,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE224615,collection_country,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE224615,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE224615,notes,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE224615,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,36,36,0.0,False
+3_Detection,GSE224615,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",36,36,0.0,False
+3_Detection,GSE224615,inferred_sex_method,excluded,other,,method of inferred_sex,36,36,0.0,False
+3_Detection,GSE224615,race,eligible,demographic,categorical,eligible; kept,36,34,0.056,True
+3_Detection,GSE224615,who_category_acute,excluded,acute illness,,mapped to who_severity (GSE224615),36,36,0.0,False
+3_Detection,GSE224615,who_severity,eligible,acute illness,numeric,eligible; kept,36,36,0.0,True
+3_Detection,GSE224615,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,lc_status,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE226260_PBMC,case_definition,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE226260_PBMC,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE226260_PBMC,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",36,36,0.0,False
+3_Detection,GSE226260_PBMC,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: recorded for under 50 percent,36,0,1.0,False
+3_Detection,GSE226260_PBMC,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,36,0,1.0,False
+3_Detection,GSE226260_PBMC,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",36,0,1.0,False
+3_Detection,GSE226260_PBMC,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,age,eligible,demographic,numeric,eligible; kept,36,34,0.056,True
+3_Detection,GSE226260_PBMC,sex,eligible,demographic,binary,eligible; kept,36,36,0.0,True
+3_Detection,GSE226260_PBMC,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",36,0,1.0,False
+3_Detection,GSE226260_PBMC,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,36,0,1.0,False
+3_Detection,GSE226260_PBMC,platform,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE226260_PBMC,collection_country,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE226260_PBMC,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",36,0,1.0,False
+3_Detection,GSE226260_PBMC,notes,excluded,design,,"study design or label column, not a participant characteristic",36,1,0.972,False
+3_Detection,GSE226260_PBMC,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,36,36,0.0,False
+3_Detection,GSE226260_PBMC,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",36,36,0.0,False
+3_Detection,GSE226260_PBMC,inferred_sex_method,excluded,other,,method of inferred_sex,36,36,0.0,False
+3_Detection,GSE226260_PBMC,race,eligible,demographic,categorical,eligible; kept,36,35,0.028,True
+3_Detection,GSE226260_PBMC,ethnicity,eligible,demographic,categorical,eligible; dropped: constant in this unit,36,35,0.028,False
+3_Detection,GSE226260_PBMC,vaccine_product,excluded,vaccination,,timing relative to infection not stated: may be after infection,36,29,0.194,False
+3_Detection,GSE226260_PBMC,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_PBMC,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),36,0,1.0,False
+3_Detection,GSE226260_WB,lc_status,excluded,design,,"study design or label column, not a participant characteristic",35,35,0.0,False
+3_Detection,GSE226260_WB,case_definition,excluded,design,,"study design or label column, not a participant characteristic",35,35,0.0,False
+3_Detection,GSE226260_WB,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",35,35,0.0,False
+3_Detection,GSE226260_WB,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",35,35,0.0,False
+3_Detection,GSE226260_WB,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,35,35,0.0,False
+3_Detection,GSE226260_WB,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,35,0,1.0,False
+3_Detection,GSE226260_WB,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",35,0,1.0,False
+3_Detection,GSE226260_WB,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,age,eligible,demographic,numeric,eligible; kept,35,35,0.0,True
+3_Detection,GSE226260_WB,sex,eligible,demographic,binary,eligible; kept,35,35,0.0,True
+3_Detection,GSE226260_WB,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",35,0,1.0,False
+3_Detection,GSE226260_WB,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,35,0,1.0,False
+3_Detection,GSE226260_WB,platform,excluded,design,,"study design or label column, not a participant characteristic",35,0,1.0,False
+3_Detection,GSE226260_WB,collection_country,excluded,design,,"study design or label column, not a participant characteristic",35,0,1.0,False
+3_Detection,GSE226260_WB,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",35,0,1.0,False
+3_Detection,GSE226260_WB,notes,excluded,design,,"study design or label column, not a participant characteristic",35,0,1.0,False
+3_Detection,GSE226260_WB,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,35,35,0.0,False
+3_Detection,GSE226260_WB,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",35,35,0.0,False
+3_Detection,GSE226260_WB,inferred_sex_method,excluded,other,,method of inferred_sex,35,35,0.0,False
+3_Detection,GSE226260_WB,race,eligible,demographic,categorical,eligible; kept,35,35,0.0,True
+3_Detection,GSE226260_WB,ethnicity,eligible,demographic,categorical,eligible; kept,35,35,0.0,True
+3_Detection,GSE226260_WB,days_since_infection_at_sample,timing,timing,numeric,time since infection (GSE226260_WB TPI): sensitivity analysis only; used in the timing sensitivity analysis,35,35,0.0,False
+3_Detection,GSE226260_WB,symptom_count,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",35,35,0.0,False
+3_Detection,GSE226260_WB,symptom_list,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",35,27,0.229,False
+3_Detection,GSE226260_WB,preexisting_conditions_cc,excluded,comorbidity,,free text list: used as n_preexisting_conditions,35,9,0.743,False
+3_Detection,GSE226260_WB,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),35,0,1.0,False
+3_Detection,GSE226260_WB,n_preexisting_conditions,eligible,comorbidity,numeric,eligible; dropped: recorded for 26% of participants (under 50 percent),35,9,0.743,False
+3_Detection,GSE251849,lc_status,excluded,design,,"study design or label column, not a participant characteristic",16,16,0.0,False
+3_Detection,GSE251849,case_definition,excluded,design,,"study design or label column, not a participant characteristic",16,16,0.0,False
+3_Detection,GSE251849,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",16,16,0.0,False
+3_Detection,GSE251849,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",16,16,0.0,False
+3_Detection,GSE251849,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: recorded for under 50 percent,16,0,1.0,False
+3_Detection,GSE251849,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,16,0,1.0,False
+3_Detection,GSE251849,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",16,0,1.0,False
+3_Detection,GSE251849,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,age,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,sex,eligible,demographic,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",16,0,1.0,False
+3_Detection,GSE251849,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,16,0,1.0,False
+3_Detection,GSE251849,platform,excluded,design,,"study design or label column, not a participant characteristic",16,0,1.0,False
+3_Detection,GSE251849,collection_country,excluded,design,,"study design or label column, not a participant characteristic",16,0,1.0,False
+3_Detection,GSE251849,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",16,0,1.0,False
+3_Detection,GSE251849,notes,excluded,design,,"study design or label column, not a participant characteristic",16,16,0.0,False
+3_Detection,GSE251849,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,16,0,1.0,False
+3_Detection,GSE251849,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",16,16,0.0,False
+3_Detection,GSE251849,inferred_sex_method,excluded,other,,method of inferred_sex,16,16,0.0,False
+3_Detection,GSE251849,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE251849,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),16,0,1.0,False
+3_Detection,GSE297499,lc_status,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,case_definition,excluded,design,,"study design or label column, not a participant characteristic",26,17,0.346,False
+3_Detection,GSE297499,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: recorded for under 50 percent,26,0,1.0,False
+3_Detection,GSE297499,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,26,0,1.0,False
+3_Detection,GSE297499,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",26,0,1.0,False
+3_Detection,GSE297499,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,age,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,sex,eligible,demographic,binary,eligible; dropped: constant in this unit,26,26,0.0,False
+3_Detection,GSE297499,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",26,0,1.0,False
+3_Detection,GSE297499,inferred_sex_method,excluded,other,,method of inferred_sex,26,0,1.0,False
+3_Detection,GSE297499,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",26,0,1.0,False
+3_Detection,GSE297499,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,26,0,1.0,False
+3_Detection,GSE297499,platform,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,control_type,excluded,design,,"study design or label column, not a participant characteristic",26,9,0.654,False
+3_Detection,GSE297499,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,26,26,0.0,False
+3_Detection,GSE297499,collection_country,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",26,0,1.0,False
+3_Detection,GSE297499,notes,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,GSE297499,timepoint.1,excluded,timing,categorical,duplicate of timepoint (study visit): set by the design,26,26,0.0,False
+3_Detection,GSE297499,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,GSE297499,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,Kovarik2023_plasma,lc_status,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,case_definition,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,26,0,1.0,False
+3_Detection,Kovarik2023_plasma,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",26,0,1.0,False
+3_Detection,Kovarik2023_plasma,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,Kovarik2023_plasma,platform,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,control_type,excluded,design,,"study design or label column, not a participant characteristic",26,13,0.5,False
+3_Detection,Kovarik2023_plasma,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,26,26,0.0,False
+3_Detection,Kovarik2023_plasma,collection_country,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,notes,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,group_code,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,group_prefix,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,table_s1_label,excluded,design,,"study design or label column, not a participant characteristic",26,26,0.0,False
+3_Detection,Kovarik2023_plasma,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,Kovarik2023_plasma,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),26,0,1.0,False
+3_Detection,Lopez2023,lc_status,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,case_definition,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,age,eligible,demographic,numeric,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,platform,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,control_type,excluded,design,,"study design or label column, not a participant characteristic",48,18,0.625,False
+3_Detection,Lopez2023,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,48,48,0.0,False
+3_Detection,Lopez2023,collection_country,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,notes,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,lc_subgroup,excluded,symptoms,,LC subgroup: defines the label,48,48,0.0,False
+3_Detection,Lopez2023,group_deposited,excluded,design,,"study design or label column, not a participant characteristic",48,48,0.0,False
+3_Detection,Lopez2023,sex_code_deposited,excluded,demographic,,raw code behind sex_code,48,48,0.0,False
+3_Detection,Lopez2023,sex_code,eligible,demographic,categorical,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,smoking,eligible,other,categorical,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,t2dm,eligible,comorbidity,categorical,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,hypertension,eligible,comorbidity,categorical,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,obesity,eligible,comorbidity,categorical,eligible; kept,48,48,0.0,True
+3_Detection,Lopez2023,lopez_symptoms,excluded,symptoms,,19 symptom columns (Lopez2023): define the label; coding undocumented,48,48,0.0,False
+3_Detection,Martinez2024,lc_status,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,case_definition,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,platform,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,control_type,excluded,design,,"study design or label column, not a participant characteristic",80,40,0.5,False
+3_Detection,Martinez2024,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,Martinez2024,notes,excluded,design,,"study design or label column, not a participant characteristic",80,80,0.0,False
+3_Detection,PRJNA1149196_QLD,lc_status,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,case_definition,excluded,design,,"study design or label column, not a participant characteristic",9,5,0.444,False
+3_Detection,PRJNA1149196_QLD,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: recorded for under 50 percent,9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,age,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,sex,eligible,demographic,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,inferred_sex_method,excluded,other,,method of inferred_sex,9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,platform,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,control_type,excluded,design,,"study design or label column, not a participant characteristic",9,4,0.556,False
+3_Detection,PRJNA1149196_QLD,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,collection_country,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,notes,excluded,design,,"study design or label column, not a participant characteristic",9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,timepoint.1,excluded,timing,categorical,duplicate of timepoint (study visit): set by the design,9,9,0.0,False
+3_Detection,PRJNA1149196_QLD,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_QLD,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),9,0,1.0,False
+3_Detection,PRJNA1149196_SA,lc_status,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,case_definition,excluded,design,,"study design or label column, not a participant characteristic",39,28,0.282,False
+3_Detection,PRJNA1149196_SA,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: constant,39,39,0.0,False
+3_Detection,PRJNA1149196_SA,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,39,39,0.0,False
+3_Detection,PRJNA1149196_SA,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",39,0,1.0,False
+3_Detection,PRJNA1149196_SA,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,age,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,sex,eligible,demographic,binary,eligible; kept,39,39,0.0,True
+3_Detection,PRJNA1149196_SA,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",39,0,1.0,False
+3_Detection,PRJNA1149196_SA,inferred_sex_method,excluded,other,,method of inferred_sex,39,0,1.0,False
+3_Detection,PRJNA1149196_SA,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",39,0,1.0,False
+3_Detection,PRJNA1149196_SA,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,39,0,1.0,False
+3_Detection,PRJNA1149196_SA,platform,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,control_type,excluded,design,,"study design or label column, not a participant characteristic",39,11,0.718,False
+3_Detection,PRJNA1149196_SA,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,39,39,0.0,False
+3_Detection,PRJNA1149196_SA,collection_country,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,notes,excluded,design,,"study design or label column, not a participant characteristic",39,39,0.0,False
+3_Detection,PRJNA1149196_SA,timepoint.1,excluded,timing,categorical,duplicate of timepoint (study visit): set by the design,39,39,0.0,False
+3_Detection,PRJNA1149196_SA,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1149196_SA,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),39,0,1.0,False
+3_Detection,PRJNA1184005,lc_status,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,case_definition,excluded,design,,"study design or label column, not a participant characteristic",14,7,0.5,False
+3_Detection,PRJNA1184005,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; not used: recorded for under 50 percent,14,0,1.0,False
+3_Detection,PRJNA1184005,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,14,0,1.0,False
+3_Detection,PRJNA1184005,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",14,0,1.0,False
+3_Detection,PRJNA1184005,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,age,eligible,demographic,numeric,eligible; kept,14,14,0.0,True
+3_Detection,PRJNA1184005,sex,eligible,demographic,binary,eligible; kept,14,14,0.0,True
+3_Detection,PRJNA1184005,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",14,0,1.0,False
+3_Detection,PRJNA1184005,inferred_sex_method,excluded,other,,method of inferred_sex,14,0,1.0,False
+3_Detection,PRJNA1184005,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",14,0,1.0,False
+3_Detection,PRJNA1184005,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,14,0,1.0,False
+3_Detection,PRJNA1184005,platform,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,control_type,excluded,design,,"study design or label column, not a participant characteristic",14,7,0.5,False
+3_Detection,PRJNA1184005,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,14,14,0.0,False
+3_Detection,PRJNA1184005,collection_country,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",14,0,1.0,False
+3_Detection,PRJNA1184005,notes,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,timepoint.1,excluded,timing,categorical,duplicate of timepoint (study visit): set by the design,14,14,0.0,False
+3_Detection,PRJNA1184005,label_source,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,control_definition_status,excluded,design,,"study design or label column, not a participant characteristic",14,7,0.5,False
+3_Detection,PRJNA1184005,collection_date,excluded,design,,"study design or label column, not a participant characteristic",14,14,0.0,False
+3_Detection,PRJNA1184005,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,PRJNA1184005,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),14,0,1.0,False
+3_Detection,Saito2024,lc_status,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,case_definition,excluded,design,,"study design or label column, not a participant characteristic",45,30,0.333,False
+3_Detection,Saito2024,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,platform,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,control_type,excluded,design,,"study design or label column, not a participant characteristic",45,15,0.667,False
+3_Detection,Saito2024,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,45,45,0.0,False
+3_Detection,Saito2024,collection_country,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,notes,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Saito2024,group_deposited,excluded,design,,"study design or label column, not a participant characteristic",45,45,0.0,False
+3_Detection,Su2022,lc_status,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,case_definition,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,125,124,0.008,False
+3_Detection,Su2022,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,125,124,0.008,False
+3_Detection,Su2022,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",125,125,0.0,False
+3_Detection,Su2022,hospitalised,eligible,acute illness,binary,eligible; kept,125,125,0.0,True
+3_Detection,Su2022,age,eligible,demographic,numeric,eligible; kept,125,125,0.0,True
+3_Detection,Su2022,sex,eligible,demographic,binary,eligible; kept,125,125,0.0,True
+3_Detection,Su2022,bmi,eligible,demographic,numeric,eligible; kept,125,72,0.424,True
+3_Detection,Su2022,platform,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,control_type,excluded,design,,"study design or label column, not a participant characteristic",125,50,0.6,False
+3_Detection,Su2022,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,125,125,0.0,False
+3_Detection,Su2022,collection_country,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,notes,excluded,design,,"study design or label column, not a participant characteristic",125,1,0.992,False
+3_Detection,Su2022,cohort_arm,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+3_Detection,Su2022,bmi_table_s2,excluded,demographic,,duplicate of bmi,125,125,0.0,False
+3_Detection,Su2022,n_pasc_symptoms,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,125,0.0,False
+3_Detection,Su2022,pasc_symptoms,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,75,0.4,False
+3_Detection,Su2022,pasc_groups,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,62,0.504,False
+3_Detection,Su2022,pasc_count_group,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,125,0.0,False
+3_Detection,Su2022,pasc_group_binary_xgboost,excluded,symptoms,,LC group: defines the label,125,113,0.096,False
+3_Detection,Su2022,peak_acute_wos,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),125,125,0.0,False
+3_Detection,Su2022,encounter_location,early,acute illness,categorical,"place of the draw (home, clinic, hospital, ICU): as wos_at_draw (detection: excluded)",125,125,0.0,False
+3_Detection,Su2022,who_severity,eligible,acute illness,numeric,eligible; kept,125,125,0.0,True
+3_Detection,Su2022,icu,eligible,acute illness,binary,eligible; kept,125,125,0.0,True
+3_Detection,Woodruff2023,lc_status,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,case_definition,excluded,design,,"study design or label column, not a participant characteristic",120,93,0.225,False
+3_Detection,Woodruff2023,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,120,120,0.0,False
+3_Detection,Woodruff2023,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,120,120,0.0,False
+3_Detection,Woodruff2023,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",120,78,0.35,False
+3_Detection,Woodruff2023,hospitalised,eligible,acute illness,binary,eligible; kept,120,120,0.0,True
+3_Detection,Woodruff2023,sex,eligible,demographic,binary,eligible; dropped: recorded for 24% of participants (under 50 percent),120,29,0.758,False
+3_Detection,Woodruff2023,platform,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,control_type,excluded,design,,"study design or label column, not a participant characteristic",120,27,0.775,False
+3_Detection,Woodruff2023,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,120,120,0.0,False
+3_Detection,Woodruff2023,collection_country,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,notes,excluded,design,,"study design or label column, not a participant characteristic",120,120,0.0,False
+3_Detection,Woodruff2023,group_hr,excluded,symptoms,,"study group (PASC, recovered, ICU): defines the label",120,120,0.0,False
+3_Detection,Woodruff2023,dexamethasone,eligible,acute illness,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),120,0,1.0,False
+3_Detection,Woodruff2023,race,eligible,demographic,categorical,eligible; dropped: recorded for 24% of participants (under 50 percent),120,29,0.758,False
+3_Detection,Woodruff2023,who_severity,eligible,acute illness,numeric,eligible; dropped: constant in this unit,120,78,0.35,False
+3_Detection,Woodruff2023,icu,eligible,acute illness,binary,eligible; dropped: constant in this unit,120,78,0.35,False
+2_EarlyDetection,Cervia2024,lc_status,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,case_definition,excluded,design,,"study design or label column, not a participant characteristic",113,40,0.646,False
+2_EarlyDetection,Cervia2024,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,113,113,0.0,False
+2_EarlyDetection,Cervia2024,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,113,113,0.0,False
+2_EarlyDetection,Cervia2024,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",113,113,0.0,False
+2_EarlyDetection,Cervia2024,hospitalised,eligible,acute illness,binary,eligible; kept,113,113,0.0,True
+2_EarlyDetection,Cervia2024,age,eligible,demographic,numeric,eligible; kept,113,113,0.0,True
+2_EarlyDetection,Cervia2024,sex,eligible,demographic,binary,eligible; kept,113,113,0.0,True
+2_EarlyDetection,Cervia2024,bmi,eligible,demographic,numeric,eligible; kept,113,105,0.071,True
+2_EarlyDetection,Cervia2024,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: constant in this unit,113,113,0.0,False
+2_EarlyDetection,Cervia2024,comorbidity_count,eligible,comorbidity,numeric,eligible; kept,113,113,0.0,True
+2_EarlyDetection,Cervia2024,platform,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,control_type,excluded,design,,"study design or label column, not a participant characteristic",113,0,1.0,False
+2_EarlyDetection,Cervia2024,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,113,113,0.0,False
+2_EarlyDetection,Cervia2024,collection_country,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,notes,excluded,design,,"study design or label column, not a participant characteristic",113,113,0.0,False
+2_EarlyDetection,Cervia2024,sampling_month,excluded,timing,categorical,follow up visit of the draw (one or six months): set by the study design,113,113,0.0,False
+2_EarlyDetection,Cervia2024,vaccinated_before_sampling,excluded,vaccination,,includes vaccination after infection: may follow the label,113,113,0.0,False
+2_EarlyDetection,Cervia2024,covid19_severity_max,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),113,113,0.0,False
+2_EarlyDetection,Cervia2024,covid19_severity_grade_max,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),113,113,0.0,False
+2_EarlyDetection,Cervia2024,pacs_6m_wodys,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",113,113,0.0,False
+2_EarlyDetection,Cervia2024,pacs_12m,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",113,94,0.168,False
+2_EarlyDetection,Cervia2024,max_follow_up_attended,excluded,other,,follow up attendance: comes after the label,113,113,0.0,False
+2_EarlyDetection,Cervia2024,linked_healthy_subject_id,excluded,design,,"study design or label column, not a participant characteristic",113,5,0.956,False
+2_EarlyDetection,Cervia2024,who_severity,eligible,acute illness,numeric,eligible; kept,113,113,0.0,True
+2_EarlyDetection,Cervia2024,icu,eligible,acute illness,binary,eligible; kept,113,113,0.0,True
+2_EarlyDetection,GSE215865,lc_status,excluded,design,,"study design or label column, not a participant characteristic",424,424,0.0,False
+2_EarlyDetection,GSE215865,case_definition,excluded,design,,"study design or label column, not a participant characteristic",424,424,0.0,False
+2_EarlyDetection,GSE215865,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",424,424,0.0,False
+2_EarlyDetection,GSE215865,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",424,424,0.0,False
+2_EarlyDetection,GSE215865,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,424,360,0.151,False
+2_EarlyDetection,GSE215865,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,424,0,1.0,False
+2_EarlyDetection,GSE215865,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",424,0,1.0,False
+2_EarlyDetection,GSE215865,hospitalised,eligible,acute illness,binary,eligible; kept,424,419,0.012,True
+2_EarlyDetection,GSE215865,age,eligible,demographic,numeric,eligible; kept,424,424,0.0,True
+2_EarlyDetection,GSE215865,sex,eligible,demographic,binary,eligible; kept,424,424,0.0,True
+2_EarlyDetection,GSE215865,bmi,eligible,demographic,numeric,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 2% of participants (under 50 percent),424,10,0.976,False
+2_EarlyDetection,GSE215865,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),424,0,1.0,False
+2_EarlyDetection,GSE215865,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),424,0,1.0,False
+2_EarlyDetection,GSE215865,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",424,0,1.0,False
+2_EarlyDetection,GSE215865,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,platform,excluded,design,,"study design or label column, not a participant characteristic",424,0,1.0,False
+2_EarlyDetection,GSE215865,collection_country,excluded,design,,"study design or label column, not a participant characteristic",424,0,1.0,False
+2_EarlyDetection,GSE215865,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",424,0,1.0,False
+2_EarlyDetection,GSE215865,notes,excluded,design,,"study design or label column, not a participant characteristic",424,424,0.0,False
+2_EarlyDetection,GSE215865,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,424,424,0.0,False
+2_EarlyDetection,GSE215865,race,eligible,demographic,categorical,eligible; kept,424,314,0.259,True
+2_EarlyDetection,GSE215865,ethnicity,eligible,demographic,categorical,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,smoking,eligible,other,categorical,eligible; kept,424,354,0.165,True
+2_EarlyDetection,GSE215865,Severity,eligible,acute illness,numeric,eligible; kept,424,417,0.017,True
+2_EarlyDetection,GSE215865,SOFA_Score,eligible,acute illness,numeric,eligible; kept,424,417,0.017,True
+2_EarlyDetection,GSE215865,LAB_C_REACTIVE_PROTEIN_Median,eligible,acute illness,numeric,eligible; kept,424,404,0.047,True
+2_EarlyDetection,GSE215865,LAB_FERRITIN_Median,eligible,acute illness,numeric,eligible; kept,424,397,0.064,True
+2_EarlyDetection,GSE215865,LAB_D_DIMER_Median,eligible,acute illness,numeric,eligible; kept,424,390,0.08,True
+2_EarlyDetection,GSE215865,COMORBID_ALCOHOLIC_NONALCOHOLIC_LIVER_DISEASE,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_ASTHMA,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_ATRIAL_FIBRILLATION,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_CANCER_FLAG,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_CHRONIC_KIDNEY_DISEASE,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_CHRONIC_VIRAL_HEPATITIS,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_COPD,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_CORONARY_ARTERY_DISEASE,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_CROHNS_DISEASE,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_DIABETES,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_HEART_FAILURE,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_HTN,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_OBSTRUCTIVE_SLEEP_APNEA,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,COMORBID_ULCERATIVE_COLITIS,eligible,comorbidity,binary,eligible; kept,424,423,0.002,True
+2_EarlyDetection,GSE215865,MED_APIXABAN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_AZITHROMYCIN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_DEXAMETHASONE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_DOBUTAMINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_DOPAMINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_ECULIZUMAB,eligible,acute illness,binary,eligible; dropped: constant in this unit,424,418,0.014,False
+2_EarlyDetection,GSE215865,MED_ENOXAPARIN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_EPINEPHRINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_FAMOTIDINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_GIMISILUMAB,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_HEPARIN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_HYDROCORTISONE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_HYDROXYCHLOROQUINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_METHOTREXATE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_METHYLPREDNISOLONE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_MILRINONE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_NO_ppm,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_NOREPINEPHRINE_LEVOPHED,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_PHENYLEPHRINE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_PREDNISONE,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_REMDESIVIR,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_RITUXIMAB,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_RIVAROXABAN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_SARILUMAB,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_TISSUE_PLASMINOGEN_ACTIVATOR,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_TOCILIZUMAB,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_VASOPRESSIN_VASOSTRICT,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,MED_WARFARIN_COUMADIN,eligible,acute illness,binary,eligible; kept,424,418,0.014,True
+2_EarlyDetection,GSE215865,LAB_ALBUMIN_Median,eligible,acute illness,numeric,eligible; kept,424,411,0.031,True
+2_EarlyDetection,GSE215865,LAB_ALT_Median,eligible,acute illness,numeric,eligible; kept,424,409,0.035,True
+2_EarlyDetection,GSE215865,LAB_ANION_GAP_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_AST_Median,eligible,acute illness,numeric,eligible; kept,424,409,0.035,True
+2_EarlyDetection,GSE215865,LAB_BASE_EXCESS_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,282,0.335,True
+2_EarlyDetection,GSE215865,LAB_BASOPHIL_NUMBER_Median,eligible,acute illness,numeric,eligible; kept,424,397,0.064,True
+2_EarlyDetection,GSE215865,LAB_BASOPHIL_PERCENT_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_BRAIN_NATRIURETIC_PROTEIN_Median,eligible,acute illness,numeric,eligible; kept,424,305,0.281,True
+2_EarlyDetection,GSE215865,LAB_BUN_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_CALCIUM_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_CHLORIDE_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_CO2_TOTAL_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_EOSINOPHIL_NUMBER_Median,eligible,acute illness,numeric,eligible; kept,424,397,0.064,True
+2_EarlyDetection,GSE215865,LAB_EOSINOPHIL_PERCENT_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_ESR_Median,eligible,acute illness,numeric,eligible; kept,424,298,0.297,True
+2_EarlyDetection,GSE215865,LAB_FIBRINOGEN_Median,eligible,acute illness,numeric,eligible; kept,424,336,0.208,True
+2_EarlyDetection,GSE215865,LAB_GLUCOSE_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_HCO3_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,381,0.101,True
+2_EarlyDetection,GSE215865,LAB_HEMATOCRIT_Median,eligible,acute illness,numeric,eligible; kept,424,345,0.186,True
+2_EarlyDetection,GSE215865,LAB_HEMOGLOBIN_A1C_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 33% of participants (under 50 percent),424,140,0.67,False
+2_EarlyDetection,GSE215865,LAB_HEMOGLOBIN_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_INR_Median,eligible,acute illness,numeric,eligible; kept,424,381,0.101,True
+2_EarlyDetection,GSE215865,LAB_INTERLEUKIN_1_BETA_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 43% of participants (under 50 percent),424,183,0.568,False
+2_EarlyDetection,GSE215865,LAB_INTERLEUKIN_6_Median,eligible,acute illness,numeric,eligible; kept,424,336,0.208,True
+2_EarlyDetection,GSE215865,LAB_INTERLEUKIN_8_Median,eligible,acute illness,numeric,eligible; kept,424,291,0.314,True
+2_EarlyDetection,GSE215865,LAB_LDH_Median,eligible,acute illness,numeric,eligible; kept,424,394,0.071,True
+2_EarlyDetection,GSE215865,LAB_LYMPHOCYTE_NUMBER_Median,eligible,acute illness,numeric,eligible; kept,424,397,0.064,True
+2_EarlyDetection,GSE215865,LAB_LYMPHOCYTE_PERCENT_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_MCHC_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_MCH_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_MCV_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_MEAN_PLATELET_VOLUME_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_MONOCYTE_NUMBER_Median,eligible,acute illness,numeric,eligible; kept,424,397,0.064,True
+2_EarlyDetection,GSE215865,LAB_MONOCYTE_PERCENT_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_NEUTROPHIL_NUMBER_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_NEUTROPHIL_PERCENT_Median,eligible,acute illness,numeric,eligible; kept,424,412,0.028,True
+2_EarlyDetection,GSE215865,LAB_O2_SATURATION_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,349,0.177,True
+2_EarlyDetection,GSE215865,LAB_PC02_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,385,0.092,True
+2_EarlyDetection,GSE215865,LAB_PH_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,385,0.092,True
+2_EarlyDetection,GSE215865,LAB_PLATELET_Median,eligible,acute illness,numeric,eligible; kept,424,414,0.024,True
+2_EarlyDetection,GSE215865,LAB_PO2_VENOUS_Median,eligible,acute illness,numeric,eligible; kept,424,372,0.123,True
+2_EarlyDetection,GSE215865,LAB_POTASSIUM_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_PROCALCITONIN_Median,eligible,acute illness,numeric,eligible; kept,424,388,0.085,True
+2_EarlyDetection,GSE215865,LAB_PROTHROMBIN_TIME_Median,eligible,acute illness,numeric,eligible; kept,424,381,0.101,True
+2_EarlyDetection,GSE215865,LAB_PTT_Median,eligible,acute illness,numeric,eligible; kept,424,383,0.097,True
+2_EarlyDetection,GSE215865,LAB_RBC_COUNT_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,LAB_SERUM_CREATININE_Median,eligible,acute illness,numeric,eligible; kept,424,414,0.024,True
+2_EarlyDetection,GSE215865,LAB_SODIUM_Median,eligible,acute illness,numeric,eligible; kept,424,405,0.045,True
+2_EarlyDetection,GSE215865,LAB_TNF_ALPHA_Median,eligible,acute illness,numeric,eligible; kept,424,291,0.314,True
+2_EarlyDetection,GSE215865,LAB_TOTAL_BILIRUBIN_Median,eligible,acute illness,numeric,eligible; kept,424,411,0.031,True
+2_EarlyDetection,GSE215865,LAB_TOTAL_PROTEIN_Median,eligible,acute illness,numeric,eligible; kept,424,410,0.033,True
+2_EarlyDetection,GSE215865,LAB_TROPONIN_I_Median,eligible,acute illness,numeric,eligible; kept,424,277,0.347,True
+2_EarlyDetection,GSE215865,LAB_WBC_Median,eligible,acute illness,numeric,eligible; kept,424,415,0.021,True
+2_EarlyDetection,GSE215865,COVID19_Symptoms_At_Presentation_Reviewed,eligible,acute illness,categorical,eligible; kept,424,400,0.057,True
+2_EarlyDetection,GSE215865,Height_CM,eligible,demographic,numeric,eligible; kept,424,400,0.057,True
+2_EarlyDetection,GSE215865,MED_ARGATROBAN,eligible,acute illness,binary,eligible; dropped: constant in this unit,424,418,0.014,False
+2_EarlyDetection,GSE215865,Weight_KG,eligible,demographic,numeric,eligible; kept,424,413,0.026,True
+2_EarlyDetection,GSE215865,who_severity,eligible,acute illness,numeric,eligible; kept,424,417,0.017,True
+2_EarlyDetection,GSE215865,LAB_EGFR_Median,eligible,acute illness,numeric,eligible; kept,424,255,0.399,True
+2_EarlyDetection,GSE215865,LAB_C_REATIVE_PROTEIN_HS_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 4% of participants (under 50 percent),424,15,0.965,False
+2_EarlyDetection,GSE215865,LAB_O2_SATURATION_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 23% of participants (under 50 percent),424,97,0.771,False
+2_EarlyDetection,GSE215865,LAB_OXYHEMOGLOBIN_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 32% of participants (under 50 percent),424,135,0.682,False
+2_EarlyDetection,GSE215865,LAB_PCO2_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 24% of participants (under 50 percent),424,101,0.762,False
+2_EarlyDetection,GSE215865,LAB_PH_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 24% of participants (under 50 percent),424,101,0.762,False
+2_EarlyDetection,GSE215865,LAB_PO2_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 24% of participants (under 50 percent),424,101,0.762,False
+2_EarlyDetection,GSE215865,LAB_BASE_EXCESS_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 8% of participants (under 50 percent),424,34,0.92,False
+2_EarlyDetection,GSE215865,LAB_CARBOXYHEMOGLOBIN_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 15% of participants (under 50 percent),424,64,0.849,False
+2_EarlyDetection,GSE215865,LAB_CREATINE_KINASE_MB_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 12% of participants (under 50 percent),424,53,0.875,False
+2_EarlyDetection,GSE215865,LAB_DEOXYHEMOGLOBIN_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 15% of participants (under 50 percent),424,64,0.849,False
+2_EarlyDetection,GSE215865,LAB_HCO3_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 23% of participants (under 50 percent),424,96,0.774,False
+2_EarlyDetection,GSE215865,LAB_HEMOGLOBIN_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 17% of participants (under 50 percent),424,74,0.825,False
+2_EarlyDetection,GSE215865,LAB_LACTATE_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 21% of participants (under 50 percent),424,90,0.788,False
+2_EarlyDetection,GSE215865,LAB_METHEMOGLOBIN_ARTERIAL_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 15% of participants (under 50 percent),424,64,0.849,False
+2_EarlyDetection,GSE215865,LAB_CREATINE_KINASE_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 33% of participants (under 50 percent),424,139,0.672,False
+2_EarlyDetection,GSE215865,LAB_URIC_ACID_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 19% of participants (under 50 percent),424,82,0.807,False
+2_EarlyDetection,GSE215865,LAB_HAPTOGLOBIN_Median,eligible,acute illness,numeric,eligible; dropped: recorded for 8% of participants (under 50 percent),424,32,0.925,False
+2_EarlyDetection,GSE215865,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Subject_ID,excluded,design,,identifier,424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Age,eligible,demographic,,time invariant; used as age (as age),424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Sex,eligible,demographic,,time invariant; used as sex (as sex),424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Race_From_Consent,eligible,demographic,,time invariant; used as race (as race),424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Ethnicity_From_Consent,eligible,demographic,,time invariant; used as ethnicity (as ethnicity),424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Blood_Sample_ID,excluded,design,,identifier,424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Days_Since_First_Sample,excluded,timing,,the day index of the table (used to select rows on or before the sample day),424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Within_Encounter,excluded,acute illness,,on the sample day: used as hospitalised (as hospitalised),424,419,0.012,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Days_Since_Encounter_Start,excluded,timing,,days since admission at the sample: set by sampling; the timing sensitivity uses symptom onset,424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Days_Until_Encounter_End,excluded,timing,,days until discharge: after the sample,424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: Encounter_ICU_Flag,excluded,acute illness,,ICU at any point of the encounter: includes days after the sample,424,417,0.017,False
+2_EarlyDetection,GSE215865,Synapse: Patient_Classification_At_First_Sample,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: Severity_Ignoring_COVID19_Status,excluded,acute illness,,duplicate of Severity,424,417,0.017,False
+2_EarlyDetection,GSE215865,Synapse: Severity_Ambiguous_EOD,excluded,acute illness,,data quality flag of Severity,424,417,0.017,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Order_Result,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,407,0.04,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Anxiety_Depression_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Cavities_Teeth_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Chest_Pain_Cardiac_Issues_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Eating_More_Less_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Hair_Loss_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Headaches_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Increased_Mucus_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Joint_Pain_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Liver_Issues_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Lung_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Memory_Thought_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Muscle_Pain_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Nausea_Diarrhea_Vomiting_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Need_Supplemental_O2_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Pneumonia_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Shortness_Of_Breath_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Skin_Rash_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Sleep_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Smell_Taste_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Sore_Throat_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Toe_Problems_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Weakness_Or_Fatigue_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Health_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Quality_Of_Life_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Daily_Mood_Ever,excluded,symptoms,,post COVID checklist item: defines the label,424,182,0.571,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Anxiety_Depression,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Cavities_Teeth_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Chest_Pain_Cardiac_Issues,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Eating_More_Less,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Hair_Loss,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Headaches,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Increased_Mucus,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Joint_Pain,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Liver_Issues,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Lung_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Memory_Thought_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Muscle_Pain,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Nausea_Diarrhea_Vomiting,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Need_Supplemental_O2,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Pneumonia,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Shortness_Of_Breath,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Skin_Rash,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Sleep_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Smell_Taste_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Sore_Throat,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Toe_Problems,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Symptom_Weakness_Or_Fatigue,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Health,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Quality_Of_Life,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: Post_COVID19_Daily_Mood,excluded,symptoms,,post COVID checklist item: defines the label,424,0,1.0,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Vaccine_Received,excluded,vaccination,,with the dose dates: used as vaccinated_before_infection (as vaccinated_before_infection),424,11,0.974,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Vaccine_Type,excluded,vaccination,,product of a vaccine given after the sample,424,10,0.976,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Vaccine_Doses,excluded,vaccination,,"doses at any time, including after the sample",424,11,0.974,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Vaccine_Dose_1_Date,excluded,vaccination,,used for vaccinated_before_infection,424,10,0.976,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Vaccine_Dose_2_Date,excluded,vaccination,,used for vaccinated_before_infection,424,8,0.981,False
+2_EarlyDetection,GSE215865,Synapse: VENTILATION_TYPE,excluded,acute illness,,"highest support on or before the sample day, used as who_severity (as who_severity)",424,417,0.017,False
+2_EarlyDetection,GSE215865,Synapse: DECEASED_INDICATOR,excluded,other,,death: after the sample,424,423,0.002,False
+2_EarlyDetection,GSE215865,Synapse: LAB_SERUM_CREATININE_Min,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,414,0.024,False
+2_EarlyDetection,GSE215865,Synapse: BMI,eligible,demographic,,time invariant; used as bmi (as bmi),424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: COMORBID_CANCER_DIAGNOSIS_DESCRIPTION,excluded,comorbidity,,free text (cancer is in COMORBID_CANCER_FLAG),424,44,0.896,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Any_Antibody_Detected,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,403,0.05,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Days_Since_Most_Recent_Antibody,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,403,0.05,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Days_Since_Most_Recent_Order,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,412,0.028,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Days_Since_Symptoms_Reported_Onset,timing,timing,,on the sample day: used as days_since_infection (sensitivity analysis only) (as days_since_infection),424,360,0.151,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Deceased_Within_Encounter,excluded,other,,death in the encounter: after the sample,424,419,0.012,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Ever_Positive,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Most_Recent_Antibody_Date,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,403,0.05,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Most_Recent_Antibody_Result,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,403,0.05,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Most_Recent_Order_Date,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,412,0.028,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Most_Recent_Order_Result,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,412,0.028,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_No_Test_Result,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_PCR_First_Positive_Date,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,401,0.054,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_PCR_First_Test_Date,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Symptoms_Reported_Onset_Date,excluded,timing,,date (onset days used in the sensitivity analysis),424,360,0.151,False
+2_EarlyDetection,GSE215865,Synapse: COVID19_Symptoms_Reported_Onset_Is_Exact,excluded,timing,,precision of the onset date,424,360,0.151,False
+2_EarlyDetection,GSE215865,Synapse: Days_Since_First_Sample_Encounter,excluded,timing,,timing of the first biobank sample in its encounter: set by sampling,424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: Encounter_Date_Of_First_Sample,excluded,timing,,date,424,418,0.014,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_IQR,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,404,0.047,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_Max,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,404,0.047,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_Mean,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,404,0.047,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_Min,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,404,0.047,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_Num_Observations,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,404,0.047,False
+2_EarlyDetection,GSE215865,Synapse: LAB_C_REACTIVE_PROTEIN_StDev,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,225,0.469,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_IQR,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,390,0.08,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_Max,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,390,0.08,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_Mean,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,390,0.08,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_Min,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,390,0.08,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_Num_Observations,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,390,0.08,False
+2_EarlyDetection,GSE215865,Synapse: LAB_D_DIMER_StDev,excluded,acute illness,,another summary of a laboratory value kept as its daily median,424,211,0.502,False
+2_EarlyDetection,GSE215865,Synapse: SARSCoV2_Recovery_Status,excluded,infection status,,"SARS-CoV-2 test result or date: infection status (the cohort's eligibility), partly after the sample",424,424,0.0,False
+2_EarlyDetection,GSE215865,Synapse: SMOKING_STATUS,eligible,demographic,,time invariant; used as smoking (as smoking),424,357,0.158,False
+2_EarlyDetection,GSE226260_WB,lc_status,excluded,design,,"study design or label column, not a participant characteristic",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,case_definition,excluded,design,,"study design or label column, not a participant characteristic",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,hospitalised,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,age,eligible,demographic,numeric,eligible; kept,4,4,0.0,True
+2_EarlyDetection,GSE226260_WB,sex,eligible,demographic,binary,eligible; kept,4,4,0.0,True
+2_EarlyDetection,GSE226260_WB,bmi,eligible,demographic,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,vaccinated_before_infection,eligible,vaccination,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,variant_era,eligible,infection,categorical,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,comorbidity_count,eligible,comorbidity,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,symptom_domains,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,lc_definition_strict_who,excluded,symptoms,,LC definition flag: defines the label,4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,platform,excluded,design,,"study design or label column, not a participant characteristic",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,collection_country,excluded,design,,"study design or label column, not a participant characteristic",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,overlaps_with_study,excluded,design,,"study design or label column, not a participant characteristic",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,notes,excluded,design,,"study design or label column, not a participant characteristic",4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,inferred_sex,excluded,demographic,,"sex inferred from expression, not recorded",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,inferred_sex_method,excluded,other,,method of inferred_sex,4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,race,eligible,demographic,categorical,eligible; dropped: constant in this unit,4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,ethnicity,eligible,demographic,categorical,eligible; kept,4,4,0.0,True
+2_EarlyDetection,GSE226260_WB,days_since_infection_at_sample,timing,timing,numeric,time since infection (GSE226260_WB TPI): sensitivity analysis only; used in the timing sensitivity analysis,4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,symptom_count,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,symptom_list,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",4,4,0.0,False
+2_EarlyDetection,GSE226260_WB,preexisting_conditions_cc,excluded,comorbidity,,free text list: used as n_preexisting_conditions,4,1,0.75,False
+2_EarlyDetection,GSE226260_WB,who_severity,eligible,acute illness,numeric,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,icu,eligible,acute illness,binary,eligible; dropped: recorded for 0% of participants (under 50 percent),4,0,1.0,False
+2_EarlyDetection,GSE226260_WB,n_preexisting_conditions,eligible,comorbidity,numeric,eligible; dropped: recorded for 25% of participants (under 50 percent),4,1,0.75,False
+2_EarlyDetection,Lopez2023,lc_status,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,case_definition,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,age,eligible,demographic,numeric,eligible; kept,22,22,0.0,True
+2_EarlyDetection,Lopez2023,platform,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,control_type,excluded,design,,"study design or label column, not a participant characteristic",22,0,1.0,False
+2_EarlyDetection,Lopez2023,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,22,22,0.0,False
+2_EarlyDetection,Lopez2023,collection_country,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,notes,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,lc_subgroup,excluded,symptoms,,LC subgroup: defines the label,22,0,1.0,False
+2_EarlyDetection,Lopez2023,group_deposited,excluded,design,,"study design or label column, not a participant characteristic",22,22,0.0,False
+2_EarlyDetection,Lopez2023,sex_code_deposited,excluded,demographic,,raw code behind sex_code,22,22,0.0,False
+2_EarlyDetection,Lopez2023,sex_code,eligible,demographic,categorical,eligible; kept,22,22,0.0,True
+2_EarlyDetection,Lopez2023,smoking,eligible,other,categorical,eligible; kept,22,22,0.0,True
+2_EarlyDetection,Lopez2023,t2dm,eligible,comorbidity,categorical,eligible; kept,22,22,0.0,True
+2_EarlyDetection,Lopez2023,hypertension,eligible,comorbidity,categorical,eligible; kept,22,22,0.0,True
+2_EarlyDetection,Lopez2023,obesity,eligible,comorbidity,categorical,eligible; dropped: constant in this unit,22,22,0.0,False
+2_EarlyDetection,Lopez2023,lopez_symptoms,excluded,symptoms,,19 symptom columns (Lopez2023): define the label; coding undocumented,22,22,0.0,False
+2_EarlyDetection,Su2022,lc_status,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,case_definition,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,sample_matrix,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,omics_layer,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,days_since_infection,timing,timing,numeric,time since infection: often set by recruitment design; sensitivity analysis only; used in the timing sensitivity analysis,125,125,0.0,False
+2_EarlyDetection,Su2022,time_anchor,excluded,timing,categorical,reference point of the timing columns: not about the participant,125,125,0.0,False
+2_EarlyDetection,Su2022,acute_severity,excluded,acute illness,,"mapped to who_severity, hospitalised and icu",125,125,0.0,False
+2_EarlyDetection,Su2022,hospitalised,eligible,acute illness,binary,eligible; kept,125,125,0.0,True
+2_EarlyDetection,Su2022,age,eligible,demographic,numeric,eligible; kept,125,125,0.0,True
+2_EarlyDetection,Su2022,sex,eligible,demographic,binary,eligible; kept,125,125,0.0,True
+2_EarlyDetection,Su2022,bmi,eligible,demographic,numeric,eligible; kept,125,72,0.424,True
+2_EarlyDetection,Su2022,platform,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,control_type,excluded,design,,"study design or label column, not a participant characteristic",125,0,1.0,False
+2_EarlyDetection,Su2022,sample_phase,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,timepoint,excluded,timing,categorical,study visit of the draw: set by the design,125,125,0.0,False
+2_EarlyDetection,Su2022,collection_country,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,notes,excluded,design,,"study design or label column, not a participant characteristic",125,0,1.0,False
+2_EarlyDetection,Su2022,cohort_arm,excluded,design,,"study design or label column, not a participant characteristic",125,125,0.0,False
+2_EarlyDetection,Su2022,bmi_table_s2,excluded,demographic,,duplicate of bmi,125,125,0.0,False
+2_EarlyDetection,Su2022,n_pasc_symptoms,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,125,0.0,False
+2_EarlyDetection,Su2022,pasc_symptoms,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,75,0.4,False
+2_EarlyDetection,Su2022,pasc_groups,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,62,0.504,False
+2_EarlyDetection,Su2022,pasc_count_group,excluded,symptoms,,"symptoms, symptom counts or scores: define the label",125,125,0.0,False
+2_EarlyDetection,Su2022,pasc_group_binary_xgboost,excluded,symptoms,,LC group: defines the label,125,113,0.096,False
+2_EarlyDetection,Su2022,peak_acute_wos,excluded,acute illness,,same information as who_severity (one severity scale across cohorts),125,125,0.0,False
+2_EarlyDetection,Su2022,encounter_location,early,acute illness,categorical,eligible; kept,125,125,0.0,True
+2_EarlyDetection,Su2022,who_severity,eligible,acute illness,numeric,eligible; kept,125,125,0.0,True
+2_EarlyDetection,Su2022,icu,eligible,acute illness,binary,eligible; kept,125,125,0.0,True

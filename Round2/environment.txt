@@ -155,5 +155,16 @@ zarr==3.4.2
 # Layer6/TabDPT a5ca6e01c0fa09ec68c73e958e5199d1932abb3a (tabdpt1_3.safetensors)
 # zhfanrui/BulkFormer-37M 554fad59f5a1a35e56b41b4ba19263127082e281 (code: git+https://github.com/zhfanrui/BulkFormer_hf@42fb0b6b)
 # InstaDeepAI/BulkRNABert 4ee84d56647299e0b0143a6f1b91d9905209f6df
-# TabPFN (tabpfn 9.2.0): tabpfn-v2-classifier.ckpt, tabpfn-v2-regressor.ckpt, tabpfn-v2.5-classifier-v2.5_default.ckpt;
-#   the v2.5 regressor weights are not on disk (licence acceptance needed to download: recorded as a failure)
+# TabPFN (tabpfn 9.2.0), each version pinned with create_default_for_version(ModelVersion.<version>); the checkpoint
+# each one loads (checked 21 November 2026; Amendment 5, A), from ~/Library/Caches/tabpfn:
+#   tabpfn_v2        V2         classifier tabpfn-v2-classifier-finetuned-zk73skhh.ckpt (the package's default file for
+#                               V2, not tabpfn-v2-classifier.ckpt, which is also on disk; corrected from the earlier line here)
+#                               regressor  tabpfn-v2-regressor.ckpt
+#   tabpfn_2_5       V2_5       classifier tabpfn-v2.5-classifier-v2.5_default.ckpt; regressor tabpfn-v2.5-regressor-v2.5_default.ckpt
+#                               (the regressor weights were downloaded on 21 November 2026, after the licence; before that
+#                               every 2.5 regression job failed on the licence)
+#   tabpfn_3         V3         classifier tabpfn-v3-classifier-v3_default.ckpt; regressor tabpfn-v3-regressor-v3_default.ckpt
+#   tabpfn_3_5       V3_5       tabpfn-v3.5-20260909.safetensors (one checkpoint, classification and regression heads)
+#   tabpfn_3_5_fast  V3_5_FAST  tabpfn-v3.5-fast-20260909.safetensors
+# Licences accepted at ux.priorlabs.ai: tabpfn-2.5-license-v1.1, tabpfn-3-license-v1.0, tabpfn-3-5-license-v1.0; the API key
+# is in ~/.cache/tabpfn/auth_token (not recorded here)

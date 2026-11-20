@@ -1,0 +1,21 @@
+quantity,value
+Synapse subjects,767
+answered the checklist,251
+rebuilt PASC (all subjects),212
+rebuilt no PASC (all subjects),39
+paper Table 1: answered / PASC / no PASC,232 / 195 / 37 (RNA-seq 165 / 140 / 25)
+GEO (RNA-seq) subjects,508
+GEO subjects with a checklist answer,190
+GEO subjects: rebuilt PASC / no PASC,161 / 29
+"GEO subjects, COVID positive in GEO: rebuilt PASC / no PASC",159 / 29
+items removed in the variant (true for <= 5 RNA-seq subjects),none
+labels changed by the variant (all subjects),0
+"Round2 early detection participants (acute sample, LC or recovered)",424
+  of whom with a checklist answer,182
+  Round2 LC and rebuilt PASC,130
+  Round2 LC and rebuilt no PASC,18
+  Round2 recovered and rebuilt PASC,25
+  Round2 recovered and rebuilt no PASC,9
+"  Round2 LC, no checklist answer",154
+"  Round2 recovered, no checklist answer",88
+positivity: GEO positive vs Synapse COVID19_Ever_Positive (GEO subjects),Negative / False: 67; Negative / True: 4; Positive / True: 437

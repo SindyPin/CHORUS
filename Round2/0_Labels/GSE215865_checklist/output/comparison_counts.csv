@@ -1,0 +1,9 @@
+category,subjects
+"TACO 0, no checklist answer",151
+"TACO 1, no checklist answer",154
+agree: LC,131
+agree: no LC,9
+"disagree: TACO 0, checklist PASC",25
+"disagree: TACO 0, checklist PASC (COVID negative in GEO)",1
+"disagree: TACO 1, checklist no_PASC",18
+no TACO label,19

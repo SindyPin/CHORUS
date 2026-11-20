@@ -1,0 +1,9 @@
+source,value,who_cps,note
+acute_severity (Round1 harmonised),ambulatory,2,"ambulatory mild disease (scale 1 to 3): 2, symptomatic and independent"
+acute_severity (Round1 harmonised),hospitalised_no_oxygen,4,"hospitalised, no oxygen therapy: 4"
+acute_severity (Round1 harmonised),hospitalised_oxygen,5,"hospitalised, oxygen by mask or nasal prongs: 5 (high flow or non invasive ventilation, 6, not separable)"
+acute_severity (Round1 harmonised),icu_or_ventilated,7,"intensive care or ventilated: 7, the lowest ventilated level (ICU without ventilation, 6, not separable)"
+GSE224615 who_category_acute (WHO 8 point ordinal scale),1,2,"WHO ordinal 1, ambulatory without limitation: 2"
+GSE224615 who_category_acute (WHO 8 point ordinal scale),2,3,"WHO ordinal 2, ambulatory with limitation: 3"
+GSE224615 who_category_acute (WHO 8 point ordinal scale),3,4,"WHO ordinal 3, hospitalised without oxygen: 4"
+GSE224615 who_category_acute (WHO 8 point ordinal scale),4-5,5,"WHO ordinal 4 or 5, oxygen by mask or high flow: 5 (lower bound)"

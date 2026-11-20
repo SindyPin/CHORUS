@@ -1,0 +1,13 @@
+quantity,value
+aptamers in the matrix,4930
+aptamers matched to the annotation (numeric SeqId),4930
+of which in the same position as the annotation,4930
+samples,1105
+subjects,571
+UniProt features,4446
+transform,as_provided
+aptamers without UniProt,37
+subjects with lc_status LC,290
+subjects with lc_status COVID_recovered,116
+subjects with lc_status unknown,102
+subjects with lc_status never_infected,63

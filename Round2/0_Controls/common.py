@@ -287,7 +287,10 @@ def prepare(Xtr: np.ndarray, ytr: np.ndarray, Xte: np.ndarray, task: str, k: int
 CLASSICAL = ["logistic_regression", "elastic_net", "linear_svm", "rbf_svm", "knn", "gaussian_nb", "random_forest",
              "extra_trees", "hist_gradient_boosting", "xgboost", "lightgbm", "catboost", "mlp"]
 ENSEMBLE = ["taco_ensemble"]
-FOUNDATION = ["tabpfn_v2", "tabpfn_2_5", "tabicl_v2", "tabdpt", "mitra"]
+FOUNDATION = ["tabpfn_v2", "tabpfn_2_5", "tabpfn_3", "tabpfn_3_5", "tabpfn_3_5_fast", "tabicl_v2", "tabdpt", "mitra"]
+# TabPFN versions, each pinned explicitly (tabpfn 9.2.0; Amendment 5, A). The checkpoint loaded is written to every
+# result row of the TabPFN 3 and 3.5 jobs; the v2 and 2.5 checkpoints are listed in Round2/environment.txt.
+TABPFN_VERSIONS = {"tabpfn_v2": "V2", "tabpfn_2_5": "V2_5", "tabpfn_3": "V3", "tabpfn_3_5": "V3_5", "tabpfn_3_5_fast": "V3_5_FAST"}
 EXPRESSION = ["bulkformer", "bulkrnabert"]  # gene expression only: embeddings, then (logistic or ridge) regression
 # Amendment 2, item 1: removed from the model grid on this hardware. Its jobs are still listed, so that every task and
 # arm gets a failure row; they are never run. The step 01 fold 0 fits that measured it are kept in
@@ -376,12 +379,12 @@ def taco(task: str):
 
 def foundation(name: str, task: str):
     c = task == "classification"
-    if name in ("tabpfn_v2", "tabpfn_2_5"):
+    if name in TABPFN_VERSIONS:
         from tabpfn import TabPFNClassifier, TabPFNRegressor
         from tabpfn.constants import ModelVersion
 
         cls = TabPFNClassifier if c else TabPFNRegressor
-        return cls.create_default_for_version(ModelVersion.V2 if name == "tabpfn_v2" else ModelVersion.V2_5, device="cpu", random_state=SEED)
+        return cls.create_default_for_version(getattr(ModelVersion, TABPFN_VERSIONS[name]), device="cpu", random_state=SEED)
     if name == "tabicl_v2":
         import tabicl
 
@@ -429,6 +432,8 @@ def fit_predict(name: str, task: str, Xtr, ytr, Xte):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             m.fit(Xtr, ytr)
+        if name in TABPFN_VERSIONS and name not in ("tabpfn_v2", "tabpfn_2_5"):
+            info = {"checkpoint": Path(str(m.model_path)).name}
     pred = m.predict_proba(Xte)[:, 1] if task == "classification" else m.predict(Xte)
     return np.asarray(pred, dtype=float), info
 
@@ -525,6 +530,10 @@ def _job(args):
 
 def run_fold(job, d, tr, te):
     """Arms of steps 01 and 02 (one matrix, optional extra training rows) and the single layer arms of step 03."""
+    if job.get("module"):  # another folder's arms (Round2/5_Clinical): its module is on sys.path
+        import importlib
+
+        return importlib.import_module(job["module"]).run_fold(job, d, tr, te)
     task, name, k = job["task"], job["model"], job["k"]
     X, y = d["X"], d["y"]
     Xtr, ytr, Xte = X[tr], y[tr], X[te]
@@ -584,8 +593,8 @@ class Runner:
     (held out predictions); a rerun skips them. Failures go to failures.csv (task, arm, model, reason, message,
     device, memory) and the job continues with the next fold."""
 
-    def __init__(self, out: Path, step: str):
-        self.out, self.step = out, step
+    def __init__(self, out: Path, step: str, folder: str = "0_Controls"):
+        self.out, self.step, self.folder = out, step, folder
         (out / "raw").mkdir(parents=True, exist_ok=True)
         self.failures = out / "failures.csv"
 
@@ -623,7 +632,7 @@ class Runner:
         else:
             import psutil
 
-            row = dict(task=f"0_Controls/{self.step}/{job['control']}/{job['layer']}", arm=job["arm"], model=job["model"],
+            row = dict(task=f"{self.folder}/{self.step}/{job['control']}/{job['layer']}", arm=job["arm"], model=job["model"],
                        reason=r["reason"], message=r["message"], device="cpu (Apple M4 Pro, MPS not used)",
                        memory=f"{psutil.virtual_memory().total / 2**30:.0f} GB", job=jid, fold=r["fold"])
             pd.DataFrame([row]).to_csv(self.failures, mode="a", header=not self.failures.exists(), index=False)
@@ -672,7 +681,10 @@ def mitra_measured(control: str, layer: str) -> tuple:
     if len(hit):
         return float(hit["seconds"].iloc[0]), f"measured: step 01, {control} {layer}, A_all fold 0 (n_train {int(hit['n_train'].iloc[0])})"
     c = T[T["control"] == control]
-    return float(c["seconds"].max()), f"not timed for this pair; largest step 01 {control} fit used (n_train {int(c.loc[c['seconds'].idxmax(), 'n_train'])})"
+    what = f"largest step 01 {control} fit"
+    if c.empty:  # another folder's task (Round2/5_Clinical): the largest step 01 fit of any control
+        c, what = T, "largest 0_Controls step 01 fit"
+    return float(c["seconds"].max()), f"not timed for this pair; {what} used (n_train {int(c.loc[c['seconds'].idxmax(), 'n_train'])})"
 
 
 def estimate(out: Path, jobs: list) -> pd.DataFrame:

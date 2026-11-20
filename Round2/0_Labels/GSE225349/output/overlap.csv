@@ -1,0 +1,3 @@
+label,rna_first_acute_sample,with_clinical,with_somascan_any_sample,rna_and_somascan_on_the_same_first_sample,and_it_is_also_the_first_somascan_sample,rna_somascan_clinical_same_first_sample,of_which_checklist_PASC,of_which_checklist_no_PASC,of_which_no_checklist
+LC,302,302,290,236,223,236,110,12,114
+COVID_recovered,122,122,116,93,88,93,21,8,64

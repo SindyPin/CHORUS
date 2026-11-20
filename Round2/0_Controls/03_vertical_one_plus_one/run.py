@@ -59,6 +59,9 @@ def late_fusion(runner, jobs):
         j2 = by[(control, cohort, model, "layer_2")]
         f1, f2 = runner.out / "raw" / f"{j['id']}_pred.csv", runner.out / "raw" / f"{j2['id']}_pred.csv"
         jl = {**j, "id": j["id"].replace("__layer_1__", "__late_fusion__"), "arm": "late_fusion"}
+        if runner.failed(jl["id"]) and not (runner.failed(j["id"]) or runner.failed(j2["id"])):
+            F = pd.read_csv(runner.failures)  # both layers ran on a retry (Amendment 3, item 3): the old row goes
+            F[F["job"] != jl["id"]].to_csv(runner.failures, index=False)
         if runner.failed(j["id"]) or runner.failed(j2["id"]):
             if not runner.failed(jl["id"]):
                 if model in K.REMOVED:

@@ -52,6 +52,25 @@ Source: `github.com/SindyPin/TACO`, commit cac2afb (2 Apr 2026), `Data/411_DCEG_
   The original clinical table is Synapse syn35874390 (registration and data use terms), and the TACO labels
   should be checked against it before publication.
 
+### GSE215865: Mount Sinai COVID-19 Biobank clinical table (Synapse), added 2026-11-21
+- **Source:** Synapse syn35876735, Mount Sinai COVID-19 Biobank (the clinical table referred to above as syn35874390).
+  Downloaded by the user under the Synapse data use terms. The files stay in `data/clinical/GSE215865/` and are
+  never committed.
+  - `clinical_data_table.csv`: 10,613 rows (one per subject per day), 228 columns, 767 subjects. SHA-256
+    `7e02f11e36157957af098d8b084c78438d434fcf11713f08be8d2ccc0d75cbca`.
+  - `data_dictionary_clinical.tsv`: 226 column descriptions. SHA-256
+    `5e153aafb7074a77dc4ad70285a2866169c5f235af47b68f6eb62ff4e9c9ac89`.
+- **Citation:** Thompson RC, et al. Molecular states during acute COVID-19 reveal distinct
+  etiologies of long-term sequelae. Nat Med 2023;29(1):236-246. doi:10.1038/s41591-022-02107-4 (PMC9873574).
+- **Join:** `Subject_ID` (`Subj_xxxxxxxx`) is the GEO characteristic `subject id`. `Blood_Sample_ID`
+  (`Subj_xxxxxxxxT<n>`) is the GEO `blood sample id`. All 508 GEO subjects are in the table.
+- **Post COVID checklist** (`Post_COVID19_*`): 251 subjects answered, 190 of them with RNA-seq.
+  - The labels rebuilt from it with the paper's definition (any item true at any checklist, or health, quality of
+    life or mood "Worse") are compared with the TACO labels in
+    `Round2/0_Labels/GSE215865_checklist/` (2026-11-21).
+  - They disagree for 44 GEO subjects. TACO also labels 305 GEO subjects who never answered the checklist.
+  - **The TACO labels stay in use until the comparison is reviewed.**
+
 ### GSE270045 (Shahbaz 2025, Cell Rep Med, PMID 41205594, PMC12711683)
 The paper settles the control question: "We randomly selected 18 patients (15 LCF and 3 LCM) and 17 control
 individuals (12 RF and 5 RM) for bulk RNA-seq", where R are "COVID-19 patients who had recovered from the disease
