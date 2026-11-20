@@ -207,3 +207,21 @@ amendment applies.
    - Before a full run, time one fold of every model and print the estimated total.
    - If the estimate exceeds 12 hours, stop and report the estimate per model.
 9. New folders: Round2/0_Controls (known answer tasks) and Round2/4_Signature (signature discovery).
+
+## Amendment 2 (20 November 2026)
+
+Added on 20 November 2026, after the step 01 timing pass of Round2/0_Controls and before any full run. The text above
+and Amendment 1 are unchanged; where they differ, this amendment applies.
+
+1. Mitra is removed from the model grid on this hardware.
+   - Reason: about 10 to 12 minutes per fit on CPU with no usable GPU. That is about 28 of the 32 estimated hours of
+     step 01 alone.
+   - It is recorded in failures.csv for every task and arm with:
+     - the reason "time budget exceeded on this hardware";
+     - the measured seconds per fit;
+     - the device;
+     - the estimated total.
+   - The Mitra timing rows are kept in timing.csv.
+2. After this removal, the 12 hour limit applies per step. If a step still exceeds it, the step stops and the
+   estimate is reported per model, as in Amendment 1, item 8.
+3. Every summary README lists the models that were not run, and why, next to the results.
