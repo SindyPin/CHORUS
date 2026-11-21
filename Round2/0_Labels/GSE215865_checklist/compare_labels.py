@@ -1,6 +1,9 @@
 """GSE215865: LC and recovered labels rebuilt from the post COVID checklist of the Mount Sinai COVID-19 Biobank
 clinical table (Synapse syn35876735; Thompson et al., Nat Med 2023, 29:236-246), compared with the TACO labels used so
-far. The Round2 labels are not changed (for review first).
+far. Under Amendment 7 (21 November 2026) these rebuilt labels replace the TACO labels in Round2: the checklist
+definition below is the main label, and symptoms only (the *_Ever symptom items, without health, quality of life or
+mood) is the sensitivity label; subjects who never answered are unknown under both (build_labels.py reads the
+round2_main and round2_symptoms_only columns written here).
 
 Definition (Thompson 2023, Methods "Clinical data generation" and Table 1):
   - checklist items are of two types, symptoms and clinical deterioration (health, quality of life and daily mood
@@ -76,6 +79,7 @@ def main():
     n_true = {c: int((boolean(inv.loc[inv.index.isin(rna), c]) if c not in DETERIORATION else inv.loc[inv.index.isin(rna), c].eq("Worse")).sum()) for c in items}
     rare = [c for c, n in n_true.items() if n <= 5]
     lab_v = rebuild(inv, [c for c in items if c not in rare])
+    lab_s = rebuild(inv, [c for c in items if c not in DETERIORATION])  # Amendment 7: symptoms only (sensitivity)
 
     S = pd.read_csv(ROUND2)
     S = S[S["study_id"] == "GSE215865"].copy()
@@ -83,7 +87,7 @@ def main():
     r2 = S.groupby("subject_id")["lc_status"].agg(lambda s: "; ".join(sorted(set(map(str, s)))))
     r2_acute = S[S["sample_phase_round2"] == "acute"].groupby("subject_id")["lc_status"].first()
 
-    P = pd.DataFrame({"rebuilt": lab, "rebuilt_without_rare_items": lab_v,
+    P = pd.DataFrame({"rebuilt": lab, "rebuilt_without_rare_items": lab_v, "rebuilt_symptoms_only": lab_s,
                       "synapse_COVID19_Ever_Positive": inv["COVID19_Ever_Positive"].astype(str),
                       "synapse_patient_classification": inv["Patient_Classification_At_First_Sample"]})
     P = P.join(G[["Long_COVID", "ch_covid-19_positive"]].rename(columns={"Long_COVID": "taco_Long_COVID", "ch_covid-19_positive": "geo_covid_positive"}), how="left")
@@ -94,6 +98,13 @@ def main():
     P["rebuilt_round2_form"] = np.where((P["rebuilt"] == "PASC") & (P["geo_covid_positive"] == "Positive"), "LC",
                                         np.where((P["rebuilt"] == "no_PASC") & (P["geo_covid_positive"] == "Positive"), "COVID_recovered",
                                                  np.where(P["rebuilt"] == "unknown", "unknown", "not used (COVID negative or not in GEO)")))
+    # Amendment 7: Round2 labels. COVID positive in GEO: PASC is LC, no PASC is COVID_recovered, no answer is unknown;
+    # COVID negative in GEO: never_infected (as before; these subjects answered about their hospitalisation, not about
+    # COVID-19). Not in GEO: no RNA-seq, not used.
+    for col, src in (("round2_main", "rebuilt"), ("round2_symptoms_only", "rebuilt_symptoms_only")):
+        pos = P["geo_covid_positive"] == "Positive"
+        P[col] = np.select([~P["has_rnaseq"], ~pos, P[src] == "PASC", P[src] == "no_PASC"],
+                           ["not in GEO", "never_infected", "LC", "COVID_recovered"], "unknown")
     P.index.name = "subject_id"
     P.to_csv(PRIVATE)
 

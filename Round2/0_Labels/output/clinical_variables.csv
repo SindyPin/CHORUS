@@ -95,7 +95,7 @@ GSE207015,severity_original,severity,False,data/meta/GSE207015_meta.csv,124,0,0
 GSE207015,pregnancy,other,False,data/meta/GSE207015_meta.csv,194,0,0
 GSE213313,acute_severity,severity,False,data/meta/GSE213313_meta.csv,19,0,0
 GSE213313,severity_original,severity,False,data/meta/GSE213313_meta.csv,45,0,0
-GSE215865,sex,demographic,False,data/meta/GSE215865_meta.csv,508,424,424
+GSE215865,sex,demographic,False,data/meta/GSE215865_meta.csv,508,188,188
 GSE224615,sex,demographic,False,data/meta/GSE224615_meta.csv,36,36,36
 GSE224615,days_since_infection,timing,False,data/meta/GSE224615_meta.csv,36,36,36
 GSE226260_PBMC,age,demographic,False,data/meta/GSE226260_PBMC_meta.csv,34,34,36

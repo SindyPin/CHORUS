@@ -19,28 +19,26 @@
 
 **Metadata.**
 - Subject ids are `GSE215865:Subj_…`, the same as GSE215865.
-- `lc_status` is the current GSE215865 (TACO) label per subject: 290 LC, 116 recovered, 63 never infected, 102
-  unknown.
+- `lc_status` (Amendment 7): the post COVID checklist label per subject (`../GSE215865_checklist`), with COVID-19
+  status from this series: 170 LC, 32 recovered, 82 never infected, 287 unknown (never answered). Symptoms only
+  (sensitivity): 167 / 35 / 82 / 287. The TACO labels are withdrawn.
 
 **Files.** Written to `data/` (matrix, features, metadata; not committed). `output/build_summary.csv` has the
 aggregate counts.
 
 ## Overlap on the first acute sample (`output/overlap.csv`)
 
-The first acute sample is the earliest RNA-seq sample of each Round2 early detection participant.
+The first acute sample is the earliest RNA-seq sample of each Round2 early detection participant. Labels of
+Amendment 7.
 
-| | LC | recovered |
-|---|---|---|
-| participants with an RNA-seq first acute sample | 302 | 122 |
-| with Synapse clinical data | 302 | 122 |
-| with SomaScan on any sample | 290 | 116 |
-| **RNA-seq, SomaScan and clinical data on the same first acute sample** | **236** | **93** |
-| that sample is also their first SomaScan sample | 223 | 88 |
-| of the 236 / 93: checklist PASC | 110 | 21 |
-| of the 236 / 93: checklist no PASC | 12 | 8 |
-| of the 236 / 93: no checklist answer | 114 | 64 |
-
-The labels are TACO's; the checklist rows are for information (see `../GSE215865_checklist`).
+| | main: LC | main: recovered | symptoms only: LC | symptoms only: recovered |
+|---|---|---|---|---|
+| participants with an RNA-seq first acute sample | 159 | 29 | 156 | 32 |
+| with Synapse clinical data | 159 | 29 | 156 | 32 |
+| with SomaScan on any sample | 157 | 28 | 154 | 31 |
+| **RNA-seq, SomaScan and clinical data on the same first acute sample** | **135** | **21** | **132** | **24** |
+| that sample is also their first SomaScan sample | 125 | 20 | 122 | 23 |
+| GSE225349 subjects with any acute SomaScan sample | 170 | 32 | 167 | 35 |
 
 ## Script
 

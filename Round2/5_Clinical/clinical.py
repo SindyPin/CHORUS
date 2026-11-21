@@ -64,7 +64,7 @@ var("ethnicity", "eligible", "demographic", "categorical", "demographic")
 var("who_severity", "eligible", "acute illness", "numeric", "acute severity mapped to the WHO Clinical Progression Scale (who_mapping.csv)", "per point")
 var("hospitalised", "eligible", "acute illness", "binary", "acute hospitalisation", "yes vs no")
 var("icu", "eligible", "acute illness", "binary", "intensive care or ventilation during the acute illness (from acute_severity)", "yes vs no")
-var("disease_status_subgroup", "eligible", "acute illness", "categorical", "acute severity subgroup (Bansal2025); not mapped to the WHO scale: Moderate/Mild carries no hospitalisation information")
+var("disease_status_subgroup", "excluded", "acute illness", "", "disease status subgroup (Bansal2025): may define the label (Amendment 7, item 4)")
 var("dexamethasone", "eligible", "acute illness", "categorical", "treatment of the acute illness, not of LC")
 var("comorbidity_count", "eligible", "comorbidity", "numeric", "comorbidity", "per condition")
 var("comorbidity", "eligible", "comorbidity", "binary", "comorbidity present (Bansal2025)", "present vs absent")
@@ -156,8 +156,43 @@ LINKED_FILE = {"GSE226260_WB": "data/clinical/GSE226260_WB/GSE226260_WB_clinical
 MISSING = {"", "nan", "none", "unknown", "missing", "na", "not_applicable", "none listed in epic"}
 
 
+# Amendment 7, item 3 (early detection): a variable is in the main analysis only if it is known at or before the
+# acute sample used. Peak severity, ICU over the whole stay, and anything whose timing cannot be established are used
+# only in the sensitivity analysis "known by the end of the acute illness".
+AT_SAMPLE, END_OF_ACUTE = "known at or before the acute sample", "known by the end of the acute illness"
+BASELINE = {"age", "sex", "sex_code", "race", "ethnicity", "bmi", "smoking", "comorbidity_count", "comorbidity",
+            "n_preexisting_conditions", "t2dm", "hypertension", "obesity", "infection_wave", "variant_era",
+            "vaccinated_before_infection"}
+AT_DRAW = {"wos_at_draw": "WHO ordinal scale on the day of the draw", "encounter_location": "place of the draw"}
+TIMING = {  # (unit, variable): (timing, reason)
+    ("Su2022", "who_severity"): (END_OF_ACUTE, "from peak_acute_wos: peak severity of the acute illness"),
+    ("Su2022", "icu"): (END_OF_ACUTE, "from peak_acute_wos: ICU or ventilation at any time in the acute illness"),
+    ("Su2022", "hospitalised"): (END_OF_ACUTE, "from peak_acute_wos: hospitalised at any time in the acute illness"),
+    ("Cervia2024", "who_severity"): (END_OF_ACUTE, "from covid19_severity_max: peak severity of the acute illness"),
+    ("Cervia2024", "icu"): (END_OF_ACUTE, "from covid19_severity_max: ICU or ventilation at any time in the acute illness"),
+    ("Cervia2024", "hospitalised"): (END_OF_ACUTE, "hospitalised at any time in the acute illness; date relative to the sample not given"),
+    ("GSE215865", "who_severity"): (AT_SAMPLE, "Synapse: highest ventilation support on or before the sample day"),
+    ("GSE215865", "hospitalised"): (AT_SAMPLE, "Synapse: in the COVID-19 hospital encounter on the sample day"),
+}
+
+
+def timing_of(name: str, unit: str) -> tuple[str, str]:
+    """Early detection timing of a variable in a unit (Amendment 7, item 3)."""
+    if (unit, name) in TIMING:
+        return TIMING[(unit, name)]
+    if name in BASELINE:
+        return AT_SAMPLE, ("baseline characteristic recorded before or at enrolment" if name not in ("comorbidity_count", "comorbidity", "n_preexisting_conditions", "t2dm", "hypertension", "obesity")
+                           else "pre-existing condition")
+    if name in AT_DRAW:
+        return AT_SAMPLE, AT_DRAW[name]
+    if unit == "GSE215865" and name in SYNAPSE_DECISIONS:
+        return AT_SAMPLE, "Synapse: time invariant, or rows on or before the sample day only (synapse_gse215865.py)"
+    return END_OF_ACUTE, "timing relative to the sample cannot be established"
+
+
 def technical(col: str) -> bool:
-    return any(h in col.lower() for h in TECHNICAL_HINTS)
+    """Assay or file columns (by name); a column with a decision of its own is never technical ("raw" is in "wos_at_draw")."""
+    return col not in V and any(h in col.lower() for h in TECHNICAL_HINTS)
 
 
 def eligible(name: str, task: str) -> bool:
@@ -300,7 +335,8 @@ def decisions(R: pd.DataFrame, unit: str, task: str) -> list:
         if d is None:
             out.append(dict(task=task, unit=unit, variable=c, status="excluded", kind="unclassified", type="",
                             reason="not a clinical variable of the protocol list (left out; see README)", n=n,
-                            n_recorded=int(R[c].notna().sum()), missing_rate=round(1 - R[c].notna().mean(), 3), kept=False))
+                            n_recorded=int(R[c].notna().sum()), missing_rate=round(1 - R[c].notna().mean(), 3), kept=False,
+                            timing="", timing_reason="", kept_end_of_acute_sensitivity=False))
             continue
         x = typed(c, R[c]) if d["type"] else R[c]
         rec = x.notna()
@@ -320,13 +356,21 @@ def decisions(R: pd.DataFrame, unit: str, task: str) -> list:
         else:
             kept = True
             why = "eligible; kept"
+        tm, tr = ("not applicable (post acute task)", "") if task != "2_EarlyDetection" else timing_of(c, unit)
+        kept_end = kept  # sensitivity "known by the end of the acute illness": every variable that passes the rules
+        if kept and task == "2_EarlyDetection" and tm == END_OF_ACUTE:
+            kept = False
+            why = f"eligible; main analysis: excluded ({tr}); used only in the sensitivity analysis '{END_OF_ACUTE}' (Amendment 7, item 3)"
         out.append(dict(task=task, unit=unit, variable=c, status=d["status"], kind=d["kind"], type=d["type"], reason=why, n=n,
-                        n_recorded=int(rec.sum()), missing_rate=round(1 - rec.mean(), 3), kept=kept))
+                        n_recorded=int(rec.sum()), missing_rate=round(1 - rec.mean(), 3), kept=kept,
+                        timing=tm if d["status"] in ("eligible", "early") else "", timing_reason=tr if d["status"] in ("eligible", "early") else "",
+                        kept_end_of_acute_sensitivity=kept_end if task == "2_EarlyDetection" else False))
     return out
 
 
-def kept_vars(D: pd.DataFrame, unit: str, task: str) -> list:
-    d = D[(D["unit"] == unit) & (D["task"] == task) & D["kept"]]
+def kept_vars(D: pd.DataFrame, unit: str, task: str, end_of_acute: bool = False) -> list:
+    """Kept variables of a unit; end_of_acute: the early detection sensitivity set (Amendment 7, item 3)."""
+    d = D[(D["unit"] == unit) & (D["task"] == task) & D["kept_end_of_acute_sensitivity" if end_of_acute else "kept"]]
     return list(d["variable"])
 
 

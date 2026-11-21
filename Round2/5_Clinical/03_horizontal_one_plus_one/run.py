@@ -1,6 +1,6 @@
 """Step 03: the clinical model on one unit plus one (Amendment 5, C), per task.
 
-Anchor: the largest unit with clinical data (at least one variable kept) and at least 10 per class (Amendment 5, C).
+Anchor (Amendment 7, item 2): the largest unit that records age and sex (both kept) and has at least 10 per class.
 Partner (Amendment 6): the unit sharing the most kept variables with the anchor, sharing at least age and sex; ties go
 to the larger unit. If no unit qualifies, step 03 is skipped for that task and the reason is written. Units are groups
 of people, so every person is counted once (the Su2022 and Cervia2024 layers are one unit each).
@@ -31,13 +31,15 @@ STEP = "03_horizontal_one_plus_one"
 
 
 def choose(U: pd.DataFrame, D: pd.DataFrame, task: str) -> tuple[dict | None, list]:
-    """Anchor: the largest unit with clinical data and 10 per class (Amendment 5, C). Partner (Amendment 6): the unit
+    """Anchor (Amendment 7, item 2): the largest unit that records age and sex and has 10 per class. Partner (Amendment 6): the unit
     sharing the most kept variables with the anchor, sharing at least age and sex; ties go to the larger unit. If no
     unit qualifies, the task is skipped and the reason returned."""
     ok = U[(U["task"] == task) & U["ten_per_class"] & (U["n_variables_kept"] > 0)].sort_values(["n", "unit"], ascending=[False, True])
-    if ok.empty:
-        return None, [dict(task=task, anchor="", reason="no unit with clinical data and 10 per class")]
-    a = ok["unit"].iloc[0]
+    age_sex = ok[[{"age", "sex"} <= set(Q.kept_vars(D, u, task)) for u in ok["unit"]]]
+    if age_sex.empty:
+        return None, [dict(task=task, anchor="", reason="step 03 skipped: no unit records age and sex with 10 per class")]
+    a = age_sex["unit"].iloc[0]
+    ok = pd.concat([age_sex.iloc[:1], ok[ok["unit"] != a]])  # candidates: every other unit with clinical data and 10 per class
     ka = set(Q.kept_vars(D, a, task))
     cands = []
     for r in ok.iloc[1:].itertuples():

@@ -70,6 +70,10 @@ UNKNOWN_IN_ROUND2 = {
     "GSE226260_WB": {"GSE226260:BI4036": "GEO titles and the paper's Medication sheet say Recovered; its Demographics and Symptom List sheets say PASC",
                      "GSE226260:BI4002": "GEO titles and the paper's Medication sheet say PASC; its Demographics and Symptom List sheets say Recovered"},
 }
+# Amendment 7: labels replaced in Round2 (Round1 metadata unchanged): study -> (per subject file, main column,
+# sensitivity column). The sensitivity label is written as lc_status_symptoms_only in sample_labels.csv; for every
+# other study it equals lc_status.
+REPLACED_LABELS = {"GSE215865": ("data/clinical/GSE215865/GSE215865_checklist_labels.csv", "round2_main", "round2_symptoms_only")}
 # phase for the metadata files written before sample_phase was a schema column
 DEFAULT_PHASE = {"GSE215865": "acute", "GSE224615": "post_acute", "GSE226260_PBMC": "post_acute",
                  "GSE251849": "post_acute", "GSE270045": "post_acute", "GSE226260_WB": "post_acute"}
@@ -126,11 +130,12 @@ cur("CORSIP2026", "Espin 2026 Front Cell Infect Microbiol, PMID 42328163", "WHO 
     "repository participant table (github.com/estefespin/CORSIP_omics)", "infected healthcare workers without LC at 24 months",
     "final visit January 2023 (about 11 months after a first positive test in February 2022)", "data/meta/CORSIP2026_meta.csv notes",
     "flagged: gene panel only")
-cur("GSE215865", "Thompson 2023 (Mount Sinai), GSE215865", "TACO table column Long_COVID = 1 (definition not given in the TACO table)",
-    "TACO clinical table (SindyPin/TACO, commit cac2afb) joined on GEO 'subject id'; original Synapse syn35874390 not checked",
-    "Long_COVID = 0 and COVID positive in GEO (COVID_recovered); 0 and negative is never_infected_or_negative",
+cur("GSE215865", "Thompson 2023 (Mount Sinai), GSE215865",
+    "post COVID checklist (Thompson 2023): any Post_COVID19_*_Ever symptom true, or health, quality of life or mood 'Worse' (Amendment 7; sensitivity: symptoms only)",
+    "Synapse syn35876735 clinical table, rebuilt per subject (Round2/0_Labels/GSE215865_checklist); TACO labels withdrawn (Amendment 7)",
+    "COVID positive in GEO with every answered checklist item false or not 'Worse' (COVID_recovered); COVID negative in GEO is never_infected",
     "acute hospital draws (T0 to T13, days since the first study sample)", "data/meta/label_sources.md",
-    "labels from a secondary table, not yet checked against Synapse; 1 subject LC in TACO but COVID negative in GEO (unknown); 20 subjects without a label")
+    "subjects who never answered the checklist are unknown and excluded (Amendment 7)")
 for s, p in (("GSE169687", "Ryan 2022 BMC Med, PMID 35027067"), ("GSE267625", "Blankestijn 2024 JACI, PMID 38830512"),
              ("GSE222253", "Front Immunol 2023, PMID 37680625")):
     cur(s, p, "not in hand (requested from the authors)", "none on disk", "see data/meta/label_sources.md", "see data/meta/label_sources.md",
@@ -445,6 +450,13 @@ def audit() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     for study, f, m in items:
         for subj in UNKNOWN_IN_ROUND2.get(study, {}):
             m.loc[m["subject_id"].astype(str) == subj, "lc_status"] = "unknown"
+        m["lc_status_symptoms_only"] = m["lc_status"]
+        if study in REPLACED_LABELS:
+            path, main_col, sens_col = REPLACED_LABELS[study]
+            R = read(CODE / path).set_index("subject_id")
+            key = m["subject_id"].astype(str).str.replace(f"{study}:", "", regex=False)
+            m["lc_status"] = key.map(R[main_col]).fillna("unknown").replace({"not in GEO": "unknown"})
+            m["lc_status_symptoms_only"] = key.map(R[sens_col]).fillna("unknown").replace({"not in GEO": "unknown"})
         ph = phase_of(study, m)
         P = {k: participants(m, ph, p, lab) for k, (p, lab) in {
             "LC_post": ("post_acute", "LC"), "REC_post": ("post_acute", "COVID_recovered"),
@@ -625,7 +637,7 @@ def main():
     A.to_csv(OUT / "labels_audit.csv", index=False)
     lab = []
     for study, (m, ph, P) in parts.items():
-        d = m.assign(sample_phase_round2=ph.values)[["study_id", "subject_id", "sample_id", "lc_status", "sample_phase_round2"]]
+        d = m.assign(sample_phase_round2=ph.values)[["study_id", "subject_id", "sample_id", "lc_status", "lc_status_symptoms_only", "sample_phase_round2"]]
         lab.append(d.assign(label_flag=LABEL_FLAGS.get(study, "")))
     pd.concat(lab, ignore_index=True).to_csv(OUT / "sample_labels.csv", index=False)
     clin.to_csv(OUT / "clinical_variables.csv", index=False)

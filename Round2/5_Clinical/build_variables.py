@@ -2,7 +2,9 @@
 
 Writes:
   variables.csv          every column recorded about the participants, per task and unit: status (eligible, early,
-                         timing, excluded), kind, type, reason, participants, recorded, missing rate, kept
+                         timing, excluded), kind, type, reason, participants, recorded, missing rate, kept; for early
+                         detection the timing of each eligible variable (known at or before the acute sample, or known
+                         by the end of the acute illness) and whether it enters that sensitivity analysis (Amendment 7)
   who_mapping.csv        the severity mapping onto the WHO Clinical Progression Scale
   output/units.csv       per task and unit: studies, LC and recovered participants, variables kept, timing variable
   cache/<task>__<unit>.pkl   the per participant raw tables (participant level data: not committed)
@@ -42,7 +44,7 @@ def synapse_rows(R: pd.DataFrame, chosen: pd.DataFrame, task: str, unit: str) ->
         rec = int(T.loc[T[c].notna(), "Subject_ID"].nunique())
         out.append(dict(task=task, unit=unit, variable=f"Synapse: {c}", status=status, kind=kind, type="",
                         reason=why + (f" (as {used})" if used and used != c and "used as" not in why else ""), n=n, n_recorded=rec,
-                        missing_rate=round(1 - rec / n, 3), kept=False))
+                        missing_rate=round(1 - rec / n, 3), kept=False, timing="", timing_reason="", kept_end_of_acute_sensitivity=False))
     return out
 
 
@@ -69,11 +71,13 @@ def main():
             D += dec
             Dd = pd.DataFrame(dec)
             kept = list(Dd.loc[Dd["kept"], "variable"])
+            kept_end = list(Dd.loc[Dd["kept_end_of_acute_sensitivity"].astype(bool), "variable"]) if task == "2_EarlyDetection" else []
             tv = Dd[(Dd["status"] == "timing") & Dd["reason"].str.contains("used in the timing")]
             n1, n0 = int((R["y"] == 1).sum()), int((R["y"] == 0).sum())
             overlap = "; ".join(v for k, v in Q.POSSIBLE_OVERLAP.items() if unit in k)
             U.append(dict(task=task, unit=unit, studies=" + ".join(studies), n_LC=n1, n_recovered=n0, n=len(R),
                           ten_per_class=n1 >= 10 and n0 >= 10, n_variables_kept=len(kept), variables_kept="; ".join(kept),
+                          n_variables_end_of_acute_sensitivity=len(kept_end), variables_end_of_acute_only="; ".join(v for v in kept_end if v not in kept),
                           timing_variable=tv["variable"].iloc[0] if len(tv) else "", possible_overlap=overlap))
             with open(Q.CACHE / f"{task}__{unit}.pkl", "wb") as f:
                 pickle.dump(dict(R=R, chosen=chosen), f)
@@ -85,7 +89,7 @@ def main():
     U = pd.DataFrame(U)
     U.to_csv(Q.HERE / "output/units.csv", index=False)
     pd.set_option("display.width", 250)
-    print(U.drop(columns=["variables_kept", "possible_overlap"]).to_string(index=False))
+    print(U.drop(columns=["variables_kept", "variables_end_of_acute_only", "possible_overlap"]).to_string(index=False))
 
 
 if __name__ == "__main__":

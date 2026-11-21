@@ -7,7 +7,7 @@ subjects,571
 UniProt features,4446
 transform,as_provided
 aptamers without UniProt,37
-subjects with lc_status LC,290
-subjects with lc_status COVID_recovered,116
-subjects with lc_status unknown,102
-subjects with lc_status never_infected,63
+subjects with lc_status unknown,287
+subjects with lc_status LC,170
+subjects with lc_status never_infected,82
+subjects with lc_status COVID_recovered,32

@@ -1,3 +1,9 @@
-label,rna_first_acute_sample,with_clinical,with_somascan_any_sample,rna_and_somascan_on_the_same_first_sample,and_it_is_also_the_first_somascan_sample,rna_somascan_clinical_same_first_sample,of_which_checklist_PASC,of_which_checklist_no_PASC,of_which_no_checklist
-LC,302,302,290,236,223,236,110,12,114
-COVID_recovered,122,122,116,93,88,93,21,8,64
+labels,label,rna_first_acute_sample,with_clinical,with_somascan_any_sample,rna_and_somascan_on_the_same_first_sample,and_it_is_also_the_first_somascan_sample,rna_somascan_clinical_same_first_sample
+main,LC,159.0,159.0,157,135.0,125.0,135.0
+main,COVID_recovered,29.0,29.0,28,21.0,20.0,21.0
+main,GSE225349 subjects LC (any acute SomaScan sample),,,170,,,
+main,GSE225349 subjects COVID_recovered (any acute SomaScan sample),,,32,,,
+symptoms_only,LC,156.0,156.0,154,132.0,122.0,132.0
+symptoms_only,COVID_recovered,32.0,32.0,31,24.0,23.0,24.0
+symptoms_only,GSE225349 subjects LC (any acute SomaScan sample),,,167,,,
+symptoms_only,GSE225349 subjects COVID_recovered (any acute SomaScan sample),,,35,,,

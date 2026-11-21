@@ -12,8 +12,10 @@ Input (GEO, downloaded 21 November 2026 into data/proteomics/GSE225349/raw/, not
 Sample id: the GEO blood sample id (Subj_xxxxxxxxT<n>), which is the Synapse Blood_Sample_ID; subject id
 "GSE215865:Subj_xxxxxxxx", the same as in GSE215865, so that the two layers are one group of people.
 Proteins: the Round1 somascan adapter (UniProt keys; aptamers of one protein averaged on the log2 scale) and the Round1
-write_cohort (ClinicalSchema validation). lc_status: the current GSE215865 labels (TACO; the checklist labels are under
-review, Round2/0_Labels/GSE215865_checklist), per subject.
+write_cohort (ClinicalSchema validation). lc_status (Amendment 7; the TACO labels are withdrawn): the post COVID
+checklist labels rebuilt from the Synapse table (Round2/0_Labels/GSE215865_checklist), per subject: COVID positive in
+this series and PASC is LC, no PASC is COVID_recovered, never answered is unknown; COVID negative is never_infected.
+The symptoms only labels (sensitivity) are counted in output/overlap.csv; the metadata schema has no column for them.
 
 Writes data/proteomics/GSE225349/GSE225349_{matrix,features}.csv and data/meta/GSE225349_meta.csv (not committed),
 and output/build_summary.csv and output/overlap.csv (aggregate counts, committed).
@@ -73,13 +75,12 @@ def main():
 
     G = series_matrix().rename(columns={"subject id": "subj", "blood sample id": "bsid"})
     G = G.set_index("bsid")
-    L = pd.read_csv(CODE / "data/meta/GSE215865_meta.csv", low_memory=False)
-    lab = L.groupby("subject_id")["lc_status"].agg(lambda s: s.mode().iloc[0])
+    CHK = pd.read_csv(CODE / "data/clinical/GSE215865/GSE215865_checklist_labels.csv").set_index("subject_id")
     meta = pd.DataFrame(index=adapted.X.index)
     meta.index.name = "sample_id"
     g = G.reindex(meta.index)
     meta["subject_id"] = "GSE215865:" + g["subj"]
-    meta["lc_status"] = meta["subject_id"].map(lab).fillna("unknown")
+    meta["lc_status"] = label_of(g["subj"], g["covid-19 status"], CHK["rebuilt"]).values
     meta["case_definition"] = "study_specific"
     meta["sample_matrix"] = "serum"
     meta["age"] = pd.to_numeric(g["age"], errors="coerce")
@@ -90,8 +91,8 @@ def main():
     meta["timepoint"] = pd.to_numeric(g["days since first sample"], errors="coerce")
     meta["collection_country"] = "United States"
     meta["overlaps_with_study"] = "GSE215865 (same participants and blood samples; Synapse syn35876735)"
-    meta["notes"] = ("timepoint is days since the first biobank sample; acute hospital draws; lc_status from the GSE215865 TACO labels "
-                     "(under review against the post COVID checklist); covid-19 status " + g["covid-19 status"].fillna("unknown"))
+    meta["notes"] = ("timepoint is days since the first biobank sample; acute hospital draws; lc_status from the post COVID checklist "
+                     "(Synapse syn35876735, Thompson 2023 definition; Amendment 7); covid-19 status " + g["covid-19 status"].fillna("unknown"))
     write_cohort(STUDY, adapted, meta, root=CODE / "data/proteomics")
     S = [("aptamers in the matrix", len(A)), ("aptamers matched to the annotation (numeric SeqId)", agree), ("of which in the same position as the annotation", by_position),
          ("samples", len(meta)), ("subjects", meta["subject_id"].nunique()), ("UniProt features", adapted.X.shape[1]),
@@ -99,12 +100,20 @@ def main():
     S += [(f"subjects with lc_status {k}", int(v)) for k, v in meta.drop_duplicates("subject_id")["lc_status"].value_counts().items()]
     pd.DataFrame(S, columns=["quantity", "value"]).to_csv(HERE / "output/build_summary.csv", index=False)
     print(pd.DataFrame(S, columns=["quantity", "value"]).to_string(index=False))
-    overlap(meta)
+    meta["lc_status_symptoms_only"] = label_of(g["subj"], g["covid-19 status"], CHK["rebuilt_symptoms_only"]).values
+    pd.set_option("display.width", 250)
+    print(pd.crosstab(meta.drop_duplicates("subject_id")["lc_status"], meta.drop_duplicates("subject_id")["lc_status_symptoms_only"], margins=True))
+    overlap(meta, "lc_status")
 
 
-def overlap(soma: pd.DataFrame):
-    """Participants with RNA-seq, SomaScan and clinical data on the same first acute sample, by LC status (the current
-    labels), with the checklist labels alongside for information."""
+def label_of(subj: pd.Series, covid: pd.Series, rebuilt: pd.Series) -> pd.Series:
+    r = subj.map(rebuilt).fillna("unknown")
+    return pd.Series(np.select([covid != "Positive", r == "PASC", r == "no_PASC"], ["never_infected", "LC", "COVID_recovered"], "unknown"), index=subj.index)
+
+
+def overlap(soma: pd.DataFrame, _=None):
+    """Participants with RNA-seq, SomaScan and clinical data on the same first acute sample, by LC status, under the
+    main (checklist) and the sensitivity (symptoms only) labels of Round2/0_Labels (Amendment 7)."""
     S = pd.read_csv(CODE / "Round2/0_Labels/output/sample_labels.csv")
     r = S[(S["study_id"] == "GSE215865") & (S["sample_phase_round2"] == "acute")].copy()
     r["bsid"] = r["sample_id"].str.replace(r"_Plate_\d+$", "", regex=True)
@@ -118,25 +127,26 @@ def overlap(soma: pd.DataFrame):
     first_soma = s.sort_values(["day", "sample_id"]).drop_duplicates("subject_id").set_index("subject_id")["sample_id"]
     soma_ids = set(s["sample_id"])
     clin_subj = set("GSE215865:" + T["Subject_ID"].astype(str))
-    chk = pd.read_csv(CODE / "data/clinical/GSE215865/GSE215865_checklist_labels.csv").set_index("subject_id")["rebuilt"]
     f = first_rna.set_index("subject_id")
-    out = pd.DataFrame({"label": f["lc_status"], "first_rna_sample": f["bsid"]})
+    out = pd.DataFrame({"main": f["lc_status"], "symptoms_only": f["lc_status_symptoms_only"], "first_rna_sample": f["bsid"]})
     out["clinical"] = out.index.isin(clin_subj)
     out["first_rna_sample_has_somascan"] = out["first_rna_sample"].isin(soma_ids)
     out["first_rna_is_first_somascan"] = out["first_rna_sample"] == first_soma.reindex(out.index)
     out["any_somascan"] = out.index.isin(set(s["subject_id"]))
-    out["checklist"] = out.index.str.replace("GSE215865:", "", regex=False).map(chk).fillna("unknown")
     rows = []
-    for lb in ("LC", "COVID_recovered"):
-        o = out[out["label"] == lb]
-        rows.append(dict(label=lb, rna_first_acute_sample=len(o), with_clinical=int(o["clinical"].sum()),
-                         with_somascan_any_sample=int(o["any_somascan"].sum()),
-                         rna_and_somascan_on_the_same_first_sample=int(o["first_rna_sample_has_somascan"].sum()),
-                         and_it_is_also_the_first_somascan_sample=int(o["first_rna_is_first_somascan"].sum()),
-                         rna_somascan_clinical_same_first_sample=int((o["first_rna_sample_has_somascan"] & o["clinical"]).sum()),
-                         of_which_checklist_PASC=int((o["first_rna_sample_has_somascan"] & o["clinical"] & (o["checklist"] == "PASC")).sum()),
-                         of_which_checklist_no_PASC=int((o["first_rna_sample_has_somascan"] & o["clinical"] & (o["checklist"] == "no_PASC")).sum()),
-                         of_which_no_checklist=int((o["first_rna_sample_has_somascan"] & o["clinical"] & (o["checklist"] == "unknown")).sum())))
+    for version in ("main", "symptoms_only"):
+        for lb in ("LC", "COVID_recovered"):
+            o = out[out[version] == lb]
+            rows.append(dict(labels=version, label=lb, rna_first_acute_sample=len(o), with_clinical=int(o["clinical"].sum()),
+                             with_somascan_any_sample=int(o["any_somascan"].sum()),
+                             rna_and_somascan_on_the_same_first_sample=int(o["first_rna_sample_has_somascan"].sum()),
+                             and_it_is_also_the_first_somascan_sample=int(o["first_rna_is_first_somascan"].sum()),
+                             rna_somascan_clinical_same_first_sample=int((o["first_rna_sample_has_somascan"] & o["clinical"]).sum())))
+        som = soma[soma["sample_phase"] == "acute"].drop_duplicates("subject_id")
+        col = "lc_status" if version == "main" else "lc_status_symptoms_only"
+        for lb in ("LC", "COVID_recovered"):
+            rows.append(dict(labels=version, label=f"GSE225349 subjects {lb} (any acute SomaScan sample)", rna_first_acute_sample=np.nan,
+                             with_somascan_any_sample=int((som[col] == lb).sum())))
     O = pd.DataFrame(rows)
     O.to_csv(HERE / "output/overlap.csv", index=False)
     pd.set_option("display.width", 250)

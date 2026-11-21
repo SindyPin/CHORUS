@@ -70,6 +70,23 @@ Source: `github.com/SindyPin/TACO`, commit cac2afb (2 Apr 2026), `Data/411_DCEG_
     `Round2/0_Labels/GSE215865_checklist/` (2026-11-21).
   - They disagree for 44 GEO subjects. TACO also labels 305 GEO subjects who never answered the checklist.
   - **The TACO labels stay in use until the comparison is reviewed.**
+- **How the TACO labels were built** (2026-11-21; `Round2/0_Labels/GSE215865_checklist/taco_rule.py`): the TACO
+  notebook `ML_Models/DCE_CV_Abation.ipynb` (commit cac2afb) applies, per row of this same table, "any daily
+  Post_COVID19_Symptom_* True, or SARSCoV2_Recovery_Status Not_Recovered, or Post_COVID19_Health_Ever Worse", then
+  keeps each subject's first row (`drop_duplicates`). The first row is the earliest day, so the label reflects the
+  PCR based recovery status at admission (most recent PCR positive), not post COVID symptoms. The rule reproduces all
+  489 labels; the 305 labelled subjects who never answered the checklist were labelled by that status alone.
+- **Change of labels, Amendment 7 (Round2/PROTOCOL.md, 21 November 2026): the TACO labels are withdrawn in Round2** for
+  GSE215865 and GSE225349. Round1 metadata (`GSE215865_meta.csv`) and Round1 results are unchanged; the Round1 results
+  that used the TACO labels are listed in `Round2/0_Labels/GSE215865_checklist/affected_round1.csv` (not rerun).
+  - **Main labels:** the paper's checklist definition: any `Post_COVID19_Symptom_*_Ever` true, or health, quality of
+    life or mood `_Ever` "Worse". COVID positive in GEO (or, for GSE225349, in its own series): PASC is LC, no PASC
+    is COVID_recovered. COVID negative: never_infected.
+  - **Sensitivity labels:** symptoms only (the `_Ever` symptom items), reported separately on folds built for them
+    (`lc_status_symptoms_only` in `Round2/0_Labels/output/sample_labels.csv`).
+  - **Subjects who never answered the checklist are unknown** and excluded under both.
+  - GSE215865 subjects (508 in GEO): main 159 LC / 29 recovered / 71 never_infected / 249 unknown; symptoms only
+    156 / 32 / 71 / 249. GSE225349 subjects (571): main 170 / 32 / 82 / 287; symptoms only 167 / 35 / 82 / 287.
 
 ### GSE270045 (Shahbaz 2025, Cell Rep Med, PMID 41205594, PMC12711683)
 The paper settles the control question: "We randomly selected 18 patients (15 LCF and 3 LCM) and 17 control

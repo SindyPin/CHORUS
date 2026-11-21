@@ -123,7 +123,7 @@ Script: `build_labels.py`, run from `Code/` as `python Round2/0_Labels/build_lab
 | `output/clinical_variables.csv` | one row per cohort and variable (241 rows, 40 cohorts): kind, whether it defines the label, source file, participants recorded (all and labelled) |
 | `output/anchors_and_partners.csv` | horizontal rows: per task and layer, the anchor, partner, class counts, feature counts, shared features and every candidate with its counts. Vertical rows: two-layer cases and omics plus clinical cases, with participants per class |
 | `output/clinical_links.csv` | each open clinical table: URL, licence, SHA-256, rows, rows linked, label agreement |
-| `output/sample_labels.csv` | per sample: study, subject, sample, label used in Round2, phase, flag. Not committed (`.gitignore`), since it lists every sample id |
+| `output/sample_labels.csv` | per sample: study, subject, sample, label used in Round2, symptoms only label (Amendment 7; the same as the label except GSE215865), phase, flag. Not committed (`.gitignore`), since it lists every sample id |
 | `inputs.csv` | files read, with SHA-256 |
 
 ## Result
@@ -141,7 +141,7 @@ Participants are LC / recovered; "shared" is the number of shared features. Scal
 | 3_Detection | proteomics | Fineschi2026 92 / 73 | Su2022 75 / 50 | 186 | Buggert2025 flagged; Buggert2025_UK 51 / 51 ranks below |
 | 3_Detection | metabolomics | Su2022_metabolomics 68 / 45 | Martinez2024 40 / 40 | 158 | |
 | 3_Detection | methylation | none | | | GSE197152 15 LC, cases only |
-| 2_EarlyDetection | transcriptomics | GSE215865 302 / 122 | none | | |
+| 2_EarlyDetection | transcriptomics | GSE215865 159 / 29 (Amendment 7 labels) | none | | |
 | 2_EarlyDetection | proteomics | Su2022 75 / 50 | Cervia2024_SomaScan 40 / 73 | 386 | |
 | 2_EarlyDetection | metabolomics | Su2022_metabolomics 74 / 50 | none | | Lopez2023 18 / 4 |
 | 1_Subtyping | transcriptomics | PRJNA1149196_SA (28 LC) | GSE224615 (23 LC) | 78,277 | too small to interpret (fewer than 50 LC) |
@@ -200,12 +200,15 @@ Each doubt is also in the `doubts` column of `labels_audit.csv`.
   - the Medication sheet and the GEO titles say the opposite.
 
 **Labels that rest on a single or secondary source:**
-- **GSE215865:** the labels come from the TACO table, a secondary source not checked against Synapse syn35874390,
-  which needs registration.
-  - `Long_COVID = 0` covers 122 COVID positive and 64 COVID negative subjects.
-  - One subject is LC in TACO but COVID negative in GEO, so it is unknown.
-  - 20 subjects have no label.
-  - This cohort is the RNA anchor for early detection.
+- **GSE215865 (Amendment 7, 21 November 2026):** the TACO labels are withdrawn. Their rule kept each subject's first
+  row, so they reflect the PCR based recovery status at admission, not post COVID symptoms
+  (`GSE215865_checklist/taco_rule.py` reproduces all 489).
+  - Labels now come from the post COVID checklist of the Synapse table (syn35876735), rebuilt in
+    `GSE215865_checklist/`: main, the paper's definition (159 LC, 29 recovered of the 508 GEO subjects); sensitivity,
+    symptoms only (156 / 32), in the column `lc_status_symptoms_only` of `sample_labels.csv`.
+  - COVID negative in GEO: never_infected (71). Never answered the checklist: unknown (249), excluded.
+  - The same labels are used for GSE225349 (SomaScan, `GSE225349/`).
+  - This cohort is still the RNA anchor for early detection (159 / 29); it has no partner.
 - **GSE197152:** "LC" rests on the paper's statement that all 15 patients had PASC symptoms. There is no per sample
   field.
 - **PRJNA1184005:** the labels come from the author, and the control definition is pending confirmation.
