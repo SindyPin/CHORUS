@@ -17,53 +17,9 @@ task,arm,model,reason,message,device,memory,job,fold
 0_Controls/03_vertical_one_plus_one/age/Cervia2024,layer_2,mitra,time budget exceeded on this hardware,Amendment 2: removed from the model grid; 740 s per fit (not timed for this pair; largest step 01 age fit used (n_train 394)); estimated total 3.1 h CPU for the 15 folds of this job (1.5 h wall clock at two at a time),"cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__layer_2__mitra,-1
 0_Controls/03_vertical_one_plus_one/age/Cervia2024,joined,gaussian_nb,error,NotImplementedError: Gaussian naive Bayes has no regression form,"cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__joined__gaussian_nb,-1
 0_Controls/03_vertical_one_plus_one/age/Cervia2024,joined,mitra,time budget exceeded on this hardware,Amendment 2: removed from the model grid; 740 s per fit (not timed for this pair; largest step 01 age fit used (n_train 394)); estimated total 3.1 h CPU for the 15 folds of this job (1.5 h wall clock at two at a time),"cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__joined__mitra,-1
-0_Controls/03_vertical_one_plus_one/age/Su2022,layer_1,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__layer_1__tabpfn_2_5,0
-0_Controls/03_vertical_one_plus_one/age/Su2022,layer_2,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__layer_2__tabpfn_2_5,0
-0_Controls/03_vertical_one_plus_one/age/Su2022,joined,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__joined__tabpfn_2_5,0
-0_Controls/03_vertical_one_plus_one/age/Cervia2024,layer_1,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__layer_1__tabpfn_2_5,0
-0_Controls/03_vertical_one_plus_one/age/Cervia2024,layer_2,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__layer_2__tabpfn_2_5,0
-0_Controls/03_vertical_one_plus_one/age/Cervia2024,joined,tabpfn_2_5,licence or token,"TabPFNLicenseError: TabPFN requires a one-time license acceptance to download
-model weights for local inference, but no interactive terminal
-is available.
-
-To authenticate in a non-interactive environment:
-  1. Open https://ux.priorlabs.ai in a browser and log in (or register)
-  2. Accept the license on the Licenses ta","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__joined__tabpfn_2_5,0
 0_Controls/03_vertical_one_plus_one/sex/Su2022,late_fusion,mitra,time budget exceeded on this hardware,"Amendment 2: removed from the model grid, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__sex__Su2022__late_fusion__mitra,-1
 0_Controls/03_vertical_one_plus_one/sex/Cervia2024,late_fusion,mitra,time budget exceeded on this hardware,"Amendment 2: removed from the model grid, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__sex__Cervia2024__late_fusion__mitra,-1
 0_Controls/03_vertical_one_plus_one/age/Su2022,late_fusion,gaussian_nb,error,"a single layer model failed, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__late_fusion__gaussian_nb,-1
-0_Controls/03_vertical_one_plus_one/age/Su2022,late_fusion,tabpfn_2_5,error,"a single layer model failed, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__late_fusion__tabpfn_2_5,-1
 0_Controls/03_vertical_one_plus_one/age/Su2022,late_fusion,mitra,time budget exceeded on this hardware,"Amendment 2: removed from the model grid, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Su2022__late_fusion__mitra,-1
 0_Controls/03_vertical_one_plus_one/age/Cervia2024,late_fusion,gaussian_nb,error,"a single layer model failed, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__late_fusion__gaussian_nb,-1
-0_Controls/03_vertical_one_plus_one/age/Cervia2024,late_fusion,tabpfn_2_5,error,"a single layer model failed, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__late_fusion__tabpfn_2_5,-1
 0_Controls/03_vertical_one_plus_one/age/Cervia2024,late_fusion,mitra,time budget exceeded on this hardware,"Amendment 2: removed from the model grid, so there is no late fusion","cpu (Apple M4 Pro, MPS not used)",48 GB,03__age__Cervia2024__late_fusion__mitra,-1

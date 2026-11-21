@@ -15,6 +15,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Su2022__layer_1__taco_ensemble,taco_ensemble,0.83,0.0034583333333333332,0.0017291666666666666,run
 03__sex__Su2022__layer_1__tabpfn_v2,tabpfn_v2,4.2,0.0175,0.00875,run
 03__sex__Su2022__layer_1__tabpfn_2_5,tabpfn_2_5,4.14,0.017249999999999998,0.008624999999999999,run
+03__sex__Su2022__layer_1__tabpfn_3,tabpfn_3,3.47,0.014458333333333335,0.007229166666666668,run
+03__sex__Su2022__layer_1__tabpfn_3_5,tabpfn_3_5,3.67,0.015291666666666665,0.007645833333333333,run
+03__sex__Su2022__layer_1__tabpfn_3_5_fast,tabpfn_3_5_fast,0.86,0.0035833333333333333,0.0017916666666666667,run
 03__sex__Su2022__layer_1__tabicl_v2,tabicl_v2,1.37,0.0057083333333333335,0.0028541666666666667,run
 03__sex__Su2022__layer_1__tabdpt,tabdpt,0.69,0.002875,0.0014375,run
 03__sex__Su2022__layer_1__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -34,6 +37,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Su2022__layer_2__taco_ensemble,taco_ensemble,0.77,0.0032083333333333334,0.0016041666666666667,run
 03__sex__Su2022__layer_2__tabpfn_v2,tabpfn_v2,2.7,0.01125,0.005625,run
 03__sex__Su2022__layer_2__tabpfn_2_5,tabpfn_2_5,3.34,0.013916666666666666,0.006958333333333333,run
+03__sex__Su2022__layer_2__tabpfn_3,tabpfn_3,1.87,0.007791666666666667,0.0038958333333333336,run
+03__sex__Su2022__layer_2__tabpfn_3_5,tabpfn_3_5,1.94,0.008083333333333333,0.0040416666666666665,run
+03__sex__Su2022__layer_2__tabpfn_3_5_fast,tabpfn_3_5_fast,0.65,0.0027083333333333334,0.0013541666666666667,run
 03__sex__Su2022__layer_2__tabicl_v2,tabicl_v2,1.43,0.005958333333333333,0.0029791666666666664,run
 03__sex__Su2022__layer_2__tabdpt,tabdpt,0.56,0.0023333333333333335,0.0011666666666666668,run
 03__sex__Su2022__layer_2__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -53,6 +59,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Su2022__joined__taco_ensemble,taco_ensemble,0.63,0.0026249999999999997,0.0013124999999999999,run
 03__sex__Su2022__joined__tabpfn_v2,tabpfn_v2,5.63,0.023458333333333335,0.011729166666666667,run
 03__sex__Su2022__joined__tabpfn_2_5,tabpfn_2_5,6.66,0.02775,0.013875,run
+03__sex__Su2022__joined__tabpfn_3,tabpfn_3,2.93,0.012208333333333335,0.0061041666666666675,run
+03__sex__Su2022__joined__tabpfn_3_5,tabpfn_3_5,3.37,0.014041666666666668,0.007020833333333334,run
+03__sex__Su2022__joined__tabpfn_3_5_fast,tabpfn_3_5_fast,1.22,0.005083333333333334,0.002541666666666667,run
 03__sex__Su2022__joined__tabicl_v2,tabicl_v2,2.31,0.009625,0.0048125,run
 03__sex__Su2022__joined__tabdpt,tabdpt,0.71,0.0029583333333333328,0.0014791666666666664,run
 03__sex__Su2022__joined__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -72,6 +81,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Cervia2024__layer_1__taco_ensemble,taco_ensemble,0.72,0.0029999999999999996,0.0014999999999999998,run
 03__sex__Cervia2024__layer_1__tabpfn_v2,tabpfn_v2,1.32,0.0055000000000000005,0.0027500000000000003,run
 03__sex__Cervia2024__layer_1__tabpfn_2_5,tabpfn_2_5,1.93,0.008041666666666666,0.004020833333333333,run
+03__sex__Cervia2024__layer_1__tabpfn_3,tabpfn_3,1.38,0.00575,0.002875,run
+03__sex__Cervia2024__layer_1__tabpfn_3_5,tabpfn_3_5,1.19,0.004958333333333333,0.0024791666666666664,run
+03__sex__Cervia2024__layer_1__tabpfn_3_5_fast,tabpfn_3_5_fast,0.53,0.0022083333333333334,0.0011041666666666667,run
 03__sex__Cervia2024__layer_1__tabicl_v2,tabicl_v2,1.01,0.004208333333333333,0.0021041666666666665,run
 03__sex__Cervia2024__layer_1__tabdpt,tabdpt,0.44,0.0018333333333333333,0.0009166666666666666,run
 03__sex__Cervia2024__layer_1__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -91,6 +103,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Cervia2024__layer_2__taco_ensemble,taco_ensemble,0.58,0.0024166666666666664,0.0012083333333333332,run
 03__sex__Cervia2024__layer_2__tabpfn_v2,tabpfn_v2,1.4,0.005833333333333334,0.002916666666666667,run
 03__sex__Cervia2024__layer_2__tabpfn_2_5,tabpfn_2_5,1.85,0.0077083333333333335,0.0038541666666666668,run
+03__sex__Cervia2024__layer_2__tabpfn_3,tabpfn_3,1.11,0.004625000000000001,0.0023125000000000003,run
+03__sex__Cervia2024__layer_2__tabpfn_3_5,tabpfn_3_5,1.32,0.0055000000000000005,0.0027500000000000003,run
+03__sex__Cervia2024__layer_2__tabpfn_3_5_fast,tabpfn_3_5_fast,0.48,0.0019999999999999996,0.0009999999999999998,run
 03__sex__Cervia2024__layer_2__tabicl_v2,tabicl_v2,0.9,0.00375,0.001875,run
 03__sex__Cervia2024__layer_2__tabdpt,tabdpt,0.49,0.0020416666666666665,0.0010208333333333332,run
 03__sex__Cervia2024__layer_2__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -110,6 +125,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__sex__Cervia2024__joined__taco_ensemble,taco_ensemble,0.62,0.0025833333333333333,0.0012916666666666667,run
 03__sex__Cervia2024__joined__tabpfn_v2,tabpfn_v2,2.7,0.01125,0.005625,run
 03__sex__Cervia2024__joined__tabpfn_2_5,tabpfn_2_5,3.43,0.014291666666666668,0.007145833333333334,run
+03__sex__Cervia2024__joined__tabpfn_3,tabpfn_3,2.06,0.008583333333333333,0.004291666666666667,run
+03__sex__Cervia2024__joined__tabpfn_3_5,tabpfn_3_5,1.98,0.00825,0.004125,run
+03__sex__Cervia2024__joined__tabpfn_3_5_fast,tabpfn_3_5_fast,0.86,0.0035833333333333333,0.0017916666666666667,run
 03__sex__Cervia2024__joined__tabicl_v2,tabicl_v2,1.71,0.007124999999999999,0.0035624999999999997,run
 03__sex__Cervia2024__joined__tabdpt,tabdpt,0.61,0.002541666666666667,0.0012708333333333335,run
 03__sex__Cervia2024__joined__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 sex fit used (n_train 394)
@@ -127,6 +145,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Su2022__layer_1__mlp,mlp,2.1,0.00875,0.0008750000000000001,run
 03__age__Su2022__layer_1__taco_ensemble,taco_ensemble,2.14,0.008916666666666666,0.004458333333333333,run
 03__age__Su2022__layer_1__tabpfn_v2,tabpfn_v2,2.38,0.009916666666666666,0.004958333333333333,run
+03__age__Su2022__layer_1__tabpfn_2_5,tabpfn_2_5,4.03,0.016791666666666667,0.008395833333333333,run
+03__age__Su2022__layer_1__tabpfn_3,tabpfn_3,2.17,0.009041666666666667,0.004520833333333333,run
+03__age__Su2022__layer_1__tabpfn_3_5,tabpfn_3_5,1.96,0.008166666666666666,0.004083333333333333,run
+03__age__Su2022__layer_1__tabpfn_3_5_fast,tabpfn_3_5_fast,0.72,0.0029999999999999996,0.0014999999999999998,run
 03__age__Su2022__layer_1__tabicl_v2,tabicl_v2,1.22,0.005083333333333334,0.002541666666666667,run
 03__age__Su2022__layer_1__tabdpt,tabdpt,1.25,0.005208333333333333,0.0026041666666666665,run
 03__age__Su2022__layer_1__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)
@@ -144,6 +166,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Su2022__layer_2__mlp,mlp,2.29,0.009541666666666667,0.0009541666666666667,run
 03__age__Su2022__layer_2__taco_ensemble,taco_ensemble,2.14,0.008916666666666666,0.004458333333333333,run
 03__age__Su2022__layer_2__tabpfn_v2,tabpfn_v2,2.3,0.009583333333333333,0.004791666666666666,run
+03__age__Su2022__layer_2__tabpfn_2_5,tabpfn_2_5,3.94,0.016416666666666666,0.008208333333333333,run
+03__age__Su2022__layer_2__tabpfn_3,tabpfn_3,2.1,0.00875,0.004375,run
+03__age__Su2022__layer_2__tabpfn_3_5,tabpfn_3_5,1.81,0.007541666666666667,0.0037708333333333335,run
+03__age__Su2022__layer_2__tabpfn_3_5_fast,tabpfn_3_5_fast,0.8,0.0033333333333333335,0.0016666666666666668,run
 03__age__Su2022__layer_2__tabicl_v2,tabicl_v2,1.2,0.005,0.0025,run
 03__age__Su2022__layer_2__tabdpt,tabdpt,1.25,0.005208333333333333,0.0026041666666666665,run
 03__age__Su2022__layer_2__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)
@@ -161,6 +187,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Su2022__joined__mlp,mlp,2.14,0.008916666666666666,0.0008916666666666667,run
 03__age__Su2022__joined__taco_ensemble,taco_ensemble,3.81,0.015875,0.0079375,run
 03__age__Su2022__joined__tabpfn_v2,tabpfn_v2,4.71,0.019625,0.0098125,run
+03__age__Su2022__joined__tabpfn_2_5,tabpfn_2_5,8.22,0.03425,0.017125,run
+03__age__Su2022__joined__tabpfn_3,tabpfn_3,3.76,0.015666666666666666,0.007833333333333333,run
+03__age__Su2022__joined__tabpfn_3_5,tabpfn_3_5,2.9,0.012083333333333333,0.0060416666666666665,run
+03__age__Su2022__joined__tabpfn_3_5_fast,tabpfn_3_5_fast,1.29,0.0053750000000000004,0.0026875000000000002,run
 03__age__Su2022__joined__tabicl_v2,tabicl_v2,2.28,0.009499999999999998,0.004749999999999999,run
 03__age__Su2022__joined__tabdpt,tabdpt,1.55,0.006458333333333333,0.0032291666666666666,run
 03__age__Su2022__joined__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)
@@ -178,6 +208,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Cervia2024__layer_1__mlp,mlp,1.52,0.006333333333333333,0.0006333333333333333,run
 03__age__Cervia2024__layer_1__taco_ensemble,taco_ensemble,1.12,0.004666666666666667,0.0023333333333333335,run
 03__age__Cervia2024__layer_1__tabpfn_v2,tabpfn_v2,1.26,0.0052499999999999995,0.0026249999999999997,run
+03__age__Cervia2024__layer_1__tabpfn_2_5,tabpfn_2_5,2.67,0.011125,0.0055625,run
+03__age__Cervia2024__layer_1__tabpfn_3,tabpfn_3,1.38,0.00575,0.002875,run
+03__age__Cervia2024__layer_1__tabpfn_3_5,tabpfn_3_5,1.25,0.005208333333333333,0.0026041666666666665,run
+03__age__Cervia2024__layer_1__tabpfn_3_5_fast,tabpfn_3_5_fast,0.5,0.0020833333333333333,0.0010416666666666667,run
 03__age__Cervia2024__layer_1__tabicl_v2,tabicl_v2,0.88,0.0036666666666666666,0.0018333333333333333,run
 03__age__Cervia2024__layer_1__tabdpt,tabdpt,0.95,0.003958333333333334,0.001979166666666667,run
 03__age__Cervia2024__layer_1__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)
@@ -195,6 +229,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Cervia2024__layer_2__mlp,mlp,1.27,0.005291666666666667,0.0005291666666666667,run
 03__age__Cervia2024__layer_2__taco_ensemble,taco_ensemble,1.1,0.004583333333333333,0.0022916666666666667,run
 03__age__Cervia2024__layer_2__tabpfn_v2,tabpfn_v2,1.16,0.004833333333333333,0.0024166666666666664,run
+03__age__Cervia2024__layer_2__tabpfn_2_5,tabpfn_2_5,2.58,0.010750000000000001,0.0053750000000000004,run
+03__age__Cervia2024__layer_2__tabpfn_3,tabpfn_3,1.31,0.005458333333333334,0.002729166666666667,run
+03__age__Cervia2024__layer_2__tabpfn_3_5,tabpfn_3_5,1.13,0.0047083333333333335,0.0023541666666666667,run
+03__age__Cervia2024__layer_2__tabpfn_3_5_fast,tabpfn_3_5_fast,0.55,0.0022916666666666667,0.0011458333333333333,run
 03__age__Cervia2024__layer_2__tabicl_v2,tabicl_v2,0.81,0.003375,0.0016875,run
 03__age__Cervia2024__layer_2__tabdpt,tabdpt,0.99,0.004125,0.0020625,run
 03__age__Cervia2024__layer_2__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)
@@ -212,6 +250,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 03__age__Cervia2024__joined__mlp,mlp,1.18,0.004916666666666666,0.0004916666666666666,run
 03__age__Cervia2024__joined__taco_ensemble,taco_ensemble,1.8,0.0075,0.00375,run
 03__age__Cervia2024__joined__tabpfn_v2,tabpfn_v2,2.37,0.009875000000000002,0.004937500000000001,run
+03__age__Cervia2024__joined__tabpfn_2_5,tabpfn_2_5,4.97,0.020708333333333332,0.010354166666666666,run
+03__age__Cervia2024__joined__tabpfn_3,tabpfn_3,2.54,0.010583333333333333,0.005291666666666667,run
+03__age__Cervia2024__joined__tabpfn_3_5,tabpfn_3_5,1.83,0.007625000000000001,0.0038125000000000004,run
+03__age__Cervia2024__joined__tabpfn_3_5_fast,tabpfn_3_5_fast,0.8,0.0033333333333333335,0.0016666666666666668,run
 03__age__Cervia2024__joined__tabicl_v2,tabicl_v2,1.62,0.00675,0.003375,run
 03__age__Cervia2024__joined__tabdpt,tabdpt,1.22,0.005083333333333334,0.002541666666666667,run
 03__age__Cervia2024__joined__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,not run: time budget exceeded on this hardware (Amendment 2); not timed for this pair; largest step 01 age fit used (n_train 394)

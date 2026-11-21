@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,checkpoint
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,0,1.83,90,23,5.584714773731434,7.466636901801774,0.8280884190553587,0.9105290286921711,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,1,4.82,90,23,4.250326009712453,5.3244867400416105,0.9056627503050715,0.933794466403162,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,2,4.82,90,23,5.730818575211601,6.712510781424847,0.8644218059894729,0.9565217391304348,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,3,4.82,91,22,4.841292790228628,6.28358037681414,0.8882079655498507,0.9345002823263695,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,4,4.81,91,22,5.356902858544246,6.7452246017176565,0.894740838854314,0.8577075098814231,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,5,4.81,90,23,6.308455817576971,7.662748296498107,0.8310741791192964,0.9426877470355731,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,6,4.81,90,23,6.468121075387135,8.445954737028293,0.788774587594952,0.8514949605141495,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,8,4.79,91,22,4.785439477205182,5.7078153865686145,0.9039481552440801,0.9243365330321853,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,7,4.85,90,23,4.896180472098972,6.669368139322148,0.8921855931294297,0.9426877470355731,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,9,4.92,91,22,4.41882397068299,6.315458118896573,0.869655560849977,0.9141727837380011,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,10,4.91,90,23,6.326539251547079,7.796003031394013,0.8318431272827258,0.8913043478260869,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,12,4.82,90,23,4.73886987522907,6.1930952648887505,0.8640658789805467,0.8804347826086957,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,11,4.87,90,23,6.537978947254598,8.77119356156674,0.7554445584155725,0.8883399209486167,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,13,4.86,91,22,4.588676644710403,5.856285643298714,0.9046380777125141,0.9525691699604744,tabpfn-v3.5-20260909.safetensors
+03__age__Cervia2024__joined__tabpfn_3_5,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3_5,14,4.95,91,22,5.904027277511512,7.541100524083305,0.8680365345800846,0.9649915302089217,tabpfn-v3.5-20260909.safetensors

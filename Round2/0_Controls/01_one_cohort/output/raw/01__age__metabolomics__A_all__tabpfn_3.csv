@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,checkpoint
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,0,11.79,301,76,8.898839732775853,10.546614423645268,0.3565995925844635,0.45607802203611764,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,1,8.84,301,76,8.564816339287551,10.52509169215465,0.4888857446463537,0.5725639725831485,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,2,8.85,302,75,9.32523872470184,11.519069408105088,0.43375161014237373,0.5729189698896929,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,3,6.44,302,75,8.92099224878022,10.611341637825598,0.47023617383449345,0.580577278851145,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,4,6.48,302,75,9.899878543332473,11.478645030276672,0.4812277738434839,0.5356332828598502,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,5,7.03,301,76,9.052143973642455,10.759952552553779,0.32412849061303894,0.53745372488479,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,6,7.02,301,76,8.666205832879408,10.390946962004953,0.4427138537101204,0.4537048408909751,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,7,8.08,302,75,8.450241648250241,10.510838283970239,0.5649588205350875,0.6200394918123192,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,8,8.41,302,75,9.535532797700899,11.459681807446998,0.4332025145711563,0.4952750280030398,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,9,7.03,302,75,10.154720307770726,12.136336274535099,0.3880413924285304,0.454315213905547,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,10,6.91,301,76,9.598260128919437,11.183001009105428,0.36989098821042965,0.4855875375150688,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,11,6.68,301,76,8.763236497249364,10.52117973782467,0.4880649827695851,0.5562190030069781,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,12,6.49,302,75,9.800461016094681,11.803371516156439,0.29787875042796774,0.41278054812117926,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,13,6.59,302,75,8.465692323604229,10.514519735031723,0.4985448534851501,0.616867082353398,tabpfn-v3-regressor-v3_default.ckpt
+01__age__metabolomics__A_all__tabpfn_3,01_one_cohort,age,metabolomics,A_all,tabpfn_3,14,6.53,302,75,9.420410404958657,11.666321642757604,0.4710523985109869,0.5825245141173452,tabpfn-v3-regressor-v3_default.ckpt

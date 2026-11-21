@@ -5,7 +5,8 @@ A_all: the anchor alone with all its features, for every model, by control and l
 
 - This step ran with 10 repeats before Amendment 3. Its raw files keep up to 50 folds, but every summary
   (`../04_summary`) reads folds 0 to 14 only.
-- Estimate before the run, for 15 folds of the models run: 1.0 h (budget 12 h per step).
+- Estimate before the run, for 15 folds of the models run: 1.0 h (budget 12 h per step). Estimate before the Amendment 5
+  run (TabPFN 3, 3.5, 3.5 Fast and the TabPFN 2.5 retries): 1.4 h.
 
 ## Outputs (`output/`)
 
@@ -26,6 +27,9 @@ A_all: the anchor alone with all its features, for every model, by control and l
 | model | reason |
 |---|---|
 | Mitra | Amendment 2: time budget exceeded on this hardware. It took 510 to 769 s per fit on the CPU (fold 0 here). |
-| TabPFN 2.5, age | licence or token: no TabPFN API key on this machine to download the regressor weights; retried, and it failed again |
 | Gaussian naive Bayes, age | no regression form |
 | BulkRNABert | time: 10.2 s per sample on the CPU, so 81 to 86 min per embedding, over the 15 minute limit |
+
+TabPFN 2.5 age jobs: they failed on the licence before (no TabPFN API key on this machine); they ran under Amendment 5 once
+the key was saved, and their failure rows were removed (Amendment 3, item 3).
+TabPFN 3, 3.5 and 3.5 Fast (Amendment 5, A) ran on every job of this step, on the same 15 folds; no new failure.

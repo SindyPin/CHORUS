@@ -1,6 +1,6 @@
 # 0_Controls
 
-Known answer tasks (PROTOCOL.md with Amendments 1, 2 and 3). They show what adding one cohort, or one layer, does to
+Known answer tasks (PROTOCOL.md with Amendments 1, 2, 3 and 5). They show what adding one cohort, or one layer, does to
 the prediction of two variables that every blood sample carries:
 - **sex:** classification, female = 1 and male = 0;
 - **age:** regression, in years.
@@ -24,12 +24,12 @@ B_naive is reported only (Amendment 1, item 5).
 
 | control | layer | anchor + partner | improves | no change | worse | answer |
 |---|---|---|---|---|---|---|
-| sex | transcriptomics | GSE215865 + GSE198449 | 0 | 19 | 0 | no |
-| sex | proteomics | Su2022 + Zoodsma2022_Hannover | 0 | 7 | 11 | no |
-| sex | metabolomics | Su2022_metabolomics + Holmes2021 | 0 | 18 | 0 | no |
-| age | transcriptomics | GSE198449 + GSE161731 | 0 | 9 | 8 | no |
-| age | proteomics | Su2022 + Zoodsma2022_Hannover | 0 | 12 | 4 | no |
-| age | metabolomics | Su2022_metabolomics + Lopez2023 | 0 | 11 | 5 | no |
+| sex | transcriptomics | GSE215865 + GSE198449 | 0 | 22 | 0 | no |
+| sex | proteomics | Su2022 + Zoodsma2022_Hannover | 0 | 9 | 12 | no |
+| sex | metabolomics | Su2022_metabolomics + Holmes2021 | 0 | 21 | 0 | no |
+| age | transcriptomics | GSE198449 + GSE161731 | 0 | 13 | 8 | no |
+| age | proteomics | Su2022 + Zoodsma2022_Hannover | 0 | 16 | 4 | no |
+| age | metabolomics | Su2022_metabolomics + Lopez2023 | 0 | 11 | 9 | no |
 
 B_naive vs A_shared, reported only:
 - sex: no model improves in any layer;
@@ -43,10 +43,10 @@ The same participants are used in every arm:
 
 | control | pair | joined vs layer 1 | joined vs layer 2 | late fusion vs layer 1 | late fusion vs layer 2 | answer |
 |---|---|---|---|---|---|---|
-| sex | Su2022 | 5 / 13 / 0 | 7 / 11 / 0 | 3 / 15 / 0 | 9 / 9 / 0 | yes in some models, over either layer alone; none gets worse |
-| sex | Cervia2024 | 0 / 18 / 0 | 16 / 2 / 0 | 0 / 18 / 0 | 17 / 1 / 0 | over MS proteomics alone: yes in most models; over SomaScan alone: no |
-| age | Su2022 | 7 / 9 / 0 | 2 / 14 / 0 | 11 / 5 / 0 | 1 / 15 / 0 | over Olink alone: yes in about half or more of the models; over metabolomics alone: in 1 or 2 models |
-| age | Cervia2024 | 0 / 16 / 0 | 14 / 2 / 0 | 0 / 13 / 3 | 16 / 0 / 0 | over MS proteomics alone: yes in most or all models; over SomaScan alone: no (late fusion is worse in 3) |
+| sex | Su2022 | 5 / 16 / 0 | 10 / 11 / 0 | 3 / 18 / 0 | 12 / 9 / 0 | yes in some models, over either layer alone; none gets worse |
+| sex | Cervia2024 | 0 / 21 / 0 | 19 / 2 / 0 | 0 / 21 / 0 | 20 / 1 / 0 | over MS proteomics alone: yes in most models; over SomaScan alone: no |
+| age | Su2022 | 9 / 11 / 0 | 2 / 18 / 0 | 15 / 5 / 0 | 1 / 19 / 0 | over Olink alone: yes in 9 (joined) and 15 (late fusion) of 20 models; over metabolomics alone: in 1 or 2 models |
+| age | Cervia2024 | 0 / 20 / 0 | 18 / 2 / 0 | 0 / 17 / 3 | 20 / 0 / 0 | over MS proteomics alone: yes in most or all models; over SomaScan alone: no (late fusion is worse in 3) |
 
 Cells are improves / no change / worse.
 
@@ -57,26 +57,26 @@ sex, AUROC
 | layer | A_all | A_shared | B_naive | B_scaled |
 |---|---|---|---|---|
 | transcriptomics | 0.999 (0.648 to 1.000) | 0.999 (0.648 to 1.000) | 1.000 (0.613 to 1.000) | 1.000 (0.642 to 1.000) |
-| proteomics | 0.569 (0.520 to 0.738) | 0.590 (0.530 to 0.714) | 0.569 (0.494 to 0.666) | 0.563 (0.499 to 0.612) |
-| metabolomics | 0.649 (0.613 to 0.700) | 0.632 (0.594 to 0.693) | 0.636 (0.591 to 0.689) | 0.639 (0.577 to 0.701) |
+| proteomics | 0.597 (0.520 to 0.738) | 0.593 (0.530 to 0.714) | 0.589 (0.494 to 0.706) | 0.570 (0.499 to 0.638) |
+| metabolomics | 0.653 (0.613 to 0.700) | 0.637 (0.594 to 0.702) | 0.640 (0.591 to 0.694) | 0.642 (0.577 to 0.705) |
 
 | pair | layer 1 | layer 2 | joined | late fusion |
 |---|---|---|---|---|
-| Su2022 | 0.800 (0.674 to 0.855) | 0.794 (0.706 to 0.817) | 0.832 (0.691 to 0.888) | 0.841 (0.690 to 0.891) |
-| Cervia2024 | 0.998 (0.974 to 1.000) | 0.882 (0.774 to 0.928) | 0.994 (0.927 to 1.000) | 0.989 (0.953 to 0.997) |
+| Su2022 | 0.817 (0.674 to 0.855) | 0.799 (0.706 to 0.817) | 0.857 (0.691 to 0.888) | 0.845 (0.690 to 0.891) |
+| Cervia2024 | 0.999 (0.974 to 1.000) | 0.900 (0.774 to 0.928) | 0.996 (0.927 to 1.000) | 0.990 (0.953 to 0.997) |
 
 age, mean absolute error in years (lower is better)
 
 | layer | A_all | A_shared | B_naive | B_scaled |
 |---|---|---|---|---|
-| transcriptomics | 1.545 (1.405 to 3.239) | 1.535 (1.405 to 3.214) | 1.705 (1.495 to 3.541) | 1.706 (1.483 to 8.246) |
-| proteomics | 11.008 (10.237 to 15.311) | 11.206 (10.238 to 15.029) | 11.280 (10.359 to 13.717) | 11.427 (10.380 to 14.955) |
-| metabolomics | 10.181 (9.038 to 14.547) | 10.965 (10.064 to 15.503) | 10.953 (10.218 to 11.931) | 11.077 (10.291 to 14.891) |
+| transcriptomics | 1.531 (1.405 to 3.239) | 1.530 (1.405 to 3.214) | 1.671 (1.440 to 3.541) | 1.652 (1.415 to 8.246) |
+| proteomics | 10.851 (10.054 to 15.311) | 11.074 (10.237 to 15.029) | 11.177 (10.300 to 13.717) | 11.242 (10.359 to 14.955) |
+| metabolomics | 9.925 (8.928 to 14.547) | 10.862 (9.971 to 15.503) | 10.906 (10.208 to 11.931) | 11.035 (10.241 to 14.891) |
 
 | pair | layer 1 | layer 2 | joined | late fusion |
 |---|---|---|---|---|
-| Su2022 | 10.904 (9.750 to 13.845) | 10.311 (8.560 to 14.719) | 10.105 (8.260 to 13.324) | 10.029 (8.378 to 12.032) |
-| Cervia2024 | 6.896 (5.236 to 12.404) | 10.072 (7.799 to 12.634) | 7.030 (5.240 to 12.572) | 7.816 (5.730 to 10.173) |
+| Su2022 | 10.790 (9.651 to 13.845) | 10.077 (8.511 to 14.719) | 9.539 (8.182 to 13.324) | 9.726 (8.356 to 12.032) |
+| Cervia2024 | 6.782 (5.236 to 12.404) | 9.344 (7.799 to 12.634) | 6.910 (5.240 to 12.572) | 7.325 (5.730 to 10.173) |
 
 Facts needed to read these tables:
 - **Su2022 values (Olink and metabolomics) are the authors' Z scores.** They are already adjusted for age, sex and BMI
@@ -88,17 +88,23 @@ Facts needed to read these tables:
 Model grid:
 - 13 classical models;
 - the TACO ensemble;
-- TabPFN v2, TabPFN 2.5, TabICL v2, TabDPT and Mitra;
+- TabPFN v2, TabPFN 2.5, TabPFN 3, TabPFN 3.5, TabPFN 3.5 Fast (Amendment 5, A; each pinned by explicit version,
+  checkpoint written per fold in `raw/`), TabICL v2, TabDPT and Mitra;
 - on RNA only, BulkFormer and BulkRNABert.
 
 | model | where | reason |
 |---|---|---|
 | Mitra | every task and arm (40 jobs) | Amendment 2: time budget exceeded on this hardware. It took 510 to 769 s per fit on the CPU, with no usable GPU, measured on step 01 fold 0. The timing rows are kept in each step's `timing.csv` and the fold 0 fits in `01_one_cohort/output/mitra_timed/`. |
-| TabPFN 2.5 | every age (regression) job (18 jobs), and the 2 age late fusion jobs that depend on them | licence or token. The 2.5 regressor weights are not on this machine, and with no TabPFN API key here (`TABPFN_TOKEN` or `~/.cache/tabpfn/auth_token`), tabpfn cannot download them. It was retried under Amendment 3, item 3, and failed again. The sex (classification) jobs ran. |
 | Gaussian naive Bayes | every age job (20 jobs) | no regression form |
 | BulkRNABert | every RNA job (8 jobs) | time. It took 10.2 s per sample on the CPU and ran out of memory on MPS at 2 samples, so embedding 475 to 508 samples would take 81 to 86 minutes, over the 15 minute limit per fit. |
 
 Everything is listed in `04_summary/output/failures.csv` and `models_not_run.csv`. No other job failed.
+
+- **TabPFN 2.5, age:** the 18 age jobs and 2 age late fusion jobs failed on the licence before (no TabPFN API key on
+  this machine). Under Amendment 5 the key was saved, they ran, and their failure rows were removed.
+- **TabPFN 3, 3.5 and 3.5 Fast** ran on every job of steps 01 to 03, on the same 15 folds, with no failure.
+
+Models per comparison: sex 21 (22 on RNA, with BulkFormer); age 20 (21 on RNA).
 
 ## Cohorts
 
@@ -172,11 +178,11 @@ status:
 Each step can resume. Before the full run, each step times fold 0 of every job and prints the estimate; the step runs
 only when the estimate is within 12 h (Amendments 1 to 3). The estimated wall clock for 15 folds, models run, was:
 
-| step | estimate |
-|---|---|
-| 01 | 1.0 h |
-| 02 | 2.6 h |
-| 03 | 0.4 h |
+| step | first run | Amendment 5 run |
+|---|---|---|
+| 01 | 1.0 h | 1.4 h |
+| 02 | 2.6 h | 3.7 h |
+| 03 | 0.4 h | 0.6 h |
 
 Not committed: `cache/` (arrays and participant ids) and `logs/`.
 

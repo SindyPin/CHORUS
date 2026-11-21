@@ -32,10 +32,12 @@ Comparisons:
 | model | jobs | reason |
 |---|---|---|
 | Mitra | 40: every task and arm | Amendment 2: time budget exceeded on this hardware. It took 510 to 769 s per fit on the CPU, with no usable GPU. |
-| TabPFN 2.5 | 18 age jobs, plus 2 age late fusion jobs | licence or token. There is no TabPFN API key on this machine to download the regressor weights; retried under Amendment 3, and it failed again. |
 | Gaussian naive Bayes | 20 age jobs | no regression form |
 | BulkRNABert | 8 RNA jobs | time: 10.2 s per sample on the CPU, so 81 to 86 min per embedding, over the 15 minute limit |
 
+TabPFN 2.5 age jobs (18, plus 2 late fusion) failed on the licence before; they ran under Amendment 5 once the TabPFN
+key was saved, and their rows were removed. TabPFN 3, 3.5 and 3.5 Fast (Amendment 5, A) ran on every job; none failed.
+
 Models per comparison:
-- sex: 18 (19 on RNA, with BulkFormer);
-- age: 16 (17 on RNA).
+- sex: 21 (22 on RNA, with BulkFormer);
+- age: 20 (21 on RNA).

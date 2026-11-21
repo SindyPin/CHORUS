@@ -13,6 +13,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__age__metabolomics__A_all__mlp,mlp,2.57,0.010708333333333332,0.0010708333333333331,run
 01__age__metabolomics__A_all__taco_ensemble,taco_ensemble,8.55,0.035625,0.0178125,run
 01__age__metabolomics__A_all__tabpfn_v2,tabpfn_v2,10.55,0.043958333333333335,0.021979166666666668,run
+01__age__metabolomics__A_all__tabpfn_2_5,tabpfn_2_5,18.11,0.07545833333333332,0.03772916666666666,run
+01__age__metabolomics__A_all__tabpfn_3,tabpfn_3,11.79,0.049124999999999995,0.024562499999999998,run
+01__age__metabolomics__A_all__tabpfn_3_5,tabpfn_3_5,6.66,0.02775,0.013875,run
+01__age__metabolomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,2.49,0.010375,0.0051875,run
 01__age__metabolomics__A_all__tabicl_v2,tabicl_v2,3.56,0.014833333333333334,0.007416666666666667,run
 01__age__metabolomics__A_all__tabdpt,tabdpt,2.21,0.009208333333333332,0.004604166666666666,run
 01__age__metabolomics__A_all__mitra,mitra,588.85,2.4535416666666667,1.2267708333333334,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, age metabolomics, A_all fold 0 (n_train 301)"
@@ -30,6 +34,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__age__proteomics__A_all__mlp,mlp,4.87,0.020291666666666666,0.0020291666666666665,run
 01__age__proteomics__A_all__taco_ensemble,taco_ensemble,9.47,0.03945833333333334,0.01972916666666667,run
 01__age__proteomics__A_all__tabpfn_v2,tabpfn_v2,18.26,0.07608333333333334,0.03804166666666667,run
+01__age__proteomics__A_all__tabpfn_2_5,tabpfn_2_5,18.2,0.07583333333333334,0.03791666666666667,run
+01__age__proteomics__A_all__tabpfn_3,tabpfn_3,9.53,0.03970833333333333,0.019854166666666666,run
+01__age__proteomics__A_all__tabpfn_3_5,tabpfn_3_5,7.96,0.03316666666666667,0.016583333333333335,run
+01__age__proteomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,2.55,0.010625,0.0053125,run
 01__age__proteomics__A_all__tabicl_v2,tabicl_v2,7.77,0.032375,0.0161875,run
 01__age__proteomics__A_all__tabdpt,tabdpt,3.93,0.016375,0.0081875,run
 01__age__proteomics__A_all__mitra,mitra,740.24,3.0843333333333334,1.5421666666666667,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, age proteomics, A_all fold 0 (n_train 394)"
@@ -47,6 +55,10 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__age__transcriptomics__A_all__mlp,mlp,5.08,0.021166666666666667,0.002116666666666667,run
 01__age__transcriptomics__A_all__taco_ensemble,taco_ensemble,12.11,0.05045833333333333,0.025229166666666664,run
 01__age__transcriptomics__A_all__tabpfn_v2,tabpfn_v2,26.78,0.11158333333333334,0.05579166666666667,run
+01__age__transcriptomics__A_all__tabpfn_2_5,tabpfn_2_5,18.73,0.07804166666666666,0.03902083333333333,run
+01__age__transcriptomics__A_all__tabpfn_3,tabpfn_3,10.98,0.045750000000000006,0.022875000000000003,run
+01__age__transcriptomics__A_all__tabpfn_3_5,tabpfn_3_5,8.15,0.03395833333333333,0.016979166666666667,run
+01__age__transcriptomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,5.23,0.021791666666666668,0.010895833333333334,run
 01__age__transcriptomics__A_all__tabicl_v2,tabicl_v2,9.53,0.03970833333333333,0.019854166666666666,run
 01__age__transcriptomics__A_all__tabdpt,tabdpt,11.81,0.04920833333333333,0.024604166666666667,run
 01__age__transcriptomics__A_all__mitra,mitra,712.62,2.9692499999999997,1.4846249999999999,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, age transcriptomics, A_all fold 0 (n_train 380)"
@@ -67,6 +79,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__sex__metabolomics__A_all__taco_ensemble,taco_ensemble,1.71,0.007124999999999999,0.0035624999999999997,run
 01__sex__metabolomics__A_all__tabpfn_v2,tabpfn_v2,22.91,0.09545833333333333,0.04772916666666666,run
 01__sex__metabolomics__A_all__tabpfn_2_5,tabpfn_2_5,22.8,0.095,0.0475,run
+01__sex__metabolomics__A_all__tabpfn_3,tabpfn_3,5.35,0.022291666666666668,0.011145833333333334,run
+01__sex__metabolomics__A_all__tabpfn_3_5,tabpfn_3_5,6.88,0.028666666666666667,0.014333333333333333,run
+01__sex__metabolomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,3.97,0.016541666666666666,0.008270833333333333,run
 01__sex__metabolomics__A_all__tabicl_v2,tabicl_v2,8.3,0.034583333333333334,0.017291666666666667,run
 01__sex__metabolomics__A_all__tabdpt,tabdpt,1.37,0.0057083333333333335,0.0028541666666666667,run
 01__sex__metabolomics__A_all__mitra,mitra,510.16,2.125666666666667,1.0628333333333335,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, sex metabolomics, A_all fold 0 (n_train 301)"
@@ -86,6 +101,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__sex__proteomics__A_all__taco_ensemble,taco_ensemble,1.39,0.005791666666666666,0.002895833333333333,run
 01__sex__proteomics__A_all__tabpfn_v2,tabpfn_v2,21.34,0.08891666666666667,0.044458333333333336,run
 01__sex__proteomics__A_all__tabpfn_2_5,tabpfn_2_5,14.13,0.058875000000000004,0.029437500000000002,run
+01__sex__proteomics__A_all__tabpfn_3,tabpfn_3,9.82,0.04091666666666667,0.020458333333333335,run
+01__sex__proteomics__A_all__tabpfn_3_5,tabpfn_3_5,10.99,0.04579166666666667,0.022895833333333334,run
+01__sex__proteomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,2.46,0.01025,0.005125,run
 01__sex__proteomics__A_all__tabicl_v2,tabicl_v2,5.15,0.021458333333333333,0.010729166666666666,run
 01__sex__proteomics__A_all__tabdpt,tabdpt,1.15,0.004791666666666666,0.002395833333333333,run
 01__sex__proteomics__A_all__mitra,mitra,768.95,3.2039583333333335,1.6019791666666667,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, sex proteomics, A_all fold 0 (n_train 394)"
@@ -105,6 +123,9 @@ job,model,fold0_seconds,cpu_hours,wall_hours,status
 01__sex__transcriptomics__A_all__taco_ensemble,taco_ensemble,1.76,0.007333333333333333,0.0036666666666666666,run
 01__sex__transcriptomics__A_all__tabpfn_v2,tabpfn_v2,28.69,0.11954166666666667,0.059770833333333336,run
 01__sex__transcriptomics__A_all__tabpfn_2_5,tabpfn_2_5,30.44,0.12683333333333335,0.06341666666666668,run
+01__sex__transcriptomics__A_all__tabpfn_3,tabpfn_3,10.88,0.04533333333333334,0.02266666666666667,run
+01__sex__transcriptomics__A_all__tabpfn_3_5,tabpfn_3_5,11.51,0.04795833333333333,0.023979166666666666,run
+01__sex__transcriptomics__A_all__tabpfn_3_5_fast,tabpfn_3_5_fast,3.18,0.013250000000000001,0.006625000000000001,run
 01__sex__transcriptomics__A_all__tabicl_v2,tabicl_v2,11.86,0.04941666666666666,0.02470833333333333,run
 01__sex__transcriptomics__A_all__tabdpt,tabdpt,3.65,0.015208333333333334,0.007604166666666667,run
 01__sex__transcriptomics__A_all__mitra,mitra,759.32,3.1638333333333337,1.5819166666666669,"not run: time budget exceeded on this hardware (Amendment 2); measured: step 01, sex transcriptomics, A_all fold 0 (n_train 406)"

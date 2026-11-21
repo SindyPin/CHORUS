@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,checkpoint
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,0,2.1,180,45,9.107651606334526,10.737523950010788,0.5940083161725704,0.7671009692564056,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,1,2.35,180,45,9.49643214145842,11.39483306469225,0.5672182444189108,0.7345865776100663,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,2,2.35,180,45,8.941304084518789,11.352648259480219,0.5900100372786254,0.7785138535585902,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,3,2.18,180,45,9.022651723039614,11.13124697134823,0.5285706922383968,0.6792156583824228,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,4,2.18,180,45,10.504299198308624,13.187075591560184,0.3666153464343965,0.5817763109855805,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,5,2.21,180,45,10.330316828182903,12.886465313594341,0.48129635033394935,0.647398183536629,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,6,2.17,180,45,9.252039379777262,10.999829087666365,0.5796896684506765,0.7609068737721046,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,7,2.18,180,45,7.228646188228152,9.055090446398188,0.7155869643510494,0.860044572332133,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,8,2.17,180,45,7.9927917235028945,10.378863880706032,0.5575990198251685,0.767131598780966,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,10,2.19,180,45,10.246430386985702,12.355265739003793,0.498524558177753,0.6855882947241116,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,9,2.19,180,45,10.676286152918266,13.255095143998298,0.4081118251443079,0.6145327687592322,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,11,2.17,180,45,7.501763778155128,9.678269651893887,0.6584418631316722,0.8140410470047733,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,12,2.19,180,45,9.029525921495264,11.229600059546868,0.5225069224183809,0.6856413272830512,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,14,2.16,180,45,9.645192860630285,11.568785702625407,0.5707668539756292,0.755447360864282,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Su2022__layer_2__tabpfn_3,03_vertical_one_plus_one,age,Su2022,layer_2,tabpfn_3,13,2.26,180,45,8.442749373389685,10.313803685703615,0.6229279239511054,0.7820184620427666,tabpfn-v3-regressor-v3_default.ckpt

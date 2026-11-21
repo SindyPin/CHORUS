@@ -19,7 +19,7 @@ earliest).
 
 **Results rest on 15 folds:** 5 folds by the first 3 of the 10 seeded repeats (Amendment 3).
 - Su2022 values in both layers are the authors' Z scores, adjusted for age, sex and BMI.
-- Estimate before the run: 0.4 h for the models run (budget 12 h per step).
+- Estimate before the run: 0.4 h for the models run (budget 12 h per step); before the Amendment 5 run: 0.6 h.
 
 ## Outputs (`output/`)
 
@@ -37,7 +37,10 @@ earliest).
 | model | reason |
 |---|---|
 | Mitra | Amendment 2: time budget exceeded on this hardware, measured in step 01. It has no late fusion either. |
-| TabPFN 2.5, age | licence or token: no TabPFN API key on this machine to download the regressor weights; retried, and it failed again. It has no late fusion either. |
 | Gaussian naive Bayes, age | no regression form |
+
+TabPFN 2.5 age jobs: they failed on the licence before (no TabPFN API key on this machine); they ran under Amendment 5 once
+the key was saved, and their failure rows (and the late fusion rows) were removed (Amendment 3, item 3).
+TabPFN 3, 3.5 and 3.5 Fast (Amendment 5, A) ran on every job, late fusion included, of this step, on the same 15 folds; no new failure.
 
 The expression models are not part of this step, because neither pair has RNA.

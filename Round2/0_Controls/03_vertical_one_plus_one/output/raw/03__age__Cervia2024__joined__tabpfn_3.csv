@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman,checkpoint
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,0,2.54,90,23,6.324902624642997,8.33416317395266,0.7858199241837016,0.87197242487133,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,1,6.33,90,23,4.119719402590315,5.1011676878579975,0.9134101651701546,0.9673913043478262,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,2,6.24,90,23,5.392154125995392,6.275825232460678,0.8814882164972481,0.9555335968379446,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,4,6.01,91,22,6.440521392959767,7.5131557386370105,0.8694094182342029,0.8769057029926597,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,3,6.09,91,22,4.295540493280348,5.828356556709544,0.9038191224980152,0.9412761151891589,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,5,6.13,90,23,6.527454713138582,7.949052044688938,0.81821518671666,0.9288537549407114,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,6,6.1,90,23,6.6503775657825415,8.826552855595171,0.769308857524639,0.8613788254069429,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,8,6.38,91,22,4.489612270699388,5.064323754102332,0.9243848535131937,0.935629587803501,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,7,6.43,90,23,4.699380715017111,6.22725643379894,0.9060058300471661,0.9555335968379446,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,9,6.03,91,22,4.9991522558760675,6.701387161835505,0.8532384778411796,0.8904573687182383,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,10,6.04,90,23,5.905201098002509,7.2000079391383265,0.856571130945085,0.9071146245059288,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,12,6.03,90,23,4.493897930613499,5.665343864974878,0.8862463050732158,0.9169960474308301,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,11,6.1,90,23,6.088472437454679,8.232805311663656,0.7845454691740046,0.9031620553359685,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,13,6.02,91,22,3.4936492926612157,4.941037809812054,0.9321160901052583,0.9649915302089217,tabpfn-v3-regressor-v3_default.ckpt
+03__age__Cervia2024__joined__tabpfn_3,03_vertical_one_plus_one,age,Cervia2024,joined,tabpfn_3,14,5.99,91,22,5.865027546580854,7.53341212113355,0.8683054797003065,0.9683794466403164,tabpfn-v3-regressor-v3_default.ckpt

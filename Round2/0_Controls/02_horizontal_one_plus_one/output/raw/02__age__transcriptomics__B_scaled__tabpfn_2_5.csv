@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,0,22.62,531,95,1.449749330134355,2.065384070979862,0.018534963291374162,0.3573795822151764
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,1,25.26,531,95,1.3947815070525031,2.034203312539292,0.07812151003132273,0.3501847583721599
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,2,25.19,531,95,1.5008343147491237,2.5184478418945435,0.05103149404180796,0.4144092844337148
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,3,24.62,531,95,1.3491974311763473,1.9334746412439237,0.20398320593364938,0.355179742204306
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,4,24.52,531,95,1.2106029384729584,1.7215274917096701,0.31477676986659076,0.5369249455388381
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,5,24.4,531,95,1.6360514712744865,2.592484715164135,0.057743539158728985,0.3649758245350527
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,6,24.31,531,95,1.4057140738731169,1.9496169069582283,-0.021380334281360103,0.2808642028875557
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,7,24.53,531,95,1.3340930653437288,1.8657813797514384,0.1539481360163113,0.4221963389332743
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,8,24.51,531,95,1.5808968639175414,2.3619808791302233,0.0746175904755475,0.42960524891777885
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,10,24.51,531,95,1.532462538278284,2.5357576817432883,0.14772573270386458,0.46220112907280203
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,9,24.62,531,95,1.2636530528651662,1.8166074827049115,0.04590382225042411,0.34049137070420443
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,12,23.74,531,95,1.3684302707215954,1.8479569750767728,0.01722326338783664,0.2664018690733655
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,11,23.88,531,95,1.3973265395184258,1.9545144846436135,0.23306835859095398,0.4538956228382624
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,13,23.71,531,95,1.5418266025942098,2.084185832096322,0.0836978541284803,0.37090465237404924
+02__age__transcriptomics__B_scaled__tabpfn_2_5,02_horizontal_one_plus_one,age,transcriptomics,B_scaled,tabpfn_2_5,14,23.81,531,95,1.26077237011139,1.8162978868929518,0.12267457638688972,0.43860548105608593

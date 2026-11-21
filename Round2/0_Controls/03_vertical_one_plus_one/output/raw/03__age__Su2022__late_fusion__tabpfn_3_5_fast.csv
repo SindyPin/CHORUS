@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,0,0.0,180,45,8.207014628627944,9.7404108766116,0.6659100583734029,0.844964849333055
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,1,0.0,180,45,9.52086213426171,10.958916342162102,0.5996975636441662,0.7733600881697359
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,2,0.0,180,45,9.200860878916478,11.562735586720617,0.5746954304270684,0.7640139341729748
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,3,0.0,180,45,9.185962273192636,10.78982572453724,0.5570468432378007,0.7114556561448966
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,4,0.0,180,45,8.893378173457409,11.095502688245212,0.551601128276979,0.7010051935700276
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,5,0.0,180,45,10.597389664638126,12.311203873131845,0.5265733166149745,0.7018423801973148
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,6,0.0,180,45,8.868941682297857,10.487365633413653,0.6179404937592048,0.8057862762525136
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,7,0.0,180,45,7.74715864728946,9.616610526162757,0.6792194945253027,0.8548353780352506
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,8,0.0,180,45,7.497015539494899,9.393906596933318,0.6375826975224363,0.7934343836837421
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,9,0.0,180,45,9.907395360661422,11.877287651717165,0.52476489508954,0.7423186599454331
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,10,0.0,180,45,10.191908808511041,12.65375223332178,0.4740019413518143,0.6624474646973627
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,11,0.0,180,45,7.317094488420919,8.871979224146362,0.7129812742353971,0.8435730244165588
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,12,0.0,180,45,7.915969933323382,10.283039765555214,0.5996115582626592,0.7920987685754846
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,13,0.0,180,45,6.987041138323542,8.689719304719107,0.7323309566305609,0.8572936713863979
+03__age__Su2022__late_fusion__tabpfn_3_5_fast,03_vertical_one_plus_one,age,Su2022,late_fusion,tabpfn_3_5_fast,14,0.0,180,45,9.633365600243103,11.336154683078508,0.587855768933468,0.7917726506658544

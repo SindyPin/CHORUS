@@ -1,0 +1,16 @@
+job,step,control,layer,arm,model,fold,seconds,n_train,n_test,MAE,RMSE,R2,Spearman
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,0,18.73,380,95,1.440952022914082,2.10967837265586,-0.024013513877739312,0.2674048855016691
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,1,15.6,380,95,1.4849396386966143,2.173518182552278,-0.05247435549778734,0.32782406056470503
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,2,15.39,380,95,1.547157795647336,2.56774909589292,0.013513724127707905,0.3342080280966172
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,3,15.35,380,95,1.6269784156775395,2.2254099175778292,-0.05454546394429949,0.12548996820490688
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,4,15.03,380,95,1.427528611238933,2.014339928000671,0.06185563243638448,0.3377312340629511
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,5,15.27,380,95,1.6904613589654027,2.6181427169876534,0.03900008760054807,0.2669817008456202
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,6,15.09,380,95,1.4474476767779,2.017031702875288,-0.09323713558911328,0.2012100923865572
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,7,15.92,380,95,1.4299753014945578,2.0659451236610513,-0.037320690395845846,0.35886073900591153
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,8,15.68,380,95,1.6128906149299724,2.3818128711722633,0.059012703669016786,0.3319896905508203
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,9,16.56,380,95,1.3483026267705542,1.9054362396160134,-0.049684538402074985,0.25985554494175933
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,10,16.32,380,95,1.6540864185979833,2.756456969081837,-0.007085424837104393,0.28306573818338854
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,11,15.59,380,95,1.4763506260450696,2.200445253029795,0.027924483093345276,0.3298034296744871
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,12,15.39,380,95,1.4538793514182393,1.878519273805555,-0.015552704881442114,0.29202342014140475
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,13,15.46,380,95,1.515340180289089,2.230929643105506,-0.04987494926126379,0.19599123896283469
+01__age__transcriptomics__A_all__tabpfn_2_5,01_one_cohort,age,transcriptomics,A_all,tabpfn_2_5,14,15.18,380,95,1.3419020575301628,1.9145977355925459,0.025141368621719007,0.3835075982031796
