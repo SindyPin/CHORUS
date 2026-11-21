@@ -331,3 +331,30 @@ In 5_Clinical step 03 (horizontal, one plus one), the partner is chosen as follo
 - ties go to the larger unit.
 
 If no unit qualifies, this is reported and step 03 is skipped for that task.
+
+## Amendment 7 (21 November 2026)
+
+Added on 21 November 2026, before any model of Round2/5_Clinical was run. The text above and the earlier amendments
+are unchanged; where they differ, this amendment applies.
+
+1. GSE215865 and GSE225349 labels. The TACO labels are withdrawn. Their rule (TACO notebook
+   ML_Models/DCE_CV_Abation.ipynb, commit cac2afb) kept each subject's first row, so the label reflects the PCR based
+   recovery status at admission, not post COVID symptoms (taco_rule.py reproduces all 489 labels).
+   - Main labels: the paper's checklist definition (variant b): any Post_COVID19_*_Ever symptom true, or health,
+     quality of life or mood "Worse".
+   - Sensitivity analysis: symptoms only (variant a): any Post_COVID19_*_Ever symptom true. Report it separately, on
+     folds built for its own labels.
+   - Subjects who never answered the checklist are unknown and excluded under both.
+
+   Update Round2/0_Labels and every anchor and partner that depends on GSE215865, and record the change in
+   data/meta/label_sources.md.
+2. Step 03 anchor rule: the anchor is the largest unit that records age and sex and has at least 10 per class. The
+   partner rule of Amendment 6 is unchanged.
+3. Early detection timing: for every cohort, a clinical variable is kept only if it is known at or before the acute
+   sample used. Peak severity, ICU admission over the whole stay, and any variable whose timing cannot be established
+   are excluded from the main analysis and used only in a sensitivity analysis marked "known by the end of the acute
+   illness". Record the timing decision per variable in variables.csv.
+4. Exclude Bansal2025 disease_status_subgroup as defining the label. Review every kept variable whose name refers to
+   disease status, group, subgroup or phenotype, and exclude it if it may define the label.
+5. List every Round1 result that used the TACO labels for GSE215865, in
+   Round2/0_Labels/GSE215865_checklist/affected_round1.csv. Do not rerun them now.
